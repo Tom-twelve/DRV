@@ -1,0 +1,113 @@
+/**
+ ******************************************************************************
+ * @file		foc.h
+ * @author		WrathWings
+ * @version 	V1.0
+ * @date		2018.1.17
+ * @brief		The header file of foc.c
+ ******************************************************************************
+ * @attention
+ *
+ ******************************************************************************
+ */
+ /* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __FOC_H
+#define __FOC_H
+
+/* Private includes ----------------------------------------------------------*/
+/* CODE BEGIN Includes */
+#include <stdio.h>
+#include "stm32f4xx_hal.h"
+#include "tim.h"
+#include "math.h"
+#include "arm_math.h"
+#include "tle5012.h"
+#include "control.h"
+#include "usart.h"
+#include "util.h"
+
+/* CODE END Includes */
+
+/* Private typedef -----------------------------------------------------------*/
+/* USER CODE BEGIN PTD */
+
+struct CoordinateTransformation_t
+{
+	float VoltageAlpha;
+	float VoltageBeta;
+	float VoltageD;
+	float VoltageQ;
+	float CurrentAlpha;
+	float CurrentBeta;
+	float CurrentVector;
+	float CurrentD;
+	float CurrentQ;
+};
+
+struct MotorDynamicParameter_t
+{
+	float VoltagePhaseA;
+	float VoltagePhaseB;
+	float VoltagePhaseC;
+	float CurrentPhaseA;
+	float CurrentPhaseB;
+	float CurrentPhaseC;
+	float AverageCurrentPhaseA;
+	float AverageCurrentPhaseB;
+	float AverageCurrentPhaseC;
+	float ElectromagneticTorque;
+};
+
+struct MotorStaticParameter_t
+{
+	float PowerAngleCompensation_degree;	
+	float PowerAngleCompensation_rad;
+	uint8_t ControlMode;	//速度控制模式或位置控制模式
+	uint8_t MotorMode;		//正常工作模式或测量电角度模式
+};
+
+/* USER CODE END PTD */
+
+/* Private define ------------------------------------------------------------*/
+/* USER CODE BEGIN PD */
+#define	GeneratrixVoltage				25.0f		//(V)
+#define	MaximumDistortionlessVoltage	(ONE_BY_SQRT3 * GeneratrixVoltage)	//(V)
+#define CarrierFrequency				10000.f		//(Hz)
+#define CarrierPeriod_s					(1.f / CarrierFrequency)		//(s)
+#define CarrierPeriod_us				(CarrierPeriod_s * 1000000.f)	//(us)
+#define CarrierPeriod_us_square			CarrierPeriod_us * CarrierPeriod_us		
+
+#define DivideNum  20	//将360度n等分, 每次电角度增量为(360/DivideNum)
+
+#if		PhaseSequence == PositivePhase
+#define CCR_PhaseA      	TIM8->CCR3
+#define CCR_PhaseB          TIM8->CCR2
+#define CCR_PhaseC          TIM8->CCR1
+#elif	PhaseSequence == NegativePhase
+#define CCR_PhaseA          TIM8->CCR1
+#define CCR_PhaseB          TIM8->CCR2
+#define CCR_PhaseC          TIM8->CCR3
+#else
+#error "Phase Sequence Invalid"
+#endif
+
+/* USER CODE END PD */
+
+/* Private function prototypes -----------------------------------------------*/
+/* USER CODE BEGIN PFP */
+void SpaceVectorPulseWidthModulation(float voltageAlpha, float voltageBeta);
+void PowerAngleCompensation(float expectedCurrentQ, float *powerAngleCompensation_degree, float *powerAngleCompensation_rad);
+void ParkTransform(float currentPhaseA, float currentPhaseB, float currentPhaseC, float *currentD, float *currentQ, float electricalAngle);
+void InverseParkTransform_TwoPhase(float voltageD, float voltageQ,float *voltageAlpha,float *voltageBeta, float electricalAngle);
+void ClarkTransform(float currentPhaseA, float currentPhaseB, float currentPhaseC, float *currentAlpha, float *currentBeta);
+void CurrentVoltageTransform(float controlCurrentQ, float *voltageD, float *voltageQ, float actualElectricalAngularSpeed_rad);
+void CalculateElectromagneticTorque(float actualCurrentQ, float *electromagneticTorque);
+void CalculateVoltage_dq(float actualCurrentQ, float *voltageD, float *voltageQ, float actualElectricalAngularSpeed_rad);
+void MeasureElectricalAngle(float voltageD);
+
+/* USER CODE END PFP */
+
+
+#endif
+
+/************************ (C) COPYRIGHT ACTION *****END OF FILE****/

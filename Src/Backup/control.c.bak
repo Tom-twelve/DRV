@@ -3,7 +3,7 @@
  * @file		control.c
  * @author		WrathWings
  * @version 	V1.0
- * @date		2018.1.17
+ * @date		2019.1.17
  * @brief		Algorithm of control
  ******************************************************************************
  * @attention
@@ -45,42 +45,36 @@ void MotorEnable(void)
 	PWM_IT_CMD(ENABLE,ENABLE);
 	
 	/*设定控制模式*/
-	MotorStaticParameter.ControlMode = CurrentControlMode;
+	MotorStaticParameter.ControlMode = VoltageControlMode;
 	
 	/*采用Id = 0控制, 故设定d轴电流为零*/
 	CurrentLoop.ExpectedCurrentD = 0.f;
 	
 	switch(MotorStaticParameter.ControlMode)
 	{
-		case VoltageSpeedControlMode :	/*设定角速度(°/s)*/
-										SpeedLoop.ExpectedMechanicalAngleSpeed = 50 * 360.f;	//degree per second
-		
-										/*设定速度环PI参数*/
-										SpeedLoop.Kp = 0.0002f;
-										
-										SpeedLoop.Ki = 0.0005f;
+		case VoltageControlMode :		/*测试用*/
 		
 										break;
 		
 		case CurrentControlMode : 		/*设定q轴电流*/
-										CurrentLoop.ExpectedCurrentQ = 30.f;
-		
-										/*设定电流环PI参数*/
-										CurrentLoop.Kp_D = 0.f;
-										
-										CurrentLoop.Ki_D = 0.f;
-										
-										CurrentLoop.Kp_Q = 0.3f;
+										CurrentLoop.ExpectedCurrentQ = 10.f;
 
-										CurrentLoop.Ki_Q = 0.05f;
+										/*设定电流环PI参数*/
+										CurrentLoop.Kp_D = 1.0f;
+										
+										CurrentLoop.Ki_D = 1.0f;
+										
+										CurrentLoop.Kp_Q = 3.0f;
+
+										CurrentLoop.Ki_Q = 1.5f;
 		
 										break;
 		
 		case SpeedControlMode : 		/*设定角速度(°/s)*/
-										SpeedLoop.ExpectedMechanicalAngleSpeed = 100 * 360.f;	//degree per second
+										SpeedLoop.ExpectedMechanicalAngularSpeed = 100.f * 360.f;	//degree per second
 										
 										/*设定加速度*/
-										SpeedLoop.Acceleration = 25 * 360.f;
+										SpeedLoop.Acceleration = 25.f * 360.f;	//degree per quadratic seconds
 		
 										/*设定电流环PI参数*/
 										CurrentLoop.Kp_D = 0.2f;
@@ -119,7 +113,7 @@ void MotorEnable(void)
    /**
    * @brief		Current control loop
    */
-void CurrentControlLoop(float expectedCurrentD, float expectedCurrentQ, float realityCurrentD, float realityCurrentQ, float *controlVoltageD, float *controlVoltageQ)
+void CurrentControlLoop(float expectedCurrentD, float expectedCurrentQ, float realityCurrentD, float realityCurrentQ, float *controlCurrentD, float *controlCurrentQ)
 {
 	float errorD = 0;
 	float errorQ = 0;
@@ -129,11 +123,11 @@ void CurrentControlLoop(float expectedCurrentD, float expectedCurrentQ, float re
 	errorD = expectedCurrentD - realityCurrentD;
 	errorQ = expectedCurrentQ - realityCurrentQ;
 	
-	*controlVoltageD = CurrentLoop.Kp_D * errorD + CurrentLoop.Ki_D * integralErrorD;
-	*controlVoltageQ = CurrentLoop.Kp_Q * errorQ + CurrentLoop.Ki_Q * integralErrorQ;
+	*controlCurrentD = CurrentLoop.Kp_D * errorD + CurrentLoop.Ki_D * integralErrorD;
+	*controlCurrentQ = CurrentLoop.Kp_Q * errorQ + CurrentLoop.Ki_Q * integralErrorQ;
 	
-	integralErrorD += errorD;
-	integralErrorQ += errorQ;
+	integralErrorD += errorD * CarrierPeriod_s;
+	integralErrorQ += errorQ * CarrierPeriod_s;
 	
 	if(integralErrorD >= CurrentControlLoopIntegralErrorLimit_D)
 	{
@@ -156,16 +150,19 @@ void CurrentControlLoop(float expectedCurrentD, float expectedCurrentQ, float re
 	}
 }
 
-void SpeedControlLoop(float expectedMechanicalAngleSpeed, float realityMechanicalAngleSpeed, float *controlCurrentQ)
+   /**
+   * @brief		Speed control loop
+   */
+void SpeedControlLoop(float expectedMechanicalAngularSpeed, float realityMechanicalAngularSpeed, float *controlCurrentQ)
 {
 	float error = 0;
 	static float integralError = 0;
 	
-	error = expectedMechanicalAngleSpeed - realityMechanicalAngleSpeed;
+	error = expectedMechanicalAngularSpeed - realityMechanicalAngularSpeed;
 	
 	*controlCurrentQ = SpeedLoop.Kp * error + SpeedLoop.Ki * integralError;
 	
-	integralError += error;
+	integralError += error * CarrierPeriod_s;
 	
 	if(integralError >= SpeedControlLoopIntegralErrorLimit)
 	{
@@ -178,6 +175,9 @@ void SpeedControlLoop(float expectedMechanicalAngleSpeed, float realityMechanica
 	}
 }
 
+   /**
+   * @brief		Position control loop
+   */
 void PositionControlLoop(float expectedMechanicalAngle, float realityMechanicalAngle, float *controlCurrentQ)
 {
 	float error = 0;
@@ -188,7 +188,7 @@ void PositionControlLoop(float expectedMechanicalAngle, float realityMechanicalA
 	
 	*controlCurrentQ = PositionLoop.Kp * error + PositionLoop.Ki * integralError + PositionLoop.Kd * (error - lastError);
 	
-	integralError += error;
+	integralError += error * CarrierPeriod_s;
 	
 	lastError = error;
 	
@@ -203,24 +203,30 @@ void PositionControlLoop(float expectedMechanicalAngle, float realityMechanicalA
 	}
 }
 
-float VelocitySlope(float expectedVelocity)
+   /**
+   * @brief		Velocity slope  generator
+   */
+float VelocitySlopeGenerator(float expectedVelocity)
 {
-	static float desiredVel = 0.0f;
-	const float velocityStepValue = SpeedLoop.Acceleration * CarrierPeriod_s;
+	static float velocityProcessVolume = 0.0f;
+	static float velocityStepValue = 0;
+	
+	velocityStepValue = SpeedLoop.Acceleration * CarrierPeriod_s;
 
-	if (desiredVel < (expectedVelocity - velocityStepValue))
-		
-		desiredVel += velocityStepValue;
-	
-	else if (desiredVel > (expectedVelocity + velocityStepValue))
-		
-		desiredVel -= velocityStepValue;
-	
+	if (velocityProcessVolume < (expectedVelocity - velocityStepValue))
+	{
+		velocityProcessVolume += velocityStepValue;
+	}
+	else if (velocityProcessVolume > (expectedVelocity + velocityStepValue))
+	{
+		velocityProcessVolume -= velocityStepValue;
+	}
 	else
-		
-		desiredVel = expectedVelocity;
-
-	return desiredVel;
+	{
+		velocityProcessVolume = expectedVelocity;
+	}
+	
+	return velocityProcessVolume;
 }
 
 /* USER CODE END */

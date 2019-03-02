@@ -30,12 +30,18 @@
 		#define MotorType				SUNNYSKY_X4125_9
 		#define	PhaseSequence			NegativePhase
 		#define EncoderType				Encoder_TLE5012
-		#define CurrentSamplingMode		HallSensor_ACS781_150A
-		#define GROUP_NUM           0
+		#define GataDriverType			DRV8320
+		#define MOSFET_Type				IPD053N08N3G_52nC_5mOhm3
+		#define CurrentSensor			HallSensor_ACS781_150A
+		#define GROUP_NUM           	0
 		#elif CAN_ID_NUM == 2
-		#define MotorType			N5055
-		#define	PhaseSequence		NegativePhase
-		#define GROUP_NUM           0
+		#define MotorType				N5055
+		#define	PhaseSequence			NegativePhase
+		#define EncoderType				Encoder_TLE5012
+		#define GataDriveType			DRV8323
+		#define MOSFET_Type				IPD053N08N3G_52nC_5mOhm3
+		#define CurrentSensor			HallSensor_ACS781_150A
+		#define GROUP_NUM          		0
 		#endif
 #endif
 
@@ -58,15 +64,26 @@
 #define InductanceQ
 #endif
 
+/* Phase Sequence */
+#define PositivePhase				1
+#define NegativePhase				0
 
-#define PositivePhase		1
-#define NegativePhase		0
+/* Motor Type */
+#define SUNNYSKY_X4125_9			1
+#define N5055						2
 
-#define SUNNYSKY_X4125_9	1
-#define N5055				2
+/* Encoder Type */
+#define Encoder_TLE5012				1
 
-#define Encoder_TLE5012		1
+/* Gate Driver Type */
+#define DRV8323						1
+#define DRV8320						2
 
+/* MOSFET Type */
+#define CDS18535_63nC_1mOhm6		1
+#define IPD053N08N3G_52nC_5mOhm3	2
+
+/* Current Sensor */
 #define HallSensor_ACS781_150A		1
 #define Resistance_1mOhm			2
 #define Resistance_2mOhm			3

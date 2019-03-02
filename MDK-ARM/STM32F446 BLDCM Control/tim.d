@@ -28,6 +28,9 @@ stm32f446\ bldcm\ control/tim.o: ../Src/tim.c ../Inc\tim.h ../Inc/main.h \
   ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h \
   ../Drivers/STM32F4xx_HAL_Driver/Inc\stm32f4xx_hal_pwr.h \
   ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h \
+  ../Drivers/STM32F4xx_HAL_Driver/Inc\stm32f4xx_hal_spi.h \
+  ../Drivers/STM32F4xx_HAL_Driver/Inc\stm32f4xx_hal_tim.h \
+  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
   ../Drivers/STM32F4xx_HAL_Driver/Inc\stm32f4xx_hal_uart.h \
   ../Drivers/STM32F4xx_HAL_Driver/Inc\stm32f4xx_ll_spi.h \
   ../Drivers/STM32F4xx_HAL_Driver/Inc\stm32f4xx_ll_tim.h \
@@ -43,7 +46,7 @@ stm32f446\ bldcm\ control/tim.o: ../Src/tim.c ../Inc\tim.h ../Inc/main.h \
   ../Inc/tim.h D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\math.h \
   ../Drivers/CMSIS/Include\arm_math.h \
   ../Drivers/CMSIS/Include/core_cm4.h \
-  D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h ../Inc/tle5012.h \
+  D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h ../Inc/Encoder.h \
   D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdlib.h ../Inc/gpio.h \
   ../Inc/spi.h ../Inc/MotorConfig.h ../Inc/AngleTable.h ../Inc/util.h \
   D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdbool.h ../Inc/control.h \

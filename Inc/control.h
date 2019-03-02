@@ -3,7 +3,7 @@
  * @file		control.h
  * @author		WrathWings
  * @version 	V1.0
- * @date		2018.1.17
+ * @date		2019.1.17
  * @brief		The header file of control.c
  ******************************************************************************
  * @attention
@@ -32,6 +32,8 @@ struct CurrentLoop_t
 	float ExpectedCurrentQ;
 	float ControlCurrentD;
 	float ControlCurrentQ;
+	float ControlVoltageD;
+	float ControlVoltageQ;
 	float Kp_D;
 	float Ki_D;
 	float Kp_Q;

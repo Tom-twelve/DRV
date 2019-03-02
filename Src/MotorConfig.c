@@ -3,7 +3,7 @@
  * @file		tle5012.c
  * @author		WrathWings
  * @version 	V1.0
- * @date		2018.1.17
+ * @date		2019.1.17
  * @brief		Read and set the encoder TLE5012
  ******************************************************************************
  * @attention

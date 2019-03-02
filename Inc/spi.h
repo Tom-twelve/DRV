@@ -50,6 +50,8 @@
 
 /* USER CODE END Includes */
 
+extern SPI_HandleTypeDef hspi3;
+
 /* USER CODE BEGIN Private defines */
 #define TimeOut 150
 /* USER CODE END Private defines */

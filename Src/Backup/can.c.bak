@@ -62,6 +62,7 @@ CAN_HandleTypeDef hcan1;
 /* CAN1 init function */
 void MX_CAN1_Init(void)
 {
+
   hcan1.Instance = CAN1;
   hcan1.Init.Prescaler = 16;
   hcan1.Init.Mode = CAN_MODE_NORMAL;
@@ -176,7 +177,7 @@ void CANRespond(void)
 	case 0x40005856: //VX   读取速度
 	{
 #if EncoderType == Encoder_TLE5012
-		const float velReport = Encoder.MechanicalAngleSpeed * 32768.f;
+		const float velReport = (Encoder.MechanicalAngle_degree /360.f * 32768.f);
 		txData.data_uint32[0] = 0x00005856;
 		txData.data_int32[1]  = (int32_t)(velReport);
 		CANSendData(txData);
@@ -194,7 +195,7 @@ void CANRespond(void)
 	case 0x40005850: //PX   读取位置
 		txData.data_uint32[0] = 0x00005850;
 		
-		txData.data_int32[1]  = (int32_t)(Encoder.MechanicalAngle /360.f * 32768.f) ;
+		txData.data_int32[1]  = (int32_t)(Encoder.MechanicalAngle_degree /360.f * 32768.f) ;
 
 		CANSendData(txData);
 		CAN_RecieveStatus = 0;
@@ -238,13 +239,13 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 		case 0x00004F4D: //MO
 			if (receive.data_uint32[1] == 1)
 			{
-				SpeedLoop.ExpectedMechanicalAngleSpeed = 0.f;
+				SpeedLoop.ExpectedMechanicalAngularSpeed = 0.f;
 				PWM_IT_CMD(ENABLE,ENABLE);
 			}
 			else
 			{
 				PWM_IT_CMD(DISABLE,ENABLE);
-				SpeedLoop.ExpectedMechanicalAngleSpeed = 0.0f;
+				SpeedLoop.ExpectedMechanicalAngularSpeed = 0.0f;
 			}
 			break;
 		case 0x00004D55://先配置，再切换模式  //UM
@@ -259,14 +260,14 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 //				PositionLoop.Kp = POS_CONTROL_KP;
 //				PositionLoop.Kd = POS_CONTROL_KD;
 				MotorStaticParameter.ControlMode = PositionControlMode;
-				PositionLoop.ExpectedMechanicalAngle = Encoder.MechanicalAngle + Encoder.AverageMechanicalAngleSpeed * CarrierPeriod_s;
+				PositionLoop.ExpectedMechanicalAngle = Encoder.MechanicalAngle_degree + Encoder.AverageMechanicalAngularSpeed_degree * CarrierPeriod_s;
 			}
 			break;
 		case 0x0000564A: //JV
 
 
 		//value_checkout 
-//		SpeedLoop.ExpectedMechanicalAngleSpeed =  -1 * SATURATION((float)(receive.data_int32[1]), -VEL_MAX, VEL_MAX)  * 0.000191650390625f;//主控以顺时针方向为正 
+//		SpeedLoop.ExpectedMechanicalAngularSpeed =  -1 * SATURATION((float)(receive.data_int32[1]), -VEL_MAX, VEL_MAX)  * 0.000191650390625f;//主控以顺时针方向为正 
 			break;
 
 		case 0x00004341: //AC
@@ -284,10 +285,10 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 			break;
 
 		case 0x00005250: //PR相对位置
-			PositionLoop.ExpectedMechanicalAngle = Encoder.MechanicalAngle + -1 * (float)(receive.data_int32[1]);
+			PositionLoop.ExpectedMechanicalAngle = Encoder.MechanicalAngle_degree + -1 * (float)(receive.data_int32[1]);
 			break;
 		case 0x00005100:
-			Encoder.MechanicalAngle = receive.data_int32[1];
+			Encoder.MechanicalAngle_degree = receive.data_int32[1];
 			break;
 			
 		case 0x40005155: //UQ  读取电压输出(mV)

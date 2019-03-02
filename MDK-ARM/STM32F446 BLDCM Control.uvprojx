@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>USE_FULL_LL_DRIVER,STM32F446xx,ARM_MATH_CM4,__FPU_PRESENT=1U,USE_HAL_DRIVER,__ARM_PCS_VFP</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;                                                                                                                     ../Drivers/STM32F4xx_HAL_Driver/Inc;                                                                                                                     ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;                                                                                                                     ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;                                                                                                                     ../Drivers/CMSIS/Include</IncludePath>
+              <IncludePath>../Inc;                                                                                                                               ../Drivers/STM32F4xx_HAL_Driver/Inc;                                                                                                                               ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;                                                                                                                               ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;                                                                                                                               ../Drivers/CMSIS/Include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -394,6 +394,11 @@
           <GroupName>Application/User</GroupName>
           <Files>
             <File>
+              <FileName>util.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\util.c</FilePath>
+            </File>
+            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Src/main.c</FilePath>
@@ -432,11 +437,6 @@
               <FileName>usart.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Src/usart.c</FilePath>
-            </File>
-            <File>
-              <FileName>util.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\util.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_it.c</FileName>
@@ -484,14 +484,14 @@
           <GroupName>Hardware/User</GroupName>
           <Files>
             <File>
-              <FileName>drv8323.c</FileName>
+              <FileName>GateDriver.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Src\drv8323.c</FilePath>
+              <FilePath>..\Src\GateDriver.c</FilePath>
             </File>
             <File>
-              <FileName>tle5012.c</FileName>
+              <FileName>Encoder.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Src\tle5012.c</FilePath>
+              <FilePath>..\Src\Encoder.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -527,6 +527,11 @@
               <FileName>stm32f4xx_ll_dma.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_dma.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_hal_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_hal_tim.c</FileName>

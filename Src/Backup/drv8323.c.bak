@@ -24,6 +24,7 @@
 /* Private variables ---------------------------------------------------------*/
 /* CODE BEGIN PV */
 uint16_t DRV8323_SPI3_RxData[DRV8323_ReadCommandMessageNumber] = {0};
+uint16_t DRV8323_SPI3_FaultStatusRegister[2] = {0};
 
 static const uint16_t DRV8323_ReadCommandMessage[DRV8323_ReadCommandMessageNumber] =
 {
@@ -38,56 +39,117 @@ static const uint16_t DRV8323_ReadCommandMessage[DRV8323_ReadCommandMessageNumbe
 
 static const uint16_t DRV8323_WriteCommandMessage[DRV8323_WriteCommandMessageNumber] =
 {
+	#if MOSFET_Type == CDS18535_63nC_1mOhm6
 	DRV8323_SPI_DATA_FORMATTER(DRV8323_CMD_WRITE, DRV8323_ADDR_DRIVER_CONTROL_REGISTER, 0x100),
 	DRV8323_SPI_DATA_FORMATTER(DRV8323_CMD_WRITE, DRV8323_ADDR_GATE_DRIVE_HS_REGISTER,  0x366),
 	DRV8323_SPI_DATA_FORMATTER(DRV8323_CMD_WRITE, DRV8323_ADDR_GATE_DRIVE_LS_REGISTER,  0x433),
-	DRV8323_SPI_DATA_FORMATTER(DRV8323_CMD_WRITE, DRV8323_ADDR_OCP_CONTROL_REGISTER,    0x455),
+	DRV8323_SPI_DATA_FORMATTER(DRV8323_CMD_WRITE, DRV8323_ADDR_OCP_CONTROL_REGISTER,    0x456),
 	DRV8323_SPI_DATA_FORMATTER(DRV8323_CMD_WRITE, DRV8323_ADDR_CSA_CONTROL_REGISTER,    0x2E3),
+	#elif MOSFET_Type == IPD053N08N3G_52nC_5mOhm3
+	DRV8323_SPI_DATA_FORMATTER(DRV8323_CMD_WRITE, DRV8323_ADDR_DRIVER_CONTROL_REGISTER, 0x100),
+	DRV8323_SPI_DATA_FORMATTER(DRV8323_CMD_WRITE, DRV8323_ADDR_GATE_DRIVE_HS_REGISTER,  0x366),
+	DRV8323_SPI_DATA_FORMATTER(DRV8323_CMD_WRITE, DRV8323_ADDR_GATE_DRIVE_LS_REGISTER,  0x433),
+	DRV8323_SPI_DATA_FORMATTER(DRV8323_CMD_WRITE, DRV8323_ADDR_OCP_CONTROL_REGISTER,    0x45A),
+	DRV8323_SPI_DATA_FORMATTER(DRV8323_CMD_WRITE, DRV8323_ADDR_CSA_CONTROL_REGISTER,    0x2E3),
+	#endif
 };
 /* CODE END PV */
 
 /* External variables --------------------------------------------------------*/
 /* USER CODE BEGIN EV */
-extern struct CurrentSampling_t
-{
-	uint32_t ADC_CurrentConvertedValue_PhaseA;
-	uint32_t ADC_CurrentConvertedValue_PhaseB;
-	uint32_t ADC_CurrentConvertedValue_PhaseC;
-	float CurrentZeroDrift_PhaseA;
-	float CurrentZeroDrift_PhaseB;
-	float CurrentZeroDrift_PhaseC;
-}CurrentSampling;
 
 /* USER CODE END EV */
 
 /* USER CODE BEGIN */
+
 void DRV8323_GateDriverConfig(void)
 {
-	LL_GPIO_SetOutputPin(DRV8323_Enable_GPIO_Port, DRV8323_Enable_Pin);
+	DRV8323_Enable;
+	
 	HAL_Delay(5);// 没有这个延时ADC会不准
+	
 	DRV8323_CurrentSamplingCorrectStart;
+	
 	HAL_Delay(1);
+	
 	DRV8323_CurrentSamplingCorrectOver;
+	
 	DRV8323_SPI3_ChipDiselect;
+	
 	HAL_Delay(2);
+	/*设置栅极驱动器*/
+	DRV8323_WriteAllRegister();
+
+	DRV8323_SPI3_ChipDiselect;
+	
+	HAL_Delay(2);
+	/*读取数据*/
+	DRV8323_ReadAllRegister();
+	
+	/*确认是否设置成功*/
+	for (uint8_t i = 0; i < DRV8323_WriteCommandMessageNumber; i++)
+	{
+		if(DRV8323_ReadCommandMessage[i + 2] != DRV8323_WriteCommandMessage[i])
+		{
+			DRV8323_WriteAllRegister();
+		}
+	}
+}
+
+void DRV8323_ReadAllRegister(void)
+{
+	for (uint8_t i = 0; i < DRV8323_ReadCommandMessageNumber; i++)
+	{
+		DRV8323_SPI3_ChipSelect;
+
+		HAL_SPI_Transmit(&hspi3, (uint8_t*) &DRV8323_ReadCommandMessage[i], 1, TimeOut);
+
+		DRV8323_SPI3_ChipDiselect;
+
+		LL_mDelay(1);
+	}
+}
+
+void DRV8323_WriteAllRegister(void)
+{
 	for (int i = 0; i < DRV8323_WriteCommandMessageNumber; i++)
 	{
 		DRV8323_SPI3_ChipSelect;
-		LL_SPI_TransmitData16(SPI3, DRV8323_WriteCommandMessage[i]);
+		
+		HAL_SPI_Transmit(&hspi3, (uint8_t*) &DRV8323_WriteCommandMessage[i], 1, TimeOut);
+		
 		DRV8323_SPI3_ChipDiselect;
-		HAL_Delay(1);
-	}
-	LL_GPIO_SetOutputPin(DRV8323_SPI3_NSS_GPIO_Port, DRV8323_SPI3_NSS_Pin);
-	HAL_Delay(2);
-	for (int i = 0; i < DRV8323_ReadCommandMessageNumber; i++)
-	{
-		DRV8323_SPI3_ChipSelect;
-		LL_SPI_TransmitData16(SPI3, DRV8323_ReadCommandMessage[i]);
-		DRV8323_SPI3_RxData[i] = LL_SPI_ReceiveData16(SPI3);
-		DRV8323_SPI3_ChipDiselect;
-		HAL_Delay(1);
+		
+		LL_mDelay(1);
 	}
 }
+
+void DRV8323_ReadFaultStatusRegister(void)
+{
+	DRV8323_SPI3_ChipSelect;
+	
+	HAL_SPI_TransmitReceive(&hspi3, (uint8_t*) &DRV8323_ReadCommandMessage[0], (uint8_t*) &DRV8323_SPI3_FaultStatusRegister[0], 1, 2);
+	
+	DRV8323_SPI3_ChipDiselect;
+	
+	__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();
+	__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();
+	__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();
+	__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();
+	__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();
+	
+	DRV8323_SPI3_ChipSelect;
+	
+	HAL_SPI_TransmitReceive(&hspi3, (uint8_t*) &DRV8323_ReadCommandMessage[1], (uint8_t*) &DRV8323_SPI3_FaultStatusRegister[1], 1, 2);
+	
+	DRV8323_SPI3_ChipDiselect;
+	
+	DMAPRINTF("%d\t",(int)DRV8323_SPI3_FaultStatusRegister[0]);
+	DMAPRINTF("%d\r\n",(int)DRV8323_SPI3_FaultStatusRegister[1]);
+	
+	LL_mDelay(1);
+}
+
 /* USER CODE END */
 
 /************************ (C) COPYRIGHT ACTION *****END OF FILE****/

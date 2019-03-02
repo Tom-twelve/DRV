@@ -277,7 +277,7 @@ void ADC_IRQHandler(void)
 	
 	switch(MotorStaticParameter.ControlMode)
 	{
-		case VoltageControlMode :	InverseParkTransform_TwoPhase(0.f, 10.f, &CoordinateTransformation.VoltageAlpha, &CoordinateTransformation.VoltageBeta, Encoder.ElectricalAngle_degree);
+		case VoltageControlMode :	InverseParkTransform_TwoPhase(0.f, 10.f, &CoordinateTransformation.VoltageAlpha, &CoordinateTransformation.VoltageBeta, Encoder.ElectricalAngle_degree+14.0f);
 									
 									SpaceVectorPulseWidthModulation(CoordinateTransformation.VoltageAlpha, CoordinateTransformation.VoltageBeta);
 		
@@ -287,11 +287,10 @@ void ADC_IRQHandler(void)
 									CalculateVoltage_dq(CoordinateTransformation.CurrentQ, &CoordinateTransformation.VoltageD, &CoordinateTransformation.VoltageQ, Encoder.AverageElectricalAngularSpeed_rad);
 			
 									CalculateElectromagneticTorque(CoordinateTransformation.CurrentQ, &MotorDynamicParameter.ElectromagneticTorque);
-				
-									DMAPRINTF("%d\t",(int)(MotorDynamicParameter.CurrentPhaseA * 1000));
-									DMAPRINTF("%d\t",(int)(MotorDynamicParameter.CurrentPhaseB * 1000));
-									DMAPRINTF("%d\t",(int)(MotorDynamicParameter.CurrentPhaseC * 1000));
-									DMAPRINTF("%d\r\n",(int)(CoordinateTransformation.CurrentQ * 1000));
+									
+//									DRV8323_ReadFaultStatusRegister();
+		
+//									DMAPRINTF("%d\r\n",(int)(CoordinateTransformation.CurrentQ * 1000));
 
 									break;
 
@@ -299,18 +298,23 @@ void ADC_IRQHandler(void)
 
 									ParkTransform(MotorDynamicParameter.CurrentPhaseA, MotorDynamicParameter.CurrentPhaseB, MotorDynamicParameter.CurrentPhaseC, &CoordinateTransformation.CurrentD, &CoordinateTransformation.CurrentQ, Encoder.ElectricalAngle_degree + MotorStaticParameter.PowerAngleCompensation_degree);
 									
-									CurrentControlLoop(CurrentLoop.ExpectedCurrentD, CurrentLoop.ExpectedCurrentQ, CoordinateTransformation.CurrentD, CoordinateTransformation.CurrentQ, &CurrentLoop.ControlCurrentD, &CurrentLoop.ControlCurrentQ);
+									CalculateElectromagneticTorque(CoordinateTransformation.CurrentQ, &MotorDynamicParameter.ElectromagneticTorque);
 									
-									CurrentVoltageTransform(CurrentLoop.ControlCurrentQ, &CoordinateTransformation.VoltageD, &CoordinateTransformation.VoltageQ, Encoder.AverageElectricalAngularSpeed_rad);
+//									CurrentControlLoop(CurrentLoop.ExpectedCurrentD, CurrentLoop.ExpectedCurrentQ, CoordinateTransformation.CurrentD, CoordinateTransformation.CurrentQ, &CurrentLoop.ControlCurrentD, &CurrentLoop.ControlCurrentQ);
 									
-									InverseParkTransform_TwoPhase(CoordinateTransformation.VoltageD, CoordinateTransformation.VoltageQ, &CoordinateTransformation.VoltageAlpha, &CoordinateTransformation.VoltageBeta, Encoder.ElectricalAngle_degree + MotorStaticParameter.PowerAngleCompensation_degree);
+									CurrentVoltageTransform(CurrentLoop.ExpectedCurrentD, &CurrentLoop.ControlVoltageD, &CurrentLoop.ControlVoltageQ, Encoder.AverageElectricalAngularSpeed_rad);
+									
+									InverseParkTransform_TwoPhase(CurrentLoop.ControlVoltageD, CurrentLoop.ControlVoltageQ, &CoordinateTransformation.VoltageAlpha, &CoordinateTransformation.VoltageBeta, Encoder.ElectricalAngle_degree + MotorStaticParameter.PowerAngleCompensation_degree);
 									
 									SpaceVectorPulseWidthModulation(CoordinateTransformation.VoltageAlpha, CoordinateTransformation.VoltageBeta);
 									
-									DMAPRINTF("%d\t",(int)(CurrentLoop.ControlCurrentQ * 1000));
+									CalculateVoltage_dq(CoordinateTransformation.CurrentQ, &CoordinateTransformation.VoltageD, &CoordinateTransformation.VoltageQ, Encoder.AverageElectricalAngularSpeed_rad);
+									
 									DMAPRINTF("%d\t",(int)(CoordinateTransformation.CurrentQ * 1000));
+									DMAPRINTF("%d\t",(int)(CurrentLoop.ControlVoltageQ * 1000));
+									DMAPRINTF("%d\t",(int)(CoordinateTransformation.VoltageD * 1000));
 									DMAPRINTF("%d\t",(int)(CoordinateTransformation.VoltageQ * 1000));
-									DMAPRINTF("%d\r\n",(int)(Encoder.AverageMechanicalAngularSpeed_degree));
+									DMAPRINTF("%d\r\n",(int)(MotorDynamicParameter.ElectromagneticTorque * 1000));
 									
 									break;
 		case SpeedControlMode :

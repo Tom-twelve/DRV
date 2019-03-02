@@ -47,16 +47,6 @@ uint32_t ADC_CurrentConvertedValue_PhaseC = 0;
 
 extern struct MotorDynamicParameter_t MotorDynamicParameter;
 
-struct CurrentSampling_t
-{
-	uint32_t ADC_CurrentConvertedValue_PhaseA;
-	uint32_t ADC_CurrentConvertedValue_PhaseB;
-	uint32_t ADC_CurrentConvertedValue_PhaseC;
-	float CurrentZeroDrift_PhaseA;
-	float CurrentZeroDrift_PhaseB;
-	float CurrentZeroDrift_PhaseC;
-}CurrentSampling;
-
 /* USER CODE END 0 */
 
 ADC_HandleTypeDef hadc1;
@@ -389,10 +379,6 @@ void ADC_Enable(void)
 	__HAL_DMA_DISABLE_IT(hadc3.DMA_Handle,DMA_IT_TC|DMA_IT_HT);
 }
 
-float temp = 0, tempAverage = 0;;
-extern int temp1;
-extern int temp2;
-
 void GetPhaseCurrent(void)
 {
 	#if PhaseSequence == PositivePhase
@@ -407,15 +393,22 @@ void GetPhaseCurrent(void)
 	#error "Phase Sequence Invalid"
 	#endif
 	
-	MotorDynamicParameter.CurrentPhaseA = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseA / 4096.f) / CurrentAmplifierGain) / CurrentSamplingResistance;
-	MotorDynamicParameter.CurrentPhaseB = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseB / 4096.f) / CurrentAmplifierGain) / CurrentSamplingResistance;
-	MotorDynamicParameter.CurrentPhaseC = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseC / 4096.f) / CurrentAmplifierGain) / CurrentSamplingResistance;
-	
-	temp = MotorDynamicParameter.CurrentPhaseA + MotorDynamicParameter.CurrentPhaseB + MotorDynamicParameter.CurrentPhaseC;
-	
-//	DMAPRINTF("%d\r\n",(int)(1000 * temp));
-//	DMAPRINTF("%d\t",(int)(MotorDynamicParameter.CurrentPhaseA * 1000));
-	
+	#if CurrentSensor == Resistance_1mOhm
+	MotorDynamicParameter.CurrentPhaseA = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseA / 4096.f) / CurrentAmplifierGain) / 0.001f;
+	MotorDynamicParameter.CurrentPhaseB = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseB / 4096.f) / CurrentAmplifierGain) / 0.001f;
+	MotorDynamicParameter.CurrentPhaseC = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseC / 4096.f) / CurrentAmplifierGain) / 0.001f;
+	#elif CurrentSensor == Resistance_2mOhm
+	MotorDynamicParameter.CurrentPhaseA = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseA / 4096.f) / CurrentAmplifierGain) / 0.002f;
+	MotorDynamicParameter.CurrentPhaseB = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseB / 4096.f) / CurrentAmplifierGain) / 0.002f;
+	MotorDynamicParameter.CurrentPhaseC = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseC / 4096.f) / CurrentAmplifierGain) / 0.002f;
+	#elif CurrentSensor == HallSensor_ACS781_150A
+	MotorDynamicParameter.CurrentPhaseA = (3.3f * (float)ADC_CurrentConvertedValue_PhaseA / 4096.f - 1.65f) / HallSensor_ACS781_150A_Gain;
+	MotorDynamicParameter.CurrentPhaseB = (3.3f * (float)ADC_CurrentConvertedValue_PhaseB / 4096.f - 1.65f) / HallSensor_ACS781_150A_Gain;
+	MotorDynamicParameter.CurrentPhaseC = (3.3f * (float)ADC_CurrentConvertedValue_PhaseC / 4096.f - 1.65f) / HallSensor_ACS781_150A_Gain;
+	#else
+	#error "Current Sampling Mode Invalid"
+	#endif
+
 }
 
 /* USER CODE END 1 */

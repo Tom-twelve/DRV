@@ -1,9 +1,9 @@
 /**
  ******************************************************************************
- * @file		tle5012.h
+ * @file		Encoder.h
  * @author		WrathWings
  * @version 	V1.0
- * @date		2018.1.17
+ * @date		2019.1.17
  * @brief		The header file of tle5012.c
  ******************************************************************************
  * @attention
@@ -43,10 +43,9 @@
 #define TLE5012_Command_ReadCurrentValue_AngleValue		0x8021	
 #define TLE5012_Command_ReadUpdatedValue_AngleValue		0x8421	
 
-#define TLE5012_Command_ReadCurrentValue_AngleSpeed 	0x8031	
-#define TLE5012_Command_ReadUpdatedValue_AngleSpeed		0x8431	
+#define TLE5012_Command_ReadCurrentValue_AngularSpeed 	0x8031	
+#define TLE5012_Command_ReadUpdatedValue_AngularSpeed		0x8431	
 
-#define TimeOut		200
 /* USER CODE END PD */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -54,14 +53,20 @@
 struct Encoder_t
 {
 	uint16_t MechanicalAngle_15bit;
-	int16_t MechanicalAngleSpeed_Encoder_15bit;
-	float MechanicalAngleSpeed_Encoder;
-	float MechanicalAngle;
-	float MechanicalAngleSpeed;
-	float AverageMechanicalAngleSpeed;
-	float ElectricalAngle;
-	float ElectricalAngleSpeed;
-	float AverageElectricalAngleSpeed;
+	int16_t MechanicalAngularSpeed_Encoder_15bit;
+	float MechanicalAngularSpeed_Encoder;
+	float MechanicalAngle_degree;
+	float MechanicalAngle_rad;
+	float MechanicalAngularSpeed_degree;
+	float MechanicalAngularSpeed_rad;
+	float AverageMechanicalAngularSpeed_degree;
+	float AverageMechanicalAngularSpeed_rad;
+	float ElectricalAngle_degree;
+	float ElectricalAngle_rad;
+	float ElectricalAngularSpeed_degree;
+	float ElectricalAngularSpeed_rad;
+	float AverageElectricalAngularSpeed_degree;
+	float AverageElectricalAngularSpeed_rad;
 };
 
 /* USER CODE END PTD */
@@ -69,14 +74,18 @@ struct Encoder_t
 /* USER CODE BEGIN PFP */
 void GetPositionImformation(void);
 void GetMechanicalAngle_15bit(void);
-void GetMechanicalAngle(void);
-void GetMechanicalAngleSpeed(void);
-void CalculateElectricalAngle(void);
-void GetElectricalAngleSpeed(void);
-void GetAverageElectricalAngleSpeed(void);
-void GetAverageMechanicalAngleSpeed(void);
-void GetMechanicalAngleSpeed_Encoder_15bit(void);
-void GetMechanicalAngleSpeed_Encoder(void);
+void GetMechanicalAngle_degree(void);
+void GetMechanicalAngle_rad(void);
+void GetMechanicalAngularSpeed_degree(void);
+void GetMechanicalAngularSpeed_rad(void);
+void GetAverageMechanicalAngularSpeed_degree(void);
+void GetAverageMechanicalAngularSpeed_rad(void);
+void CalculateElectricalAngle_degree(void);
+void CalculateElectricalAngle_rad(void);
+void GetElectricalAngularSpeed_degree(void);
+void GetElectricalAngularSpeed_rad(void);
+void GetAverageElectricalAngularSpeed_degree(void);
+void GetAverageElectricalAngularSpeed_rad(void);
 uint16_t TLE5012_ReadRegister(uint16_t command);
 
 /* USER CODE END PFP */

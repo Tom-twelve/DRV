@@ -48,7 +48,7 @@
 
 /* USER CODE BEGIN Includes */
 #include "foc.h"
-#include "tle5012.h"
+#include "Encoder.h"
 #include "MotorConfig.h"
 /* USER CODE END Includes */
 

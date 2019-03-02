@@ -21,7 +21,7 @@
 #include "tim.h"
 #include "math.h"
 #include "arm_math.h"
-#include "tle5012.h"
+#include "Encoder.h"
 #include "control.h"
 #include "usart.h"
 #include "util.h"

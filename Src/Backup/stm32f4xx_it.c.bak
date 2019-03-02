@@ -255,23 +255,6 @@ void USART1_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles TIM8 update interrupt and TIM13 global interrupt.
-  */
-void TIM8_UP_TIM13_IRQHandler(void)
-{
-  /* USER CODE BEGIN TIM8_UP_TIM13_IRQn 0 */
-	if(LL_TIM_IsActiveFlag_UPDATE(TIM8))
-	{
-		LL_TIM_ClearFlag_UPDATE(TIM8);
-	}
-  /* USER CODE END TIM8_UP_TIM13_IRQn 0 */
-  
-  /* USER CODE BEGIN TIM8_UP_TIM13_IRQn 1 */
-
-  /* USER CODE END TIM8_UP_TIM13_IRQn 1 */
-}
-
-/**
   * @brief This function handles DMA2 stream7 global interrupt.
   */
 void DMA2_Stream7_IRQHandler(void)
@@ -286,93 +269,65 @@ void DMA2_Stream7_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
-int temp1 = 0,temp2 = 0;
 void ADC_IRQHandler(void)
 {
-	temp1 = TIM8->CNT;
-	__HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_JEOC);
-	__HAL_ADC_CLEAR_FLAG(&hadc2, ADC_FLAG_JEOC);
-	__HAL_ADC_CLEAR_FLAG(&hadc3, ADC_FLAG_JEOC);
-	
 	GetPhaseCurrent();
 	
 	GetPositionImformation();
 	
 	switch(MotorStaticParameter.ControlMode)
 	{
-		case VoltageSpeedControlMode :	SpeedControlLoop(SpeedLoop.ExpectedMechanicalAngleSpeed, Encoder.AverageMechanicalAngleSpeed, &CurrentLoop.ExpectedCurrentQ);
+		case VoltageControlMode :	InverseParkTransform_TwoPhase(0.f, 10.f, &CoordinateTransformation.VoltageAlpha, &CoordinateTransformation.VoltageBeta, Encoder.ElectricalAngle_degree+14.0f);
 									
-										CoordinateTransformation.VoltageD = CurrentLoop.ExpectedCurrentD;
-			
-										CoordinateTransformation.VoltageQ = CurrentLoop.ExpectedCurrentQ;
-										
-										PowerAngleCompensation(Encoder.ElectricalAngle, &MotorStaticParameter.PowerAngleCompensation);
-		
-										InverseParkTransform_TwoPhase(CoordinateTransformation.VoltageD, CoordinateTransformation.VoltageQ, &CoordinateTransformation.VoltageAlpha, &CoordinateTransformation.VoltageBeta, Encoder.ElectricalAngle + MotorStaticParameter.PowerAngleCompensation);
-																		
-										SpaceVectorPulseWidthModulation(CoordinateTransformation.VoltageAlpha, CoordinateTransformation.VoltageBeta);
-
-										break;
-		
-		case CurrentControlMode : 	ClarkTransform(MotorDynamicParameter.CurrentPhaseA, MotorDynamicParameter.CurrentPhaseB, MotorDynamicParameter.CurrentPhaseC, &CoordinateTransformation.CurrentAlpha, &CoordinateTransformation.CurrentBeta);
-		
-									PowerAngleCompensation(Encoder.ElectricalAngle, &MotorStaticParameter.PowerAngleCompensation);
-		
-									ParkTransform_TwoPhase(CoordinateTransformation.CurrentAlpha, CoordinateTransformation.CurrentBeta, &CoordinateTransformation.CurrentD, &CoordinateTransformation.CurrentQ, Encoder.ElectricalAngle + MotorStaticParameter.PowerAngleCompensation);
-									
-									CurrentControlLoop(CurrentLoop.ExpectedCurrentD, CurrentLoop.ExpectedCurrentQ, CoordinateTransformation.CurrentD, CoordinateTransformation.CurrentQ, &CoordinateTransformation.VoltageD, &CoordinateTransformation.VoltageQ);
-									
-									InverseParkTransform_TwoPhase(CoordinateTransformation.VoltageD, CoordinateTransformation.VoltageQ, &CoordinateTransformation.VoltageAlpha, &CoordinateTransformation.VoltageBeta, Encoder.ElectricalAngle + MotorStaticParameter.PowerAngleCompensation);
-		
 									SpaceVectorPulseWidthModulation(CoordinateTransformation.VoltageAlpha, CoordinateTransformation.VoltageBeta);
-			
-//									DMAPRINTF("%d\t",(int)(CoordinateTransformation.CurrentD * 1000));
-//									
-//									DMAPRINTF("%d\r\n",(int)(CoordinateTransformation.CurrentQ * 1000));
-									temp2 = TIM8->CNT;
-										
-									DMAPRINTF("%d\r\n",(int)(temp2));
-								
-									break;
-		case SpeedControlMode : ClarkTransform(MotorDynamicParameter.CurrentPhaseA, MotorDynamicParameter.CurrentPhaseB, MotorDynamicParameter.CurrentPhaseC, &CoordinateTransformation.CurrentAlpha, &CoordinateTransformation.CurrentBeta);
-	
-								PowerAngleCompensation(Encoder.ElectricalAngle, &MotorStaticParameter.PowerAngleCompensation);
 		
-								ParkTransform_TwoPhase(CoordinateTransformation.CurrentAlpha, CoordinateTransformation.CurrentBeta, &CoordinateTransformation.CurrentD, &CoordinateTransformation.CurrentQ, Encoder.ElectricalAngle + MotorStaticParameter.PowerAngleCompensation);
-	
-								SpeedControlLoop((SpeedLoop.ExpectedMechanicalAngleSpeed), Encoder.AverageMechanicalAngleSpeed, &CurrentLoop.ExpectedCurrentQ);
-								
-								CurrentControlLoop(CurrentLoop.ExpectedCurrentD, CurrentLoop.ExpectedCurrentQ, CoordinateTransformation.CurrentD, CoordinateTransformation.CurrentQ, &CoordinateTransformation.VoltageD, &CoordinateTransformation.VoltageQ);
-								
-								InverseParkTransform_TwoPhase(CoordinateTransformation.VoltageD, CoordinateTransformation.VoltageQ, &CoordinateTransformation.VoltageAlpha, &CoordinateTransformation.VoltageBeta, Encoder.ElectricalAngle + MotorStaticParameter.PowerAngleCompensation);
-								
-								SpaceVectorPulseWidthModulation(CoordinateTransformation.VoltageAlpha, CoordinateTransformation.VoltageBeta);
-								
-//								DMAPRINTF("%d\t",(int)(Encoder.MechanicalAngle));
-//								
-//								DMAPRINTF("%d\r\n",(int)(Encoder.AverageMechanicalAngleSpeed / 360.f));
+									/*≤‚ ‘”√*/
+									ParkTransform(MotorDynamicParameter.CurrentPhaseA, MotorDynamicParameter.CurrentPhaseB, MotorDynamicParameter.CurrentPhaseC, &CoordinateTransformation.CurrentD, &CoordinateTransformation.CurrentQ, Encoder.ElectricalAngle_degree);
+									
+									CalculateVoltage_dq(CoordinateTransformation.CurrentQ, &CoordinateTransformation.VoltageD, &CoordinateTransformation.VoltageQ, Encoder.AverageElectricalAngularSpeed_rad);
+			
+									CalculateElectromagneticTorque(CoordinateTransformation.CurrentQ, &MotorDynamicParameter.ElectromagneticTorque);
+									
+//									DRV8323_ReadFaultStatusRegister();
+		
+//									DMAPRINTF("%d\r\n",(int)(CoordinateTransformation.CurrentQ * 1000));
 
-								DMAPRINTF("%d\t",(int)(CoordinateTransformation.CurrentD * 1000));
-								
-								DMAPRINTF("%d\r\n",(int)(CoordinateTransformation.CurrentQ * 1000));
+									break;
+
+		case CurrentControlMode : 	PowerAngleCompensation(CurrentLoop.ExpectedCurrentQ, &MotorStaticParameter.PowerAngleCompensation_degree, &MotorStaticParameter.PowerAngleCompensation_rad);
+
+									ParkTransform(MotorDynamicParameter.CurrentPhaseA, MotorDynamicParameter.CurrentPhaseB, MotorDynamicParameter.CurrentPhaseC, &CoordinateTransformation.CurrentD, &CoordinateTransformation.CurrentQ, Encoder.ElectricalAngle_degree + MotorStaticParameter.PowerAngleCompensation_degree);
+									
+									CalculateElectromagneticTorque(CoordinateTransformation.CurrentQ, &MotorDynamicParameter.ElectromagneticTorque);
+									
+//									CurrentControlLoop(CurrentLoop.ExpectedCurrentD, CurrentLoop.ExpectedCurrentQ, CoordinateTransformation.CurrentD, CoordinateTransformation.CurrentQ, &CurrentLoop.ControlCurrentD, &CurrentLoop.ControlCurrentQ);
+									
+									CurrentVoltageTransform(CurrentLoop.ExpectedCurrentD, &CurrentLoop.ControlVoltageD, &CurrentLoop.ControlVoltageQ, Encoder.AverageElectricalAngularSpeed_rad);
+									
+									InverseParkTransform_TwoPhase(CurrentLoop.ControlVoltageD, CurrentLoop.ControlVoltageQ, &CoordinateTransformation.VoltageAlpha, &CoordinateTransformation.VoltageBeta, Encoder.ElectricalAngle_degree + MotorStaticParameter.PowerAngleCompensation_degree);
+									
+									SpaceVectorPulseWidthModulation(CoordinateTransformation.VoltageAlpha, CoordinateTransformation.VoltageBeta);
+									
+									CalculateVoltage_dq(CoordinateTransformation.CurrentQ, &CoordinateTransformation.VoltageD, &CoordinateTransformation.VoltageQ, Encoder.AverageElectricalAngularSpeed_rad);
+									
+									DMAPRINTF("%d\t",(int)(CoordinateTransformation.CurrentQ * 1000));
+									DMAPRINTF("%d\t",(int)(CurrentLoop.ControlVoltageQ * 1000));
+									DMAPRINTF("%d\t",(int)(CoordinateTransformation.VoltageD * 1000));
+									DMAPRINTF("%d\t",(int)(CoordinateTransformation.VoltageQ * 1000));
+									DMAPRINTF("%d\r\n",(int)(MotorDynamicParameter.ElectromagneticTorque * 1000));
+									
+									break;
+		case SpeedControlMode :
 								
 								break;
-		case PositionControlMode :	ClarkTransform(MotorDynamicParameter.CurrentPhaseA, MotorDynamicParameter.CurrentPhaseB, MotorDynamicParameter.CurrentPhaseC, &CoordinateTransformation.CurrentAlpha, &CoordinateTransformation.CurrentBeta);
-		
-									ParkTransform_TwoPhase(CoordinateTransformation.CurrentAlpha, CoordinateTransformation.CurrentBeta, &CoordinateTransformation.CurrentD, &CoordinateTransformation.CurrentQ, Encoder.ElectricalAngle + MotorStaticParameter.PowerAngleCompensation);
-									
-									PositionControlLoop(PositionLoop.ExpectedMechanicalAngle, Encoder.AverageMechanicalAngleSpeed, &CurrentLoop.ExpectedCurrentQ);
-																	
-									CurrentControlLoop(CurrentLoop.ExpectedCurrentD, CurrentLoop.ExpectedCurrentQ, CoordinateTransformation.CurrentD, CoordinateTransformation.CurrentQ, &CoordinateTransformation.VoltageD, &CoordinateTransformation.VoltageQ);
-									
-									PowerAngleCompensation(Encoder.ElectricalAngle, &MotorStaticParameter.PowerAngleCompensation);
-
-									InverseParkTransform_TwoPhase(CoordinateTransformation.VoltageD, CoordinateTransformation.VoltageQ, &CoordinateTransformation.VoltageAlpha, &CoordinateTransformation.VoltageBeta, Encoder.ElectricalAngle + MotorStaticParameter.PowerAngleCompensation);
-																	
-									SpaceVectorPulseWidthModulation(CoordinateTransformation.VoltageAlpha, CoordinateTransformation.VoltageBeta);
+		case PositionControlMode :	
 
 									break;
 	}
+	
+	__HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_JEOC);
+	__HAL_ADC_CLEAR_FLAG(&hadc2, ADC_FLAG_JEOC);
+	__HAL_ADC_CLEAR_FLAG(&hadc3, ADC_FLAG_JEOC);
 }
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

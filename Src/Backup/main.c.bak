@@ -52,8 +52,8 @@
 /* USER CODE BEGIN Includes */
 #include "foc.h"
 #include "control.h"
-#include "drv8323.h"
-#include "tle5012.h"
+#include "GateDriver.h"
+#include "Encoder.h"
 #include "MotorConfig.h"
 
 /* USER CODE END Includes */
@@ -76,6 +76,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+extern uint16_t DRV8323_SPI3_RxDataTemp;
 extern struct  CurrentLoop_t CurrentLoop;
 extern struct  MotorStaticParameter_t MotorStaticParameter;
 extern struct  CoordinateTransformation_t CoordinateTransformation;
@@ -127,23 +128,33 @@ int main(void)
   MX_SPI1_Init();
   MX_SPI3_Init();
   MX_CAN1_Init();
-  MX_TIM2_Init();
   MX_USART1_UART_Init();
   MX_ADC1_Init();
   MX_ADC2_Init();
   MX_ADC3_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
+  
+	/*延时以等待母线电压平稳*/
 	LL_mDelay(500);
 	
+	/*使能SPI*/
 	SPI_Enable();
 	
+	/*使能UART*/
 	UART_Enable();
 	
-	DRV8323_GateDriverConfig();
-	
+	/*使能定时器*/
 	TIM_Enable();
 	
-	MotorEnable();	//使能PWM, 设定PI参数
+	/*初始化栅极驱动器*/
+	GateDriverConfig();
+
+	/*启用相对式*/
+//	EncoderIncrementalModeEnable();
+	
+	/*使能PWM, 设定参数*/
+	MotorEnable();
 	
 	switch(MotorStaticParameter.MotorMode)
 	{
@@ -151,7 +162,7 @@ int main(void)
 		
 						break;
 		
-		case TestMode : MeasureElectricalAngle(0.75f);	//测定电角度, 设定d轴电压
+		case TestMode : MeasureElectricalAngle(1.f);	//测定电角度, 设定d轴电压
 		
 						break;
 	}
@@ -166,6 +177,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  
   }
   /* USER CODE END 3 */
 }

@@ -70,32 +70,32 @@ void MX_GPIO_Init(void)
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOD);
 
   /**/
-  LL_GPIO_ResetOutputPin(DRV8323_CAL_GPIO_Port, DRV8323_CAL_Pin);
+  LL_GPIO_ResetOutputPin(GateDriver_CAL_GPIO_Port, GateDriver_CAL_Pin);
 
   /**/
-  LL_GPIO_ResetOutputPin(DRV8323_Enable_GPIO_Port, DRV8323_Enable_Pin);
+  LL_GPIO_ResetOutputPin(GateDriver_Enable_GPIO_Port, GateDriver_Enable_Pin);
 
   /**/
-  LL_GPIO_SetOutputPin(DRV8323_SPI3_NSS_GPIO_Port, DRV8323_SPI3_NSS_Pin);
+  LL_GPIO_SetOutputPin(GateDriver_SPI3_NSS_GPIO_Port, GateDriver_SPI3_NSS_Pin);
 
   /**/
   LL_GPIO_SetOutputPin(Encoder_SPI1_NSS_GPIO_Port, Encoder_SPI1_NSS_Pin);
 
   /**/
-  GPIO_InitStruct.Pin = DRV8323_CAL_Pin;
+  GPIO_InitStruct.Pin = GateDriver_CAL_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
   GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_DOWN;
-  LL_GPIO_Init(DRV8323_CAL_GPIO_Port, &GPIO_InitStruct);
+  LL_GPIO_Init(GateDriver_CAL_GPIO_Port, &GPIO_InitStruct);
 
   /**/
-  GPIO_InitStruct.Pin = DRV8323_SPI3_NSS_Pin;
+  GPIO_InitStruct.Pin = GateDriver_SPI3_NSS_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
   GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
-  LL_GPIO_Init(DRV8323_SPI3_NSS_GPIO_Port, &GPIO_InitStruct);
+  LL_GPIO_Init(GateDriver_SPI3_NSS_GPIO_Port, &GPIO_InitStruct);
 
   /**/
   GPIO_InitStruct.Pin = Encoder_SPI1_NSS_Pin;
@@ -106,18 +106,18 @@ void MX_GPIO_Init(void)
   LL_GPIO_Init(Encoder_SPI1_NSS_GPIO_Port, &GPIO_InitStruct);
 
   /**/
-  GPIO_InitStruct.Pin = DRV8323_Enable_Pin;
+  GPIO_InitStruct.Pin = GateDriver_Enable_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
   GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_DOWN;
-  LL_GPIO_Init(DRV8323_Enable_GPIO_Port, &GPIO_InitStruct);
+  LL_GPIO_Init(GateDriver_Enable_GPIO_Port, &GPIO_InitStruct);
 
   /**/
-  GPIO_InitStruct.Pin = DRV8323_nFault_Pin;
+  GPIO_InitStruct.Pin = GateDriver_nFault_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
-  LL_GPIO_Init(DRV8323_nFault_GPIO_Port, &GPIO_InitStruct);
+  LL_GPIO_Init(GateDriver_nFault_GPIO_Port, &GPIO_InitStruct);
 
 }
 

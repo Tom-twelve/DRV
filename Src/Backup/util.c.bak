@@ -161,3 +161,25 @@ float UtilPID_Control(arm_pid_instance_f32 *S, float err)
 	// 计算控制量增量
   return S->A0 * S->state[0] + S->A1 * S->state[1] + S->A2 * S->state[2];
 }
+
+/**
+ * @brief  Arcsine
+ */
+float arcsine(float value)
+{
+	float angle_rad = 0;
+	
+	//利用四阶泰勒级数计算反正弦函数值, 保证速度, 精度只能保证小数点后三位的准确性, 并且value应在(-0.5 ~ 0.5)之间, 超出此范围将不能保证精度
+	angle_rad = value+value*value*value/6+3*value*value*value*value*value/40+5*value*value*value*value*value*value*value/112;	
+	
+	return angle_rad;
+}
+
+float sqrt_DSP(float inputValue)
+{
+	float outputValue = 0;
+	
+	arm_sqrt_f32(inputValue, &outputValue);
+	
+	return outputValue;
+}

@@ -5,7 +5,7 @@
  * @file		AngleTable.c
  * @author		WrathWings
  * @version 	V1.0
- * @date		2018.1.17
+ * @date		2019.1.17
  * @brief		Angle table of motors
  ******************************************************************************
  * @attention

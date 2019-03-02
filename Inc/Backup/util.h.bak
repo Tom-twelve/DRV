@@ -5,7 +5,8 @@
 #include <stdbool.h>
 #include "arm_math.h"
 
-#define M_PI		3.14159265358979323846
+#define M_PI			(3.14159265358979323846)
+#define	SQRT3			(1.73205080757f)
 #define ONE_BY_SQRT3    (0.57735026919f)
 #define TWO_BY_SQRT3    (2.0f * 0.57735026919f)
 #define SQRT3_BY_2      (0.86602540378f)
@@ -33,4 +34,6 @@ uint32_t UtilBiSearchInt(const int sortedIntArr[], int find, uint32_t maxN);
 
 float UtilPI_Control(arm_pid_instance_f32 *S, float err);
 float UtilPID_Control(arm_pid_instance_f32 *S, float err);
+float arcsine(float value);
+float sqrt_DSP(float inputValue);
 #endif

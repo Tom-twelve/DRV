@@ -3,7 +3,7 @@
  * @file		control.c
  * @author		WrathWings
  * @version 	V1.0
- * @date		2018.1.17
+ * @date		2019.1.17
  * @brief		Algorithm of control
  ******************************************************************************
  * @attention
@@ -45,7 +45,7 @@ void MotorEnable(void)
 	PWM_IT_CMD(ENABLE,ENABLE);
 	
 	/*设定控制模式*/
-	MotorStaticParameter.ControlMode = CurrentControlMode;
+	MotorStaticParameter.ControlMode = VoltageControlMode;
 	
 	/*采用Id = 0控制, 故设定d轴电流为零*/
 	CurrentLoop.ExpectedCurrentD = 0.f;

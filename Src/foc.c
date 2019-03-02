@@ -3,7 +3,7 @@
  * @file		svpwm.c
  * @author		WrathWings
  * @version 	V1.0
- * @date		2018.1.17
+ * @date		2019.1.17
  * @brief		Algorithm of Field Oriented Control
  ******************************************************************************
  * @attention
@@ -279,7 +279,7 @@ void CurrentVoltageTransform(float controlCurrentQ, float *voltageD, float *volt
 {
 	/*将80%的最大不失真Uq用于提供转速, 20%的最大不失真Uq用于提供转矩*/
 	const float targetElectricalAngularSpeed_rad = 0.8f * MaximumDistortionlessVoltage / RotatorFluxLinkage;
-	const float voltageForTorque = 0.2f * MaximumDistortionlessVoltage;
+	const float maximumTorque = 0.2f * (MaximumDistortionlessVoltage / PhaseResistance) * 1.5f * MotorMagnetPairs * RotatorFluxLinkage;
 	const float Kp = 15.0f;
 	const float Ki = 15.0f;
 	static float integralError = 0;
@@ -287,12 +287,20 @@ void CurrentVoltageTransform(float controlCurrentQ, float *voltageD, float *volt
 	float controlElectricalAngularSpeed_rad = 0;
 	
 	/*控制转速*/
-	error = targetElectricalAngularSpeed_rad - actualElectricalAngularSpeed_rad;
-	
-	controlElectricalAngularSpeed_rad = Kp * error + Ki * integralError;
-	
-	integralError += error * CarrierPeriod_s;
-	
+	if(MotorDynamicParameter.ElectromagneticTorque <= 0.8f * maximumTorque)
+	{
+		error = targetElectricalAngularSpeed_rad - actualElectricalAngularSpeed_rad;
+			
+		controlElectricalAngularSpeed_rad = Kp * error + Ki * integralError;
+			
+		integralError += error * CarrierPeriod_s;
+		
+	}
+	else if(MotorDynamicParameter.ElectromagneticTorque > 0.8f * maximumTorque)
+	{
+		controlElectricalAngularSpeed_rad = actualElectricalAngularSpeed_rad;
+	}
+		
 	/*输出电压*/
 	*voltageD = -controlElectricalAngularSpeed_rad * InductanceQ * controlCurrentQ;
 	

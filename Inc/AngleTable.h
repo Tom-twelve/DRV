@@ -3,7 +3,7 @@
  * @file		AngleTable.h
  * @author		WrathWings
  * @version 	V1.0
- * @date		2018.1.17
+ * @date		2019.1.17
  * @brief		The header file of AngleTable.c
  ******************************************************************************
  * @attention

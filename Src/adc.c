@@ -47,16 +47,6 @@ uint32_t ADC_CurrentConvertedValue_PhaseC = 0;
 
 extern struct MotorDynamicParameter_t MotorDynamicParameter;
 
-struct CurrentSampling_t
-{
-	uint32_t ADC_CurrentConvertedValue_PhaseA;
-	uint32_t ADC_CurrentConvertedValue_PhaseB;
-	uint32_t ADC_CurrentConvertedValue_PhaseC;
-	float CurrentZeroDrift_PhaseA;
-	float CurrentZeroDrift_PhaseB;
-	float CurrentZeroDrift_PhaseC;
-}CurrentSampling;
-
 /* USER CODE END 0 */
 
 ADC_HandleTypeDef hadc1;
@@ -403,15 +393,15 @@ void GetPhaseCurrent(void)
 	#error "Phase Sequence Invalid"
 	#endif
 	
-	#if CurrentSamplingMode == Resistance_1mOhm
+	#if CurrentSensor == Resistance_1mOhm
 	MotorDynamicParameter.CurrentPhaseA = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseA / 4096.f) / CurrentAmplifierGain) / 0.001f;
 	MotorDynamicParameter.CurrentPhaseB = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseB / 4096.f) / CurrentAmplifierGain) / 0.001f;
 	MotorDynamicParameter.CurrentPhaseC = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseC / 4096.f) / CurrentAmplifierGain) / 0.001f;
-	#elif CurrentSamplingMode == Resistance_2mOhm
+	#elif CurrentSensor == Resistance_2mOhm
 	MotorDynamicParameter.CurrentPhaseA = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseA / 4096.f) / CurrentAmplifierGain) / 0.002f;
 	MotorDynamicParameter.CurrentPhaseB = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseB / 4096.f) / CurrentAmplifierGain) / 0.002f;
 	MotorDynamicParameter.CurrentPhaseC = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseC / 4096.f) / CurrentAmplifierGain) / 0.002f;
-	#elif CurrentSamplingMode == HallSensor_ACS781_150A
+	#elif CurrentSensor == HallSensor_ACS781_150A
 	MotorDynamicParameter.CurrentPhaseA = (3.3f * (float)ADC_CurrentConvertedValue_PhaseA / 4096.f - 1.65f) / HallSensor_ACS781_150A_Gain;
 	MotorDynamicParameter.CurrentPhaseB = (3.3f * (float)ADC_CurrentConvertedValue_PhaseB / 4096.f - 1.65f) / HallSensor_ACS781_150A_Gain;
 	MotorDynamicParameter.CurrentPhaseC = (3.3f * (float)ADC_CurrentConvertedValue_PhaseC / 4096.f - 1.65f) / HallSensor_ACS781_150A_Gain;

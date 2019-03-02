@@ -90,26 +90,26 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define DRV8323_SOC_Pin LL_GPIO_PIN_1
-#define DRV8323_SOC_GPIO_Port GPIOC
-#define DRV8323_SOB_Pin LL_GPIO_PIN_2
-#define DRV8323_SOB_GPIO_Port GPIOC
-#define DRV8323_SOA_Pin LL_GPIO_PIN_3
-#define DRV8323_SOA_GPIO_Port GPIOC
+#define CurrentSamplingC_Pin LL_GPIO_PIN_1
+#define CurrentSamplingC_GPIO_Port GPIOC
+#define CurrentSamplingB_Pin LL_GPIO_PIN_2
+#define CurrentSamplingB_GPIO_Port GPIOC
+#define CurrentSamplingA_Pin LL_GPIO_PIN_3
+#define CurrentSamplingA_GPIO_Port GPIOC
+#define IncrementalInterfaceA_Pin LL_GPIO_PIN_0
+#define IncrementalInterfaceA_GPIO_Port GPIOA
 #define IncrementalInterfaceB_Pin LL_GPIO_PIN_1
 #define IncrementalInterfaceB_GPIO_Port GPIOA
-#define IncrementalInterfaceA_Pin LL_GPIO_PIN_2
-#define IncrementalInterfaceA_GPIO_Port GPIOA
-#define DRV8323_CAL_Pin LL_GPIO_PIN_8
-#define DRV8323_CAL_GPIO_Port GPIOA
-#define DRV8323_SPI3_NSS_Pin LL_GPIO_PIN_15
-#define DRV8323_SPI3_NSS_GPIO_Port GPIOA
-#define DRV8323_SPI3_SCK_Pin LL_GPIO_PIN_10
-#define DRV8323_SPI3_SCK_GPIO_Port GPIOC
-#define DRV8323_SPI3_MISO_Pin LL_GPIO_PIN_11
-#define DRV8323_SPI3_MISO_GPIO_Port GPIOC
-#define DRV8323_SPI3_MOSI_Pin LL_GPIO_PIN_12
-#define DRV8323_SPI3_MOSI_GPIO_Port GPIOC
+#define GateDriver_CAL_Pin LL_GPIO_PIN_8
+#define GateDriver_CAL_GPIO_Port GPIOA
+#define GateDriver_SPI3_NSS_Pin LL_GPIO_PIN_15
+#define GateDriver_SPI3_NSS_GPIO_Port GPIOA
+#define GateDriver_SPI3_SCK_Pin LL_GPIO_PIN_10
+#define GateDriver_SPI3_SCK_GPIO_Port GPIOC
+#define GateDriver_SPI3_MISO_Pin LL_GPIO_PIN_11
+#define GateDriver_SPI3_MISO_GPIO_Port GPIOC
+#define GateDriver_SPI3_MOSI_Pin LL_GPIO_PIN_12
+#define GateDriver_SPI3_MOSI_GPIO_Port GPIOC
 #define Encoder_SPI1_NSS_Pin LL_GPIO_PIN_2
 #define Encoder_SPI1_NSS_GPIO_Port GPIOD
 #define Encoder_SPI1_SCK_Pin LL_GPIO_PIN_3
@@ -118,10 +118,10 @@ void Error_Handler(void);
 #define Encoder_SPI1_MISO_GPIO_Port GPIOB
 #define Encoder_SPI1_MOSI_Pin LL_GPIO_PIN_5
 #define Encoder_SPI1_MOSI_GPIO_Port GPIOB
-#define DRV8323_Enable_Pin LL_GPIO_PIN_6
-#define DRV8323_Enable_GPIO_Port GPIOB
-#define DRV8323_nFault_Pin LL_GPIO_PIN_8
-#define DRV8323_nFault_GPIO_Port GPIOB
+#define GateDriver_Enable_Pin LL_GPIO_PIN_6
+#define GateDriver_Enable_GPIO_Port GPIOB
+#define GateDriver_nFault_Pin LL_GPIO_PIN_8
+#define GateDriver_nFault_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

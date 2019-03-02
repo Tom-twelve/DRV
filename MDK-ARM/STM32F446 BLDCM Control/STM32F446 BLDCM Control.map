@@ -9,9 +9,9 @@ Section Cross References
     startup_stm32f446xx.o(RESET) refers (Special) to heapauxi.o(.text) for __use_two_region_memory
     startup_stm32f446xx.o(RESET) refers to startup_stm32f446xx.o(STACK) for __initial_sp
     startup_stm32f446xx.o(RESET) refers to startup_stm32f446xx.o(.text) for Reset_Handler
-    startup_stm32f446xx.o(RESET) refers to lto-llvm-781a46.o(.text) for NMI_Handler
+    startup_stm32f446xx.o(RESET) refers to lto-llvm-d84a15.o(.text) for NMI_Handler
     startup_stm32f446xx.o(.text) refers (Special) to heapauxi.o(.text) for __use_two_region_memory
-    startup_stm32f446xx.o(.text) refers to lto-llvm-781a46.o(.text) for SystemInit
+    startup_stm32f446xx.o(.text) refers to lto-llvm-d84a15.o(.text) for SystemInit
     startup_stm32f446xx.o(.text) refers to __main.o(!!!main) for __main
     startup_stm32f446xx.o(.text) refers to startup_stm32f446xx.o(HEAP) for Heap_Mem
     startup_stm32f446xx.o(.text) refers to startup_stm32f446xx.o(STACK) for Stack_Mem
@@ -167,7 +167,7 @@ Section Cross References
     __rtentry2.o(.ARM.Collect$$rtentry$$00000008) refers to boardinit2.o(.text) for _platform_post_stackheap_init
     __rtentry2.o(.ARM.Collect$$rtentry$$0000000A) refers to libinit.o(.ARM.Collect$$libinit$$00000000) for __rt_lib_init
     __rtentry2.o(.ARM.Collect$$rtentry$$0000000B) refers to boardinit3.o(.text) for _platform_post_lib_init
-    __rtentry2.o(.ARM.Collect$$rtentry$$0000000D) refers to lto-llvm-781a46.o(.text) for main
+    __rtentry2.o(.ARM.Collect$$rtentry$$0000000D) refers to lto-llvm-d84a15.o(.text) for main
     __rtentry2.o(.ARM.Collect$$rtentry$$0000000D) refers to exit.o(.text) for exit
     __rtentry2.o(.ARM.exidx) refers to __rtentry2.o(.ARM.Collect$$rtentry$$00000001) for .ARM.Collect$$rtentry$$00000001
     __rtentry2.o(.ARM.exidx) refers to __rtentry2.o(.ARM.Collect$$rtentry$$00000008) for .ARM.Collect$$rtentry$$00000008
@@ -282,17 +282,17 @@ Section Cross References
     defsig_cppl_inner.o(.text) refers to defsig_general.o(.text) for __default_signal_display
     defsig_segv_inner.o(.text) refers to defsig_general.o(.text) for __default_signal_display
     defsig_other.o(.text) refers to defsig_general.o(.text) for __default_signal_display
-    lto-llvm-781a46.o(.text) refers to lto-llvm-781a46.o(.bss) for MotorStaticParameter.3
-    lto-llvm-781a46.o(.text) refers to lto-llvm-781a46.o(.data) for SystemCoreClock
-    lto-llvm-781a46.o(.text) refers to lludivv7m.o(.text) for __aeabi_uldivmod
-    lto-llvm-781a46.o(.text) refers to rt_memclr_w.o(.text) for __aeabi_memclr4
-    lto-llvm-781a46.o(.text) refers to lto-llvm-781a46.o(.rodata.cst8) for APBPrescTable
-    lto-llvm-781a46.o(.text) refers to lto-llvm-781a46.o(.rodata) for DRV8320_ReadCommandMessage
-    lto-llvm-781a46.o(.text) refers to lto-llvm-781a46.o(.rodata.str1.1) for .L.str
-    lto-llvm-781a46.o(.text) refers to _sprintf.o(.text) for _sprintf
-    lto-llvm-781a46.o(.text) refers to fmodf.o(i.__hardfp_fmodf) for __hardfp_fmodf
-    lto-llvm-781a46.o(.ARM.exidx) refers to lto-llvm-781a46.o(.text) for [Anonymous Symbol]
-    lto-llvm-781a46.o(.data) refers to lto-llvm-781a46.o(.bss) for [Anonymous Symbol]
+    lto-llvm-d84a15.o(.text) refers to lto-llvm-d84a15.o(.bss) for MotorStaticParameter.3
+    lto-llvm-d84a15.o(.text) refers to lto-llvm-d84a15.o(.data) for SystemCoreClock
+    lto-llvm-d84a15.o(.text) refers to lludivv7m.o(.text) for __aeabi_uldivmod
+    lto-llvm-d84a15.o(.text) refers to rt_memclr_w.o(.text) for __aeabi_memclr4
+    lto-llvm-d84a15.o(.text) refers to lto-llvm-d84a15.o(.rodata.cst8) for APBPrescTable
+    lto-llvm-d84a15.o(.text) refers to lto-llvm-d84a15.o(.rodata) for DRV8320_ReadCommandMessage
+    lto-llvm-d84a15.o(.text) refers to lto-llvm-d84a15.o(.rodata.str1.1) for .L.str
+    lto-llvm-d84a15.o(.text) refers to _sprintf.o(.text) for _sprintf
+    lto-llvm-d84a15.o(.text) refers to fmodf.o(i.__hardfp_fmodf) for __hardfp_fmodf
+    lto-llvm-d84a15.o(.ARM.exidx) refers to lto-llvm-d84a15.o(.text) for [Anonymous Symbol]
+    lto-llvm-d84a15.o(.data) refers to lto-llvm-d84a15.o(.bss) for [Anonymous Symbol]
     aeabi_ldiv0_sigfpe.o(.text) refers to rt_div0.o(.text) for __rt_div0
     rt_div0.o(.text) refers to defsig_fpe_outer.o(.text) for __rt_SIGFPE
     defsig_fpe_outer.o(.text) refers to defsig_fpe_inner.o(.text) for __rt_SIGFPE_inner
@@ -304,8 +304,8 @@ Section Cross References
 
 Removing Unused input sections from the image.
 
-    Removing lto-llvm-781a46.o(.ARM.exidx), (280 bytes).
-    Removing lto-llvm-781a46.o(.ARM.use_no_argv), (4 bytes).
+    Removing lto-llvm-d84a15.o(.ARM.exidx), (280 bytes).
+    Removing lto-llvm-d84a15.o(.ARM.use_no_argv), (4 bytes).
 
 2 unused section(s) (total 284 bytes) removed from the image.
 
@@ -451,7 +451,7 @@ Image Symbol Table
     ../mathlib/sqrtf.c                       0x00000000   Number         0  sqrtf.o ABSOLUTE
     ../mathlib/sqrtf.c                       0x00000000   Number         0  sqrtf_x.o ABSOLUTE
     dc.s                                     0x00000000   Number         0  dc.o ABSOLUTE
-    ld-temp.o                                0x00000000   Number         0  lto-llvm-781a46.o ABSOLUTE
+    ld-temp.o                                0x00000000   Number         0  lto-llvm-d84a15.o ABSOLUTE
     startup_stm32f446xx.s                    0x00000000   Number         0  startup_stm32f446xx.o ABSOLUTE
     RESET                                    0x08000000   Section      452  startup_stm32f446xx.o(RESET)
     !!!main                                  0x080001c4   Section        8  __main.o(!!!main)
@@ -560,39 +560,39 @@ Image Symbol Table
     .text                                    0x08000bd4   Section        0  sys_exit.o(.text)
     .text                                    0x08000be0   Section        2  use_no_semi.o(.text)
     .text                                    0x08000be2   Section        0  indicate_semi.o(.text)
-    [Anonymous Symbol]                       0x08000be4   Section        0  lto-llvm-781a46.o(.text)
-    AHBPrescTable                            0x08001e68   Number         0  lto-llvm-781a46.o(.text)
-    DMA_CalcBaseAndBitshift.flagBitshiftOffset 0x08002300   Number         0  lto-llvm-781a46.o(.text)
-    CANRespond                               0x08002309   Thumb Code   308  lto-llvm-781a46.o(.text)
-    SPI_Receive                              0x0800243d   Thumb Code   294  lto-llvm-781a46.o(.text)
-    SendBufWhenFull                          0x08002565   Thumb Code   182  lto-llvm-781a46.o(.text)
-    __arm_cp.16_21                           0x08003520   Number         4  lto-llvm-781a46.o(.text)
-    __arm_cp.16_22                           0x08003524   Number         4  lto-llvm-781a46.o(.text)
-    __arm_cp.16_29                           0x08003540   Number         4  lto-llvm-781a46.o(.text)
-    __arm_cp.16_30                           0x08003544   Number         4  lto-llvm-781a46.o(.text)
-    __arm_cp.16_34                           0x08003c68   Number         4  lto-llvm-781a46.o(.text)
-    __arm_cp.16_35                           0x08003c6c   Number         4  lto-llvm-781a46.o(.text)
-    __arm_cp.16_36                           0x08003c70   Number         4  lto-llvm-781a46.o(.text)
-    __arm_cp.16_37                           0x08003c74   Number         4  lto-llvm-781a46.o(.text)
-    __arm_cp.16_38                           0x08003c78   Number         4  lto-llvm-781a46.o(.text)
-    __arm_cp.16_39                           0x08003c7c   Number         4  lto-llvm-781a46.o(.text)
-    SpaceVectorPulseWidthModulation          0x08003f99   Thumb Code   552  lto-llvm-781a46.o(.text)
-    DRV8320_WriteAllRegister                 0x080041c1   Thumb Code   374  lto-llvm-781a46.o(.text)
-    GetPositionImformation                   0x08004339   Thumb Code   704  lto-llvm-781a46.o(.text)
-    LL_GPIO_Init                             0x080045f9   Thumb Code   298  lto-llvm-781a46.o(.text)
-    HAL_ADC_Init                             0x08004725   Thumb Code   598  lto-llvm-781a46.o(.text)
-    HAL_ADC_ConfigChannel                    0x0800497d   Thumb Code   306  lto-llvm-781a46.o(.text)
-    HAL_ADCEx_InjectedStart_IT               0x08004ab1   Thumb Code   228  lto-llvm-781a46.o(.text)
-    HAL_ADCEx_InjectedConfigChannel          0x08004b95   Thumb Code   346  lto-llvm-781a46.o(.text)
-    HAL_CAN_Init                             0x08004cf1   Thumb Code   498  lto-llvm-781a46.o(.text)
-    HAL_CAN_AddTxMessage                     0x08004ee5   Thumb Code   146  lto-llvm-781a46.o(.text)
-    HAL_SPI_Transmit                         0x08004f79   Thumb Code   532  lto-llvm-781a46.o(.text)
-    HAL_UART_Transmit_DMA                    0x0800518d   Thumb Code   258  lto-llvm-781a46.o(.text)
-    UART_DMATransmitCplt                     0x08005291   Thumb Code    38  lto-llvm-781a46.o(.text)
-    UART_DMATxHalfCplt                       0x080052b9   Thumb Code     2  lto-llvm-781a46.o(.text)
-    UART_DMAError                            0x080052bd   Thumb Code    82  lto-llvm-781a46.o(.text)
-    UART_DMAAbortOnError                     0x08005311   Thumb Code    10  lto-llvm-781a46.o(.text)
-    HAL_GPIO_Init                            0x0800531d   Thumb Code   422  lto-llvm-781a46.o(.text)
+    [Anonymous Symbol]                       0x08000be4   Section        0  lto-llvm-d84a15.o(.text)
+    AHBPrescTable                            0x08001e68   Number         0  lto-llvm-d84a15.o(.text)
+    DMA_CalcBaseAndBitshift.flagBitshiftOffset 0x08002300   Number         0  lto-llvm-d84a15.o(.text)
+    CANRespond                               0x08002309   Thumb Code   308  lto-llvm-d84a15.o(.text)
+    SPI_Receive                              0x0800243d   Thumb Code   294  lto-llvm-d84a15.o(.text)
+    SendBufWhenFull                          0x08002565   Thumb Code   182  lto-llvm-d84a15.o(.text)
+    __arm_cp.16_21                           0x08003520   Number         4  lto-llvm-d84a15.o(.text)
+    __arm_cp.16_22                           0x08003524   Number         4  lto-llvm-d84a15.o(.text)
+    __arm_cp.16_29                           0x08003540   Number         4  lto-llvm-d84a15.o(.text)
+    __arm_cp.16_30                           0x08003544   Number         4  lto-llvm-d84a15.o(.text)
+    __arm_cp.16_34                           0x08003c68   Number         4  lto-llvm-d84a15.o(.text)
+    __arm_cp.16_35                           0x08003c6c   Number         4  lto-llvm-d84a15.o(.text)
+    __arm_cp.16_36                           0x08003c70   Number         4  lto-llvm-d84a15.o(.text)
+    __arm_cp.16_37                           0x08003c74   Number         4  lto-llvm-d84a15.o(.text)
+    __arm_cp.16_38                           0x08003c78   Number         4  lto-llvm-d84a15.o(.text)
+    __arm_cp.16_39                           0x08003c7c   Number         4  lto-llvm-d84a15.o(.text)
+    SpaceVectorPulseWidthModulation          0x08003f99   Thumb Code   552  lto-llvm-d84a15.o(.text)
+    DRV8320_WriteAllRegister                 0x080041c1   Thumb Code   374  lto-llvm-d84a15.o(.text)
+    GetPositionImformation                   0x08004339   Thumb Code   704  lto-llvm-d84a15.o(.text)
+    LL_GPIO_Init                             0x080045f9   Thumb Code   298  lto-llvm-d84a15.o(.text)
+    HAL_ADC_Init                             0x08004725   Thumb Code   598  lto-llvm-d84a15.o(.text)
+    HAL_ADC_ConfigChannel                    0x0800497d   Thumb Code   306  lto-llvm-d84a15.o(.text)
+    HAL_ADCEx_InjectedStart_IT               0x08004ab1   Thumb Code   228  lto-llvm-d84a15.o(.text)
+    HAL_ADCEx_InjectedConfigChannel          0x08004b95   Thumb Code   346  lto-llvm-d84a15.o(.text)
+    HAL_CAN_Init                             0x08004cf1   Thumb Code   498  lto-llvm-d84a15.o(.text)
+    HAL_CAN_AddTxMessage                     0x08004ee5   Thumb Code   146  lto-llvm-d84a15.o(.text)
+    HAL_SPI_Transmit                         0x08004f79   Thumb Code   532  lto-llvm-d84a15.o(.text)
+    HAL_UART_Transmit_DMA                    0x0800518d   Thumb Code   258  lto-llvm-d84a15.o(.text)
+    UART_DMATransmitCplt                     0x08005291   Thumb Code    38  lto-llvm-d84a15.o(.text)
+    UART_DMATxHalfCplt                       0x080052b9   Thumb Code     2  lto-llvm-d84a15.o(.text)
+    UART_DMAError                            0x080052bd   Thumb Code    82  lto-llvm-d84a15.o(.text)
+    UART_DMAAbortOnError                     0x08005311   Thumb Code    10  lto-llvm-d84a15.o(.text)
+    HAL_GPIO_Init                            0x0800531d   Thumb Code   422  lto-llvm-d84a15.o(.text)
     .text                                    0x0800551a   Section      238  lludivv7m.o(.text)
     .text                                    0x08005608   Section       78  rt_memclr_w.o(.text)
     i.__hardfp_fmodf                         0x08005656   Section        0  fmodf.o(i.__hardfp_fmodf)
@@ -613,71 +613,71 @@ Image Symbol Table
     lc_hextab                                0x0800590c   Data          20  _printf_hex_int_ll_ptr.o(.constdata)
     .constdata                               0x08005920   Section       17  __printf_flags_ss_wp.o(.constdata)
     maptable                                 0x08005920   Data          17  __printf_flags_ss_wp.o(.constdata)
-    [Anonymous Symbol]                       0x08005934   Section        0  lto-llvm-781a46.o(.rodata)
-    ElectricalAngleRef                       0x08005934   Data         284  lto-llvm-781a46.o(.rodata)
-    MechanicalAngleRef                       0x08005a50   Data         568  lto-llvm-781a46.o(.rodata)
-    DRV8320_ReadCommandMessage               0x08005c88   Data          12  lto-llvm-781a46.o(.rodata)
-    DRV8320_WriteCommandMessage              0x08005c94   Data          10  lto-llvm-781a46.o(.rodata)
-    sinTable_f32                             0x08005ca0   Data        2052  lto-llvm-781a46.o(.rodata)
-    APBPrescTable                            0x080064a4   Data           8  lto-llvm-781a46.o(.rodata.cst8)
-    [Anonymous Symbol]                       0x080064ac   Section        0  lto-llvm-781a46.o(.rodata.str1.1)
-    .L.str.39                                0x080064ac   Data           4  lto-llvm-781a46.o(.rodata.str1.1)
-    .L.str                                   0x080064b0   Data          16  lto-llvm-781a46.o(.rodata.str1.1)
+    [Anonymous Symbol]                       0x08005934   Section        0  lto-llvm-d84a15.o(.rodata)
+    ElectricalAngleRef                       0x08005934   Data         284  lto-llvm-d84a15.o(.rodata)
+    MechanicalAngleRef                       0x08005a50   Data         568  lto-llvm-d84a15.o(.rodata)
+    DRV8320_ReadCommandMessage               0x08005c88   Data          12  lto-llvm-d84a15.o(.rodata)
+    DRV8320_WriteCommandMessage              0x08005c94   Data          10  lto-llvm-d84a15.o(.rodata)
+    sinTable_f32                             0x08005ca0   Data        2052  lto-llvm-d84a15.o(.rodata)
+    APBPrescTable                            0x080064a4   Data           8  lto-llvm-d84a15.o(.rodata.cst8)
+    [Anonymous Symbol]                       0x080064ac   Section        0  lto-llvm-d84a15.o(.rodata.str1.1)
+    .L.str.39                                0x080064ac   Data           4  lto-llvm-d84a15.o(.rodata.str1.1)
+    .L.str                                   0x080064b0   Data          16  lto-llvm-d84a15.o(.rodata.str1.1)
     locale$$data                             0x080064e0   Section      272  lc_ctype_c.o(locale$$data)
     __lcctype_c_name                         0x080064e4   Data           2  lc_ctype_c.o(locale$$data)
     __lcctype_c_start                        0x080064ec   Data           0  lc_ctype_c.o(locale$$data)
     __lcctype_c_end                          0x080065f0   Data           0  lc_ctype_c.o(locale$$data)
-    [Anonymous Symbol]                       0x20000000   Section        0  lto-llvm-781a46.o(.data)
-    pBuf                                     0x20000000   Data           4  lto-llvm-781a46.o(.data)
-    USART_BuffNow                            0x20000004   Data           4  lto-llvm-781a46.o(.data)
-    SystemCoreClock                          0x20000008   Data           4  lto-llvm-781a46.o(.data)
+    [Anonymous Symbol]                       0x20000000   Section        0  lto-llvm-d84a15.o(.data)
+    pBuf                                     0x20000000   Data           4  lto-llvm-d84a15.o(.data)
+    USART_BuffNow                            0x20000004   Data           4  lto-llvm-d84a15.o(.data)
+    SystemCoreClock                          0x20000008   Data           4  lto-llvm-d84a15.o(.data)
     .bss                                     0x20000010   Section       96  libspace.o(.bss)
-    [Anonymous Symbol]                       0x20000070   Section        0  lto-llvm-781a46.o(.bss)
-    hadc1                                    0x20000070   Data          72  lto-llvm-781a46.o(.bss)
-    hadc2                                    0x200000b8   Data          72  lto-llvm-781a46.o(.bss)
-    hadc3                                    0x20000100   Data          72  lto-llvm-781a46.o(.bss)
-    CAN_RecieveStatus                        0x20000148   Data           4  lto-llvm-781a46.o(.bss)
-    hcan1                                    0x2000014c   Data          56  lto-llvm-781a46.o(.bss)
-    receive                                  0x20000184   Data           8  lto-llvm-781a46.o(.bss)
-    HAL_CAN_ErrorCallback.errTimes           0x2000018c   Data           2  lto-llvm-781a46.o(.bss)
-    hspi3                                    0x20000190   Data          92  lto-llvm-781a46.o(.bss)
-    htim2                                    0x200001ec   Data          64  lto-llvm-781a46.o(.bss)
-    huart1                                   0x2000022c   Data          72  lto-llvm-781a46.o(.bss)
-    hdma_usart1_tx                           0x20000274   Data         100  lto-llvm-781a46.o(.bss)
-    USART_BUFF1                              0x200002d8   Data        2000  lto-llvm-781a46.o(.bss)
-    USART_BUFF2                              0x20000aa8   Data        2000  lto-llvm-781a46.o(.bss)
-    ADC_IRQHandler.__i_divSendTimes          0x20001278   Data           4  lto-llvm-781a46.o(.bss)
-    ADC_IRQHandler.__i_divSendTimes.1        0x2000127c   Data           4  lto-llvm-781a46.o(.bss)
-    ADC_IRQHandler.__i_divSendTimes.2        0x20001280   Data           4  lto-llvm-781a46.o(.bss)
-    ADC_IRQHandler.__i_divSendTimes.3        0x20001284   Data           4  lto-llvm-781a46.o(.bss)
-    ADC_IRQHandler.__i_divSendTimes.4        0x20001288   Data           4  lto-llvm-781a46.o(.bss)
-    TA                                       0x2000128c   Data           4  lto-llvm-781a46.o(.bss)
-    TB                                       0x20001290   Data           4  lto-llvm-781a46.o(.bss)
-    TC                                       0x20001294   Data           4  lto-llvm-781a46.o(.bss)
-    CoordinateTransformation                 0x20001298   Data          36  lto-llvm-781a46.o(.bss)
-    CurrentVoltageTransform.integralError    0x200012bc   Data           4  lto-llvm-781a46.o(.bss)
-    GetMechanicalAngularSpeed_degree.lastMechanicalAngle 0x200012c0   Data           4  lto-llvm-781a46.o(.bss)
-    GetAverageMechanicalAngularSpeed_degree.pos 0x200012c4   Data           1  lto-llvm-781a46.o(.bss)
-    GetAverageMechanicalAngularSpeed_degree.array 0x200012c8   Data          24  lto-llvm-781a46.o(.bss)
-    GetAverageMechanicalAngularSpeed_degree.sum 0x200012e0   Data           4  lto-llvm-781a46.o(.bss)
-    uwTick                                   0x200012e4   Data           4  lto-llvm-781a46.o(.bss)
-    Encoder.0                                0x200012e8   Data           2  lto-llvm-781a46.o(.bss)
-    Encoder.3                                0x200012ec   Data           4  lto-llvm-781a46.o(.bss)
-    Encoder.7                                0x200012f0   Data           4  lto-llvm-781a46.o(.bss)
-    Encoder.9                                0x200012f4   Data           4  lto-llvm-781a46.o(.bss)
-    Encoder.14                               0x200012f8   Data           4  lto-llvm-781a46.o(.bss)
-    TxMessage.0                              0x200012fc   Data           1  lto-llvm-781a46.o(.bss)
-    TxMessage.4                              0x20001300   Data           1  lto-llvm-781a46.o(.bss)
-    RxMessage0.0                             0x20001304   Data           4  lto-llvm-781a46.o(.bss)
-    MotorDynamicParameter.3                  0x20001308   Data           4  lto-llvm-781a46.o(.bss)
-    MotorDynamicParameter.4                  0x2000130c   Data           4  lto-llvm-781a46.o(.bss)
-    MotorDynamicParameter.5                  0x20001310   Data           4  lto-llvm-781a46.o(.bss)
-    MotorDynamicParameter.9                  0x20001314   Data           4  lto-llvm-781a46.o(.bss)
-    MotorStaticParameter.0                   0x20001318   Data           4  lto-llvm-781a46.o(.bss)
-    MotorStaticParameter.2                   0x2000131c   Data           1  lto-llvm-781a46.o(.bss)
-    MotorStaticParameter.3                   0x20001320   Data           1  lto-llvm-781a46.o(.bss)
-    CurrentLoop.4                            0x20001324   Data           4  lto-llvm-781a46.o(.bss)
-    CurrentLoop.5                            0x20001328   Data           4  lto-llvm-781a46.o(.bss)
+    [Anonymous Symbol]                       0x20000070   Section        0  lto-llvm-d84a15.o(.bss)
+    hadc1                                    0x20000070   Data          72  lto-llvm-d84a15.o(.bss)
+    hadc2                                    0x200000b8   Data          72  lto-llvm-d84a15.o(.bss)
+    hadc3                                    0x20000100   Data          72  lto-llvm-d84a15.o(.bss)
+    CAN_RecieveStatus                        0x20000148   Data           4  lto-llvm-d84a15.o(.bss)
+    hcan1                                    0x2000014c   Data          56  lto-llvm-d84a15.o(.bss)
+    receive                                  0x20000184   Data           8  lto-llvm-d84a15.o(.bss)
+    HAL_CAN_ErrorCallback.errTimes           0x2000018c   Data           2  lto-llvm-d84a15.o(.bss)
+    hspi3                                    0x20000190   Data          92  lto-llvm-d84a15.o(.bss)
+    htim2                                    0x200001ec   Data          64  lto-llvm-d84a15.o(.bss)
+    huart1                                   0x2000022c   Data          72  lto-llvm-d84a15.o(.bss)
+    hdma_usart1_tx                           0x20000274   Data         100  lto-llvm-d84a15.o(.bss)
+    USART_BUFF1                              0x200002d8   Data        2000  lto-llvm-d84a15.o(.bss)
+    USART_BUFF2                              0x20000aa8   Data        2000  lto-llvm-d84a15.o(.bss)
+    ADC_IRQHandler.__i_divSendTimes          0x20001278   Data           4  lto-llvm-d84a15.o(.bss)
+    ADC_IRQHandler.__i_divSendTimes.1        0x2000127c   Data           4  lto-llvm-d84a15.o(.bss)
+    ADC_IRQHandler.__i_divSendTimes.2        0x20001280   Data           4  lto-llvm-d84a15.o(.bss)
+    ADC_IRQHandler.__i_divSendTimes.3        0x20001284   Data           4  lto-llvm-d84a15.o(.bss)
+    ADC_IRQHandler.__i_divSendTimes.4        0x20001288   Data           4  lto-llvm-d84a15.o(.bss)
+    TA                                       0x2000128c   Data           4  lto-llvm-d84a15.o(.bss)
+    TB                                       0x20001290   Data           4  lto-llvm-d84a15.o(.bss)
+    TC                                       0x20001294   Data           4  lto-llvm-d84a15.o(.bss)
+    CoordinateTransformation                 0x20001298   Data          36  lto-llvm-d84a15.o(.bss)
+    CurrentVoltageTransform.integralError    0x200012bc   Data           4  lto-llvm-d84a15.o(.bss)
+    GetMechanicalAngularSpeed_degree.lastMechanicalAngle 0x200012c0   Data           4  lto-llvm-d84a15.o(.bss)
+    GetAverageMechanicalAngularSpeed_degree.pos 0x200012c4   Data           1  lto-llvm-d84a15.o(.bss)
+    GetAverageMechanicalAngularSpeed_degree.array 0x200012c8   Data          24  lto-llvm-d84a15.o(.bss)
+    GetAverageMechanicalAngularSpeed_degree.sum 0x200012e0   Data           4  lto-llvm-d84a15.o(.bss)
+    uwTick                                   0x200012e4   Data           4  lto-llvm-d84a15.o(.bss)
+    Encoder.0                                0x200012e8   Data           2  lto-llvm-d84a15.o(.bss)
+    Encoder.3                                0x200012ec   Data           4  lto-llvm-d84a15.o(.bss)
+    Encoder.7                                0x200012f0   Data           4  lto-llvm-d84a15.o(.bss)
+    Encoder.9                                0x200012f4   Data           4  lto-llvm-d84a15.o(.bss)
+    Encoder.14                               0x200012f8   Data           4  lto-llvm-d84a15.o(.bss)
+    TxMessage.0                              0x200012fc   Data           1  lto-llvm-d84a15.o(.bss)
+    TxMessage.4                              0x20001300   Data           1  lto-llvm-d84a15.o(.bss)
+    RxMessage0.0                             0x20001304   Data           4  lto-llvm-d84a15.o(.bss)
+    MotorDynamicParameter.3                  0x20001308   Data           4  lto-llvm-d84a15.o(.bss)
+    MotorDynamicParameter.4                  0x2000130c   Data           4  lto-llvm-d84a15.o(.bss)
+    MotorDynamicParameter.5                  0x20001310   Data           4  lto-llvm-d84a15.o(.bss)
+    MotorDynamicParameter.9                  0x20001314   Data           4  lto-llvm-d84a15.o(.bss)
+    MotorStaticParameter.0                   0x20001318   Data           4  lto-llvm-d84a15.o(.bss)
+    MotorStaticParameter.2                   0x2000131c   Data           1  lto-llvm-d84a15.o(.bss)
+    MotorStaticParameter.3                   0x20001320   Data           1  lto-llvm-d84a15.o(.bss)
+    CurrentLoop.4                            0x20001324   Data           4  lto-llvm-d84a15.o(.bss)
+    CurrentLoop.5                            0x20001328   Data           4  lto-llvm-d84a15.o(.bss)
     HEAP                                     0x20001330   Section      512  startup_stm32f446xx.o(HEAP)
     Heap_Mem                                 0x20001330   Data         512  startup_stm32f446xx.o(HEAP)
     STACK                                    0x20001530   Section     1024  startup_stm32f446xx.o(STACK)
@@ -934,21 +934,21 @@ Image Symbol Table
     __I$use$semihosting                      0x08000be1   Thumb Code     0  use_no_semi.o(.text)
     __use_no_semihosting_swi                 0x08000be1   Thumb Code     2  use_no_semi.o(.text)
     __semihosting_library_function           0x08000be3   Thumb Code     0  indicate_semi.o(.text)
-    main                                     0x08000be5   Thumb Code  5924  lto-llvm-781a46.o(.text)
-    NMI_Handler                              0x0800261d   Thumb Code     2  lto-llvm-781a46.o(.text)
-    HardFault_Handler                        0x08002621   Thumb Code     2  lto-llvm-781a46.o(.text)
-    MemManage_Handler                        0x08002625   Thumb Code     2  lto-llvm-781a46.o(.text)
-    BusFault_Handler                         0x08002629   Thumb Code     2  lto-llvm-781a46.o(.text)
-    UsageFault_Handler                       0x0800262d   Thumb Code     2  lto-llvm-781a46.o(.text)
-    SVC_Handler                              0x08002631   Thumb Code     2  lto-llvm-781a46.o(.text)
-    DebugMon_Handler                         0x08002635   Thumb Code     2  lto-llvm-781a46.o(.text)
-    PendSV_Handler                           0x08002639   Thumb Code     2  lto-llvm-781a46.o(.text)
-    SysTick_Handler                          0x0800263d   Thumb Code    16  lto-llvm-781a46.o(.text)
-    CAN1_RX0_IRQHandler                      0x0800264d   Thumb Code  2446  lto-llvm-781a46.o(.text)
-    USART1_IRQHandler                        0x08002fdd   Thumb Code   708  lto-llvm-781a46.o(.text)
-    DMA2_Stream7_IRQHandler                  0x080032a1   Thumb Code   482  lto-llvm-781a46.o(.text)
-    ADC_IRQHandler                           0x08003485   Thumb Code  2836  lto-llvm-781a46.o(.text)
-    SystemInit                               0x080054c5   Thumb Code    86  lto-llvm-781a46.o(.text)
+    main                                     0x08000be5   Thumb Code  5924  lto-llvm-d84a15.o(.text)
+    NMI_Handler                              0x0800261d   Thumb Code     2  lto-llvm-d84a15.o(.text)
+    HardFault_Handler                        0x08002621   Thumb Code     2  lto-llvm-d84a15.o(.text)
+    MemManage_Handler                        0x08002625   Thumb Code     2  lto-llvm-d84a15.o(.text)
+    BusFault_Handler                         0x08002629   Thumb Code     2  lto-llvm-d84a15.o(.text)
+    UsageFault_Handler                       0x0800262d   Thumb Code     2  lto-llvm-d84a15.o(.text)
+    SVC_Handler                              0x08002631   Thumb Code     2  lto-llvm-d84a15.o(.text)
+    DebugMon_Handler                         0x08002635   Thumb Code     2  lto-llvm-d84a15.o(.text)
+    PendSV_Handler                           0x08002639   Thumb Code     2  lto-llvm-d84a15.o(.text)
+    SysTick_Handler                          0x0800263d   Thumb Code    16  lto-llvm-d84a15.o(.text)
+    CAN1_RX0_IRQHandler                      0x0800264d   Thumb Code  2446  lto-llvm-d84a15.o(.text)
+    USART1_IRQHandler                        0x08002fdd   Thumb Code   708  lto-llvm-d84a15.o(.text)
+    DMA2_Stream7_IRQHandler                  0x080032a1   Thumb Code   482  lto-llvm-d84a15.o(.text)
+    ADC_IRQHandler                           0x08003485   Thumb Code  2836  lto-llvm-d84a15.o(.text)
+    SystemInit                               0x080054c5   Thumb Code    86  lto-llvm-d84a15.o(.text)
     __aeabi_uldivmod                         0x0800551b   Thumb Code     0  lludivv7m.o(.text)
     _ll_udiv                                 0x0800551b   Thumb Code   238  lludivv7m.o(.text)
     __aeabi_memclr4                          0x08005609   Thumb Code     0  rt_memclr_w.o(.text)
@@ -1094,7 +1094,7 @@ Memory Map of the image
     0x08000be0   0x08000be0   0x00000002   Code   RO          348    .text               c_wu.l(use_no_semi.o)
     0x08000be2   0x08000be2   0x00000000   Code   RO          350    .text               c_wu.l(indicate_semi.o)
     0x08000be2   0x08000be2   0x00000002   PAD
-    0x08000be4   0x08000be4   0x00004936   Code   RO          405    .text               lto-llvm-781a46.o
+    0x08000be4   0x08000be4   0x00004936   Code   RO          405    .text               lto-llvm-d84a15.o
     0x0800551a   0x0800551a   0x000000ee   Code   RO          423    .text               c_wu.l(lludivv7m.o)
     0x08005608   0x08005608   0x0000004e   Code   RO          425    .text               c_wu.l(rt_memclr_w.o)
     0x08005656   0x08005656   0x000000b0   Code   RO           80    i.__hardfp_fmodf    m_wm.l(fmodf.o)
@@ -1112,9 +1112,9 @@ Memory Map of the image
     0x080058f8   0x080058f8   0x00000028   Data   RO          153    .constdata          c_wu.l(_printf_hex_int_ll_ptr.o)
     0x08005920   0x08005920   0x00000011   Data   RO          173    .constdata          c_wu.l(__printf_flags_ss_wp.o)
     0x08005931   0x08005931   0x00000003   PAD
-    0x08005934   0x08005934   0x00000b70   Data   RO          411    .rodata             lto-llvm-781a46.o
-    0x080064a4   0x080064a4   0x00000008   Data   RO          412    .rodata.cst8        lto-llvm-781a46.o
-    0x080064ac   0x080064ac   0x00000014   Data   RO          409    .rodata.str1.1      lto-llvm-781a46.o
+    0x08005934   0x08005934   0x00000b70   Data   RO          411    .rodata             lto-llvm-d84a15.o
+    0x080064a4   0x080064a4   0x00000008   Data   RO          412    .rodata.cst8        lto-llvm-d84a15.o
+    0x080064ac   0x080064ac   0x00000014   Data   RO          409    .rodata.str1.1      lto-llvm-d84a15.o
     0x080064c0   0x080064c0   0x00000020   Data   RO          437    Region$$Table       anon$$obj.o
     0x080064e0   0x080064e0   0x00000110   Data   RO          272    locale$$data        c_wu.l(lc_ctype_c.o)
 
@@ -1123,10 +1123,10 @@ Memory Map of the image
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x20000000   0x080065f0   0x0000000c   Data   RW          410    .data               lto-llvm-781a46.o
+    0x20000000   0x080065f0   0x0000000c   Data   RW          410    .data               lto-llvm-d84a15.o
     0x2000000c   0x080065fc   0x00000004   PAD
     0x20000010        -       0x00000060   Zero   RW          251    .bss                c_wu.l(libspace.o)
-    0x20000070        -       0x000012bc   Zero   RW          408    .bss                lto-llvm-781a46.o
+    0x20000070        -       0x000012bc   Zero   RW          408    .bss                lto-llvm-d84a15.o
     0x2000132c   0x080065fc   0x00000004   PAD
     0x20001330        -       0x00000200   Zero   RW            2    HEAP                startup_stm32f446xx.o
     0x20001530        -       0x00000400   Zero   RW            1    STACK               startup_stm32f446xx.o
@@ -1139,11 +1139,11 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
-     18742        248       2956         12       4796     146844   lto-llvm-781a46.o
+     18742        248       2956         12       4796     146826   lto-llvm-d84a15.o
         64         26        452          0       1536        840   startup_stm32f446xx.o
 
     ----------------------------------------------------------------------
-     18806        274       3440         12       6340     147684   Object Totals
+     18806        274       3440         12       6340     147666   Object Totals
          0          0         32          0          0          0   (incl. Generated)
          0          0          0          0          8          0   (incl. Padding)
 
@@ -1251,8 +1251,8 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     22316        400       3780         12       6436     149516   Grand Totals
-     22316        400       3780         12       6436     149516   ELF Image Totals
+     22316        400       3780         12       6436     149498   Grand Totals
+     22316        400       3780         12       6436     149498   ELF Image Totals
      22316        400       3780         12          0          0   ROM Totals
 
 ==============================================================================

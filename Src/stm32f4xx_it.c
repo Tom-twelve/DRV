@@ -287,10 +287,8 @@ void ADC_IRQHandler(void)
 									CalculateVoltage_dq(CoordinateTransformation.CurrentQ, &CoordinateTransformation.VoltageD, &CoordinateTransformation.VoltageQ, Encoder.AverageElectricalAngularSpeed_rad);
 			
 									CalculateElectromagneticTorque(CoordinateTransformation.CurrentQ, &MotorDynamicParameter.ElectromagneticTorque);
-									
-//									DRV8323_ReadFaultStatusRegister();
 		
-//									DMAPRINTF("%d\r\n",(int)(CoordinateTransformation.CurrentQ * 1000));
+									DMAPRINTF("%d\r\n",(int)(CoordinateTransformation.CurrentQ * 1000));
 
 									break;
 

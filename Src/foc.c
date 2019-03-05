@@ -49,7 +49,7 @@ extern struct CurrentLoop_t CurrentLoop;
 	uint32_t TC = 0;
 void SpaceVectorPulseWidthModulation(float voltageAlpha, float voltageBeta)
 {
-	const float StandardizationCoefficient = SQRT3 * CarrierPeriod_us_square / GeneratrixVoltage;
+	const float StandardizationCoefficient = SQRT3 * TIM8_Autoreload / GeneratrixVoltage;
 	float U1 = 0;
 	float U2 = 0;
 	float U3 = 0;
@@ -84,9 +84,8 @@ void SpaceVectorPulseWidthModulation(float voltageAlpha, float voltageBeta)
 	U3 = (- voltageBeta - SQRT3 * voltageAlpha) / 2.0f;
 	
 
-	/********************
-	   判断矢量电压所在扇区
-	 *********************/
+	
+	/*判断矢量电压所在扇区*/
 	if (U1 > 0)
 	{
 		sectionFlag = 0x01;
@@ -135,17 +134,17 @@ void SpaceVectorPulseWidthModulation(float voltageAlpha, float voltageBeta)
 			 break;
 	}
 
-	if (T1 + T2 > CarrierPeriod_us_square)
+	if (T1 + T2 > TIM8_Autoreload)
 	{
 		t1  = T1;
 		t2  = T2;
-		T1  = t1 / (t1 + t2) * CarrierPeriod_us_square;
-		T2  = t2 / (t1 + t2) * CarrierPeriod_us_square;
+		T1  = t1 / (t1 + t2) * TIM8_Autoreload;
+		T2  = t2 / (t1 + t2) * TIM8_Autoreload;
 	}
 
-	TA  = (CarrierPeriod_us_square - T1 - T2) / 2.0f;
-	TB  = (CarrierPeriod_us_square + T1 - T2) / 2.0f;
-	TC  = (CarrierPeriod_us_square + T1 + T2) / 2.0f;
+	TA  = (TIM8_Autoreload - T1 - T2) / 2.0f;
+	TB  = (TIM8_Autoreload + T1 - T2) / 2.0f;
+	TC  = (TIM8_Autoreload + T1 + T2) / 2.0f;
 
 	switch (sectionFlag)
 	{
@@ -179,9 +178,9 @@ void SpaceVectorPulseWidthModulation(float voltageAlpha, float voltageBeta)
 			 CCR_PhaseC = TB; 
 			 break;
 
-	default: CCR_PhaseA = CarrierPeriod_us_square; 
-			 CCR_PhaseB = CarrierPeriod_us_square; 
-			 CCR_PhaseC = CarrierPeriod_us_square; 
+	default: CCR_PhaseA = TIM8_Autoreload; 
+			 CCR_PhaseB = TIM8_Autoreload; 
+			 CCR_PhaseC = TIM8_Autoreload; 
 			 break;
 	}
 }
@@ -251,8 +250,6 @@ void ClarkTransform(float currentPhaseA, float currentPhaseB, float currentPhase
 	*currentAlpha = Coefficient_ConstantAmplitude * ((float)currentPhaseA - 0.5f * (float)currentPhaseB - 0.5f * (float)currentPhaseC);
 	
 	*currentBeta  = 0.5f * SQRT3 * Coefficient_ConstantAmplitude * ((float)currentPhaseB - (float)currentPhaseC);
-	
-	CoordinateTransformation.CurrentVector = sqrtf(Square(CoordinateTransformation.CurrentAlpha) + Square(CoordinateTransformation.CurrentBeta));	//总电流矢量大小
 }
 
    /**
@@ -262,11 +259,13 @@ void ClarkTransform(float currentPhaseA, float currentPhaseB, float currentPhase
    * @param[out] voltageD  		voltage of axis d
    * @param[out] voltageQ		voltage of axis q
    */
-void PowerAngleCompensation(float expectedCurrentQ, float *powerAngleCompensation_degree, float *powerAngleCompensation_rad)
+void PowerAngleCompensation(float expectedCurrentQ, float *powerAngleCompensation_degree)
 {
-	*powerAngleCompensation_rad = arcsine((-2 * (InductanceD - InductanceQ) * expectedCurrentQ) / (RotatorFluxLinkage + sqrt_DSP(Square(RotatorFluxLinkage) + 8 * Square(InductanceD - InductanceQ) * Square(expectedCurrentQ))));
+	float powerAngleCompensation_rad = 0;
 	
-	*powerAngleCompensation_degree = *powerAngleCompensation_rad * 360.f	/ (2 * PI);
+	powerAngleCompensation_rad = arcsine((-2 * (InductanceD - InductanceQ) * expectedCurrentQ) / (RotatorFluxLinkage + sqrt_DSP(Square(RotatorFluxLinkage) + 8 * Square(InductanceD - InductanceQ) * Square(expectedCurrentQ))));
+
+	*powerAngleCompensation_degree = powerAngleCompensation_rad * 360.f	/ (2 * PI);
 }
 
    /**
@@ -278,33 +277,13 @@ void PowerAngleCompensation(float expectedCurrentQ, float *powerAngleCompensatio
 void CurrentVoltageTransform(float controlCurrentQ, float *voltageD, float *voltageQ, float actualElectricalAngularSpeed_rad)
 {
 	/*将80%的最大不失真Uq用于提供转速, 20%的最大不失真Uq用于提供转矩*/
-	const float targetElectricalAngularSpeed_rad = 0.8f * MaximumDistortionlessVoltage / RotatorFluxLinkage;
+	const float targetElectricalAngularSpeed_rad = 0.35f * MaximumDistortionlessVoltage / RotatorFluxLinkage;
 	const float maximumTorque = 0.2f * (MaximumDistortionlessVoltage / PhaseResistance) * 1.5f * MotorMagnetPairs * RotatorFluxLinkage;
-	const float Kp = 15.0f;
-	const float Ki = 15.0f;
-	static float integralError = 0;
-	float error = 0;
-	float controlElectricalAngularSpeed_rad = 0;
 	
-	/*控制转速*/
-	if(MotorDynamicParameter.ElectromagneticTorque <= 0.8f * maximumTorque)
-	{
-		error = targetElectricalAngularSpeed_rad - actualElectricalAngularSpeed_rad;
-			
-		controlElectricalAngularSpeed_rad = Kp * error + Ki * integralError;
-			
-		integralError += error * CarrierPeriod_s;
-		
-	}
-	else if(MotorDynamicParameter.ElectromagneticTorque > 0.8f * maximumTorque)
-	{
-		controlElectricalAngularSpeed_rad = actualElectricalAngularSpeed_rad;
-	}
-		
 	/*输出电压*/
-	*voltageD = -controlElectricalAngularSpeed_rad * InductanceQ * controlCurrentQ;
+	*voltageD = -targetElectricalAngularSpeed_rad * InductanceQ * controlCurrentQ;
 	
-	*voltageQ = PhaseResistance * controlCurrentQ + controlElectricalAngularSpeed_rad * RotatorFluxLinkage;
+	*voltageQ = PhaseResistance * controlCurrentQ + targetElectricalAngularSpeed_rad * RotatorFluxLinkage;
 }
 
    /**
@@ -365,7 +344,7 @@ void MeasureElectricalAngle(float voltageD)
 			
 			SpaceVectorPulseWidthModulation(voltageAlpha, voltageBeta);
 			
-			HAL_Delay(200);
+			HAL_Delay(250);
 
 			tempMechanicalAngleRef[index_5012b] = Encoder.MechanicalAngle_15bit;
 
@@ -378,7 +357,7 @@ void MeasureElectricalAngle(float voltageD)
 				index_bound = index_5012b;
 			}
 			
-			DMAPRINTF("\t %d \t /*Angle \t %d \t Encoder*/ \t %d\r\n", (int)(electricalAngle), (int)tempMechanicalAngleRef[index_5012b]); 
+			DMAPRINTF("\t/*Angle*/\t %d \t /*Encoder*/\t %d \r\n", (int)(electricalAngle), (int)tempMechanicalAngleRef[index_5012b]); 
 		
 			SendBuf();
 
@@ -432,7 +411,7 @@ void MeasureElectricalAngle(float voltageD)
 		
 		SendBuf();
 	
-		HAL_Delay(10);
+		HAL_Delay(15);
 	}
 }
 

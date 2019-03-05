@@ -53,8 +53,8 @@
 #define	MotorKV								350.f
 #define RotatorFluxLinkage					( ONE_BY_SQRT3 * 60 / (2 * PI * (MotorMagnetPairs) * (MotorKV)))
 #define PhaseResistance						0.0186698157f	//(Ohm)
-#define InductanceD							0.0000065f	//(H)
-#define InductanceQ							0.000012f	//(H)
+#define InductanceD							0.0000065f		//(H)
+#define InductanceQ							0.000012f		//(H)
 #elif	MotorType == N5055
 #define MotorMagnetPairs	7.f
 #define	MotorKV				400.f

@@ -57,16 +57,16 @@ void MotorEnable(void)
 										break;
 		
 		case CurrentControlMode : 		/*设定q轴电流*/
-										CurrentLoop.ExpectedCurrentQ = 10.f;
-
+										CurrentLoop.ExpectedCurrentQ = 1.f;
+		
 										/*设定电流环PI参数*/
-										CurrentLoop.Kp_D = 1.0f;
+										CurrentLoop.Kp_D = 0.f;
 										
-										CurrentLoop.Ki_D = 1.0f;
+										CurrentLoop.Ki_D = 0.f;
 										
-										CurrentLoop.Kp_Q = 3.0f;
+										CurrentLoop.Kp_Q = 1.0f;
 
-										CurrentLoop.Ki_Q = 1.5f;
+										CurrentLoop.Ki_Q = 1.0f;
 		
 										break;
 		
@@ -104,7 +104,7 @@ void MotorEnable(void)
 										/*设定位置环PI参数*/
 										PositionLoop.Kp = 0.0001f;
 										
-										PositionLoop.Ki = 0.f;
+										PositionLoop.Kd = 0.f;
 		
 										break;
 	}
@@ -129,6 +129,7 @@ void CurrentControlLoop(float expectedCurrentD, float expectedCurrentQ, float re
 	integralErrorD += errorD * CarrierPeriod_s;
 	integralErrorQ += errorQ * CarrierPeriod_s;
 	
+	/*积分限幅*/
 	if(integralErrorD >= CurrentControlLoopIntegralErrorLimit_D)
 	{
 		integralErrorD = CurrentControlLoopIntegralErrorLimit_D;
@@ -164,6 +165,7 @@ void SpeedControlLoop(float expectedMechanicalAngularSpeed, float realityMechani
 	
 	integralError += error * CarrierPeriod_s;
 	
+	/*积分限幅*/
 	if(integralError >= SpeedControlLoopIntegralErrorLimit)
 	{
 		integralError = SpeedControlLoopIntegralErrorLimit;
@@ -181,26 +183,13 @@ void SpeedControlLoop(float expectedMechanicalAngularSpeed, float realityMechani
 void PositionControlLoop(float expectedMechanicalAngle, float realityMechanicalAngle, float *controlCurrentQ)
 {
 	float error = 0;
-	static float integralError = 0;
 	static float lastError = 0;
 	
 	error = expectedMechanicalAngle - realityMechanicalAngle;
 	
-	*controlCurrentQ = PositionLoop.Kp * error + PositionLoop.Ki * integralError + PositionLoop.Kd * (error - lastError);
-	
-	integralError += error * CarrierPeriod_s;
+	*controlCurrentQ = PositionLoop.Kp * error + PositionLoop.Kd * (error - lastError);
 	
 	lastError = error;
-	
-	if(integralError >= PositionControlLoopIntegralErrorLimit)
-	{
-		integralError = PositionControlLoopIntegralErrorLimit;
-	}
-	
-	else if(integralError <= -PositionControlLoopIntegralErrorLimit)
-	{
-		integralError = -PositionControlLoopIntegralErrorLimit;
-	}
 }
 
    /**

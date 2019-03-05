@@ -84,9 +84,8 @@ void SpaceVectorPulseWidthModulation(float voltageAlpha, float voltageBeta)
 	U3 = (- voltageBeta - SQRT3 * voltageAlpha) / 2.0f;
 	
 
-	/********************
-	   判断矢量电压所在扇区
-	 *********************/
+	
+	/*判断矢量电压所在扇区*/
 	if (U1 > 0)
 	{
 		sectionFlag = 0x01;
@@ -212,9 +211,9 @@ void ParkTransform(float currentPhaseA, float currentPhaseB, float currentPhaseC
 	
 	arm_sin_cos_f32((float)(electricalAngle + 120.f),  &electricalAngleSineValue3,  &electricalAngleCosineValue3);
 	
-	*currentD = Coefficient_ConstantAmplitude * (currentPhaseA * electricalAngleSineValue1 + currentPhaseB * electricalAngleSineValue2 + currentPhaseC * electricalAngleSineValue3);
+	*currentD = Coefficient_ConstantAmplitude * (currentPhaseA * electricalAngleSineValue3 + currentPhaseB * electricalAngleSineValue2 + currentPhaseC * electricalAngleSineValue1);
 	
-	*currentQ = Coefficient_ConstantAmplitude * (currentPhaseA * electricalAngleCosineValue1 + currentPhaseB * electricalAngleCosineValue2 + currentPhaseC * electricalAngleCosineValue3);
+	*currentQ = Coefficient_ConstantAmplitude * (currentPhaseA * electricalAngleCosineValue3 + currentPhaseB * electricalAngleCosineValue2 + currentPhaseC * electricalAngleCosineValue1);
 }
 
    /**
@@ -365,7 +364,7 @@ void MeasureElectricalAngle(float voltageD)
 			
 			SpaceVectorPulseWidthModulation(voltageAlpha, voltageBeta);
 			
-			HAL_Delay(200);
+			HAL_Delay(300);
 
 			tempMechanicalAngleRef[index_5012b] = Encoder.MechanicalAngle_15bit;
 

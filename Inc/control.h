@@ -52,28 +52,27 @@ struct PositionLoop_t
 {
 	float ExpectedMechanicalAngle;	//degree
 	float Kp;
-	float Ki;
 	float Kd;
 };
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define CurrentControlLoopIntegralErrorLimit_D 	2.5f	//(A)
+#define CurrentControlLoopIntegralErrorLimit_D 		2.5f	//(A)
 
-#define CurrentControlLoopIntegralErrorLimit_Q 	2.5f	//(A)
+#define CurrentControlLoopIntegralErrorLimit_Q 		2.5f	//(A)
 
-#define SpeedControlLoopIntegralErrorLimit 	(10.0f * 360.f)		//(бу/s)
+#define SpeedControlLoopIntegralErrorLimit 			(10.0f * 360.f)		//(бу/s)
 
-#define PositionControlLoopIntegralErrorLimit 	(0.5f * 360.f)		//(бу)
+#define CURRENT_CONTROL_KP_D		
+#define CURRENT_CONTROL_KI_D		
 
-#define CURRENT_CONTROL_KP
-#define CURRENT_CONTROL_KI
+#define CURRENT_CONTROL_KP_Q		
+#define CURRENT_CONTROL_KI_Q		
 
 #define SPEED_CONTROL_KP	
 #define SPEED_CONTROL_KI
 
 #define POSITION_CONTROL_KP	
-#define POSITION_CONTROL_KI
 #define POSITION_CONTROL_KD
 
 #define	VoltageControlMode 			0

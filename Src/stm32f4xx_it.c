@@ -269,6 +269,10 @@ void DMA2_Stream7_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
+uint16_t temp1 = 0;
+uint16_t temp2 = 0;
+uint16_t temp3 = 0;
+
 void ADC_IRQHandler(void)
 {
 	GetPhaseCurrent();
@@ -277,42 +281,53 @@ void ADC_IRQHandler(void)
 	
 	switch(MotorStaticParameter.ControlMode)
 	{
-		case VoltageControlMode :	InverseParkTransform_TwoPhase(0.f, 10.f, &CoordinateTransformation.VoltageAlpha, &CoordinateTransformation.VoltageBeta, Encoder.ElectricalAngle_degree+14.0f);
+		case VoltageControlMode :	InverseParkTransform_TwoPhase(0.f, 5.f, &CoordinateTransformation.VoltageAlpha, &CoordinateTransformation.VoltageBeta, Encoder.ElectricalAngle_degree );
 									
 									SpaceVectorPulseWidthModulation(CoordinateTransformation.VoltageAlpha, CoordinateTransformation.VoltageBeta);
-		
+
 									/*测试用*/
 									ParkTransform(MotorDynamicParameter.CurrentPhaseA, MotorDynamicParameter.CurrentPhaseB, MotorDynamicParameter.CurrentPhaseC, &CoordinateTransformation.CurrentD, &CoordinateTransformation.CurrentQ, Encoder.ElectricalAngle_degree);
 									
 									CalculateVoltage_dq(CoordinateTransformation.CurrentQ, &CoordinateTransformation.VoltageD, &CoordinateTransformation.VoltageQ, Encoder.AverageElectricalAngularSpeed_rad);
 			
 									CalculateElectromagneticTorque(CoordinateTransformation.CurrentQ, &MotorDynamicParameter.ElectromagneticTorque);
-		
-									DMAPRINTF("%d\r\n",(int)(CoordinateTransformation.CurrentQ * 1000));
 
+									DMAPRINTF("%d\t",(int)(CoordinateTransformation.CurrentQ * 1000));
+									DMAPRINTF("%d\r\n",(int)(Encoder.AverageMechanicalAngularSpeed_degree));
+									
 									break;
 
-		case CurrentControlMode : 	PowerAngleCompensation(CurrentLoop.ExpectedCurrentQ, &MotorStaticParameter.PowerAngleCompensation_degree, &MotorStaticParameter.PowerAngleCompensation_rad);
+		case CurrentControlMode : 	/*通过对电角度进行补偿, 使功角尽可能维持在90度*/
+									PowerAngleCompensation(CurrentLoop.ExpectedCurrentQ, &MotorStaticParameter.PowerAngleCompensation_degree);
 
+									/*进行Park变换, 将三相电流转换为dq轴电流*/
 									ParkTransform(MotorDynamicParameter.CurrentPhaseA, MotorDynamicParameter.CurrentPhaseB, MotorDynamicParameter.CurrentPhaseC, &CoordinateTransformation.CurrentD, &CoordinateTransformation.CurrentQ, Encoder.ElectricalAngle_degree + MotorStaticParameter.PowerAngleCompensation_degree);
 									
-									CalculateElectromagneticTorque(CoordinateTransformation.CurrentQ, &MotorDynamicParameter.ElectromagneticTorque);
-									
-//									CurrentControlLoop(CurrentLoop.ExpectedCurrentD, CurrentLoop.ExpectedCurrentQ, CoordinateTransformation.CurrentD, CoordinateTransformation.CurrentQ, &CurrentLoop.ControlCurrentD, &CurrentLoop.ControlCurrentQ);
-									
-									CurrentVoltageTransform(CurrentLoop.ExpectedCurrentD, &CurrentLoop.ControlVoltageD, &CurrentLoop.ControlVoltageQ, Encoder.AverageElectricalAngularSpeed_rad);
-									
-									InverseParkTransform_TwoPhase(CurrentLoop.ControlVoltageD, CurrentLoop.ControlVoltageQ, &CoordinateTransformation.VoltageAlpha, &CoordinateTransformation.VoltageBeta, Encoder.ElectricalAngle_degree + MotorStaticParameter.PowerAngleCompensation_degree);
-									
-									SpaceVectorPulseWidthModulation(CoordinateTransformation.VoltageAlpha, CoordinateTransformation.VoltageBeta);
-									
+									/*利用实际q轴电流与转子电角速度计算实际dq轴电压*/
 									CalculateVoltage_dq(CoordinateTransformation.CurrentQ, &CoordinateTransformation.VoltageD, &CoordinateTransformation.VoltageQ, Encoder.AverageElectricalAngularSpeed_rad);
 									
+									/*计算电磁转矩*/
+									CalculateElectromagneticTorque(CoordinateTransformation.CurrentQ, &MotorDynamicParameter.ElectromagneticTorque);
+									
+									/*电流环PI控制器*/
+									CurrentControlLoop(CurrentLoop.ExpectedCurrentD, CurrentLoop.ExpectedCurrentQ, CoordinateTransformation.CurrentD, CoordinateTransformation.CurrentQ, &CurrentLoop.ControlCurrentD, &CurrentLoop.ControlCurrentQ);
+									
+									/*将目标q轴电流变换为q轴电压*/
+									CurrentVoltageTransform(CurrentLoop.ControlCurrentQ, &CurrentLoop.ControlVoltageD, &CurrentLoop.ControlVoltageQ, Encoder.AverageElectricalAngularSpeed_rad);
+									
+									/*进行逆Park变换, 将转子坐标系下的dq轴电压转换为定子坐标系下的AlphaBeta轴电压*/
+									InverseParkTransform_TwoPhase(CurrentLoop.ControlVoltageD, CurrentLoop.ControlVoltageQ, &CoordinateTransformation.VoltageAlpha, &CoordinateTransformation.VoltageBeta, Encoder.ElectricalAngle_degree + MotorStaticParameter.PowerAngleCompensation_degree);
+									
+									/*利用SVPWM算法调制正弦波*/
+									SpaceVectorPulseWidthModulation(CoordinateTransformation.VoltageAlpha, CoordinateTransformation.VoltageBeta);
+									
+									DMAPRINTF("%d\t",(int)(CurrentLoop.ControlCurrentQ * 1000));
 									DMAPRINTF("%d\t",(int)(CoordinateTransformation.CurrentQ * 1000));
 									DMAPRINTF("%d\t",(int)(CurrentLoop.ControlVoltageQ * 1000));
-									DMAPRINTF("%d\t",(int)(CoordinateTransformation.VoltageD * 1000));
 									DMAPRINTF("%d\t",(int)(CoordinateTransformation.VoltageQ * 1000));
-									DMAPRINTF("%d\r\n",(int)(MotorDynamicParameter.ElectromagneticTorque * 1000));
+									DMAPRINTF("%d\t",(int)(MotorDynamicParameter.CurrentPhaseA * 1000));
+									DMAPRINTF("%d\t",(int)(MotorDynamicParameter.CurrentPhaseB * 1000));
+									DMAPRINTF("%d\r\n",(int)(MotorDynamicParameter.CurrentPhaseC * 1000));
 									
 									break;
 		case SpeedControlMode :

@@ -91,7 +91,7 @@ void MX_TIM8_Init(void)
 
   TIM_InitStruct.Prescaler = 0;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_CENTER_DOWN;
-  TIM_InitStruct.Autoreload = 90000000 * CarrierPeriod_s;
+  TIM_InitStruct.Autoreload = TIM8_Autoreload;
   TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
   TIM_InitStruct.RepetitionCounter = 0;
   LL_TIM_Init(TIM8, &TIM_InitStruct);
@@ -120,7 +120,7 @@ void MX_TIM8_Init(void)
   LL_TIM_OC_EnablePreload(TIM8, LL_TIM_CHANNEL_CH4);
   TIM_OC_InitStruct.OCState = LL_TIM_OCSTATE_DISABLE;
   TIM_OC_InitStruct.OCNState = LL_TIM_OCSTATE_DISABLE;
-  TIM_OC_InitStruct.CompareValue = 90000000 * CarrierPeriod_s - 12;
+  TIM_OC_InitStruct.CompareValue = ADC_ExternalTrigger_CCR;
   LL_TIM_OC_Init(TIM8, LL_TIM_CHANNEL_CH4, &TIM_OC_InitStruct);
   LL_TIM_OC_DisableFast(TIM8, LL_TIM_CHANNEL_CH4);
   LL_TIM_SetTriggerOutput(TIM8, LL_TIM_TRGO_RESET);

@@ -185,9 +185,9 @@ void CANRespond(void)
 #endif
 		break;
 	}
-	case 0x40005149: //IQ	 读取电流
+	case 0x40005149: //IQ	 读取转矩电流
 		txData.data_uint32[0] = 0x00005149;
-		txData.data_uint32[1] = (uint32_t)CoordinateTransformation.CurrentVector;
+		txData.data_uint32[1] = (uint32_t)CoordinateTransformation.CurrentQ;
 		CANSendData(txData);
 		CAN_RecieveStatus = 0;
 		break;

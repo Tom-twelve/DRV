@@ -39,7 +39,6 @@ struct CoordinateTransformation_t
 	float VoltageQ;
 	float CurrentAlpha;
 	float CurrentBeta;
-	float CurrentVector;
 	float CurrentD;
 	float CurrentQ;
 };
@@ -70,12 +69,14 @@ struct MotorStaticParameter_t
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define	GeneratrixVoltage				25.0f		//(V)
-#define	MaximumDistortionlessVoltage	(ONE_BY_SQRT3 * GeneratrixVoltage)	//(V)
-#define CarrierFrequency				10000.f		//(Hz)
-#define CarrierPeriod_s					(1.f / CarrierFrequency)		//(s)
-#define CarrierPeriod_us				(CarrierPeriod_s * 1000000.f)	//(us)
-#define CarrierPeriod_us_square			CarrierPeriod_us * CarrierPeriod_us		
+#define	GeneratrixVoltage					25.0f		//(V)
+#define	MaximumDistortionlessVoltage		(ONE_BY_SQRT3 * GeneratrixVoltage)	//(V)
+#define CarrierFrequency					20000.f		//(Hz)
+#define CarrierPeriod_s						(1.f / CarrierFrequency)		//(s)
+#define CarrierPeriod_us					(CarrierPeriod_s * 1000000.f)	//(us)
+#define MCU_Frequency						180000000.f		//(Hz)
+#define TIM8_Autoreload 					(int)((MCU_Frequency / CarrierFrequency) / 2.f )
+#define ADC_ExternalTrigger_CCR				(TIM8_Autoreload - 12)	//通过TIM8_CH4触发ADC, 超前量为ADC采样所需时间
 
 #define DivideNum  20	//将360度n等分, 每次电角度增量为(360/DivideNum)
 
@@ -96,7 +97,7 @@ struct MotorStaticParameter_t
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
 void SpaceVectorPulseWidthModulation(float voltageAlpha, float voltageBeta);
-void PowerAngleCompensation(float expectedCurrentQ, float *powerAngleCompensation_degree, float *powerAngleCompensation_rad);
+void PowerAngleCompensation(float expectedCurrentQ, float *powerAngleCompensation_degree);
 void ParkTransform(float currentPhaseA, float currentPhaseB, float currentPhaseC, float *currentD, float *currentQ, float electricalAngle);
 void InverseParkTransform_TwoPhase(float voltageD, float voltageQ,float *voltageAlpha,float *voltageBeta, float electricalAngle);
 void ClarkTransform(float currentPhaseA, float currentPhaseB, float currentPhaseC, float *currentAlpha, float *currentBeta);

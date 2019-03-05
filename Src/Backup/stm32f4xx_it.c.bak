@@ -277,7 +277,7 @@ void ADC_IRQHandler(void)
 	
 	switch(MotorStaticParameter.ControlMode)
 	{
-		case VoltageControlMode :	InverseParkTransform_TwoPhase(0.f, 10.f, &CoordinateTransformation.VoltageAlpha, &CoordinateTransformation.VoltageBeta, Encoder.ElectricalAngle_degree+14.0f);
+		case VoltageControlMode :	InverseParkTransform_TwoPhase(0.f, 5.f, &CoordinateTransformation.VoltageAlpha, &CoordinateTransformation.VoltageBeta, Encoder.ElectricalAngle_degree + 10.5f);
 									
 									SpaceVectorPulseWidthModulation(CoordinateTransformation.VoltageAlpha, CoordinateTransformation.VoltageBeta);
 		
@@ -287,10 +287,8 @@ void ADC_IRQHandler(void)
 									CalculateVoltage_dq(CoordinateTransformation.CurrentQ, &CoordinateTransformation.VoltageD, &CoordinateTransformation.VoltageQ, Encoder.AverageElectricalAngularSpeed_rad);
 			
 									CalculateElectromagneticTorque(CoordinateTransformation.CurrentQ, &MotorDynamicParameter.ElectromagneticTorque);
-									
-//									DRV8323_ReadFaultStatusRegister();
 		
-//									DMAPRINTF("%d\r\n",(int)(CoordinateTransformation.CurrentQ * 1000));
+									DMAPRINTF("%d\r\n",(int)(CoordinateTransformation.CurrentQ * 1000));
 
 									break;
 
@@ -302,7 +300,7 @@ void ADC_IRQHandler(void)
 									
 //									CurrentControlLoop(CurrentLoop.ExpectedCurrentD, CurrentLoop.ExpectedCurrentQ, CoordinateTransformation.CurrentD, CoordinateTransformation.CurrentQ, &CurrentLoop.ControlCurrentD, &CurrentLoop.ControlCurrentQ);
 									
-									CurrentVoltageTransform(CurrentLoop.ExpectedCurrentD, &CurrentLoop.ControlVoltageD, &CurrentLoop.ControlVoltageQ, Encoder.AverageElectricalAngularSpeed_rad);
+									CurrentVoltageTransform(CurrentLoop.ExpectedCurrentQ, &CurrentLoop.ControlVoltageD, &CurrentLoop.ControlVoltageQ, Encoder.AverageElectricalAngularSpeed_rad);
 									
 									InverseParkTransform_TwoPhase(CurrentLoop.ControlVoltageD, CurrentLoop.ControlVoltageQ, &CoordinateTransformation.VoltageAlpha, &CoordinateTransformation.VoltageBeta, Encoder.ElectricalAngle_degree + MotorStaticParameter.PowerAngleCompensation_degree);
 									
@@ -310,8 +308,6 @@ void ADC_IRQHandler(void)
 									
 									CalculateVoltage_dq(CoordinateTransformation.CurrentQ, &CoordinateTransformation.VoltageD, &CoordinateTransformation.VoltageQ, Encoder.AverageElectricalAngularSpeed_rad);
 									
-									DMAPRINTF("%d\t",(int)(CoordinateTransformation.CurrentQ * 1000));
-									DMAPRINTF("%d\t",(int)(CurrentLoop.ControlVoltageQ * 1000));
 									DMAPRINTF("%d\t",(int)(CoordinateTransformation.VoltageD * 1000));
 									DMAPRINTF("%d\t",(int)(CoordinateTransformation.VoltageQ * 1000));
 									DMAPRINTF("%d\r\n",(int)(MotorDynamicParameter.ElectromagneticTorque * 1000));

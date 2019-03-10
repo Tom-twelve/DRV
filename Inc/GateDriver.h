@@ -25,7 +25,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#if	GateDriverType == GateDriver_DRV8323
+#if	GATE_DRIVER_TYPE == GateDriver_DRV8323
 	#define DRV8323_ReadCommandMessageNumber	7
 	#define DRV8323_WriteCommandMessageNumber	5
 
@@ -57,7 +57,7 @@
 		DRV8323_ADDR_CSA_CONTROL_REGISTER     = 0x06
 	};
 	
-#elif GateDriverType == GateDriver_DRV8320
+#elif GATE_DRIVER_TYPE == GateDriver_DRV8320
 	#define DRV8320_ReadCommandMessageNumber	6
 	#define DRV8320_WriteCommandMessageNumber	5
 
@@ -98,13 +98,13 @@
 
 void GateDriverConfig(void);
 
-#if GateDriverType == GateDriver_DRV8323
+#if GATE_DRIVER_TYPE == GateDriver_DRV8323
 
 	void DRV8323_ReadAllRegister(void);
 	void DRV8323_WriteAllRegister(void);
 	void DRV8323_ReadFaultStatusRegister(void);
 
-#elif GateDriverType == GateDriver_DRV8320
+#elif GATE_DRIVER_TYPE == GateDriver_DRV8320
 
 	void DRV8320_ReadAllRegister(void);
 	void DRV8320_WriteAllRegister(void);

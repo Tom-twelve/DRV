@@ -176,7 +176,7 @@ void CANRespond(void)
 
 	case 0x40005856: //VX   ∂¡»°ÀŸ∂»
 	{
-#if EncoderType == Encoder_TLE5012
+#if ENCODER_TYPE == Encoder_TLE5012
 		const float velReport = (Encoder.MecAngle_degree /360.f * 32768.f);
 		txData.data_uint32[0] = 0x00005856;
 		txData.data_int32[1]  = (int32_t)(velReport);

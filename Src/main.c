@@ -150,8 +150,12 @@ int main(void)
 	/*初始化栅极驱动器*/
 	GateDriverConfig();
 
-	/*启用相对式*/
-//	EncoderIncrementalModeEnable();
+	#if ENCODER_MODE == Encoder_IncrementalMode
+	
+	/*使能增量式*/
+	EncoderIncrementalModeEnable();
+	
+	#endif
 	
 	/*使能PWM, 设定参数*/
 	MotorEnable();

@@ -29,7 +29,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#if EncoderType == Encoder_TLE5012
+#if ENCODER_TYPE == Encoder_TLE5012
 	#define SPI_TX_ON           GPIOB->MODER &= 0xFFFFF3FF; GPIOB->MODER |= 0x00000800	// PB5--MOSI复用
 	#define SPI_TX_OFF          GPIOB->MODER &= 0xFFFFF3FF; GPIOB->MODER |= 0x00000000	//PB5--复位(输入模式)
 
@@ -45,7 +45,10 @@
 	#define TLE5012_Command_ReadUpdatedValue_AngleValue		0x8421	
 
 	#define TLE5012_Command_ReadCurrentValue_AngularSpeed 	0x8031	
-	#define TLE5012_Command_ReadUpdatedValue_AngularSpeed		0x8431	
+	#define TLE5012_Command_ReadUpdatedValue_AngularSpeed	0x8431	
+	
+	#define TLE5012_AbsoluteModeResolution					32768.f
+	#define TLE5012_IncrementalModeResolution				4096.f
 #else
 #error "Encoder Type Invalid"
 #endif
@@ -54,7 +57,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-#if EncoderType == Encoder_TLE5012
+#if ENCODER_TYPE == Encoder_TLE5012
 	struct Encoder_t
 	{
 		uint16_t MecAngle_15bit;
@@ -72,6 +75,7 @@
 		float EleAngularSpeed_rad;
 		float AvgEleAngularSpeed_degree;
 		float AvgEleAngularSpeed_rad;
+		float OriginalMecAngle_degree;
 	};
 #else
 #error "Encoder Type Invalid"
@@ -82,7 +86,7 @@
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
 
-#if EncoderType == Encoder_TLE5012
+#if ENCODER_TYPE == Encoder_TLE5012
 	void GetPositionImformation(void);
 	void GetMecAngle_15bit(void);
 	void GetMecAngle_degree(void);

@@ -40,16 +40,16 @@ struct Encoder_t Encoder;
 
 void GetPositionImformation(void)
 {
-	#if EncoderType == Encoder_TLE5012
+	#if ENCODER_TYPE == Encoder_TLE5012
+		#if ENCODER_MODE == Encoder_AbsoluteMode
+	
 		GetMecAngle_15bit();	//读取编码器角度值寄存器
+	
+		#endif
 		GetMecAngle_degree(); //计算角度制机械角度(0~360)
-		GetMecAngle_rad(); //计算弧度制机械角度(0~360)
 		GetMecAngularSpeed_degree(); //计算角度制机械角速度
-		GetMecAngularSpeed_rad(); //计算弧度制机械角速度
 		GetAvgMecAngularSpeed_degree(); //计算角度制机械角速度均值
-		GetAvgMecAngularSpeed_rad(); //计算弧度制机械角速度均值
 		CalculateEleAngle_degree(); //计算角度制电角度(0~360 * p)
-		CalculateEleAngle_rad(); //计算弧度制电角度(0~360 * p)
 		GetEleAngularSpeed_degree(); //计算角度制电角速度
 		GetEleAngularSpeed_rad(); //计算弧度制电角速度
 		GetAvgEleAngularSpeed_degree(); //计算角度制电角速度均值
@@ -59,7 +59,7 @@ void GetPositionImformation(void)
 	#endif
 }
 
-#if EncoderType == Encoder_TLE5012
+#if ENCODER_TYPE == Encoder_TLE5012
 	void GetMecAngle_15bit(void)
 	{
 		Encoder.MecAngle_15bit = (TLE5012_ReadRegister(TLE5012_Command_ReadCurrentValue_AngleValue) & 0x7FFF);
@@ -67,12 +67,28 @@ void GetPositionImformation(void)
 
 	void GetMecAngle_degree(void)
 	{
-		Encoder.MecAngle_degree = 360.f * (float)Encoder.MecAngle_15bit / 32768.0f;
+		#if ENCODER_MODE == Encoder_AbsoluteMode
+		
+		Encoder.MecAngle_degree = 360.f * (float)Encoder.MecAngle_15bit / TLE5012_AbsoluteModeResolution;
+		
+		#elif ENCODER_MODE == Encoder_IncrementalMode
+		
+		Encoder.MecAngle_degree = Encoder.OriginalMecAngle_degree + ((float)TIM2->CNT / TLE5012_IncrementalModeResolution * 4.f) * 360.f;
+		
+		if(Encoder.MecAngle_degree >= 360.f)
+		{
+			Encoder.MecAngle_degree -= 360.f;
+		}
+		
+		#else
+		#error "Encoder Mode Invalid"
+		#endif
+
 	}
 
 	void GetMecAngle_rad(void)
 	{
-		Encoder.MecAngle_rad = (float)Encoder.MecAngle_15bit / 32768.0f * 2.0f * PI;
+		Encoder.MecAngle_rad = (float)Encoder.MecAngle_15bit / TLE5012_AbsoluteModeResolution * 2.0f * PI;
 	}
 
 	void GetMecAngularSpeed_degree(void)
@@ -135,7 +151,7 @@ void GetPositionImformation(void)
 
 	void CalculateEleAngle_degree(void)
 	{
-		float normPos = fmodf(Encoder.MecAngle_15bit, 32768);	
+		float normPos = fmodf(Encoder.MecAngle_15bit, TLE5012_AbsoluteModeResolution);	
 		
 		uint32_t index = UtilBiSearchInt(MecAngleRef, normPos, sizeof(MecAngleRef)/sizeof(MecAngleRef[0]));
 
@@ -169,23 +185,6 @@ void GetPositionImformation(void)
 		Encoder.AvgEleAngularSpeed_rad = (Encoder.AvgEleAngularSpeed_degree / 360.f) * 2.0f * PI;
 	}
 
-	void GetMecAngularSpeed_Encoder_15bit(void)
-	{
-		uint16_t data = 0;
-		int16_t val = 0;
-		data = TLE5012_ReadRegister(TLE5012_Command_ReadCurrentValue_AngularSpeed);
-		// uint16 left shift
-		// Pay attention to the type convertion :unsigned to sign
-		val = (data << 1);
-		// Sign16 right shift 符号位不动
-		Encoder.MecAngularSpeed_Encoder_15bit = (val << 1);
-	}
-
-	void GetMecAngularSpeed_Encoder(void)
-	{
-		Encoder.MecAngularSpeed_Encoder = (float)Encoder.MecAngularSpeed_Encoder_15bit * 32.48776625f;
-	}
-
 	uint16_t TLE5012_ReadRegister(uint16_t command)
 	{
 		uint16_t data = 0;
@@ -207,7 +206,13 @@ void GetPositionImformation(void)
 	
 	void EncoderIncrementalModeEnable(void)
 	{
+		/*启动TIM2增量式编码器模式*/
 		HAL_TIM_Encoder_Start(&htim2, TIM_CHANNEL_ALL);
+		
+		/*读取初始机械角度*/
+		GetMecAngle_15bit();
+		
+		Encoder.OriginalMecAngle_degree = 360.f * (float)Encoder.MecAngle_15bit / TLE5012_AbsoluteModeResolution;
 	}
 	
 #else

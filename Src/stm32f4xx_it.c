@@ -306,19 +306,16 @@ void ADC_IRQHandler(void)
 									/*利用实际q轴电流与转子电角速度计算实际dq轴电压*/
 									CalculateVoltage_dq(CoordinateTransformation.CurrentQ, &CoordinateTransformation.VoltageD, &CoordinateTransformation.VoltageQ, Encoder.AvgEleAngularSpeed_rad);
 									
-									/*计算电磁转矩*/
-									CalculateElectromagneticTorque(CoordinateTransformation.CurrentQ, &MotorDynamicParameter.ElectromagneticTorque);
-									
 									/*电流环PI控制器*/
 									CurrentControlLoop(CurrentLoop.ExpectedCurrentD, CurrentLoop.ExpectedCurrentQ, CoordinateTransformation.CurrentD, CoordinateTransformation.CurrentQ, &CurrentLoop.ControlCurrentD, &CurrentLoop.ControlCurrentQ);
 									
 									/*将目标q轴电流变换为q轴电压*/
-									CurrentVoltageTransform(CurrentLoop.ControlCurrentQ, &CurrentLoop.ControlVoltageD, &CurrentLoop.ControlVoltageQ, Encoder.AvgEleAngularSpeed_rad);
+									CurrentVoltageTransform(CoordinateTransformation.CurrentQ, &CurrentLoop.ControlVoltageD, &CurrentLoop.ControlVoltageQ, Encoder.AvgEleAngularSpeed_rad);
 									
 									/*进行逆Park变换, 将转子坐标系下的dq轴电压转换为定子坐标系下的AlphaBeta轴电压*/
 									InverseParkTransform_TwoPhase(CurrentLoop.ControlVoltageD, CurrentLoop.ControlVoltageQ, &CoordinateTransformation.VoltageAlpha, &CoordinateTransformation.VoltageBeta, Encoder.EleAngle_degree + MotorStaticParameter.PowerAngleCompensation_degree);
 									
-									/*利用SVPWM算法调制正弦波*/
+									/*利用SVPWM算法调制电压矢量*/
 									SpaceVectorPulseWidthModulation(CoordinateTransformation.VoltageAlpha, CoordinateTransformation.VoltageBeta);
 									
 									UART_Transmit_DMA("%d\t",(int)(MotorDynamicParameter.CurrentPhaseA * 1000));

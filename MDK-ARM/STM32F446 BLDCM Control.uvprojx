@@ -314,7 +314,7 @@
           <Cads>
             <interw>1</interw>
             <Optim>5</Optim>
-            <oTime>0</oTime>
+            <oTime>1</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>0</OneElfS>
             <Strict>0</Strict>
@@ -394,11 +394,6 @@
           <GroupName>Application/User</GroupName>
           <Files>
             <File>
-              <FileName>util.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\util.c</FilePath>
-            </File>
-            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Src/main.c</FilePath>
@@ -437,6 +432,11 @@
               <FileName>usart.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Src/usart.c</FilePath>
+            </File>
+            <File>
+              <FileName>util.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\util.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_it.c</FileName>

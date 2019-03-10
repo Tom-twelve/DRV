@@ -80,11 +80,11 @@ struct MotorStaticParameter_t
 
 #define DivideNum  20	//将360度n等分, 每次电角度增量为(360/DivideNum)
 
-#if		PhaseSequence == PositivePhase
+#if		PHASE_SEQUENCE == PositivePhase
 #define CCR_PhaseA      	TIM8->CCR3
 #define CCR_PhaseB          TIM8->CCR2
 #define CCR_PhaseC          TIM8->CCR1
-#elif	PhaseSequence == NegativePhase
+#elif	PHASE_SEQUENCE == NegativePhase
 #define CCR_PhaseA          TIM8->CCR1
 #define CCR_PhaseB          TIM8->CCR2
 #define CCR_PhaseC          TIM8->CCR3

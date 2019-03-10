@@ -59,7 +59,7 @@ int utils_map_int(int x, int in_min, int in_max, int out_min, int out_max)
 }
 
 
-average_filter_t UtilAverageFilter(average_filter_t valNew,average_filter_t arr[], uint32_t *index, average_filter_t *pSum)
+Avg_filter_t UtilAvgFilter(Avg_filter_t valNew,Avg_filter_t arr[], uint32_t *index, Avg_filter_t *pSum)
 {
 //	if (*pSum > arr[*index])//无符号整形时的处理
 		*pSum -= arr[*index];
@@ -68,9 +68,9 @@ average_filter_t UtilAverageFilter(average_filter_t valNew,average_filter_t arr[
 	*pSum       += valNew;
 	arr[*index] = valNew;
 	(*index)++;
-	*index = ((*index)) < AVERAGE_NUM ? *index : 0u;
+	*index = ((*index)) < Avg_NUM ? *index : 0u;
 
-	return (*pSum) / AVERAGE_NUM;
+	return (*pSum) / Avg_NUM;
 }
 
 

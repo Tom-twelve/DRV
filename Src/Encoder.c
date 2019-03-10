@@ -30,8 +30,8 @@
 
 /* CODE BEGIN PV */
 
-extern const short int ElectricalAngleRef[DivideNum * (uint8_t)MotorMagnetPairs + 2];
-extern const int MechanicalAngleRef[DivideNum * (uint8_t)MotorMagnetPairs + 2];
+extern const short int EleAngleRef[DivideNum * (uint8_t)MotorMagnetPairs + 2];
+extern const int MecAngleRef[DivideNum * (uint8_t)MotorMagnetPairs + 2];
 struct Encoder_t Encoder;
 
 /* CODE END PV */
@@ -41,49 +41,49 @@ struct Encoder_t Encoder;
 void GetPositionImformation(void)
 {
 	#if EncoderType == Encoder_TLE5012
-		GetMechanicalAngle_15bit();	//读取编码器角度值寄存器
-		GetMechanicalAngle_degree(); //计算角度制机械角度(0~360)
-		GetMechanicalAngle_rad(); //计算弧度制机械角度(0~360)
-		GetMechanicalAngularSpeed_degree(); //计算角度制机械角速度
-		GetMechanicalAngularSpeed_rad(); //计算弧度制机械角速度
-		GetAverageMechanicalAngularSpeed_degree(); //计算角度制机械角速度均值
-		GetAverageMechanicalAngularSpeed_rad(); //计算弧度制机械角速度均值
-		CalculateElectricalAngle_degree(); //计算角度制电角度(0~360 * p)
-		CalculateElectricalAngle_rad(); //计算弧度制电角度(0~360 * p)
-		GetElectricalAngularSpeed_degree(); //计算角度制电角速度
-		GetElectricalAngularSpeed_rad(); //计算弧度制电角速度
-		GetAverageElectricalAngularSpeed_degree(); //计算角度制电角速度均值
-		GetAverageElectricalAngularSpeed_rad(); //计算弧度制电角速度均值
+		GetMecAngle_15bit();	//读取编码器角度值寄存器
+		GetMecAngle_degree(); //计算角度制机械角度(0~360)
+		GetMecAngle_rad(); //计算弧度制机械角度(0~360)
+		GetMecAngularSpeed_degree(); //计算角度制机械角速度
+		GetMecAngularSpeed_rad(); //计算弧度制机械角速度
+		GetAvgMecAngularSpeed_degree(); //计算角度制机械角速度均值
+		GetAvgMecAngularSpeed_rad(); //计算弧度制机械角速度均值
+		CalculateEleAngle_degree(); //计算角度制电角度(0~360 * p)
+		CalculateEleAngle_rad(); //计算弧度制电角度(0~360 * p)
+		GetEleAngularSpeed_degree(); //计算角度制电角速度
+		GetEleAngularSpeed_rad(); //计算弧度制电角速度
+		GetAvgEleAngularSpeed_degree(); //计算角度制电角速度均值
+		GetAvgEleAngularSpeed_rad(); //计算弧度制电角速度均值
 	#else
 	#error "Encoder Type Invalid"
 	#endif
 }
 
 #if EncoderType == Encoder_TLE5012
-	void GetMechanicalAngle_15bit(void)
+	void GetMecAngle_15bit(void)
 	{
-		Encoder.MechanicalAngle_15bit = (TLE5012_ReadRegister(TLE5012_Command_ReadCurrentValue_AngleValue) & 0x7FFF);
+		Encoder.MecAngle_15bit = (TLE5012_ReadRegister(TLE5012_Command_ReadCurrentValue_AngleValue) & 0x7FFF);
 	}
 
-	void GetMechanicalAngle_degree(void)
+	void GetMecAngle_degree(void)
 	{
-		Encoder.MechanicalAngle_degree = 360.f * (float)Encoder.MechanicalAngle_15bit / 32768.0f;
+		Encoder.MecAngle_degree = 360.f * (float)Encoder.MecAngle_15bit / 32768.0f;
 	}
 
-	void GetMechanicalAngle_rad(void)
+	void GetMecAngle_rad(void)
 	{
-		Encoder.MechanicalAngle_rad = (float)Encoder.MechanicalAngle_15bit / 32768.0f * 2.0f * PI;
+		Encoder.MecAngle_rad = (float)Encoder.MecAngle_15bit / 32768.0f * 2.0f * PI;
 	}
 
-	void GetMechanicalAngularSpeed_degree(void)
+	void GetMecAngularSpeed_degree(void)
 	{
-		float presentMechanicalAngle = 0;
-		static float lastMechanicalAngle = 0;
+		float presentMecAngle = 0;
+		static float lastMecAngle = 0;
 		float angleDifference = 0;
 		
-		presentMechanicalAngle = Encoder.MechanicalAngle_degree;
+		presentMecAngle = Encoder.MecAngle_degree;
 		
-		angleDifference = presentMechanicalAngle - lastMechanicalAngle;
+		angleDifference = presentMecAngle - lastMecAngle;
 		
 		if(angleDifference > 180.f)
 		{
@@ -95,81 +95,81 @@ void GetPositionImformation(void)
 			angleDifference += 360.f;
 		}
 		
-		Encoder.MechanicalAngularSpeed_degree = angleDifference / TLE5012_UpdateTime_2;
+		Encoder.MecAngularSpeed_degree = angleDifference / TLE5012_UpdateTime_2;
 		
-		lastMechanicalAngle = presentMechanicalAngle;
+		lastMecAngle = presentMecAngle;
 	}
 
-	void GetMechanicalAngularSpeed_rad(void)
+	void GetMecAngularSpeed_rad(void)
 	{
-		Encoder.MechanicalAngularSpeed_rad = (Encoder.MechanicalAngularSpeed_degree / 360.f) * 2.0f * PI;
+		Encoder.MecAngularSpeed_rad = (Encoder.MecAngularSpeed_degree / 360.f) * 2.0f * PI;
 	}
 
-	void GetAverageMechanicalAngularSpeed_degree(void)
+	void GetAvgMecAngularSpeed_degree(void)
 	{
 		const uint8_t num = 6;
 		static float array[num] = {0};
 		static uint8_t pos = 0;
 		static float data = 0.0f;
 		static float sum = 0.0f;
-		static float average = 0.0f;
+		static float Avg = 0.0f;
 		float old = array[pos];
 		
-		data = Encoder.MechanicalAngularSpeed_degree;
+		data = Encoder.MecAngularSpeed_degree;
 		
 		array[pos] = data;
 		
 		sum = (sum - old) + data;
 		
-		average = sum / num;
+		Avg = sum / num;
 
 		pos = (pos+1) % num;
 
-		Encoder.AverageMechanicalAngularSpeed_degree = average;
+		Encoder.AvgMecAngularSpeed_degree = Avg;
 	}
 
-	void GetAverageMechanicalAngularSpeed_rad(void)
+	void GetAvgMecAngularSpeed_rad(void)
 	{
-		Encoder.AverageMechanicalAngularSpeed_rad = (Encoder.AverageMechanicalAngularSpeed_degree / 360.f) * 2.0f * PI;
+		Encoder.AvgMecAngularSpeed_rad = (Encoder.AvgMecAngularSpeed_degree / 360.f) * 2.0f * PI;
 	}
 
-	void CalculateElectricalAngle_degree(void)
+	void CalculateEleAngle_degree(void)
 	{
-		float normPos = fmodf(Encoder.MechanicalAngle_15bit, 32768);	
+		float normPos = fmodf(Encoder.MecAngle_15bit, 32768);	
 		
-		uint32_t index = UtilBiSearchInt(MechanicalAngleRef, normPos, sizeof(MechanicalAngleRef)/sizeof(MechanicalAngleRef[0]));
+		uint32_t index = UtilBiSearchInt(MecAngleRef, normPos, sizeof(MecAngleRef)/sizeof(MecAngleRef[0]));
 
 		uint32_t indexPlus1 = index + 1;
 		
-		Encoder.ElectricalAngle_degree = fmodf(utils_map(Encoder.MechanicalAngle_15bit, MechanicalAngleRef[index], MechanicalAngleRef[indexPlus1], ElectricalAngleRef[index], ElectricalAngleRef[indexPlus1]), 360);
+		Encoder.EleAngle_degree = fmodf(utils_map(Encoder.MecAngle_15bit, MecAngleRef[index], MecAngleRef[indexPlus1], EleAngleRef[index], EleAngleRef[indexPlus1]), 360);
 	}
 
-	void CalculateElectricalAngle_rad(void)
+	void CalculateEleAngle_rad(void)
 	{
-		Encoder.ElectricalAngle_rad = (Encoder.ElectricalAngle_degree / 360.f) * 2.0f * PI;
+		Encoder.EleAngle_rad = (Encoder.EleAngle_degree / 360.f) * 2.0f * PI;
 	}
 
-	void GetElectricalAngularSpeed_degree(void)
+	void GetEleAngularSpeed_degree(void)
 	{
-		Encoder.ElectricalAngularSpeed_degree = Encoder.MechanicalAngularSpeed_degree * MotorMagnetPairs;
+		Encoder.EleAngularSpeed_degree = Encoder.MecAngularSpeed_degree * MotorMagnetPairs;
 	}
 
-	void GetElectricalAngularSpeed_rad(void)
+	void GetEleAngularSpeed_rad(void)
 	{
-		Encoder.ElectricalAngularSpeed_rad = (Encoder.ElectricalAngularSpeed_degree / 360.f) * 2.0f * PI;
+		Encoder.EleAngularSpeed_rad = (Encoder.EleAngularSpeed_degree / 360.f) * 2.0f * PI;
 	}
 
-	void GetAverageElectricalAngularSpeed_degree(void)
+	void GetAvgEleAngularSpeed_degree(void)
 	{
-		Encoder.AverageElectricalAngularSpeed_degree = Encoder.AverageMechanicalAngularSpeed_degree * MotorMagnetPairs;
+		Encoder.AvgEleAngularSpeed_degree = Encoder.AvgMecAngularSpeed_degree * MotorMagnetPairs;
 	}
 
-	void GetAverageElectricalAngularSpeed_rad(void)
+	void GetAvgEleAngularSpeed_rad(void)
 	{
-		Encoder.AverageElectricalAngularSpeed_rad = (Encoder.AverageElectricalAngularSpeed_degree / 360.f) * 2.0f * PI;
+		Encoder.AvgEleAngularSpeed_rad = (Encoder.AvgEleAngularSpeed_degree / 360.f) * 2.0f * PI;
 	}
 
-	void GetMechanicalAngularSpeed_Encoder_15bit(void)
+	void GetMecAngularSpeed_Encoder_15bit(void)
 	{
 		uint16_t data = 0;
 		int16_t val = 0;
@@ -178,12 +178,12 @@ void GetPositionImformation(void)
 		// Pay attention to the type convertion :unsigned to sign
 		val = (data << 1);
 		// Sign16 right shift 符号位不动
-		Encoder.MechanicalAngularSpeed_Encoder_15bit = (val << 1);
+		Encoder.MecAngularSpeed_Encoder_15bit = (val << 1);
 	}
 
-	void GetMechanicalAngularSpeed_Encoder(void)
+	void GetMecAngularSpeed_Encoder(void)
 	{
-		Encoder.MechanicalAngularSpeed_Encoder = (float)Encoder.MechanicalAngularSpeed_Encoder_15bit * 32.48776625f;
+		Encoder.MecAngularSpeed_Encoder = (float)Encoder.MecAngularSpeed_Encoder_15bit * 32.48776625f;
 	}
 
 	uint16_t TLE5012_ReadRegister(uint16_t command)

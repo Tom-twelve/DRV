@@ -57,21 +57,21 @@
 #if EncoderType == Encoder_TLE5012
 	struct Encoder_t
 	{
-		uint16_t MechanicalAngle_15bit;
-		int16_t MechanicalAngularSpeed_Encoder_15bit;
-		float MechanicalAngularSpeed_Encoder;
-		float MechanicalAngle_degree;
-		float MechanicalAngle_rad;
-		float MechanicalAngularSpeed_degree;
-		float MechanicalAngularSpeed_rad;
-		float AverageMechanicalAngularSpeed_degree;
-		float AverageMechanicalAngularSpeed_rad;
-		float ElectricalAngle_degree;
-		float ElectricalAngle_rad;
-		float ElectricalAngularSpeed_degree;
-		float ElectricalAngularSpeed_rad;
-		float AverageElectricalAngularSpeed_degree;
-		float AverageElectricalAngularSpeed_rad;
+		uint16_t MecAngle_15bit;
+		int16_t MecAngularSpeed_Encoder_15bit;
+		float MecAngularSpeed_Encoder;
+		float MecAngle_degree;
+		float MecAngle_rad;
+		float MecAngularSpeed_degree;
+		float MecAngularSpeed_rad;
+		float AvgMecAngularSpeed_degree;
+		float AvgMecAngularSpeed_rad;
+		float EleAngle_degree;
+		float EleAngle_rad;
+		float EleAngularSpeed_degree;
+		float EleAngularSpeed_rad;
+		float AvgEleAngularSpeed_degree;
+		float AvgEleAngularSpeed_rad;
 	};
 #else
 #error "Encoder Type Invalid"
@@ -84,19 +84,19 @@
 
 #if EncoderType == Encoder_TLE5012
 	void GetPositionImformation(void);
-	void GetMechanicalAngle_15bit(void);
-	void GetMechanicalAngle_degree(void);
-	void GetMechanicalAngle_rad(void);
-	void GetMechanicalAngularSpeed_degree(void);
-	void GetMechanicalAngularSpeed_rad(void);
-	void GetAverageMechanicalAngularSpeed_degree(void);
-	void GetAverageMechanicalAngularSpeed_rad(void);
-	void CalculateElectricalAngle_degree(void);
-	void CalculateElectricalAngle_rad(void);
-	void GetElectricalAngularSpeed_degree(void);
-	void GetElectricalAngularSpeed_rad(void);
-	void GetAverageElectricalAngularSpeed_degree(void);
-	void GetAverageElectricalAngularSpeed_rad(void);
+	void GetMecAngle_15bit(void);
+	void GetMecAngle_degree(void);
+	void GetMecAngle_rad(void);
+	void GetMecAngularSpeed_degree(void);
+	void GetMecAngularSpeed_rad(void);
+	void GetAvgMecAngularSpeed_degree(void);
+	void GetAvgMecAngularSpeed_rad(void);
+	void CalculateEleAngle_degree(void);
+	void CalculateEleAngle_rad(void);
+	void GetEleAngularSpeed_degree(void);
+	void GetEleAngularSpeed_rad(void);
+	void GetAvgEleAngularSpeed_degree(void);
+	void GetAvgEleAngularSpeed_rad(void);
 	uint16_t TLE5012_ReadRegister(uint16_t command);
 	void EncoderIncrementalModeEnable(void);
 #else

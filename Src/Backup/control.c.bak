@@ -57,21 +57,21 @@ void MotorEnable(void)
 										break;
 		
 		case CurrentControlMode : 		/*设定q轴电流*/
-										CurrentLoop.ExpectedCurrentQ = 10.f;
-
+										CurrentLoop.ExpectedCurrentQ = 1.f;
+		
 										/*设定电流环PI参数*/
-										CurrentLoop.Kp_D = 1.0f;
+										CurrentLoop.Kp_D = 0.f;
 										
-										CurrentLoop.Ki_D = 1.0f;
+										CurrentLoop.Ki_D = 0.f;
 										
-										CurrentLoop.Kp_Q = 3.0f;
+										CurrentLoop.Kp_Q = 1.0f;
 
-										CurrentLoop.Ki_Q = 1.5f;
+										CurrentLoop.Ki_Q = 1.0f;
 		
 										break;
 		
 		case SpeedControlMode : 		/*设定角速度(°/s)*/
-										SpeedLoop.ExpectedMechanicalAngularSpeed = 100.f * 360.f;	//degree per second
+										SpeedLoop.ExpectedMecAngularSpeed = 100.f * 360.f;	//degree per second
 										
 										/*设定加速度*/
 										SpeedLoop.Acceleration = 25.f * 360.f;	//degree per quadratic seconds
@@ -104,7 +104,7 @@ void MotorEnable(void)
 										/*设定位置环PI参数*/
 										PositionLoop.Kp = 0.0001f;
 										
-										PositionLoop.Ki = 0.f;
+										PositionLoop.Kd = 0.f;
 		
 										break;
 	}
@@ -129,6 +129,7 @@ void CurrentControlLoop(float expectedCurrentD, float expectedCurrentQ, float re
 	integralErrorD += errorD * CarrierPeriod_s;
 	integralErrorQ += errorQ * CarrierPeriod_s;
 	
+	/*积分限幅*/
 	if(integralErrorD >= CurrentControlLoopIntegralErrorLimit_D)
 	{
 		integralErrorD = CurrentControlLoopIntegralErrorLimit_D;
@@ -153,17 +154,18 @@ void CurrentControlLoop(float expectedCurrentD, float expectedCurrentQ, float re
    /**
    * @brief		Speed control loop
    */
-void SpeedControlLoop(float expectedMechanicalAngularSpeed, float realityMechanicalAngularSpeed, float *controlCurrentQ)
+void SpeedControlLoop(float expectedMecAngularSpeed, float realityMecAngularSpeed, float *controlCurrentQ)
 {
 	float error = 0;
 	static float integralError = 0;
 	
-	error = expectedMechanicalAngularSpeed - realityMechanicalAngularSpeed;
+	error = expectedMecAngularSpeed - realityMecAngularSpeed;
 	
 	*controlCurrentQ = SpeedLoop.Kp * error + SpeedLoop.Ki * integralError;
 	
 	integralError += error * CarrierPeriod_s;
 	
+	/*积分限幅*/
 	if(integralError >= SpeedControlLoopIntegralErrorLimit)
 	{
 		integralError = SpeedControlLoopIntegralErrorLimit;
@@ -178,29 +180,16 @@ void SpeedControlLoop(float expectedMechanicalAngularSpeed, float realityMechani
    /**
    * @brief		Position control loop
    */
-void PositionControlLoop(float expectedMechanicalAngle, float realityMechanicalAngle, float *controlCurrentQ)
+void PositionControlLoop(float expectedMecAngle, float realityMecAngle, float *controlCurrentQ)
 {
 	float error = 0;
-	static float integralError = 0;
 	static float lastError = 0;
 	
-	error = expectedMechanicalAngle - realityMechanicalAngle;
+	error = expectedMecAngle - realityMecAngle;
 	
-	*controlCurrentQ = PositionLoop.Kp * error + PositionLoop.Ki * integralError + PositionLoop.Kd * (error - lastError);
-	
-	integralError += error * CarrierPeriod_s;
+	*controlCurrentQ = PositionLoop.Kp * error + PositionLoop.Kd * (error - lastError);
 	
 	lastError = error;
-	
-	if(integralError >= PositionControlLoopIntegralErrorLimit)
-	{
-		integralError = PositionControlLoopIntegralErrorLimit;
-	}
-	
-	else if(integralError <= -PositionControlLoopIntegralErrorLimit)
-	{
-		integralError = -PositionControlLoopIntegralErrorLimit;
-	}
 }
 
    /**

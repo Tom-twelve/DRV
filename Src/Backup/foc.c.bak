@@ -49,7 +49,7 @@ extern struct CurrentLoop_t CurrentLoop;
 	uint32_t TC = 0;
 void SpaceVectorPulseWidthModulation(float voltageAlpha, float voltageBeta)
 {
-	const float StandardizationCoefficient = SQRT3 * CarrierPeriod_us_square / GeneratrixVoltage;
+	const float StandardizationCoefficient = SQRT3 * TIM8_Autoreload / GeneratrixVoltage;
 	float U1 = 0;
 	float U2 = 0;
 	float U3 = 0;
@@ -134,17 +134,17 @@ void SpaceVectorPulseWidthModulation(float voltageAlpha, float voltageBeta)
 			 break;
 	}
 
-	if (T1 + T2 > CarrierPeriod_us_square)
+	if (T1 + T2 > TIM8_Autoreload)
 	{
 		t1  = T1;
 		t2  = T2;
-		T1  = t1 / (t1 + t2) * CarrierPeriod_us_square;
-		T2  = t2 / (t1 + t2) * CarrierPeriod_us_square;
+		T1  = t1 / (t1 + t2) * TIM8_Autoreload;
+		T2  = t2 / (t1 + t2) * TIM8_Autoreload;
 	}
 
-	TA  = (CarrierPeriod_us_square - T1 - T2) / 2.0f;
-	TB  = (CarrierPeriod_us_square + T1 - T2) / 2.0f;
-	TC  = (CarrierPeriod_us_square + T1 + T2) / 2.0f;
+	TA  = (TIM8_Autoreload - T1 - T2) / 2.0f;
+	TB  = (TIM8_Autoreload + T1 - T2) / 2.0f;
+	TC  = (TIM8_Autoreload + T1 + T2) / 2.0f;
 
 	switch (sectionFlag)
 	{
@@ -178,9 +178,9 @@ void SpaceVectorPulseWidthModulation(float voltageAlpha, float voltageBeta)
 			 CCR_PhaseC = TB; 
 			 break;
 
-	default: CCR_PhaseA = CarrierPeriod_us_square; 
-			 CCR_PhaseB = CarrierPeriod_us_square; 
-			 CCR_PhaseC = CarrierPeriod_us_square; 
+	default: CCR_PhaseA = TIM8_Autoreload; 
+			 CCR_PhaseB = TIM8_Autoreload; 
+			 CCR_PhaseC = TIM8_Autoreload; 
 			 break;
 	}
 }
@@ -192,28 +192,28 @@ void SpaceVectorPulseWidthModulation(float voltageAlpha, float voltageBeta)
    * @param[in]  currentPhaseC  		current of phase C
    * @param[out] currentD     			points to output rotor reference frame d
    * @param[out] currentQ     			points to output rotor reference frame q
-   * @param[in]  electricalAngle		value of electrical angle
+   * @param[in]  EleAngle		value of Ele angle
    */
-void ParkTransform(float currentPhaseA, float currentPhaseB, float currentPhaseC, float *currentD, float *currentQ, float electricalAngle)
+void ParkTransform(float currentPhaseA, float currentPhaseB, float currentPhaseC, float *currentD, float *currentQ, float EleAngle)
 {
 	const float Coefficient_ConstantPower = 0.8164965809f;
 	const float Coefficient_ConstantAmplitude = 0.6666666667f;
-	float electricalAngleSineValue1 = 0;
-	float electricalAngleCosineValue1 = 0;
-	float electricalAngleSineValue2 = 0;
-	float electricalAngleCosineValue2 = 0;
-	float electricalAngleSineValue3 = 0;
-	float electricalAngleCosineValue3 = 0;
+	float EleAngleSineValue1 = 0;
+	float EleAngleCosineValue1 = 0;
+	float EleAngleSineValue2 = 0;
+	float EleAngleCosineValue2 = 0;
+	float EleAngleSineValue3 = 0;
+	float EleAngleCosineValue3 = 0;
 	
-	arm_sin_cos_f32((float)electricalAngle,  &electricalAngleSineValue1,  &electricalAngleCosineValue1);
+	arm_sin_cos_f32((float)EleAngle,  &EleAngleSineValue1,  &EleAngleCosineValue1);
 	
-	arm_sin_cos_f32((float)(electricalAngle - 120.f),  &electricalAngleSineValue2,  &electricalAngleCosineValue2);
+	arm_sin_cos_f32((float)(EleAngle - 120.f),  &EleAngleSineValue2,  &EleAngleCosineValue2);
 	
-	arm_sin_cos_f32((float)(electricalAngle + 120.f),  &electricalAngleSineValue3,  &electricalAngleCosineValue3);
+	arm_sin_cos_f32((float)(EleAngle + 120.f),  &EleAngleSineValue3,  &EleAngleCosineValue3);
 	
-	*currentD = Coefficient_ConstantAmplitude * (currentPhaseA * electricalAngleSineValue3 + currentPhaseB * electricalAngleSineValue2 + currentPhaseC * electricalAngleSineValue1);
+	*currentD = Coefficient_ConstantAmplitude * (currentPhaseA * EleAngleSineValue1 + currentPhaseB * EleAngleSineValue2 + currentPhaseC * EleAngleSineValue3);
 	
-	*currentQ = Coefficient_ConstantAmplitude * (currentPhaseA * electricalAngleCosineValue3 + currentPhaseB * electricalAngleCosineValue2 + currentPhaseC * electricalAngleCosineValue1);
+	*currentQ = Coefficient_ConstantAmplitude * (currentPhaseA * EleAngleCosineValue1 + currentPhaseB * EleAngleCosineValue2 + currentPhaseC * EleAngleCosineValue3);
 }
 
    /**
@@ -222,16 +222,16 @@ void ParkTransform(float currentPhaseA, float currentPhaseB, float currentPhaseC
    * @param[in]  voltageQ       	input coordinate of rotor reference frame q
    * @param[out] voltageAlpha 		output two-phase orthogonal vector axis alpha
    * @param[out] voltageBeta  		output two-phase orthogonal vector axis beta
-   * @param[in]  electricalAngle	value of electrical angle
+   * @param[in]  EleAngle	value of Ele angle
    */
-void InverseParkTransform_TwoPhase(float voltageD, float voltageQ, float *voltageAlpha, float *voltageBeta, float electricalAngle)
+void InverseParkTransform_TwoPhase(float voltageD, float voltageQ, float *voltageAlpha, float *voltageBeta, float EleAngle)
 {
-	float electricalAngleSineValue = 0;
-	float electricalAngleCosineValue = 0;
+	float EleAngleSineValue = 0;
+	float EleAngleCosineValue = 0;
 	
-	arm_sin_cos_f32((float)electricalAngle,  &electricalAngleSineValue,  &electricalAngleCosineValue);
+	arm_sin_cos_f32((float)EleAngle,  &EleAngleSineValue,  &EleAngleCosineValue);
 	
-	arm_inv_park_f32((float)voltageD, (float)voltageQ, voltageAlpha, voltageBeta, (float)electricalAngleSineValue, (float)electricalAngleCosineValue);
+	arm_inv_park_f32((float)voltageD, (float)voltageQ, voltageAlpha, voltageBeta, (float)EleAngleSineValue, (float)EleAngleCosineValue);
 }
 
    /**
@@ -250,8 +250,6 @@ void ClarkTransform(float currentPhaseA, float currentPhaseB, float currentPhase
 	*currentAlpha = Coefficient_ConstantAmplitude * ((float)currentPhaseA - 0.5f * (float)currentPhaseB - 0.5f * (float)currentPhaseC);
 	
 	*currentBeta  = 0.5f * SQRT3 * Coefficient_ConstantAmplitude * ((float)currentPhaseB - (float)currentPhaseC);
-	
-	CoordinateTransformation.CurrentVector = sqrtf(Square(CoordinateTransformation.CurrentAlpha) + Square(CoordinateTransformation.CurrentBeta));	//总电流矢量大小
 }
 
    /**
@@ -261,11 +259,13 @@ void ClarkTransform(float currentPhaseA, float currentPhaseB, float currentPhase
    * @param[out] voltageD  		voltage of axis d
    * @param[out] voltageQ		voltage of axis q
    */
-void PowerAngleCompensation(float expectedCurrentQ, float *powerAngleCompensation_degree, float *powerAngleCompensation_rad)
+void PowerAngleCompensation(float expectedCurrentQ, float *powerAngleCompensation_degree)
 {
-	*powerAngleCompensation_rad = arcsine((-2 * (InductanceD - InductanceQ) * expectedCurrentQ) / (RotatorFluxLinkage + sqrt_DSP(Square(RotatorFluxLinkage) + 8 * Square(InductanceD - InductanceQ) * Square(expectedCurrentQ))));
+	float powerAngleCompensation_rad = 0;
 	
-	*powerAngleCompensation_degree = *powerAngleCompensation_rad * 360.f	/ (2 * PI);
+	powerAngleCompensation_rad = arcsine((-2 * (InductanceD - InductanceQ) * expectedCurrentQ) / (RotatorFluxLinkage + sqrt_DSP(Square(RotatorFluxLinkage) + 8 * Square(InductanceD - InductanceQ) * Square(expectedCurrentQ))));
+
+	*powerAngleCompensation_degree = powerAngleCompensation_rad * 360.f	/ (2 * PI);
 }
 
    /**
@@ -274,36 +274,16 @@ void PowerAngleCompensation(float expectedCurrentQ, float *powerAngleCompensatio
    * @param[out] voltageD  				voltage of axis d
    * @param[out] voltageQ				voltage of axis q
    */
-void CurrentVoltageTransform(float controlCurrentQ, float *voltageD, float *voltageQ, float actualElectricalAngularSpeed_rad)
+void CurrentVoltageTransform(float controlCurrentQ, float *voltageD, float *voltageQ, float actualEleAngularSpeed_rad)
 {
 	/*将80%的最大不失真Uq用于提供转速, 20%的最大不失真Uq用于提供转矩*/
-	const float targetElectricalAngularSpeed_rad = 0.8f * MaximumDistortionlessVoltage / RotatorFluxLinkage;
+	const float targetEleAngularSpeed_rad = 0.35f * MaximumDistortionlessVoltage / RotatorFluxLinkage;
 	const float maximumTorque = 0.2f * (MaximumDistortionlessVoltage / PhaseResistance) * 1.5f * MotorMagnetPairs * RotatorFluxLinkage;
-	const float Kp = 15.0f;
-	const float Ki = 15.0f;
-	static float integralError = 0;
-	float error = 0;
-	float controlElectricalAngularSpeed_rad = 0;
 	
-	/*控制转速*/
-	if(MotorDynamicParameter.ElectromagneticTorque <= 0.8f * maximumTorque)
-	{
-		error = targetElectricalAngularSpeed_rad - actualElectricalAngularSpeed_rad;
-			
-		controlElectricalAngularSpeed_rad = Kp * error + Ki * integralError;
-			
-		integralError += error * CarrierPeriod_s;
-		
-	}
-	else if(MotorDynamicParameter.ElectromagneticTorque > 0.8f * maximumTorque)
-	{
-		controlElectricalAngularSpeed_rad = actualElectricalAngularSpeed_rad;
-	}
-		
 	/*输出电压*/
-	*voltageD = -controlElectricalAngularSpeed_rad * InductanceQ * controlCurrentQ;
+	*voltageD = -targetEleAngularSpeed_rad * InductanceQ * controlCurrentQ;
 	
-	*voltageQ = PhaseResistance * controlCurrentQ + controlElectricalAngularSpeed_rad * RotatorFluxLinkage;
+	*voltageQ = PhaseResistance * controlCurrentQ + targetEleAngularSpeed_rad * RotatorFluxLinkage;
 }
 
    /**
@@ -311,13 +291,13 @@ void CurrentVoltageTransform(float controlCurrentQ, float *voltageD, float *volt
    * @param[in]  actualCurrentQ  					current of axis q
    * @param[out] voltageD  							voltage of axis d
    * @param[out] voltageQ							voltage of axis q
-   * @param[in]  actualElectricalAngularSpeed  		actual electrical angular speed(rad/s)
+   * @param[in]  actualEleAngularSpeed  		actual Ele angular speed(rad/s)
    */
-void CalculateVoltage_dq(float actualCurrentQ, float *voltageD, float *voltageQ, float actualElectricalAngularSpeed_rad)
+void CalculateVoltage_dq(float actualCurrentQ, float *voltageD, float *voltageQ, float actualEleAngularSpeed_rad)
 {
-	*voltageD = -actualElectricalAngularSpeed_rad * InductanceQ * actualCurrentQ;
+	*voltageD = -actualEleAngularSpeed_rad * InductanceQ * actualCurrentQ;
 	
-	*voltageQ = PhaseResistance * actualCurrentQ + actualElectricalAngularSpeed_rad * RotatorFluxLinkage;
+	*voltageQ = PhaseResistance * actualCurrentQ + actualEleAngularSpeed_rad * RotatorFluxLinkage;
 }
 
    /**
@@ -331,19 +311,19 @@ void CalculateElectromagneticTorque(float actualCurrentQ, float *electromagnetic
 }
 
    /**
-   * @brief  Measure reference electrical angle
+   * @brief  Measure reference Ele angle
    * @param[in]  voltageD      voltage of axis d
    */
-void MeasureElectricalAngle(float voltageD)
+void MeasureEleAngle(float voltageD)
 {
 	float voltageAlpha = 0;
 	float voltageBeta = 0;
 	int16_t tmpData[2] = {0};
-	int electricalAngle = 0;
+	int EleAngle = 0;
 	static int16_t index_5012b = 1;
 	static int16_t index_bound = 0;
-	static int tempMechanicalAngleRef[DivideNum * (uint8_t)MotorMagnetPairs + 2] = {0};
-	static int tempElectricalAngleRef[DivideNum * (uint8_t)MotorMagnetPairs + 2] = {0};
+	static int tempMecAngleRef[DivideNum * (uint8_t)MotorMagnetPairs + 2] = {0};
+	static int tempEleAngleRef[DivideNum * (uint8_t)MotorMagnetPairs + 2] = {0};
 	static int16_t tmpArray[DivideNum * (uint8_t)MotorMagnetPairs] = {0};
 
 	InverseParkTransform_TwoPhase(voltageD, 0.f, &voltageAlpha, &voltageBeta, 0.f);	//设定Uq = 0, 电角度为零
@@ -358,26 +338,26 @@ void MeasureElectricalAngle(float voltageD)
 		{
 			GetPositionImformation();
 			
-			electricalAngle = j * 360 / DivideNum;
+			EleAngle = j * 360 / DivideNum;
 			
-			InverseParkTransform_TwoPhase(voltageD, 0.f, &voltageAlpha, &voltageBeta, electricalAngle);
+			InverseParkTransform_TwoPhase(voltageD, 0.f, &voltageAlpha, &voltageBeta, EleAngle);
 			
 			SpaceVectorPulseWidthModulation(voltageAlpha, voltageBeta);
 			
-			HAL_Delay(300);
+			HAL_Delay(250);
 
-			tempMechanicalAngleRef[index_5012b] = Encoder.MechanicalAngle_15bit;
+			tempMecAngleRef[index_5012b] = Encoder.MecAngle_15bit;
 
-			if(tempMechanicalAngleRef[index_5012b] < 1000 && tempMechanicalAngleRef[index_5012b - 1] > 10000 && index_5012b > 1)
+			if(tempMecAngleRef[index_5012b] < 1000 && tempMecAngleRef[index_5012b - 1] > 10000 && index_5012b > 1)
 			{
-				tmpData[0] = tempMechanicalAngleRef[index_5012b];
+				tmpData[0] = tempMecAngleRef[index_5012b];
 				
-				tmpData[1] = electricalAngle;
+				tmpData[1] = EleAngle;
 				
 				index_bound = index_5012b;
 			}
 			
-			DMAPRINTF("\t %d \t /*Angle \t %d \t Encoder*/ \t %d\r\n", (int)(electricalAngle), (int)tempMechanicalAngleRef[index_5012b]); 
+			UART_Transmit_DMA("\t/*Angle*/\t %d \t /*Encoder*/\t %d \r\n", (int)(EleAngle), (int)tempMecAngleRef[index_5012b]); 
 		
 			SendBuf();
 
@@ -399,39 +379,39 @@ void MeasureElectricalAngle(float voltageD)
 	
 	for(int i = index_bound, j = 0; i <= DivideNum * (uint8_t)MotorMagnetPairs;i++,j++)
 	{
-		tmpArray[j] =  tempMechanicalAngleRef[i];
+		tmpArray[j] =  tempMecAngleRef[i];
 	}
 	
 	for(int i = index_bound - 1,k = DivideNum * (uint8_t)MotorMagnetPairs; i >= 0; i--, k--)
 	{
-		tempMechanicalAngleRef[k] = tempMechanicalAngleRef[i];
+		tempMecAngleRef[k] = tempMecAngleRef[i];
 	}
 	
 	for(int i = 1, k =0; k <=  DivideNum * (uint8_t)MotorMagnetPairs - index_bound; i++,k++)
 	{
-		tempMechanicalAngleRef[i] = tmpArray[k];
+		tempMecAngleRef[i] = tmpArray[k];
 	}
 	
-	tempElectricalAngleRef[1] = tmpData[1];
+	tempEleAngleRef[1] = tmpData[1];
 	
 	for(int i = 1; i <= DivideNum * (uint8_t)MotorMagnetPairs; i++)
 	{
-		tempElectricalAngleRef[i + 1] = tempElectricalAngleRef[i] + 360 / DivideNum;
+		tempEleAngleRef[i + 1] = tempEleAngleRef[i] + 360 / DivideNum;
 	}
 	
-	tempMechanicalAngleRef[0] = tempMechanicalAngleRef[DivideNum * (uint8_t)MotorMagnetPairs] - 32768;
+	tempMecAngleRef[0] = tempMecAngleRef[DivideNum * (uint8_t)MotorMagnetPairs] - 32768;
 	
-	tempMechanicalAngleRef[DivideNum * (uint8_t)MotorMagnetPairs + 1] = tempMechanicalAngleRef[1] + 32768;
+	tempMecAngleRef[DivideNum * (uint8_t)MotorMagnetPairs + 1] = tempMecAngleRef[1] + 32768;
 
-	tempElectricalAngleRef[0] = tempElectricalAngleRef[1] - 360 / DivideNum;
+	tempEleAngleRef[0] = tempEleAngleRef[1] - 360 / DivideNum;
 
 	for(int i = 0; i < DivideNum * (uint8_t)MotorMagnetPairs + 2; i++)
 	{
-		DMAPRINTF("%d\t,\t%d\t,\r\n", (int)tempElectricalAngleRef[i], (int)tempMechanicalAngleRef[i]);
+		UART_Transmit_DMA("%d\t,\t%d\t,\r\n", (int)tempEleAngleRef[i], (int)tempMecAngleRef[i]);
 		
 		SendBuf();
 	
-		HAL_Delay(10);
+		HAL_Delay(15);
 	}
 }
 

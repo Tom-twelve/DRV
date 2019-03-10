@@ -39,7 +39,6 @@ struct CoordinateTransformation_t
 	float VoltageQ;
 	float CurrentAlpha;
 	float CurrentBeta;
-	float CurrentVector;
 	float CurrentD;
 	float CurrentQ;
 };
@@ -52,9 +51,9 @@ struct MotorDynamicParameter_t
 	float CurrentPhaseA;
 	float CurrentPhaseB;
 	float CurrentPhaseC;
-	float AverageCurrentPhaseA;
-	float AverageCurrentPhaseB;
-	float AverageCurrentPhaseC;
+	float AvgCurrentPhaseA;
+	float AvgCurrentPhaseB;
+	float AvgCurrentPhaseC;
 	float ElectromagneticTorque;
 };
 
@@ -98,14 +97,14 @@ struct MotorStaticParameter_t
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
 void SpaceVectorPulseWidthModulation(float voltageAlpha, float voltageBeta);
-void PowerAngleCompensation(float expectedCurrentQ, float *powerAngleCompensation_degree, float *powerAngleCompensation_rad);
-void ParkTransform(float currentPhaseA, float currentPhaseB, float currentPhaseC, float *currentD, float *currentQ, float electricalAngle);
-void InverseParkTransform_TwoPhase(float voltageD, float voltageQ,float *voltageAlpha,float *voltageBeta, float electricalAngle);
+void PowerAngleCompensation(float expectedCurrentQ, float *powerAngleCompensation_degree);
+void ParkTransform(float currentPhaseA, float currentPhaseB, float currentPhaseC, float *currentD, float *currentQ, float EleAngle);
+void InverseParkTransform_TwoPhase(float voltageD, float voltageQ,float *voltageAlpha,float *voltageBeta, float EleAngle);
 void ClarkTransform(float currentPhaseA, float currentPhaseB, float currentPhaseC, float *currentAlpha, float *currentBeta);
-void CurrentVoltageTransform(float controlCurrentQ, float *voltageD, float *voltageQ, float actualElectricalAngularSpeed_rad);
+void CurrentVoltageTransform(float controlCurrentQ, float *voltageD, float *voltageQ, float actualEleAngularSpeed_rad);
 void CalculateElectromagneticTorque(float actualCurrentQ, float *electromagneticTorque);
-void CalculateVoltage_dq(float actualCurrentQ, float *voltageD, float *voltageQ, float actualElectricalAngularSpeed_rad);
-void MeasureElectricalAngle(float voltageD);
+void CalculateVoltage_dq(float actualCurrentQ, float *voltageD, float *voltageQ, float actualEleAngularSpeed_rad);
+void MeasureEleAngle(float voltageD);
 
 /* USER CODE END PFP */
 

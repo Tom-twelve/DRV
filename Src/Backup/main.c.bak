@@ -101,7 +101,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
-	MotorStaticParameter.MotorMode = TestMode;	//设定模式, 正常工作或测定电角度 ( WorkMode or TestMode )
+	MotorStaticParameter.MotorMode = WorkMode;	//设定模式, 正常工作或测定电角度 ( WorkMode or TestMode )
 	
   /* USER CODE END 1 */
 
@@ -162,7 +162,7 @@ int main(void)
 		
 						break;
 		
-		case TestMode : MeasureElectricalAngle(1.5f);	//测定电角度, 设定d轴电压
+		case TestMode : MeasureEleAngle(0.55f);	//测定电角度, 设定d轴电压
 		
 						break;
 	}

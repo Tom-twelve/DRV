@@ -25,9 +25,9 @@ _Bool EvenParityCheck(uint32_t data);
 int utils_truncate_number_abs(float *number, float max);
 void utils_norm_angle_rad(float *angle);
 float utils_map(float x, float in_min, float in_max, float out_min, float out_max);
-#define AVERAGE_NUM     3
-typedef float average_filter_t;
-average_filter_t UtilAverageFilter(average_filter_t valNew,average_filter_t arr[], uint32_t *index, average_filter_t *pSum);
+#define Avg_NUM     3
+typedef float Avg_filter_t;
+Avg_filter_t UtilAvgFilter(Avg_filter_t valNew,Avg_filter_t arr[], uint32_t *index, Avg_filter_t *pSum);
 float util_norm_float(float val, float minBound, float maxBound, float period);
 int util_norm_int(float val, float minBound, float maxBound, float period);
 uint32_t UtilBiSearchInt(const int sortedIntArr[], int find, uint32_t maxN);

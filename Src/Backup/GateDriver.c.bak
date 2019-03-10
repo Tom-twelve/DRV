@@ -214,8 +214,8 @@ void GateDriverConfig(void)
 		
 		DRV8323_SPI3_ChipDiselect;
 		
-		DMAPRINTF("%d\t",(int)DRV8323_SPI3_FaultStatusRegister[0]);
-		DMAPRINTF("%d\r\n",(int)DRV8323_SPI3_FaultStatusRegister[1]);
+		UART_Transmit_DMA("%d\t",(int)DRV8323_SPI3_FaultStatusRegister[0]);
+		UART_Transmit_DMA("%d\r\n",(int)DRV8323_SPI3_FaultStatusRegister[1]);
 		
 		LL_mDelay(1);
 	}
@@ -268,8 +268,8 @@ void GateDriverConfig(void)
 		
 		DRV8320_SPI3_ChipDiselect;
 		
-		DMAPRINTF("%d\t",(int)DRV8320_SPI3_FaultStatusRegister[0]);
-		DMAPRINTF("%d\r\n",(int)DRV8320_SPI3_FaultStatusRegister[1]);
+		UART_Transmit_DMA("%d\t",(int)DRV8320_SPI3_FaultStatusRegister[0]);
+		UART_Transmit_DMA("%d\r\n",(int)DRV8320_SPI3_FaultStatusRegister[1]);
 		
 		LL_mDelay(1);
 	}

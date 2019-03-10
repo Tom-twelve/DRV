@@ -66,7 +66,7 @@ extern char *pBuf;
 #define USART_BUF_SEND_THESHOLD     (USART_BUF_CAPACITY - NUM_SIZE - 30)
 #define DEBUG_UART_HANDLER huart1
 
-#define DMAPRINTF(__RESTRICT_STR, ...)                     \
+#define UART_Transmit_DMA(__RESTRICT_STR, ...)                     \
   do                                                       \
   {                                                        \
     static uint32_t __i_divSendTimes = 0;                  \

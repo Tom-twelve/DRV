@@ -42,7 +42,7 @@ struct CurrentLoop_t
 
 struct SpeedLoop_t
 {
-	float ExpectedMechanicalAngularSpeed;	//degree per second
+	float ExpectedMecAngularSpeed;	//degree per second
 	float Acceleration;
 	float Kp;
 	float Ki;
@@ -50,30 +50,29 @@ struct SpeedLoop_t
 
 struct PositionLoop_t
 {
-	float ExpectedMechanicalAngle;	//degree
+	float ExpectedMecAngle;	//degree
 	float Kp;
-	float Ki;
 	float Kd;
 };
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define CurrentControlLoopIntegralErrorLimit_D 	2.5f	//(A)
+#define CurrentControlLoopIntegralErrorLimit_D 		2.5f	//(A)
 
-#define CurrentControlLoopIntegralErrorLimit_Q 	2.5f	//(A)
+#define CurrentControlLoopIntegralErrorLimit_Q 		2.5f	//(A)
 
-#define SpeedControlLoopIntegralErrorLimit 	(10.0f * 360.f)		//(бу/s)
+#define SpeedControlLoopIntegralErrorLimit 			(10.0f * 360.f)		//(бу/s)
 
-#define PositionControlLoopIntegralErrorLimit 	(0.5f * 360.f)		//(бу)
+#define CURRENT_CONTROL_KP_D		
+#define CURRENT_CONTROL_KI_D		
 
-#define CURRENT_CONTROL_KP
-#define CURRENT_CONTROL_KI
+#define CURRENT_CONTROL_KP_Q		
+#define CURRENT_CONTROL_KI_Q		
 
 #define SPEED_CONTROL_KP	
 #define SPEED_CONTROL_KI
 
 #define POSITION_CONTROL_KP	
-#define POSITION_CONTROL_KI
 #define POSITION_CONTROL_KD
 
 #define	VoltageControlMode 			0
@@ -91,8 +90,8 @@ struct PositionLoop_t
 
 void MotorEnable(void);
 void CurrentControlLoop(float expectedCurrentD, float expectedCurrentQ, float realityCurrentD, float realityCurrentQ, float *controlVoltageD, float *controlVoltageQ);
-void SpeedControlLoop(float expectedMechanicalAngularSpeed, float realityMechanicalAngularSpeed, float *controlCurrentQ);
-void PositionControlLoop(float expectedMechanicalAngle, float realityMechanicalAngle, float *controlCurrentQ);
+void SpeedControlLoop(float expectedMecAngularSpeed, float realityMecAngularSpeed, float *controlCurrentQ);
+void PositionControlLoop(float expectedMecAngle, float realityMecAngle, float *controlCurrentQ);
 float VelocitySlopeGenerator(float expectedVelocity);
 
 /* USER CODE END PFP */

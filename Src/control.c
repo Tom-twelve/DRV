@@ -71,7 +71,7 @@ void MotorEnable(void)
 										break;
 		
 		case SpeedControlMode : 		/*设定角速度(°/s)*/
-										SpeedLoop.ExpectedMechanicalAngularSpeed = 100.f * 360.f;	//degree per second
+										SpeedLoop.ExpectedMecAngularSpeed = 100.f * 360.f;	//degree per second
 										
 										/*设定加速度*/
 										SpeedLoop.Acceleration = 25.f * 360.f;	//degree per quadratic seconds
@@ -154,12 +154,12 @@ void CurrentControlLoop(float expectedCurrentD, float expectedCurrentQ, float re
    /**
    * @brief		Speed control loop
    */
-void SpeedControlLoop(float expectedMechanicalAngularSpeed, float realityMechanicalAngularSpeed, float *controlCurrentQ)
+void SpeedControlLoop(float expectedMecAngularSpeed, float realityMecAngularSpeed, float *controlCurrentQ)
 {
 	float error = 0;
 	static float integralError = 0;
 	
-	error = expectedMechanicalAngularSpeed - realityMechanicalAngularSpeed;
+	error = expectedMecAngularSpeed - realityMecAngularSpeed;
 	
 	*controlCurrentQ = SpeedLoop.Kp * error + SpeedLoop.Ki * integralError;
 	
@@ -180,12 +180,12 @@ void SpeedControlLoop(float expectedMechanicalAngularSpeed, float realityMechani
    /**
    * @brief		Position control loop
    */
-void PositionControlLoop(float expectedMechanicalAngle, float realityMechanicalAngle, float *controlCurrentQ)
+void PositionControlLoop(float expectedMecAngle, float realityMecAngle, float *controlCurrentQ)
 {
 	float error = 0;
 	static float lastError = 0;
 	
-	error = expectedMechanicalAngle - realityMechanicalAngle;
+	error = expectedMecAngle - realityMecAngle;
 	
 	*controlCurrentQ = PositionLoop.Kp * error + PositionLoop.Kd * (error - lastError);
 	

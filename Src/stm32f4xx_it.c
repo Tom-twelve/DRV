@@ -281,24 +281,24 @@ void ADC_IRQHandler(void)
 	
 	switch(MotorStaticParameter.ControlMode)
 	{
-		case VoltageControlMode :	InverseParkTransform_TwoPhase(0.f, 5.f, &CoordinateTransformation.VoltageAlpha, &CoordinateTransformation.VoltageBeta, Encoder.EleAngle_degree );
+		case VoltageControlMode :	InverseParkTransform_TwoPhase(0.f, 5.f, &CoordinateTransformation.VoltageAlpha, &CoordinateTransformation.VoltageBeta, Encoder.EleAngle_degree + MotorStaticParameter.PowerAngleCompensation_degree);
 									
 									SpaceVectorPulseWidthModulation(CoordinateTransformation.VoltageAlpha, CoordinateTransformation.VoltageBeta);
 
 									/*测试用*/
-									ParkTransform(MotorDynamicParameter.CurrentPhaseA, MotorDynamicParameter.CurrentPhaseB, MotorDynamicParameter.CurrentPhaseC, &CoordinateTransformation.CurrentD, &CoordinateTransformation.CurrentQ, Encoder.EleAngle_degree);
-									
-									CalculateVoltage_dq(CoordinateTransformation.CurrentQ, &CoordinateTransformation.VoltageD, &CoordinateTransformation.VoltageQ, Encoder.AvgEleAngularSpeed_rad);
-			
-									CalculateElectromagneticTorque(CoordinateTransformation.CurrentQ, &MotorDynamicParameter.ElectromagneticTorque);
+//									ParkTransform(MotorDynamicParameter.CurrentPhaseA, MotorDynamicParameter.CurrentPhaseB, MotorDynamicParameter.CurrentPhaseC, &CoordinateTransformation.CurrentD, &CoordinateTransformation.CurrentQ, Encoder.EleAngle_degree);
+//									
+//									CalculateVoltage_dq(CoordinateTransformation.CurrentQ, &CoordinateTransformation.VoltageD, &CoordinateTransformation.VoltageQ, Encoder.AvgEleAngularSpeed_rad);
+//			
+//									CalculateElectromagneticTorque(CoordinateTransformation.CurrentQ, &MotorDynamicParameter.ElectromagneticTorque);
 
-									UART_Transmit_DMA("%d\t",(int)(CoordinateTransformation.CurrentQ * 1000));
-									UART_Transmit_DMA("%d\r\n",(int)(CoordinateTransformation.VoltageQ * 1000));
+									UART_Transmit_DMA("%d\t",(int)(Encoder.MecAngle_15bit));
+									UART_Transmit_DMA("%d\r\n",(int)(MotorDynamicParameter.CurrentPhaseC * 1000));
 									
 									break;
 
 		case CurrentControlMode : 	/*通过对电角度进行补偿, 使功角尽可能维持在90度*/
-									PowerAngleCompensation(CurrentLoop.ExpectedCurrentQ, &MotorStaticParameter.PowerAngleCompensation_degree);
+//									PowerAngleCompensation(CurrentLoop.ExpectedCurrentQ, &MotorStaticParameter.PowerAngleCompensation_degree);
 
 									/*进行Park变换, 将三相电流转换为dq轴电流*/
 									ParkTransform(MotorDynamicParameter.CurrentPhaseA, MotorDynamicParameter.CurrentPhaseB, MotorDynamicParameter.CurrentPhaseC, &CoordinateTransformation.CurrentD, &CoordinateTransformation.CurrentQ, Encoder.EleAngle_degree + MotorStaticParameter.PowerAngleCompensation_degree);
@@ -307,20 +307,16 @@ void ADC_IRQHandler(void)
 									CalculateVoltage_dq(CoordinateTransformation.CurrentQ, &CoordinateTransformation.VoltageD, &CoordinateTransformation.VoltageQ, Encoder.AvgEleAngularSpeed_rad);
 									
 									/*电流环PI控制器*/
-									CurrentControlLoop(CurrentLoop.ExpectedCurrentD, CurrentLoop.ExpectedCurrentQ, CoordinateTransformation.CurrentD, CoordinateTransformation.CurrentQ, &CurrentLoop.ControlCurrentD, &CurrentLoop.ControlCurrentQ);
-									
-									/*将目标q轴电流变换为q轴电压*/
-									CurrentVoltageTransform(CoordinateTransformation.CurrentQ, &CurrentLoop.ControlVoltageD, &CurrentLoop.ControlVoltageQ, Encoder.AvgEleAngularSpeed_rad);
-									
+									CurrentControlLoop(CurrentLoop.ExpectedCurrentD, CurrentLoop.ExpectedCurrentQ, CoordinateTransformation.CurrentD, CoordinateTransformation.CurrentQ, &CurrentLoop.ControlVoltageD, &CurrentLoop.ControlVoltageQ);
+													
 									/*进行逆Park变换, 将转子坐标系下的dq轴电压转换为定子坐标系下的AlphaBeta轴电压*/
 									InverseParkTransform_TwoPhase(CurrentLoop.ControlVoltageD, CurrentLoop.ControlVoltageQ, &CoordinateTransformation.VoltageAlpha, &CoordinateTransformation.VoltageBeta, Encoder.EleAngle_degree + MotorStaticParameter.PowerAngleCompensation_degree);
 									
 									/*利用SVPWM算法调制电压矢量*/
 									SpaceVectorPulseWidthModulation(CoordinateTransformation.VoltageAlpha, CoordinateTransformation.VoltageBeta);
 									
-									UART_Transmit_DMA("%d\t",(int)(MotorDynamicParameter.CurrentPhaseA * 1000));
-									UART_Transmit_DMA("%d\t",(int)(MotorDynamicParameter.CurrentPhaseB * 1000));
-									UART_Transmit_DMA("%d\r\n",(int)(MotorDynamicParameter.CurrentPhaseC * 1000));
+									UART_Transmit_DMA("%d\t",(int)(CoordinateTransformation.CurrentD * 1000));
+									UART_Transmit_DMA("%d\r\n",(int)(CoordinateTransformation.CurrentQ * 1000));
 									
 									break;
 		case SpeedControlMode :

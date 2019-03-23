@@ -61,6 +61,7 @@
 	struct Encoder_t
 	{
 		uint16_t MecAngle_15bit;
+		uint16_t MecAngle_14bit;
 		int16_t MecAngularSpeed_Encoder_15bit;
 		float MecAngularSpeed_Encoder;
 		float MecAngle_degree;
@@ -75,7 +76,7 @@
 		float EleAngularSpeed_rad;
 		float AvgEleAngularSpeed_degree;
 		float AvgEleAngularSpeed_rad;
-		float OriginalMecAngle_degree;
+		uint16_t OriginalMecAngle_14bit;
 	};
 #else
 #error "Encoder Type Invalid"
@@ -89,6 +90,7 @@
 #if ENCODER_TYPE == Encoder_TLE5012
 	void GetPositionImformation(void);
 	void GetMecAngle_15bit(void);
+	void GetMecAngle_14bit(void);
 	void GetMecAngle_degree(void);
 	void GetMecAngle_rad(void);
 	void GetMecAngularSpeed_degree(void);

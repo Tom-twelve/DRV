@@ -166,7 +166,7 @@ int main(void)
 		
 						break;
 		
-		case TestMode : MeasureEleAngle(0.60f);	//测定电角度, 设定d轴电压
+		case TestMode : MeasureEleAngle(1.0f);	//测定电角度, 设定d轴电压
 		
 						break;
 	}

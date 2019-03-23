@@ -80,7 +80,7 @@
 		#define MOTOR_TYPE 				TMOTOR_MN505_S_KV320	
 		#define	PHASE_SEQUENCE			PositivePhase
 		#define ENCODER_TYPE			Encoder_TLE5012
-		#define ENCODER_MODE			Encoder_AbsoluteMode
+		#define ENCODER_MODE			Encoder_IncrementalMode
 		#define GATE_DRIVER_TYPE		GateDriver_DRV8320
 		#define MOSFET_TYPE				IPD053N08N3G_52nC_5mOhm3
 		#define CURRENT_SENSOR			HallSensor_ACS781_150A

@@ -326,7 +326,17 @@ void MeasureEleAngle(float voltageD)
 			
 			HAL_Delay(200);
 
+			#if ENCODER_MODE == Encoder_AbsoluteMode
+			
 			tempMecAngleRef[index_5012b] = Encoder.MecAngle_15bit;
+			
+			#elif ENCODER_MODE == Encoder_IncrementalMode
+			
+			tempMecAngleRef[index_5012b] = Encoder.MecAngle_14bit;
+			
+			#else
+			#error "Encoder Mode Invalid"
+			#endif
 
 			if(tempMecAngleRef[index_5012b] < 1000 && tempMecAngleRef[index_5012b - 1] > 10000 && index_5012b > 1)
 			{
@@ -379,9 +389,21 @@ void MeasureEleAngle(float voltageD)
 		tempEleAngleRef[i + 1] = tempEleAngleRef[i] + 360 / DivideNum;
 	}
 	
-	tempMecAngleRef[0] = tempMecAngleRef[DivideNum * (uint8_t)MotorMagnetPairs] - 32768;
+	#if ENCODER_MODE == Encoder_AbsoluteMode
 	
-	tempMecAngleRef[DivideNum * (uint8_t)MotorMagnetPairs + 1] = tempMecAngleRef[1] + 32768;
+	tempMecAngleRef[0] = tempMecAngleRef[DivideNum * (uint8_t)MotorMagnetPairs] - (int32_t)TLE5012_AbsoluteModeResolution;
+	
+	tempMecAngleRef[DivideNum * (uint8_t)MotorMagnetPairs + 1] = tempMecAngleRef[1] + (int32_t)TLE5012_AbsoluteModeResolution;
+	
+	#elif ENCODER_MODE == Encoder_IncrementalMode
+
+	tempMecAngleRef[0] = tempMecAngleRef[DivideNum * (uint8_t)MotorMagnetPairs] - (int32_t)(TLE5012_IncrementalModeResolution * 4.f);
+	
+	tempMecAngleRef[DivideNum * (uint8_t)MotorMagnetPairs + 1] = tempMecAngleRef[1] + (int32_t)(TLE5012_IncrementalModeResolution * 4.f);
+	
+	#else
+	#error "Encoder Mode Invalid"
+	#endif
 
 	tempEleAngleRef[0] = tempEleAngleRef[1] - 360 / DivideNum;
 

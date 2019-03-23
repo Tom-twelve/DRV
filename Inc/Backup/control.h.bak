@@ -30,8 +30,6 @@ struct CurrentLoop_t
 {
 	float ExpectedCurrentD;
 	float ExpectedCurrentQ;
-	float ControlCurrentD;
-	float ControlCurrentQ;
 	float ControlVoltageD;
 	float ControlVoltageQ;
 	float Kp_D;
@@ -61,13 +59,13 @@ struct PositionLoop_t
 
 #define CurrentControlLoopIntegralErrorLimit_Q 		2.5f	//(A)
 
-#define SpeedControlLoopIntegralErrorLimit 			(10.0f * 360.f)		//(°/s)
+#define SpeedControlLoopIntegralErrorLimit 			(10.0f * 2 * PI)		//(°/s)
 
-#define CURRENT_CONTROL_KP_D		
-#define CURRENT_CONTROL_KI_D		
+#define CURRENT_CONTROL_KP_D			(InductanceD * 500.f)		//d轴电感 * 电流环截止频率
+#define CURRENT_CONTROL_KI_D			(PhaseResistance * 500.f)	//相电阻 * 电流环截止频率
 
-#define CURRENT_CONTROL_KP_Q		
-#define CURRENT_CONTROL_KI_Q		
+#define CURRENT_CONTROL_KP_Q			(InductanceQ * 500.f)		//q轴电感 * 电流环截止频率
+#define CURRENT_CONTROL_KI_Q			(PhaseResistance * 500.f)	//相电阻 * 电流环截止频率
 
 #define SPEED_CONTROL_KP	
 #define SPEED_CONTROL_KI
@@ -80,8 +78,8 @@ struct PositionLoop_t
 #define SpeedControlMode 			2
 #define PositionControlMode 		3
 
-#define WorkMode				1
-#define TestMode 				2
+#define WorkMode					1
+#define TestMode 					2
 
 /* USER CODE END PD */
 

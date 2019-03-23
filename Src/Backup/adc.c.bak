@@ -381,11 +381,11 @@ void ADC_Enable(void)
 
 void GetPhaseCurrent(void)
 {
-	#if PhaseSequence == PositivePhase
+	#if PHASE_SEQUENCE == PositivePhase
 	ADC_CurrentConvertedValue_PhaseA = hadc3.Instance->JDR1;
 	ADC_CurrentConvertedValue_PhaseB = hadc2.Instance->JDR1;
 	ADC_CurrentConvertedValue_PhaseC = hadc1.Instance->JDR1;
-	#elif PhaseSequence == NegativePhase
+	#elif PHASE_SEQUENCE == NegativePhase
 	ADC_CurrentConvertedValue_PhaseA = hadc1.Instance->JDR1;
 	ADC_CurrentConvertedValue_PhaseB = hadc2.Instance->JDR1;
 	ADC_CurrentConvertedValue_PhaseC = hadc3.Instance->JDR1;
@@ -393,15 +393,15 @@ void GetPhaseCurrent(void)
 	#error "Phase Sequence Invalid"
 	#endif
 	
-	#if CurrentSensor == Resistance_1mOhm
+	#if CURRENT_SENSOR == Resistance_1mOhm
 	MotorDynamicParameter.CurrentPhaseA = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseA / 4096.f) / CurrentAmplifierGain) / 0.001f;
 	MotorDynamicParameter.CurrentPhaseB = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseB / 4096.f) / CurrentAmplifierGain) / 0.001f;
 	MotorDynamicParameter.CurrentPhaseC = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseC / 4096.f) / CurrentAmplifierGain) / 0.001f;
-	#elif CurrentSensor == Resistance_2mOhm
+	#elif CURRENT_SENSOR == Resistance_2mOhm
 	MotorDynamicParameter.CurrentPhaseA = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseA / 4096.f) / CurrentAmplifierGain) / 0.002f;
 	MotorDynamicParameter.CurrentPhaseB = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseB / 4096.f) / CurrentAmplifierGain) / 0.002f;
 	MotorDynamicParameter.CurrentPhaseC = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseC / 4096.f) / CurrentAmplifierGain) / 0.002f;
-	#elif CurrentSensor == HallSensor_ACS781_150A
+	#elif CURRENT_SENSOR == HallSensor_ACS781_150A
 	MotorDynamicParameter.CurrentPhaseA = (3.3f * (float)ADC_CurrentConvertedValue_PhaseA / 4096.f - 1.65f) / HallSensor_ACS781_150A_Gain;
 	MotorDynamicParameter.CurrentPhaseB = (3.3f * (float)ADC_CurrentConvertedValue_PhaseB / 4096.f - 1.65f) / HallSensor_ACS781_150A_Gain;
 	MotorDynamicParameter.CurrentPhaseC = (3.3f * (float)ADC_CurrentConvertedValue_PhaseC / 4096.f - 1.65f) / HallSensor_ACS781_150A_Gain;

@@ -292,7 +292,7 @@ void ADC_IRQHandler(void)
 //			
 //									CalculateElectromagneticTorque(CoordinateTransformation.CurrentQ, &MotorDynamicParameter.ElectromagneticTorque);
 
-									UART_Transmit_DMA("%d\t",(int)(Encoder.MecAngle_15bit));
+									UART_Transmit_DMA("%d\t",(int)(Encoder.MecAngle_14bit));
 									UART_Transmit_DMA("%d\r\n",(int)(MotorDynamicParameter.CurrentPhaseC * 1000));
 									
 									break;

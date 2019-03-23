@@ -150,8 +150,12 @@ int main(void)
 	/*初始化栅极驱动器*/
 	GateDriverConfig();
 
-	/*启用相对式*/
-//	EncoderIncrementalModeEnable();
+	#if ENCODER_MODE == Encoder_IncrementalMode
+	
+	/*使能增量式*/
+	EncoderIncrementalModeEnable();
+	
+	#endif
 	
 	/*使能PWM, 设定参数*/
 	MotorEnable();
@@ -162,7 +166,7 @@ int main(void)
 		
 						break;
 		
-		case TestMode : MeasureEleAngle(0.55f);	//测定电角度, 设定d轴电压
+		case TestMode : MeasureEleAngle(1.0f);	//测定电角度, 设定d轴电压
 		
 						break;
 	}

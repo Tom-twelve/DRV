@@ -43,47 +43,26 @@ extern struct CurrentLoop_t CurrentLoop;
    * @param[in]  voltageAlpha  		input two-phase vector coordinate alpha
    * @param[in]  voltageBeta   		input two-phase vector coordinate beta
    */
-   
-   	uint32_t TA = 0;
-	uint32_t TB = 0;
-	uint32_t TC = 0;
 void SpaceVectorPulseWidthModulation(float voltageAlpha, float voltageBeta)
 {
 	const float StandardizationCoefficient = SQRT3 * TIM8_Autoreload / GeneratrixVoltage;
 	float U1 = 0;
 	float U2 = 0;
 	float U3 = 0;
-	float T1 = 0;
-	float T2 = 0;
-	float t1 = 0;
-	float t2 = 0;
+	float Tx = 0;
+	float Ty = 0;
+	float tx = 0;
+	float ty = 0;
+	uint32_t TA = 0;
+	uint32_t TB = 0;
+	uint32_t TC = 0;
 	uint8_t sectionFlag = 0;
 
-	/*为防止调制波形失真, 对Ualpha, Ubeta进行限幅*/
-	if(voltageAlpha >= MaximumDistortionlessVoltage)
-	{
-		voltageAlpha = MaximumDistortionlessVoltage;
-	}
-	else if(voltageAlpha <= -MaximumDistortionlessVoltage)
-	{
-		voltageAlpha = -MaximumDistortionlessVoltage;
-	}
-	if(voltageBeta >= MaximumDistortionlessVoltage)
-	{
-		voltageBeta = MaximumDistortionlessVoltage;
-	}
-	else if(voltageBeta <= -MaximumDistortionlessVoltage)
-	{
-		voltageBeta = -MaximumDistortionlessVoltage;
-	}
-	
 	U1 =  voltageBeta;
 	
-	U2 = (- voltageBeta + SQRT3 * voltageAlpha) / 2.0f;
+	U2 = (SQRT3 * voltageAlpha - voltageBeta) / 2.0f;
 	
-	U3 = (- voltageBeta - SQRT3 * voltageAlpha) / 2.0f;
-	
-
+	U3 = ( - SQRT3 * voltageAlpha - voltageBeta) / 2.0f;
 	
 	/*判断矢量电压所在扇区*/
 	if (U1 > 0)
@@ -105,47 +84,48 @@ void SpaceVectorPulseWidthModulation(float voltageAlpha, float voltageBeta)
 
 	switch (sectionFlag)
 	{
-	case 3:  T1 = U2 * StandardizationCoefficient; 
-			 T2 = U1 * StandardizationCoefficient;
+	case 3:  Tx = U2 * StandardizationCoefficient; 
+			 Ty = U1 * StandardizationCoefficient;
 			 break; 
 
-	case 1:  T1 = - U2 * StandardizationCoefficient; 
-			 T2 = - U3 * StandardizationCoefficient; 
+	case 1:  Tx = - U2 * StandardizationCoefficient; 
+			 Ty = - U3 * StandardizationCoefficient; 
 			 break;
 
-	case 5:  T1 = U1 * StandardizationCoefficient; 
-			 T2 = U3 * StandardizationCoefficient; 
+	case 5:  Tx = U1 * StandardizationCoefficient; 
+			 Ty = U3 * StandardizationCoefficient; 
 			 break;
 
-	case 4:  T1 = - U1 * StandardizationCoefficient; 
-			 T2 = - U2 * StandardizationCoefficient; 
+	case 4:  Tx = - U1 * StandardizationCoefficient; 
+			 Ty = - U2 * StandardizationCoefficient; 
 			 break;
 
-	case 6:  T1 = U3 * StandardizationCoefficient; 
-			 T2 = U2 * StandardizationCoefficient; 
+	case 6:  Tx = U3 * StandardizationCoefficient; 
+			 Ty = U2 * StandardizationCoefficient; 
 			 break; 
 
-	case 2:  T1 = - U3 * StandardizationCoefficient; 
-			 T2 = - U1 * StandardizationCoefficient; 
+	case 2:  Tx = - U3 * StandardizationCoefficient; 
+			 Ty = - U1 * StandardizationCoefficient; 
 			 break; 
 
-	default: T1 = 0u; 
-			 T2 = 0u; 
+	default: Tx = 0u; 
+			 Ty = 0u; 
 			 break;
 	}
 
-	if (T1 + T2 > TIM8_Autoreload)
+	/*电压矢量超出正六边形范围时按比例缩小电压矢量, 防止波形失真*/
+	if (Tx + Ty > TIM8_Autoreload)
 	{
-		t1  = T1;
-		t2  = T2;
-		T1  = t1 / (t1 + t2) * TIM8_Autoreload;
-		T2  = t2 / (t1 + t2) * TIM8_Autoreload;
+		tx  = Tx;
+		ty  = Ty;
+		Tx  = tx / (tx + ty) * TIM8_Autoreload;
+		Ty  = ty / (tx + ty) * TIM8_Autoreload;
 	}
 
-	TA  = (TIM8_Autoreload - T1 - T2) / 2.0f;
-	TB  = (TIM8_Autoreload + T1 - T2) / 2.0f;
-	TC  = (TIM8_Autoreload + T1 + T2) / 2.0f;
-
+	TA  = (TIM8_Autoreload - Tx - Ty) / 2.0f;
+	TB  = TA + Tx;
+	TC  = TB + Ty;
+	
 	switch (sectionFlag)
 	{
 	case 3:  CCR_PhaseA = TA; 
@@ -192,7 +172,7 @@ void SpaceVectorPulseWidthModulation(float voltageAlpha, float voltageBeta)
    * @param[in]  currentPhaseC  		current of phase C
    * @param[out] currentD     			points to output rotor reference frame d
    * @param[out] currentQ     			points to output rotor reference frame q
-   * @param[in]  EleAngle		value of Ele angle
+   * @param[in]  EleAngle				value of Electrical angle
    */
 void ParkTransform(float currentPhaseA, float currentPhaseB, float currentPhaseC, float *currentD, float *currentQ, float EleAngle)
 {
@@ -276,8 +256,8 @@ void PowerAngleCompensation(float expectedCurrentQ, float *powerAngleCompensatio
    */
 void CurrentVoltageTransform(float controlCurrentQ, float *voltageD, float *voltageQ, float actualEleAngularSpeed_rad)
 {
-	/*将80%的最大不失真Uq用于提供转速, 20%的最大不失真Uq用于提供转矩*/
-	const float targetEleAngularSpeed_rad = 0.35f * MaximumDistortionlessVoltage / RotatorFluxLinkage;
+	/*将80%的最大不失真Vq用于提供转速, 20%的最大不失真Vq用于提供转矩*/
+	const float targetEleAngularSpeed_rad = 0.8f * MaximumDistortionlessVoltage / RotatorFluxLinkage;
 	const float maximumTorque = 0.2f * (MaximumDistortionlessVoltage / PhaseResistance) * 1.5f * MotorMagnetPairs * RotatorFluxLinkage;
 	
 	/*输出电压*/
@@ -344,9 +324,19 @@ void MeasureEleAngle(float voltageD)
 			
 			SpaceVectorPulseWidthModulation(voltageAlpha, voltageBeta);
 			
-			HAL_Delay(250);
+			HAL_Delay(200);
 
+			#if ENCODER_MODE == Encoder_AbsoluteMode
+			
 			tempMecAngleRef[index_5012b] = Encoder.MecAngle_15bit;
+			
+			#elif ENCODER_MODE == Encoder_IncrementalMode
+			
+			tempMecAngleRef[index_5012b] = Encoder.MecAngle_14bit;
+			
+			#else
+			#error "Encoder Mode Invalid"
+			#endif
 
 			if(tempMecAngleRef[index_5012b] < 1000 && tempMecAngleRef[index_5012b - 1] > 10000 && index_5012b > 1)
 			{
@@ -399,9 +389,21 @@ void MeasureEleAngle(float voltageD)
 		tempEleAngleRef[i + 1] = tempEleAngleRef[i] + 360 / DivideNum;
 	}
 	
-	tempMecAngleRef[0] = tempMecAngleRef[DivideNum * (uint8_t)MotorMagnetPairs] - 32768;
+	#if ENCODER_MODE == Encoder_AbsoluteMode
 	
-	tempMecAngleRef[DivideNum * (uint8_t)MotorMagnetPairs + 1] = tempMecAngleRef[1] + 32768;
+	tempMecAngleRef[0] = tempMecAngleRef[DivideNum * (uint8_t)MotorMagnetPairs] - (int32_t)TLE5012_AbsoluteModeResolution;
+	
+	tempMecAngleRef[DivideNum * (uint8_t)MotorMagnetPairs + 1] = tempMecAngleRef[1] + (int32_t)TLE5012_AbsoluteModeResolution;
+	
+	#elif ENCODER_MODE == Encoder_IncrementalMode
+
+	tempMecAngleRef[0] = tempMecAngleRef[DivideNum * (uint8_t)MotorMagnetPairs] - (int32_t)(TLE5012_IncrementalModeResolution * 4.f);
+	
+	tempMecAngleRef[DivideNum * (uint8_t)MotorMagnetPairs + 1] = tempMecAngleRef[1] + (int32_t)(TLE5012_IncrementalModeResolution * 4.f);
+	
+	#else
+	#error "Encoder Mode Invalid"
+	#endif
 
 	tempEleAngleRef[0] = tempEleAngleRef[1] - 360 / DivideNum;
 

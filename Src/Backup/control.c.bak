@@ -53,7 +53,7 @@ void MotorEnable(void)
 	switch(MotorStaticParameter.ControlMode)
 	{
 		case VoltageControlMode :		/*测试用*/
-										MotorStaticParameter.PowerAngleCompensation_degree = 0.f;
+										MotorStaticParameter.PowerAngleCompensation_degree = 10.f;
 		
 										break;
 		
@@ -61,13 +61,13 @@ void MotorEnable(void)
 										CurrentLoop.ExpectedCurrentQ = 5.f;
 		
 										/*设定电流环PI参数*/
-										CurrentLoop.Kp_D = CURRENT_CONTROL_KP_D;
+										CurrentLoop.Kp_D = 0.1f;
 										
-										CurrentLoop.Ki_D = CURRENT_CONTROL_KI_D;
+										CurrentLoop.Ki_D = 0.1f;
 										
-										CurrentLoop.Kp_Q = CURRENT_CONTROL_KP_Q;
+										CurrentLoop.Kp_Q = 0.1f;
 
-										CurrentLoop.Ki_Q = CURRENT_CONTROL_KI_Q;
+										CurrentLoop.Ki_Q = 0.1f;
 		
 										break;
 		

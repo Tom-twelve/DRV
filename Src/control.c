@@ -45,7 +45,7 @@ void MotorEnable(void)
 	PWM_IT_CMD(ENABLE,ENABLE);
 	
 	/*设定控制模式*/
-	MotorStaticParameter.ControlMode = VoltageControlMode;
+	MotorStaticParameter.ControlMode = CurrentControlMode;
 	
 	/*采用Id = 0控制, 故设定d轴电流为零*/
 	CurrentLoop.ExpectedCurrentD = 0.f;
@@ -53,7 +53,7 @@ void MotorEnable(void)
 	switch(MotorStaticParameter.ControlMode)
 	{
 		case VoltageControlMode :		/*测试用*/
-										MotorStaticParameter.PowerAngleCompensation_degree = 0.f;
+										MotorStaticParameter.PowerAngleCompensation_degree = 10.f;
 		
 										break;
 		
@@ -61,13 +61,13 @@ void MotorEnable(void)
 										CurrentLoop.ExpectedCurrentQ = 5.f;
 		
 										/*设定电流环PI参数*/
-										CurrentLoop.Kp_D = CURRENT_CONTROL_KP_D;
+										CurrentLoop.Kp_D = 0.1f;
 										
-										CurrentLoop.Ki_D = CURRENT_CONTROL_KI_D;
+										CurrentLoop.Ki_D = 0.1f;
 										
-										CurrentLoop.Kp_Q = CURRENT_CONTROL_KP_Q;
+										CurrentLoop.Kp_Q = 0.6f;
 
-										CurrentLoop.Ki_Q = CURRENT_CONTROL_KI_Q;
+										CurrentLoop.Ki_Q = 0.1f;
 		
 										break;
 		
@@ -114,18 +114,21 @@ void MotorEnable(void)
    /**
    * @brief		Current control loop
    */
-void CurrentControlLoop(float expectedCurrentD, float expectedCurrentQ, float realityCurrentD, float realityCurrentQ, float *controlCurrentD, float *controlCurrentQ)
+void CurrentLoopController(float expectedCurrentD, float expectedCurrentQ, float realityCurrentD, float realityCurrentQ, float *controlVoltageD, float *controlVoltageQ)
 {
 	float errorD = 0;
 	float errorQ = 0;
+	float controlCurrentD = 0;
+	float controlCurrentQ = 0;
 	static float integralErrorD = 0;
 	static float integralErrorQ = 0;
 	
 	errorD = expectedCurrentD - realityCurrentD;
 	errorQ = expectedCurrentQ - realityCurrentQ;
 	
-	*controlCurrentD = CurrentLoop.Kp_D * errorD + CurrentLoop.Ki_D * integralErrorD;
-	*controlCurrentQ = CurrentLoop.Kp_Q * errorQ + CurrentLoop.Ki_Q * integralErrorQ;
+	/*PI控制器*/
+	controlCurrentD = CurrentLoop.Kp_D * errorD + CurrentLoop.Ki_D * integralErrorD;
+	controlCurrentQ = CurrentLoop.Kp_Q * errorQ + CurrentLoop.Ki_Q * integralErrorQ;
 	
 	integralErrorD += errorD * CarrierPeriod_s;
 	integralErrorQ += errorQ * CarrierPeriod_s;
@@ -150,12 +153,17 @@ void CurrentControlLoop(float expectedCurrentD, float expectedCurrentQ, float re
 	{
 		integralErrorQ = -CurrentControlLoopIntegralErrorLimit_Q;
 	}
+	
+	/*反电动势补偿*/
+	
+	*controlVoltageD = 0;
+	*controlVoltageQ = controlCurrentQ + realityCurrentQ * PhaseResistance + Encoder.AvgEleAngularSpeed_rad * (RotatorFluxLinkage + InductanceD * realityCurrentD);
 }
 
    /**
    * @brief		Speed control loop
    */
-void SpeedControlLoop(float expectedMecAngularSpeed, float realityMecAngularSpeed, float *controlCurrentQ)
+void SpeedLoopController(float expectedMecAngularSpeed, float realityMecAngularSpeed, float *controlCurrentQ)
 {
 	float error = 0;
 	static float integralError = 0;
@@ -181,7 +189,7 @@ void SpeedControlLoop(float expectedMecAngularSpeed, float realityMecAngularSpee
    /**
    * @brief		Position control loop
    */
-void PositionControlLoop(float expectedMecAngle, float realityMecAngle, float *controlCurrentQ)
+void PositionLoopController(float expectedMecAngle, float realityMecAngle, float *controlCurrentQ)
 {
 	float error = 0;
 	static float lastError = 0;

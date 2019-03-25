@@ -177,7 +177,7 @@ void CANRespond(void)
 	case 0x40005856: //VX   读取速度
 	{
 #if ENCODER_TYPE == Encoder_TLE5012
-		const float velReport = (Encoder.MecAngle_degree /360.f * 32768.f);
+		const float velReport = (Encoder.MecAngle_rad /(2.f * PI) * 32768.f);
 		txData.data_uint32[0] = 0x00005856;
 		txData.data_int32[1]  = (int32_t)(velReport);
 		CANSendData(txData);
@@ -195,7 +195,7 @@ void CANRespond(void)
 	case 0x40005850: //PX   读取位置
 		txData.data_uint32[0] = 0x00005850;
 		
-		txData.data_int32[1]  = (int32_t)(Encoder.MecAngle_degree /360.f * 32768.f) ;
+		txData.data_int32[1]  = (int32_t)(Encoder.MecAngle_rad /(2.f * PI) * 32768.f) ;
 
 		CANSendData(txData);
 		CAN_RecieveStatus = 0;
@@ -260,7 +260,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 //				PositionLoop.Kp = POS_CONTROL_KP;
 //				PositionLoop.Kd = POS_CONTROL_KD;
 				MotorStaticParameter.ControlMode = PositionControlMode;
-				PositionLoop.ExpectedMecAngle = Encoder.MecAngle_degree + Encoder.AvgMecAngularSpeed_degree * CarrierPeriod_s;
+				PositionLoop.ExpectedMecAngle = Encoder.MecAngle_rad + Encoder.AvgMecAngularSpeed_rad * CarrierPeriod_s;
 			}
 			break;
 		case 0x0000564A: //JV
@@ -285,10 +285,10 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 			break;
 
 		case 0x00005250: //PR相对位置
-			PositionLoop.ExpectedMecAngle = Encoder.MecAngle_degree + -1 * (float)(receive.data_int32[1]);
+			PositionLoop.ExpectedMecAngle = Encoder.MecAngle_rad + -1 * (float)(receive.data_int32[1]);
 			break;
 		case 0x00005100:
-			Encoder.MecAngle_degree = receive.data_int32[1];
+			Encoder.MecAngle_rad = receive.data_int32[1];
 			break;
 			
 		case 0x40005155: //UQ  读取电压输出(mV)

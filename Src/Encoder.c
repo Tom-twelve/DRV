@@ -43,92 +43,91 @@ void GetPositionImformation(void)
 	#if ENCODER_TYPE == Encoder_TLE5012
 		#if	ENCODER_MODE == Encoder_AbsoluteMode
 	
-		GetMecAngle_15bit();  //绝对式, 读取编码器角度值寄存器
+		GetMecAngle_AbsoluteMode_15bit();  //绝对式, 读取编码器角度值寄存器
 	
 		#elif ENCODER_MODE == Encoder_IncrementalMode
 	
-		GetMecAngle_14bit();  //增量式, TLE5012的12位增量式编码器经过4倍频后精度提高至14位
+		GetMecAngle_IncrementalMode_14bit();  //增量式, TLE5012的12位增量式编码器经过4倍频后精度提高至14位
 	
 		#else
 		#error "Encoder Mode Invalid"
 		#endif
 	
-		GetMecAngle_degree(); //计算角度制机械角度(0~360)
-		GetMecAngularSpeed_degree(); //计算角度制机械角速度
-		GetAvgMecAngularSpeed_degree(); //计算角度制机械角速度均值
-		CalculateEleAngle_degree(); //计算角度制电角度(0~360 * p)
-		GetEleAngularSpeed_degree(); //计算角度制电角速度
-		GetEleAngularSpeed_rad(); //计算弧度制电角速度
-		GetAvgEleAngularSpeed_degree(); //计算角度制电角速度均值
-		GetAvgEleAngularSpeed_rad(); //计算弧度制电角速度均值
+		GetMecAngle(); //计算机械角度
+		GetMecAngularSpeed(); //计算机械角速度
+		GetAvgMecAngularSpeed(); //计算机械角速度均值
+		GetEleAngle(); //计算电角度
+		GetAvgEleAngularSpeed();  //计算电角速度均值
 	#else
 	#error "Encoder Type Invalid"
 	#endif
 }
 
 #if ENCODER_TYPE == Encoder_TLE5012
-	void GetMecAngle_15bit(void)
+	void GetMecAngle_AbsoluteMode_15bit(void)
 	{
-		Encoder.MecAngle_15bit = (TLE5012_ReadRegister(TLE5012_Command_ReadCurrentValue_AngleValue) & 0x7FFF);
+		Encoder.MecAngle_AbsoluteMode_15bit = (TLE5012_ReadRegister(TLE5012_Command_ReadCurrentValue_AngleValue) & 0x7FFF);
 	}
 
-	void GetMecAngle_14bit(void)
+	void GetMecAngle_IncrementalMode_14bit(void)
 	{
-		Encoder.MecAngle_14bit = (uint16_t)(Encoder.OriginalMecAngle_14bit + TIM2->CNT);
+		Encoder.MecAngle_AbsoluteMode_15bit = (TLE5012_ReadRegister(TLE5012_Command_ReadCurrentValue_AngleValue) & 0x7FFF);
+//		Encoder.MecAngle_IncrementalMode_14bit = (uint16_t)((float)Encoder.MecAngle_AbsoluteMode_15bit / 32768.f * 16384.f);
 		
-		if(Encoder.MecAngle_14bit >= 16384)
+		Encoder.MecAngle_IncrementalMode_14bit = (uint16_t)(Encoder.OriginalMecAngle_14bit + TIM2->CNT);
+		
+		if(Encoder.MecAngle_IncrementalMode_14bit >= 16384)
 		{
-			Encoder.MecAngle_14bit -= 16384;
+			Encoder.MecAngle_IncrementalMode_14bit -= 16384;
 		}
 	}
 	
-	void GetMecAngle_degree(void)
+	void GetMecAngle(void)
 	{
 		#if	ENCODER_MODE == Encoder_AbsoluteMode
 		
-		Encoder.MecAngle_degree = 360.f * (float)Encoder.MecAngle_15bit / TLE5012_AbsoluteModeResolution;
+		Encoder.MecAngle_degree = 360.f * (float)Encoder.MecAngle_AbsoluteMode_15bit / TLE5012_AbsoluteModeResolution;
+		
+		Encoder.MecAngle_rad = (float)Encoder.MecAngle_degree / 360.f * 2.0f * PI;
 		
 		#elif ENCODER_MODE == Encoder_IncrementalMode
 		
-		Encoder.MecAngle_degree = 360.f * (float)Encoder.MecAngle_14bit / (TLE5012_IncrementalModeResolution * 4.f);
+		Encoder.MecAngle_degree = 360.f * (float)Encoder.MecAngle_IncrementalMode_14bit / (TLE5012_IncrementalModeResolution * 4.f);
+		
+		Encoder.MecAngle_rad = (float)Encoder.MecAngle_degree / 360.f * 2.0f * PI;
 		
 		#else
 		#error "Encoder Mode Invalid"
 		#endif
 	}
 
-	void GetMecAngle_rad(void)
-	{
-		Encoder.MecAngle_rad = (float)Encoder.MecAngle_degree / 360.f * 2.0f * PI;
-	}
-
-	void GetMecAngularSpeed_degree(void)
+	void GetMecAngularSpeed(void)
 	{
 		float presentMecAngle = 0;
 		static float lastMecAngle = 0;
 		float angleDifference = 0;
 		
-		presentMecAngle = Encoder.MecAngle_degree;
+		presentMecAngle = Encoder.MecAngle_rad;
 		
 		angleDifference = presentMecAngle - lastMecAngle;
 		
-		if(angleDifference > 180.f)
+		if(angleDifference > PI)
 		{
-			angleDifference -= 360.f;
+			angleDifference -= 2.f * PI;
 		}
 		
-		else if(angleDifference < -180.f)
+		else if(angleDifference < -PI)
 		{
-			angleDifference += 360.f;
+			angleDifference += 2.f * PI;
 		}
 		
 		#if ENCODER_MODE == Encoder_AbsoluteMode
 		
-		Encoder.MecAngularSpeed_degree = angleDifference / TLE5012_UpdateTime_2;
+		Encoder.MecAngularSpeed_rad = angleDifference / TLE5012_UpdateTime_2;
 		
 		#elif ENCODER_MODE == Encoder_IncrementalMode
 		
-		Encoder.MecAngularSpeed_degree = angleDifference / CarrierPeriod_s;
+		Encoder.MecAngularSpeed_rad = angleDifference / CarrierPeriod_s;
 		
 		#else
 		#error "Encoder Mode Invalid"
@@ -137,12 +136,7 @@ void GetPositionImformation(void)
 		lastMecAngle = presentMecAngle;
 	}
 
-	void GetMecAngularSpeed_rad(void)
-	{
-		Encoder.MecAngularSpeed_rad = (Encoder.MecAngularSpeed_degree / 360.f) * 2.0f * PI;
-	}
-
-	void GetAvgMecAngularSpeed_degree(void)
+	void GetAvgMecAngularSpeed(void)
 	{
 		const uint8_t num = 6;
 		static float array[num] = {0};
@@ -152,7 +146,7 @@ void GetPositionImformation(void)
 		static float Avg = 0.0f;
 		float old = array[pos];
 		
-		data = Encoder.MecAngularSpeed_degree;
+		data = Encoder.MecAngularSpeed_rad;
 		
 		array[pos] = data;
 		
@@ -162,66 +156,41 @@ void GetPositionImformation(void)
 
 		pos = (pos+1) % num;
 
-		Encoder.AvgMecAngularSpeed_degree = Avg;
+		Encoder.AvgMecAngularSpeed_rad = Avg;
 	}
 
-	void GetAvgMecAngularSpeed_rad(void)
-	{
-		Encoder.AvgMecAngularSpeed_rad = (Encoder.AvgMecAngularSpeed_degree / 360.f) * 2.0f * PI;
-	}
-
-	void CalculateEleAngle_degree(void)
+	void GetEleAngle(void)
 	{
 		float normPos = 0;
 		
 		#if ENCODER_MODE == Encoder_AbsoluteMode
 		
-		normPos = fmodf(Encoder.MecAngle_15bit, TLE5012_AbsoluteModeResolution);	
+		normPos = fmodf(Encoder.MecAngle_AbsoluteMode_15bit, TLE5012_AbsoluteModeResolution);	
 		
 		uint32_t index = UtilBiSearchInt(MecAngleRef, normPos, sizeof(MecAngleRef)/sizeof(MecAngleRef[0]));
 
 		uint32_t indexPlus1 = index + 1;
 		
-		Encoder.EleAngle_degree = fmodf(utils_map(Encoder.MecAngle_15bit, MecAngleRef[index], MecAngleRef[indexPlus1], EleAngleRef[index], EleAngleRef[indexPlus1]), 360);
+		Encoder.EleAngle_degree = fmodf(utils_map(Encoder.MecAngle_AbsoluteMode_15bit, MecAngleRef[index], MecAngleRef[indexPlus1], EleAngleRef[index], EleAngleRef[indexPlus1]), 360);
 		
 		#elif ENCODER_MODE == Encoder_IncrementalMode
 		
-		normPos = fmodf(Encoder.MecAngle_14bit, TLE5012_IncrementalModeResolution * 4.f);	
+		normPos = fmodf(Encoder.MecAngle_IncrementalMode_14bit, TLE5012_IncrementalModeResolution * 4.f);	
 		
 		uint32_t index = UtilBiSearchInt(MecAngleRef, normPos, sizeof(MecAngleRef)/sizeof(MecAngleRef[0]));
 
 		uint32_t indexPlus1 = index + 1;
 		
-		Encoder.EleAngle_degree = fmodf(utils_map(Encoder.MecAngle_14bit, MecAngleRef[index], MecAngleRef[indexPlus1], EleAngleRef[index], EleAngleRef[indexPlus1]), 360);
+		Encoder.EleAngle_degree = fmodf(utils_map(Encoder.MecAngle_IncrementalMode_14bit, MecAngleRef[index], MecAngleRef[indexPlus1], EleAngleRef[index], EleAngleRef[indexPlus1]), 360);
 		
 		#else
 		#error "Encoder Mode Invalid"
 		#endif
 	}
 
-	void CalculateEleAngle_rad(void)
+	void GetAvgEleAngularSpeed(void)
 	{
-		Encoder.EleAngle_rad = (Encoder.EleAngle_degree / 360.f) * 2.0f * PI;
-	}
-
-	void GetEleAngularSpeed_degree(void)
-	{
-		Encoder.EleAngularSpeed_degree = Encoder.MecAngularSpeed_degree * MotorMagnetPairs;
-	}
-
-	void GetEleAngularSpeed_rad(void)
-	{
-		Encoder.EleAngularSpeed_rad = (Encoder.EleAngularSpeed_degree / 360.f) * 2.0f * PI;
-	}
-
-	void GetAvgEleAngularSpeed_degree(void)
-	{
-		Encoder.AvgEleAngularSpeed_degree = Encoder.AvgMecAngularSpeed_degree * MotorMagnetPairs;
-	}
-
-	void GetAvgEleAngularSpeed_rad(void)
-	{
-		Encoder.AvgEleAngularSpeed_rad = (Encoder.AvgEleAngularSpeed_degree / 360.f) * 2.0f * PI;
+		Encoder.AvgEleAngularSpeed_rad = Encoder.AvgMecAngularSpeed_rad * MotorMagnetPairs;
 	}
 
 	uint16_t TLE5012_ReadRegister(uint16_t command)

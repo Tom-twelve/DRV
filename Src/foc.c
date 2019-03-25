@@ -174,26 +174,26 @@ void SpaceVectorPulseWidthModulation(float voltageAlpha, float voltageBeta)
    * @param[out] currentQ     			points to output rotor reference frame q
    * @param[in]  EleAngle				value of Electrical angle
    */
-void ParkTransform(float currentPhaseA, float currentPhaseB, float currentPhaseC, float *currentD, float *currentQ, float EleAngle)
+void ParkTransform(float currentPhaseA, float currentPhaseB, float currentPhaseC, float *currentD, float *currentQ, float eleAngle)
 {
 	const float Coefficient_ConstantPower = 0.8164965809f;
 	const float Coefficient_ConstantAmplitude = 0.6666666667f;
-	float EleAngleSineValue1 = 0;
-	float EleAngleCosineValue1 = 0;
-	float EleAngleSineValue2 = 0;
-	float EleAngleCosineValue2 = 0;
-	float EleAngleSineValue3 = 0;
-	float EleAngleCosineValue3 = 0;
+	float eleAngleSineValue1 = 0;
+	float eleAngleCosineValue1 = 0;
+	float eleAngleSineValue2 = 0;
+	float eleAngleCosineValue2 = 0;
+	float eleAngleSineValue3 = 0;
+	float eleAngleCosineValue3 = 0;
 	
-	arm_sin_cos_f32((float)EleAngle,  &EleAngleSineValue1,  &EleAngleCosineValue1);
+	arm_sin_cos_f32((float)eleAngle,  &eleAngleSineValue1,  &eleAngleCosineValue1);
 	
-	arm_sin_cos_f32((float)(EleAngle - 120.f),  &EleAngleSineValue2,  &EleAngleCosineValue2);
+	arm_sin_cos_f32((float)(eleAngle - 120.f),  &eleAngleSineValue2,  &eleAngleCosineValue2);
 	
-	arm_sin_cos_f32((float)(EleAngle + 120.f),  &EleAngleSineValue3,  &EleAngleCosineValue3);
+	arm_sin_cos_f32((float)(eleAngle + 120.f),  &eleAngleSineValue3,  &eleAngleCosineValue3);
 	
-	*currentD = Coefficient_ConstantAmplitude * (currentPhaseA * EleAngleSineValue1 + currentPhaseB * EleAngleSineValue2 + currentPhaseC * EleAngleSineValue3);
+	*currentD = Coefficient_ConstantAmplitude * (currentPhaseA * eleAngleSineValue1 + currentPhaseB * eleAngleSineValue2 + currentPhaseC * eleAngleSineValue3);
 	
-	*currentQ = Coefficient_ConstantAmplitude * (currentPhaseA * EleAngleCosineValue1 + currentPhaseB * EleAngleCosineValue2 + currentPhaseC * EleAngleCosineValue3);
+	*currentQ = Coefficient_ConstantAmplitude * (currentPhaseA * eleAngleCosineValue1 + currentPhaseB * eleAngleCosineValue2 + currentPhaseC * eleAngleCosineValue3);
 }
 
    /**
@@ -204,14 +204,14 @@ void ParkTransform(float currentPhaseA, float currentPhaseB, float currentPhaseC
    * @param[out] voltageBeta  		output two-phase orthogonal vector axis beta
    * @param[in]  EleAngle	value of Ele angle
    */
-void InverseParkTransform_TwoPhase(float voltageD, float voltageQ, float *voltageAlpha, float *voltageBeta, float EleAngle)
+void InverseParkTransform_TwoPhase(float voltageD, float voltageQ, float *voltageAlpha, float *voltageBeta, float eleAngle)
 {
-	float EleAngleSineValue = 0;
-	float EleAngleCosineValue = 0;
+	float eleAngleSineValue = 0;
+	float eleAngleCosineValue = 0;
 	
-	arm_sin_cos_f32((float)EleAngle,  &EleAngleSineValue,  &EleAngleCosineValue);
+	arm_sin_cos_f32((float)eleAngle,  &eleAngleSineValue,  &eleAngleCosineValue);
 	
-	arm_inv_park_f32((float)voltageD, (float)voltageQ, voltageAlpha, voltageBeta, (float)EleAngleSineValue, (float)EleAngleCosineValue);
+	arm_inv_park_f32((float)voltageD, (float)voltageQ, voltageAlpha, voltageBeta, (float)eleAngleSineValue, (float)eleAngleCosineValue);
 }
 
    /**
@@ -328,11 +328,11 @@ void MeasureEleAngle(float voltageD)
 
 			#if ENCODER_MODE == Encoder_AbsoluteMode
 			
-			tempMecAngleRef[index_5012b] = Encoder.MecAngle_15bit;
+			tempMecAngleRef[index_5012b] = Encoder.MecAngle_AbsoluteMode_15bit;
 			
 			#elif ENCODER_MODE == Encoder_IncrementalMode
 			
-			tempMecAngleRef[index_5012b] = Encoder.MecAngle_14bit;
+			tempMecAngleRef[index_5012b] = Encoder.MecAngle_IncrementalMode_14bit;
 			
 			#else
 			#error "Encoder Mode Invalid"

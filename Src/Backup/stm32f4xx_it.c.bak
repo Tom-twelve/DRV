@@ -281,7 +281,7 @@ void ADC_IRQHandler(void)
 	
 	switch(MotorStaticParameter.ControlMode)
 	{
-		case VoltageControlMode :	InverseParkTransform_TwoPhase(0.f, 5.f, &CoordinateTransformation.VoltageAlpha, &CoordinateTransformation.VoltageBeta, Encoder.EleAngle_degree + MotorStaticParameter.PowerAngleCompensation_degree);
+		case VoltageControlMode :	InverseParkTransform_TwoPhase(0.f, 1.0f, &CoordinateTransformation.VoltageAlpha, &CoordinateTransformation.VoltageBeta, Encoder.EleAngle_degree + MotorStaticParameter.PowerAngleCompensation_degree);
 									
 									SpaceVectorPulseWidthModulation(CoordinateTransformation.VoltageAlpha, CoordinateTransformation.VoltageBeta);
 
@@ -291,9 +291,10 @@ void ADC_IRQHandler(void)
 //									CalculateVoltage_dq(CoordinateTransformation.CurrentQ, &CoordinateTransformation.VoltageD, &CoordinateTransformation.VoltageQ, Encoder.AvgEleAngularSpeed_rad);
 //			
 //									CalculateElectromagneticTorque(CoordinateTransformation.CurrentQ, &MotorDynamicParameter.ElectromagneticTorque);
-
-									UART_Transmit_DMA("%d\t",(int)(Encoder.MecAngle_14bit));
-									UART_Transmit_DMA("%d\r\n",(int)(MotorDynamicParameter.CurrentPhaseC * 1000));
+		
+									UART_Transmit_DMA("%d\t",(int)((float)Encoder.MecAngle_AbsoluteMode_15bit / 32768.f * 360.f));
+									UART_Transmit_DMA("%d\t",(int)((float)Encoder.MecAngle_IncrementalMode_14bit / 16384.f * 360.f));
+									UART_Transmit_DMA("%d\r\n",(int)(temp3));
 									
 									break;
 
@@ -302,9 +303,6 @@ void ADC_IRQHandler(void)
 
 									/*进行Park变换, 将三相电流转换为dq轴电流*/
 									ParkTransform(MotorDynamicParameter.CurrentPhaseA, MotorDynamicParameter.CurrentPhaseB, MotorDynamicParameter.CurrentPhaseC, &CoordinateTransformation.CurrentD, &CoordinateTransformation.CurrentQ, Encoder.EleAngle_degree + MotorStaticParameter.PowerAngleCompensation_degree);
-									
-									/*利用实际q轴电流与转子电角速度计算实际dq轴电压*/
-									CalculateVoltage_dq(CoordinateTransformation.CurrentQ, &CoordinateTransformation.VoltageD, &CoordinateTransformation.VoltageQ, Encoder.AvgEleAngularSpeed_rad);
 									
 									/*电流环PI控制器*/
 									CurrentControlLoop(CurrentLoop.ExpectedCurrentD, CurrentLoop.ExpectedCurrentQ, CoordinateTransformation.CurrentD, CoordinateTransformation.CurrentQ, &CurrentLoop.ControlVoltageD, &CurrentLoop.ControlVoltageQ);

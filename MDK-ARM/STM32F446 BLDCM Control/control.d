@@ -50,5 +50,6 @@ stm32f446\ bldcm\ control/control.o: ../Src/control.c ../Inc\control.h \
   D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h ../Inc/Encoder.h \
   D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdlib.h ../Inc/gpio.h \
   ../Inc/spi.h ../Inc/AngleTable.h ../Inc/util.h \
-  D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdbool.h ../Inc/control.h \
-  ../Inc/usart.h D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdarg.h
+  D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdbool.h ../Inc/adc.h \
+  ../Inc/control.h ../Inc/usart.h \
+  D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdarg.h

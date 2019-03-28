@@ -50,5 +50,5 @@ stm32f446\ bldcm\ control/encoder.o: ../Src/Encoder.c ../Inc\Encoder.h \
   D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h ../Inc/Encoder.h \
   ../Inc/control.h ../Inc/MotorConfig.h ../Inc/usart.h \
   D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdarg.h ../Inc/util.h \
-  D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdbool.h ../Inc/spi.h \
-  ../Inc/AngleTable.h
+  D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdbool.h ../Inc/adc.h \
+  ../Inc/spi.h ../Inc/AngleTable.h

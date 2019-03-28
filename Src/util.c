@@ -1,6 +1,5 @@
 #include "util.h"
-#include "math.h"
-
+	
 _Bool EvenParityCheck(uint32_t data)
 {
 	_Bool a = 1;
@@ -170,7 +169,7 @@ float arcsine(float value)
 	float angle_rad = 0;
 	
 	//利用四阶泰勒级数计算反正弦函数值, 保证速度, 精度只能保证小数点后三位的准确性, 并且value应在(-0.5 ~ 0.5)之间, 超出此范围将不能保证精度
-	angle_rad = value+value*value*value/6+3*value*value*value*value*value/40+5*value*value*value*value*value*value*value/112;	
+	angle_rad = value+value*value*value/6 + 3*value*value*value*value*value/40 + 5*value*value*value*value*value*value*value/112;	
 	
 	return angle_rad;
 }
@@ -182,4 +181,53 @@ float sqrt_DSP(float inputValue)
 	arm_sqrt_f32(inputValue, &outputValue);
 	
 	return outputValue;
+}
+
+/*Keil读取数据*/
+int TempDataArray[1000] = {0};
+int DataReadyFlag = 0;
+	
+void GetData(int32_t data)
+{
+	static uint16_t i = 0;
+	static uint16_t j = 0;
+	
+	j++;
+	
+	if(j >= 50000)
+	{
+		j = 50000;
+		
+		if(i < 1000)
+		{
+			TempDataArray[i] = data;
+	
+			i++;
+		}	
+		
+		if(i >= 1000)
+		{
+			i = 1000;
+			
+			PWM_IT_CMD(DISABLE, DISABLE);
+			
+			DataReadyFlag = 1;
+			
+			ADC_CMD(DISABLE);
+		}
+	}
+}
+
+void SendData(void)
+{
+	if(DataReadyFlag)
+	{
+		DataReadyFlag = 0;
+		
+		for(uint16_t k = 0; k < 1000; k++)
+		{
+			UART_Transmit_DMA("%d\r\n",(int)(TempDataArray[k]));
+			HAL_Delay(10);
+		}
+	}
 }

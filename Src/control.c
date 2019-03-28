@@ -45,7 +45,7 @@ void MotorEnable(void)
 	PWM_IT_CMD(ENABLE,ENABLE);
 	
 	/*设定控制模式*/
-	MotorStaticParameter.ControlMode = CurrentControlMode;
+	MotorStaticParameter.ControlMode = VoltageControlMode;
 	
 	/*采用Id = 0控制, 故设定d轴电流为零*/
 	CurrentLoop.ExpectedCurrentD = 0.f;
@@ -53,7 +53,7 @@ void MotorEnable(void)
 	switch(MotorStaticParameter.ControlMode)
 	{
 		case VoltageControlMode :		/*测试用*/
-										MotorStaticParameter.PowerAngleCompensation_degree = 10.f;
+										MotorStaticParameter.PowerAngleCompensation_degree = 16.f;
 		
 										break;
 		
@@ -65,7 +65,7 @@ void MotorEnable(void)
 										
 										CurrentLoop.Ki_D = 0.1f;
 										
-										CurrentLoop.Kp_Q = 0.6f;
+										CurrentLoop.Kp_Q = 0.4f;
 
 										CurrentLoop.Ki_Q = 0.1f;
 		
@@ -157,7 +157,7 @@ void CurrentLoopController(float expectedCurrentD, float expectedCurrentQ, float
 	/*反电动势补偿*/
 	
 	*controlVoltageD = 0;
-	*controlVoltageQ = controlCurrentQ + realityCurrentQ * PhaseResistance + Encoder.AvgEleAngularSpeed_rad * (RotatorFluxLinkage + InductanceD * realityCurrentD);
+	*controlVoltageQ = controlCurrentQ + Encoder.AvgEleAngularSpeed_rad * RotatorFluxLinkage;
 }
 
    /**

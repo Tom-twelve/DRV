@@ -3,7 +3,10 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "math.h"
 #include "arm_math.h"
+#include "tim.h"
+#include "adc.h"
 
 #define M_PI			(3.14159265358979323846)
 #define	SQRT3			(1.73205080757f)
@@ -36,4 +39,6 @@ float UtilPI_Control(arm_pid_instance_f32 *S, float err);
 float UtilPID_Control(arm_pid_instance_f32 *S, float err);
 float arcsine(float value);
 float sqrt_DSP(float inputValue);
+void GetData(int32_t data);
+void SendData(void);
 #endif

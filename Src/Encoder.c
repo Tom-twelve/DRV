@@ -71,9 +71,6 @@ void GetPositionImformation(void)
 
 	void GetMecAngle_IncrementalMode_14bit(void)
 	{
-		Encoder.MecAngle_AbsoluteMode_15bit = (TLE5012_ReadRegister(TLE5012_Command_ReadCurrentValue_AngleValue) & 0x7FFF);
-//		Encoder.MecAngle_IncrementalMode_14bit = (uint16_t)((float)Encoder.MecAngle_AbsoluteMode_15bit / 32768.f * 16384.f);
-		
 		Encoder.MecAngle_IncrementalMode_14bit = (uint16_t)(Encoder.OriginalMecAngle_14bit + TIM2->CNT);
 		
 		if(Encoder.MecAngle_IncrementalMode_14bit >= 16384)
@@ -171,7 +168,7 @@ void GetPositionImformation(void)
 
 		uint32_t indexPlus1 = index + 1;
 		
-		Encoder.EleAngle_degree = fmodf(utils_map(Encoder.MecAngle_AbsoluteMode_15bit, MecAngleRef[index], MecAngleRef[indexPlus1], EleAngleRef[index], EleAngleRef[indexPlus1]), 360);
+		Encoder.EleAngle_degree = fmodf(utils_map(Encoder.MecAngle_AbsoluteMode_15bit, MecAngleRef[index], MecAngleRef[indexPlus1], EleAngleRef[index], EleAngleRef[indexPlus1]), 360.f);
 		
 		#elif ENCODER_MODE == Encoder_IncrementalMode
 		
@@ -181,7 +178,7 @@ void GetPositionImformation(void)
 
 		uint32_t indexPlus1 = index + 1;
 		
-		Encoder.EleAngle_degree = fmodf(utils_map(Encoder.MecAngle_IncrementalMode_14bit, MecAngleRef[index], MecAngleRef[indexPlus1], EleAngleRef[index], EleAngleRef[indexPlus1]), 360);
+		Encoder.EleAngle_degree = fmodf(utils_map(Encoder.MecAngle_IncrementalMode_14bit, MecAngleRef[index], MecAngleRef[indexPlus1], EleAngleRef[index], EleAngleRef[indexPlus1]), 360.f);
 		
 		#else
 		#error "Encoder Mode Invalid"

@@ -66,7 +66,7 @@ void MX_ADC2_Init(void);
 void MX_ADC3_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-void ADC_Enable(void);
+void ADC_CMD(FunctionalState adcState);
 void GetPhaseCurrent(void);
 
 /* USER CODE END Prototypes */

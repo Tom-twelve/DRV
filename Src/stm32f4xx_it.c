@@ -287,16 +287,16 @@ void ADC_IRQHandler(void)
 
 									/*≤‚ ‘”√*/
 									ParkTransform(MotorDynamicParameter.CurrentPhaseA, MotorDynamicParameter.CurrentPhaseB, MotorDynamicParameter.CurrentPhaseC, &CoordinateTransformation.CurrentD, &CoordinateTransformation.CurrentQ, Encoder.EleAngle_degree);
-									
+								
 //									CalculateVoltage_dq(CoordinateTransformation.CurrentQ, &CoordinateTransformation.VoltageD, &CoordinateTransformation.VoltageQ, Encoder.AvgEleAngularSpeed_rad);
 									
 //									CalculateElectromagneticTorque(CoordinateTransformation.CurrentQ, &MotorDynamicParameter.ElectromagneticTorque);
 		
-//									UART_Transmit_DMA("%d\t",(int)(MotorDynamicParameter.CurrentPhaseA * 1000));
-//									UART_Transmit_DMA("%d\t",(int)(MotorDynamicParameter.CurrentPhaseB * 1000));
-//									UART_Transmit_DMA("%d\r\n",(int)(MotorDynamicParameter.CurrentPhaseC * 1000));
-									UART_Transmit_DMA("%d\t",(int)(CoordinateTransformation.CurrentD * 1000));
-									UART_Transmit_DMA("%d\r\n",(int)(CoordinateTransformation.CurrentQ * 1000));
+//									UART_Transmit_DMA("%d\t",(int)(temp1));
+//									UART_Transmit_DMA("%d\t",(int)(temp2));
+//									UART_Transmit_DMA("%d\r\n",(int)(temp3));
+//									UART_Transmit_DMA("%d\t",(int)(CoordinateTransformation.CurrentD * 1000));
+//									UART_Transmit_DMA("%d\r\n",(int)(CoordinateTransformation.CurrentQ * 1000));
 		
 									break;
 

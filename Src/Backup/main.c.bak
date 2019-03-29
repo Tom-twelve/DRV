@@ -51,9 +51,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "foc.h"
+#include "Encoder.h"
 #include "control.h"
 #include "GateDriver.h"
-#include "Encoder.h"
 #include "MotorConfig.h"
 
 /* USER CODE END Includes */
@@ -162,7 +162,7 @@ int main(void)
 	
 	switch(MotorStaticParameter.MotorMode)
 	{
-		case WorkMode : ADC_Enable();	//包括使能ADC中断, 电机控制程序在ADC中断中执行
+		case WorkMode : ADC_CMD(ENABLE);	//包括使能ADC中断, 电机控制程序在ADC中断中执行
 		
 						break;
 		
@@ -177,7 +177,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

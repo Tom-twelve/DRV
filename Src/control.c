@@ -53,7 +53,7 @@ void MotorEnable(void)
 	switch(MotorStaticParameter.ControlMode)
 	{
 		case VoltageControlMode :		/*≤‚ ‘”√*/
-										MotorStaticParameter.PowerAngleCompensation_degree = 16.f;
+										MotorStaticParameter.PowerAngleCompensation_degree = 5.f;
 		
 										break;
 		

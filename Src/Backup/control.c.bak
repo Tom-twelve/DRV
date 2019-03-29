@@ -53,7 +53,7 @@ void MotorEnable(void)
 	switch(MotorStaticParameter.ControlMode)
 	{
 		case VoltageControlMode :		/*测试用*/
-										MotorStaticParameter.PowerAngleCompensation_degree = 10.f;
+										MotorStaticParameter.PowerAngleCompensation_degree = 16.f;
 		
 										break;
 		
@@ -65,7 +65,7 @@ void MotorEnable(void)
 										
 										CurrentLoop.Ki_D = 0.1f;
 										
-										CurrentLoop.Kp_Q = 0.1f;
+										CurrentLoop.Kp_Q = 0.4f;
 
 										CurrentLoop.Ki_Q = 0.1f;
 		
@@ -114,18 +114,21 @@ void MotorEnable(void)
    /**
    * @brief		Current control loop
    */
-void CurrentControlLoop(float expectedCurrentD, float expectedCurrentQ, float realityCurrentD, float realityCurrentQ, float *controlCurrentD, float *controlCurrentQ)
+void CurrentLoopController(float expectedCurrentD, float expectedCurrentQ, float realityCurrentD, float realityCurrentQ, float *controlVoltageD, float *controlVoltageQ)
 {
 	float errorD = 0;
 	float errorQ = 0;
+	float controlCurrentD = 0;
+	float controlCurrentQ = 0;
 	static float integralErrorD = 0;
 	static float integralErrorQ = 0;
 	
 	errorD = expectedCurrentD - realityCurrentD;
 	errorQ = expectedCurrentQ - realityCurrentQ;
 	
-	*controlCurrentD = CurrentLoop.Kp_D * errorD + CurrentLoop.Ki_D * integralErrorD;
-	*controlCurrentQ = CurrentLoop.Kp_Q * errorQ + CurrentLoop.Ki_Q * integralErrorQ;
+	/*PI控制器*/
+	controlCurrentD = CurrentLoop.Kp_D * errorD + CurrentLoop.Ki_D * integralErrorD;
+	controlCurrentQ = CurrentLoop.Kp_Q * errorQ + CurrentLoop.Ki_Q * integralErrorQ;
 	
 	integralErrorD += errorD * CarrierPeriod_s;
 	integralErrorQ += errorQ * CarrierPeriod_s;
@@ -150,12 +153,17 @@ void CurrentControlLoop(float expectedCurrentD, float expectedCurrentQ, float re
 	{
 		integralErrorQ = -CurrentControlLoopIntegralErrorLimit_Q;
 	}
+	
+	/*反电动势补偿*/
+	
+	*controlVoltageD = 0;
+	*controlVoltageQ = controlCurrentQ + Encoder.AvgEleAngularSpeed_rad * RotatorFluxLinkage;
 }
 
    /**
    * @brief		Speed control loop
    */
-void SpeedControlLoop(float expectedMecAngularSpeed, float realityMecAngularSpeed, float *controlCurrentQ)
+void SpeedLoopController(float expectedMecAngularSpeed, float realityMecAngularSpeed, float *controlCurrentQ)
 {
 	float error = 0;
 	static float integralError = 0;
@@ -181,7 +189,7 @@ void SpeedControlLoop(float expectedMecAngularSpeed, float realityMecAngularSpee
    /**
    * @brief		Position control loop
    */
-void PositionControlLoop(float expectedMecAngle, float realityMecAngle, float *controlCurrentQ)
+void PositionLoopController(float expectedMecAngle, float realityMecAngle, float *controlCurrentQ)
 {
 	float error = 0;
 	static float lastError = 0;

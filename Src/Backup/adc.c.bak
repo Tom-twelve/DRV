@@ -366,17 +366,29 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
 } 
 
 /* USER CODE BEGIN 1 */
-void ADC_Enable(void)
+void ADC_CMD(FunctionalState adcState)
 {
-	__HAL_ADC_ENABLE(&hadc1);
-	__HAL_ADC_ENABLE(&hadc2);
-	__HAL_ADC_ENABLE(&hadc3);
-	HAL_ADCEx_InjectedStart_IT(&hadc2);
-	HAL_ADCEx_InjectedStart_IT(&hadc3);
-	HAL_ADCEx_InjectedStart_IT(&hadc1);
-	__HAL_DMA_DISABLE_IT(hadc1.DMA_Handle,DMA_IT_TC|DMA_IT_HT);
-	__HAL_DMA_DISABLE_IT(hadc2.DMA_Handle,DMA_IT_TC|DMA_IT_HT);
-	__HAL_DMA_DISABLE_IT(hadc3.DMA_Handle,DMA_IT_TC|DMA_IT_HT);
+	  if (adcState == ENABLE)
+	  {
+		__HAL_ADC_ENABLE(&hadc1);
+		__HAL_ADC_ENABLE(&hadc2);
+		__HAL_ADC_ENABLE(&hadc3);
+		HAL_ADCEx_InjectedStart_IT(&hadc2);
+		HAL_ADCEx_InjectedStart_IT(&hadc3);
+		HAL_ADCEx_InjectedStart_IT(&hadc1);
+	  }
+	  else if (adcState == DISABLE)
+	  {
+		__HAL_ADC_DISABLE(&hadc1);
+		__HAL_ADC_DISABLE(&hadc2);
+		__HAL_ADC_DISABLE(&hadc3);
+		HAL_ADCEx_InjectedStop_IT(&hadc2);
+		HAL_ADCEx_InjectedStop_IT(&hadc3);
+		HAL_ADCEx_InjectedStop_IT(&hadc1);
+	  }
+	  __HAL_DMA_DISABLE_IT(hadc1.DMA_Handle,DMA_IT_TC|DMA_IT_HT);
+	  __HAL_DMA_DISABLE_IT(hadc2.DMA_Handle,DMA_IT_TC|DMA_IT_HT);
+	  __HAL_DMA_DISABLE_IT(hadc3.DMA_Handle,DMA_IT_TC|DMA_IT_HT);
 }
 
 void GetPhaseCurrent(void)

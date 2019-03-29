@@ -87,9 +87,9 @@ struct PositionLoop_t
 /* USER CODE BEGIN PFP */
 
 void MotorEnable(void);
-void CurrentControlLoop(float expectedCurrentD, float expectedCurrentQ, float realityCurrentD, float realityCurrentQ, float *controlVoltageD, float *controlVoltageQ);
-void SpeedControlLoop(float expectedMecAngularSpeed, float realityMecAngularSpeed, float *controlCurrentQ);
-void PositionControlLoop(float expectedMecAngle, float realityMecAngle, float *controlCurrentQ);
+void CurrentLoopController(float expectedCurrentD, float expectedCurrentQ, float realityCurrentD, float realityCurrentQ, float *controlVoltageD, float *controlVoltageQ);
+void SpeedLoopController(float expectedMecAngularSpeed, float realityMecAngularSpeed, float *controlCurrentQ);
+void PositionLoopController(float expectedMecAngle, float realityMecAngle, float *controlCurrentQ);
 float VelocitySlopeGenerator(float expectedVelocity);
 
 /* USER CODE END PFP */

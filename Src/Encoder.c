@@ -120,7 +120,7 @@ void GetPositionImformation(void)
 		
 		#if ENCODER_MODE == Encoder_AbsoluteMode
 		
-		Encoder.MecAngularSpeed_rad = angleDifference / TLE5012_UpdateTime_2;
+		Encoder.MecAngularSpeed_rad = angleDifference / TLE5012_UpdateTime_0;
 		
 		#elif ENCODER_MODE == Encoder_IncrementalMode
 		

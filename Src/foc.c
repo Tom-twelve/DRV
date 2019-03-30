@@ -202,7 +202,7 @@ void ParkTransform(float currentPhaseA, float currentPhaseB, float currentPhaseC
    * @param[in]  voltageQ       	input coordinate of rotor reference frame q
    * @param[out] voltageAlpha 		output two-phase orthogonal vector axis alpha
    * @param[out] voltageBeta  		output two-phase orthogonal vector axis beta
-   * @param[in]  EleAngle	value of Ele angle
+   * @param[in]  EleAngle			value of Ele angle
    */
 void InverseParkTransform_TwoPhase(float voltageD, float voltageQ, float *voltageAlpha, float *voltageBeta, float eleAngle)
 {

@@ -227,7 +227,10 @@ void SendData(void)
 		for(uint16_t k = 0; k < 1000; k++)
 		{
 			UART_Transmit_DMA("%d\r\n",(int)(TempDataArray[k]));
-			HAL_Delay(10);
+			for(uint16_t m = 0; m < 1000; m++)
+			{
+			
+			}
 		}
 	}
 }

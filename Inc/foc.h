@@ -71,7 +71,7 @@ struct MotorStaticParameter_t
 /* USER CODE BEGIN PD */
 #define	GeneratrixVoltage					25.0f		//(V)
 #define	MaximumDistortionlessVoltage		(ONE_BY_SQRT3 * GeneratrixVoltage)	//(V)
-#define CarrierFrequency					40000.f		//(Hz)
+#define CarrierFrequency					25000.f		//(Hz)
 #define CarrierPeriod_s						(1.f / CarrierFrequency)		//(s)
 #define CarrierPeriod_us					(CarrierPeriod_s * 1000000.f)	//(us)
 #define MCU_Frequency						180000000.f		//(Hz)

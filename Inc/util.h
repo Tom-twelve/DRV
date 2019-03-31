@@ -24,6 +24,10 @@
 #define UTILS_IS_NAN(x)		((x) != (x))
 #define UTILS_NAN_ZERO(x)	(x = (UTILS_IS_NAN(x) ? 0.0 : x))
 
+#define Normalized(val) ((val > 1) ? 1 : (val < 0 ?  0 : val))	//归一化处理
+#define SIGN_DIRECT(val)   (val >= -1.f ? 1.f : -1.f)
+#define RadToDegree(val)  (val > 360.f ? (val - 360.f) : (val < 0.f ? (val + 360.f) : val))
+
 _Bool EvenParityCheck(uint32_t data);
 int utils_truncate_number_abs(float *number, float max);
 void utils_norm_angle_rad(float *angle);

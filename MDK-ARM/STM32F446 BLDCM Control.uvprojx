@@ -489,9 +489,9 @@
               <FilePath>..\Src\GateDriver.c</FilePath>
             </File>
             <File>
-              <FileName>Encoder.c</FileName>
+              <FileName>PositionSensor.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Src\Encoder.c</FilePath>
+              <FilePath>..\Src\PositionSensor.c</FilePath>
             </File>
           </Files>
         </Group>

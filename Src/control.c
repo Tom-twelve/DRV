@@ -34,7 +34,7 @@ struct PositionLoop_t PositionLoop;
 /* USER CODE BEGIN EV */
 extern struct MotorStaticParameter_t MotorStaticParameter;
 extern struct CoordinateTransformation_t CoordinateTransformation;
-extern struct Encoder_t Encoder;
+extern struct PositionSensor_t PositionSensor;
 /* USER CODE END EV */
 
 /* USER CODE BEGIN */
@@ -157,7 +157,7 @@ void CurrentLoopController(float expectedCurrentD, float expectedCurrentQ, float
 	/*反电动势补偿*/
 	
 	*controlVoltageD = 0;
-	*controlVoltageQ = controlCurrentQ + Encoder.AvgEleAngularSpeed_rad * RotatorFluxLinkage;
+	*controlVoltageQ = controlCurrentQ + PositionSensor.AvgEleAngularSpeed_rad * RotatorFluxLinkage;
 }
 
    /**

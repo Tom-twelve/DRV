@@ -48,7 +48,8 @@ stm32f446\ bldcm\ control/util.o: ../Src/util.c ../Inc\util.h \
   ../Drivers/STM32F4xx_HAL_Driver/Inc\stm32f4xx_ll_utils.h \
   ../Drivers/STM32F4xx_HAL_Driver/Inc\stm32f4xx_ll_pwr.h \
   ../Drivers/STM32F4xx_HAL_Driver/Inc\stm32f4xx_ll_dma.h ../Inc/foc.h \
-  ../Inc/Encoder.h D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdlib.h \
-  ../Inc/gpio.h ../Inc/spi.h ../Inc/MotorConfig.h ../Inc/AngleTable.h \
-  ../Inc/util.h ../Inc/control.h ../Inc/usart.h \
+  ../Inc/PositionSensor.h \
+  D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdlib.h ../Inc/gpio.h \
+  ../Inc/spi.h ../Inc/MotorConfig.h ../Inc/AngleTable.h ../Inc/util.h \
+  ../Inc/control.h ../Inc/usart.h \
   D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdarg.h ../Inc/adc.h

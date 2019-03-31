@@ -31,7 +31,7 @@ struct MotorStaticParameter_t		MotorStaticParameter;
 
 /* External variables --------------------------------------------------------*/
 /* USER CODE BEGIN EV */
-extern struct Encoder_t Encoder;
+extern struct PositionSensor_t PositionSensor;
 extern struct CurrentLoop_t CurrentLoop;
 
 /* USER CODE END EV */
@@ -43,7 +43,7 @@ extern struct CurrentLoop_t CurrentLoop;
    * @param[in]  voltageAlpha  		input two-phase vector coordinate alpha
    * @param[in]  voltageBeta   		input two-phase vector coordinate beta
    */
-void SpaceVectorPulseWidthModulation(float voltageAlpha, float voltageBeta)
+void SpaceVectorModulation(float voltageAlpha, float voltageBeta)
 {
 	const float StandardizationCoefficient = SQRT3 * TIM8_Autoreload / GeneratrixVoltage;
 	float U1 = 0;
@@ -258,7 +258,7 @@ void CurrentVoltageTransform(float controlCurrentQ, float *voltageD, float *volt
 {
 	/*将80%的最大不失真Vq用于提供转速, 20%的最大不失真Vq用于提供转矩*/
 	const float targetEleAngularSpeed_rad = 0.8f * MaximumDistortionlessVoltage / RotatorFluxLinkage;
-	const float maximumTorque = 0.2f * (MaximumDistortionlessVoltage / PhaseResistance) * 1.5f * MotorMagnetPairs * RotatorFluxLinkage;
+	const float maximumTorque = 0.2f * (MaximumDistortionlessVoltage / PhaseResistance) * 1.5f * MotorPolePairs * RotatorFluxLinkage;
 	
 	/*输出电压*/
 	*voltageD = -targetEleAngularSpeed_rad * InductanceQ * controlCurrentQ;
@@ -287,136 +287,8 @@ void CalculateVoltage_dq(float actualCurrentQ, float *voltageD, float *voltageQ,
    */
 void CalculateElectromagneticTorque(float actualCurrentQ, float *electromagneticTorque)
 {
-	*electromagneticTorque = 1.5f * MotorMagnetPairs * actualCurrentQ * RotatorFluxLinkage;
+	*electromagneticTorque = 1.5f * MotorPolePairs * actualCurrentQ * RotatorFluxLinkage;
 }
-
-   /**
-   * @brief  Measure reference Ele angle
-   * @param[in]  voltageD      voltage of axis d
-   */
-void MeasureEleAngle(float voltageD)
-{
-	float voltageAlpha = 0;
-	float voltageBeta = 0;
-	int16_t tmpData[2] = {0};
-	int EleAngle = 0;
-	static int16_t index_5012b = 1;
-	static int16_t index_bound = 0;
-	static int tempMecAngleRef[DivideNum * (uint8_t)MotorMagnetPairs + 2] = {0};
-	static int tempEleAngleRef[DivideNum * (uint8_t)MotorMagnetPairs + 2] = {0};
-	static int16_t tmpArray[DivideNum * (uint8_t)MotorMagnetPairs] = {0};
-
-	InverseParkTransform_TwoPhase(voltageD, 0.f, &voltageAlpha, &voltageBeta, 0.f);	//设定Uq = 0, 电角度为零
-	
-	SpaceVectorPulseWidthModulation(voltageAlpha, voltageBeta);
-	
-	HAL_Delay(1000);
-	
-	for (int i = 0; i < MotorMagnetPairs; i++)
-	{
-		for(int j = 0; j < DivideNum; j ++)
-		{
-			GetPositionImformation();
-			
-			EleAngle = j * 360 / DivideNum;
-			
-			InverseParkTransform_TwoPhase(voltageD, 0.f, &voltageAlpha, &voltageBeta, EleAngle);
-			
-			SpaceVectorPulseWidthModulation(voltageAlpha, voltageBeta);
-			
-			HAL_Delay(200);
-
-			#if ENCODER_MODE == Encoder_AbsoluteMode
-			
-			tempMecAngleRef[index_5012b] = Encoder.MecAngle_AbsoluteMode_15bit;
-			
-			#elif ENCODER_MODE == Encoder_IncrementalMode
-			
-			tempMecAngleRef[index_5012b] = Encoder.MecAngle_IncrementalMode_14bit;
-			
-			#else
-			#error "Encoder Mode Invalid"
-			#endif
-
-			if(tempMecAngleRef[index_5012b] < 1000 && tempMecAngleRef[index_5012b - 1] > 10000 && index_5012b > 1)
-			{
-				tmpData[0] = tempMecAngleRef[index_5012b];
-				
-				tmpData[1] = EleAngle;
-				
-				index_bound = index_5012b;
-			}
-			
-			UART_Transmit_DMA("\t/*Angle*/\t %d \t /*Encoder*/\t %d \r\n", (int)(EleAngle), (int)tempMecAngleRef[index_5012b]); 
-		
-			SendBuf();
-
-			index_5012b++;
-			
-			if(index_5012b > DivideNum * (uint8_t)MotorMagnetPairs)
-			{
-				PutStr("EXCESS\r\n");SendBuf();
-				break;
-			}
-		}
-	}
-	
-	/*	发送电角度表	*/
-	
-	PutStr("\r\n\r\n\r\n\r\n");
-	
-	HAL_Delay(100);
-	
-	for(int i = index_bound, j = 0; i <= DivideNum * (uint8_t)MotorMagnetPairs;i++,j++)
-	{
-		tmpArray[j] =  tempMecAngleRef[i];
-	}
-	
-	for(int i = index_bound - 1,k = DivideNum * (uint8_t)MotorMagnetPairs; i >= 0; i--, k--)
-	{
-		tempMecAngleRef[k] = tempMecAngleRef[i];
-	}
-	
-	for(int i = 1, k =0; k <=  DivideNum * (uint8_t)MotorMagnetPairs - index_bound; i++,k++)
-	{
-		tempMecAngleRef[i] = tmpArray[k];
-	}
-	
-	tempEleAngleRef[1] = tmpData[1];
-	
-	for(int i = 1; i <= DivideNum * (uint8_t)MotorMagnetPairs; i++)
-	{
-		tempEleAngleRef[i + 1] = tempEleAngleRef[i] + 360 / DivideNum;
-	}
-	
-	#if ENCODER_MODE == Encoder_AbsoluteMode
-	
-	tempMecAngleRef[0] = tempMecAngleRef[DivideNum * (uint8_t)MotorMagnetPairs] - (int32_t)TLE5012_AbsoluteModeResolution;
-	
-	tempMecAngleRef[DivideNum * (uint8_t)MotorMagnetPairs + 1] = tempMecAngleRef[1] + (int32_t)TLE5012_AbsoluteModeResolution;
-	
-	#elif ENCODER_MODE == Encoder_IncrementalMode
-
-	tempMecAngleRef[0] = tempMecAngleRef[DivideNum * (uint8_t)MotorMagnetPairs] - (int32_t)(TLE5012_IncrementalModeResolution * 4.f);
-	
-	tempMecAngleRef[DivideNum * (uint8_t)MotorMagnetPairs + 1] = tempMecAngleRef[1] + (int32_t)(TLE5012_IncrementalModeResolution * 4.f);
-	
-	#else
-	#error "Encoder Mode Invalid"
-	#endif
-
-	tempEleAngleRef[0] = tempEleAngleRef[1] - 360 / DivideNum;
-
-	for(int i = 0; i < DivideNum * (uint8_t)MotorMagnetPairs + 2; i++)
-	{
-		UART_Transmit_DMA("%d\t,\t%d\t,\r\n", (int)tempEleAngleRef[i], (int)tempMecAngleRef[i]);
-		
-		SendBuf();
-	
-		HAL_Delay(15);
-	}
-}
-
 
 /* USER CODE END */
 

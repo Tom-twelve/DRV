@@ -21,7 +21,7 @@
 #include "tim.h"
 #include "math.h"
 #include "arm_math.h"
-#include "Encoder.h"
+#include "PositionSensor.h"
 #include "control.h"
 #include "usart.h"
 #include "util.h"
@@ -78,13 +78,11 @@ struct MotorStaticParameter_t
 #define TIM8_Autoreload 					(int)((MCU_Frequency / CarrierFrequency) / 2.f )
 #define ADC_ExternalTrigger_CCR				(TIM8_Autoreload - 12)	//通过TIM8_CH4触发ADC, 超前量为ADC采样所需时间
 
-#define DivideNum  20	//将360度n等分, 每次电角度增量为(360/DivideNum)
-
-#if		PHASE_SEQUENCE == PositivePhase
+#if		PHASE_SEQUENCE == POSITIVE_SEQUENCE
 #define CCR_PhaseA      	TIM8->CCR3
 #define CCR_PhaseB          TIM8->CCR2
 #define CCR_PhaseC          TIM8->CCR1
-#elif	PHASE_SEQUENCE == NegativePhase
+#elif	PHASE_SEQUENCE == NEGATIVE_SEQUENCE
 #define CCR_PhaseA          TIM8->CCR1
 #define CCR_PhaseB          TIM8->CCR2
 #define CCR_PhaseC          TIM8->CCR3
@@ -96,7 +94,7 @@ struct MotorStaticParameter_t
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
-void SpaceVectorPulseWidthModulation(float voltageAlpha, float voltageBeta);
+void SpaceVectorModulation(float voltageAlpha, float voltageBeta);
 void PowerAngleCompensation(float expectedCurrentQ, float *powerAngleCompensation_degree);
 void ParkTransform(float currentPhaseA, float currentPhaseB, float currentPhaseC, float *currentD, float *currentQ, float EleAngle);
 void InverseParkTransform_TwoPhase(float voltageD, float voltageQ,float *voltageAlpha,float *voltageBeta, float EleAngle);
@@ -104,7 +102,6 @@ void ClarkTransform(float currentPhaseA, float currentPhaseB, float currentPhase
 void CurrentVoltageTransform(float controlCurrentQ, float *voltageD, float *voltageQ, float actualEleAngularSpeed_rad);
 void CalculateElectromagneticTorque(float actualCurrentQ, float *electromagneticTorque);
 void CalculateVoltage_dq(float actualCurrentQ, float *voltageD, float *voltageQ, float actualEleAngularSpeed_rad);
-void MeasureEleAngle(float voltageD);
 
 /* USER CODE END PFP */
 

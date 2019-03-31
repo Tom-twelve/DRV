@@ -51,7 +51,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "foc.h"
-#include "Encoder.h"
+#include "PositionSensor.h"
 #include "control.h"
 #include "GateDriver.h"
 #include "MotorConfig.h"
@@ -165,10 +165,20 @@ int main(void)
 		case WorkMode : ADC_CMD(ENABLE);	//包括使能ADC中断, 电机控制程序在ADC中断中执行
 		
 						break;
+		#if POSITION_SENSOR_TYPE == Encoder_TLE5012 
 		
-		case TestMode : MeasureEleAngle(1.0f);	//测定电角度, 设定d轴电压
+		case TestMode : MeasureEleAngle_Encoder(1.0f);	//测定电角度, 设定d轴电压
 		
 						break;
+		#elif POSITION_SENSOR_TYPE == HallSensor_DRV5053
+		
+		case TestMode : MeasureEleAngle_HallSensor(1.0f);	//测定电角度, 设定d轴电压
+		
+						break;
+	
+		#else
+		#error "Position Sensor Type Invalid"
+		#endif
 	}
 
   /* USER CODE END 2 */

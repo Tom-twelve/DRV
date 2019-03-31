@@ -47,7 +47,8 @@ stm32f446\ bldcm\ control/control.o: ../Src/control.c ../Inc\control.h \
   D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\math.h ../Inc/foc.h \
   ../Inc/tim.h ../Drivers/CMSIS/Include\arm_math.h \
   ../Drivers/CMSIS/Include/core_cm4.h \
-  D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h ../Inc/Encoder.h \
+  D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h \
+  ../Inc/PositionSensor.h \
   D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdlib.h ../Inc/gpio.h \
   ../Inc/spi.h ../Inc/AngleTable.h ../Inc/util.h \
   D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdbool.h ../Inc/adc.h \

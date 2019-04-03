@@ -45,7 +45,7 @@ void MotorEnable(void)
 	PWM_IT_CMD(ENABLE,ENABLE);
 	
 	/*设定控制模式*/
-	MotorStaticParameter.ControlMode = VoltageControlMode;
+	MotorStaticParameter.ControlMode = CurrentControlMode;
 	
 	/*采用Id = 0控制, 故设定d轴电流为零*/
 	CurrentLoop.ExpectedCurrentD = 0.f;
@@ -53,61 +53,61 @@ void MotorEnable(void)
 	switch(MotorStaticParameter.ControlMode)
 	{
 		case VoltageControlMode :		/*测试用*/
-										MotorStaticParameter.PowerAngleComp_degree = 5.f;
+																MotorStaticParameter.PowerAngleComp_degree = 5.f;
 		
-										break;
+																break;
 		
-		case CurrentControlMode : 		/*设定q轴电流*/
-										CurrentLoop.ExpectedCurrentQ = 5.f;
-		
-										/*设定电流环PI参数*/
-										CurrentLoop.Kp_D = 0.1f;
-										
-										CurrentLoop.Ki_D = 0.1f;
-										
-										CurrentLoop.Kp_Q = 0.4f;
+		case CurrentControlMode : 	/*设定q轴电流*/
+																CurrentLoop.ExpectedCurrentQ = 25.f;
+									
+																/*设定电流环PI参数*/
+																CurrentLoop.Kp_D = 0.1f;
+																	
+																CurrentLoop.Ki_D = 0.1f;
+																	
+																CurrentLoop.Kp_Q = 0.5f;
 
-										CurrentLoop.Ki_Q = 0.1f;
-		
-										break;
+																CurrentLoop.Ki_Q = 0.1f;
+									
+																break;
 		
 		case SpeedControlMode : 		/*设定角速度(°/s)*/
-										SpeedLoop.ExpectedMecAngularSpeed = 100.f * 2 * PI;	//degree per second
-										
-										/*设定加速度*/
-										SpeedLoop.Acceleration = 25.f * 2 * PI;	//degree per quadratic seconds
-		
-										/*设定电流环PI参数*/
-										CurrentLoop.Kp_D = CURRENT_CONTROL_KP_D;
-										
-										CurrentLoop.Ki_D = CURRENT_CONTROL_KI_D;
-										
-										CurrentLoop.Kp_Q = CURRENT_CONTROL_KP_Q;
+																SpeedLoop.ExpectedMecAngularSpeed = 100.f * 2 * PI;	//degree per second
+																
+																/*设定加速度*/
+																SpeedLoop.Acceleration = 25.f * 2 * PI;	//degree per quadratic seconds
+								
+																/*设定电流环PI参数*/
+																CurrentLoop.Kp_D = CURRENT_CONTROL_KP_D;
+																
+																CurrentLoop.Ki_D = CURRENT_CONTROL_KI_D;
+																
+																CurrentLoop.Kp_Q = CURRENT_CONTROL_KP_Q;
 
-										CurrentLoop.Ki_Q = CURRENT_CONTROL_KI_Q;
+																CurrentLoop.Ki_Q = CURRENT_CONTROL_KI_Q;
+								
+																/*设定速度环PI参数*/
+																SpeedLoop.Kp = 0.006f;
+																
+																SpeedLoop.Ki = 0.001f;
+								
+																break;
 		
-										/*设定速度环PI参数*/
-										SpeedLoop.Kp = 0.006f;
-										
-										SpeedLoop.Ki = 0.001f;
-		
-										break;
-		
-		case PositionControlMode :		/*设定电流环PI参数*/
-										CurrentLoop.Kp_D = 0.1f;
-										
-										CurrentLoop.Ki_D = 0.035f;
-										
-										CurrentLoop.Kp_Q = 0.10f;
+		case PositionControlMode :	/*设定电流环PI参数*/
+																CurrentLoop.Kp_D = 0.1f;
+																	
+																CurrentLoop.Ki_D = 0.035f;
+																	
+																CurrentLoop.Kp_Q = 0.10f;
 
-										CurrentLoop.Ki_Q = 0.05f;
-		
-										/*设定位置环PI参数*/
-										PositionLoop.Kp = 0.0001f;
-										
-										PositionLoop.Kd = 0.f;
-		
-										break;
+																CurrentLoop.Ki_Q = 0.05f;
+									
+																/*设定位置环PI参数*/
+																PositionLoop.Kp = 0.0001f;
+																	
+																PositionLoop.Kd = 0.f;
+									
+																break;
 	}
 }
 

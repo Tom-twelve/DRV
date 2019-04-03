@@ -169,7 +169,7 @@ void CANRespond(void)
 	{
 	case 0x40005155: //UQ   ∂¡»°µÁ—π ‰≥ˆ(V)
 		txData.data_uint32[0] = 0x00005155;
-		txData.data_float[1]  = CoordinateTransformation.VoltageQ;
+		txData.data_float[1]  = CoordinateTransformation.VolQ;
 		CANSendData(txData);
 		CAN_RecieveStatus = 0;
 		break;

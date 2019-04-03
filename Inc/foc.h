@@ -33,10 +33,13 @@
 
 struct CoordinateTransformation_t
 {
-	float VoltageAlpha;
-	float VoltageBeta;
-	float VoltageD;
-	float VoltageQ;
+	float CurrentPhaseA;
+	float CurrentPhaseB;
+	float CurrentPhaseC;
+	float VolAlpha;
+	float VolBeta;
+	float VolD;
+	float VolQ;
 	float CurrentAlpha;
 	float CurrentBeta;
 	float CurrentD;
@@ -45,22 +48,13 @@ struct CoordinateTransformation_t
 
 struct MotorDynamicParameter_t
 {
-	float VoltagePhaseA;
-	float VoltagePhaseB;
-	float VoltagePhaseC;
-	float CurrentPhaseA;
-	float CurrentPhaseB;
-	float CurrentPhaseC;
-	float AvgCurrentPhaseA;
-	float AvgCurrentPhaseB;
-	float AvgCurrentPhaseC;
-	float ElectromagneticTorque;
+	float EleTorque;
 };
 
 struct MotorStaticParameter_t
 {
-	float PowerAngleCompensation_degree;	
-	float PowerAngleCompensation_rad;
+	float PowerAngleComp_degree;	
+	float PowerAngleComp_rad;
 	uint8_t ControlMode;	//速度控制模式或位置控制模式
 	uint8_t MotorMode;		//正常工作模式或测量电角度模式
 };
@@ -94,14 +88,15 @@ struct MotorStaticParameter_t
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
-void SpaceVectorModulation(float voltageAlpha, float voltageBeta);
-void PowerAngleCompensation(float expectedCurrentQ, float *powerAngleCompensation_degree);
-void ParkTransform(float currentPhaseA, float currentPhaseB, float currentPhaseC, float *currentD, float *currentQ, float EleAngle);
-void InverseParkTransform_TwoPhase(float voltageD, float voltageQ,float *voltageAlpha,float *voltageBeta, float EleAngle);
+void SpaceVectorModulation(float volAlpha, float volBeta);
+void ParkTransform(float currentPhaseA, float currentPhaseB, float currentPhaseC, float *currentD, float *currentQ, float eleAngle);
+void InverseParkTransform(float VolD, float VolQ, float *VolAlpha, float *VolBeta, float eleAngle);
 void ClarkTransform(float currentPhaseA, float currentPhaseB, float currentPhaseC, float *currentAlpha, float *currentBeta);
-void CurrentVoltageTransform(float controlCurrentQ, float *voltageD, float *voltageQ, float actualEleAngularSpeed_rad);
-void CalculateElectromagneticTorque(float actualCurrentQ, float *electromagneticTorque);
-void CalculateVoltage_dq(float actualCurrentQ, float *voltageD, float *voltageQ, float actualEleAngularSpeed_rad);
+void ParkTransform_arm(float currentAlpha, float currentBeta, float *currentD, float *currentQ, float eleAngle);
+void ClarkTransform_arm(float currentPhaseA, float currentPhaseB, float *currentAlpha, float *currentBeta);
+void PowerAngleComp(float expectedCurrentQ, float *powerAngleComp_degree);
+void CalculateEleTorque(float actualCurrentQ, float *eleTorque);
+void CalculateVoltage_dq(float actualCurrentQ, float *volD, float *volQ, float actualEleAngularSpeed_rad);
 
 /* USER CODE END PFP */
 

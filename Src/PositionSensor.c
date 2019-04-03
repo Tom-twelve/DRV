@@ -224,12 +224,12 @@
 	
 	/**
 	* @brief  Measure reference Ele angle
-	* @param[in]  voltageD      voltage of axis d
+	* @param[in]  VolD      voltage of axis d
 	*/
-	void MeasureEleAngle_Encoder(float voltageD)
+	void MeasureEleAngle_Encoder(float VolD)
 	{
-		float voltageAlpha = 0;
-		float voltageBeta = 0;
+		float VolAlpha = 0;
+		float VolBeta = 0;
 		int16_t tmpData[2] = {0};
 		int EleAngle = 0;
 		static int16_t index_5012b = 1;
@@ -238,9 +238,9 @@
 		static int tempEleAngleRef[DIVIDE_NUM * (uint8_t)MotorPolePairs + 2] = {0};
 		static int16_t tmpArray[DIVIDE_NUM * (uint8_t)MotorPolePairs] = {0};
 
-		InverseParkTransform_TwoPhase(voltageD, 0.f, &voltageAlpha, &voltageBeta, 0.f);	//设定Uq = 0, 电角度为零
+		InverseParkTransform(VolD, 0.f, &VolAlpha, &VolBeta, 0.f);	//设定Uq = 0, 电角度为零
 		
-		SpaceVectorModulation(voltageAlpha, voltageBeta);
+		SpaceVectorModulation(VolAlpha, VolBeta);
 		
 		HAL_Delay(1000);
 		
@@ -252,9 +252,9 @@
 				
 				EleAngle = j * 360 / DIVIDE_NUM;
 				
-				InverseParkTransform_TwoPhase(voltageD, 0.f, &voltageAlpha, &voltageBeta, EleAngle);
+				InverseParkTransform(VolD, 0.f, &VolAlpha, &VolBeta, EleAngle);
 				
-				SpaceVectorModulation(voltageAlpha, voltageBeta);
+				SpaceVectorModulation(VolAlpha, VolBeta);
 				
 				HAL_Delay(200);
 
@@ -494,12 +494,12 @@
 
 	/**
 	  * @brief 测量电角度
-	  * @param[in]  voltageD  			给定d轴电压
+	  * @param[in]  VolD  			给定d轴电压
 	  */
-	void MeasureEleAngle_HallSensor(float voltageD)
+	void MeasureEleAngle_HallSensor(float VolD)
 	{
-		float voltageAlpha = 0;
-		float voltageBeta = 0;
+		float VolAlpha = 0;
+		float VolBeta = 0;
 		static float eleAngle = 0;
 		static float hall1Value = 0;
 		static float hall2Value = 0;
@@ -508,9 +508,9 @@
 		static float hall1[(uint8_t)MotorPolePairs][DIVIDE_NUM] = {0};
 		static float hall2[(uint8_t)MotorPolePairs][DIVIDE_NUM] = {0};
 		
-		InverseParkTransform_TwoPhase(voltageD, 0.f, &voltageAlpha, &voltageBeta, 0.f);	//设定Vq = 0, 电角度为零
+		InverseParkTransform_TwoPhase(VolD, 0.f, &VolAlpha, &VolBeta, 0.f);	//设定Vq = 0, 电角度为零
 		
-		SpaceVectorModulation(voltageAlpha, voltageBeta);
+		SpaceVectorModulation(VolAlpha, VolBeta);
 		
 		/*零点归一化处理*/
 		PositionSensor.HallNormalizedActualValue[0] = Normalized((PositionSensor.HallZeroValue[0] - PositionSensor.HallMinValue[0]) / (PositionSensor.HallMaxValue[0] - PositionSensor.HallMinValue[0]));
@@ -529,9 +529,9 @@
 				{
 					eleAngle = divNum * 360 / DIVIDE_NUM;
 					
-					InverseParkTransform_TwoPhase(voltageD, 0.f, &voltageAlpha, &voltageBeta, eleAngle);
+					InverseParkTransform_TwoPhase(VolD, 0.f, &VolAlpha, &VolBeta, eleAngle);
 					
-					SpaceVectorModulation(voltageAlpha, voltageBeta);
+					SpaceVectorModulation(VolAlpha, VolBeta);
 					
 					/*每个点取SAMPLING_TIMES个霍尔值取其平均值*/
 					for(int times = 0 ; times < SAMPLING_TIMES; times++)
@@ -637,9 +637,9 @@
 		
 		int angLast = 0;
 		
-		InverseParkTransform_TwoPhase(voltageD, 0.f, &voltageAlpha, &voltageBeta, 0.f);
+		InverseParkTransform_TwoPhase(VolD, 0.f, &VolAlpha, &VolBeta, 0.f);
 					
-		SpaceVectorModulation(voltageAlpha, voltageBeta);
+		SpaceVectorModulation(VolAlpha, VolBeta);
 		
 		/*零点归一化处理*/
 		PositionSensor.HallNormalizedActualValue[0] = Normalized((PositionSensor.HallZeroValue[0] - PositionSensor.HallMinValue[0]) / (PositionSensor.HallMaxValue[0] - PositionSensor.HallMinValue[0]));
@@ -650,9 +650,9 @@
 		
 		for(int div = 0; div < CALIBRATE_NUM + 1; div++)
 		{
-			InverseParkTransform_TwoPhase(voltageD, 0.f, &voltageAlpha, &voltageBeta, div * 360.f / CALIBRATE_NUM);
+			InverseParkTransform_TwoPhase(VolD, 0.f, &VolAlpha, &VolBeta, div * 360.f / CALIBRATE_NUM);
 					
-			SpaceVectorModulation(voltageAlpha, voltageBeta);
+			SpaceVectorModulation(VolAlpha, VolBeta);
 			
 			HAL_Delay(500);
 			

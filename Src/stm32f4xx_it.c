@@ -281,12 +281,14 @@ void ADC_IRQHandler(void)
 	
 	switch(MotorStaticParameter.ControlMode)
 	{
-		case VoltageControlMode :	InverseParkTransform_TwoPhase(0.f, 5.0f, &CoordinateTransformation.VoltageAlpha, &CoordinateTransformation.VoltageBeta, PositionSensor.EleAngle_degree + MotorStaticParameter.PowerAngleCompensation_degree);
+		case VoltageControlMode :	InverseParkTransform(0.f, 5.0f, &CoordinateTransformation.VolAlpha, &CoordinateTransformation.VolBeta, PositionSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);
 									
-									SpaceVectorModulation(CoordinateTransformation.VoltageAlpha, CoordinateTransformation.VoltageBeta);
+									SpaceVectorModulation(CoordinateTransformation.VolAlpha, CoordinateTransformation.VolBeta);
 
 									/*测试用*/
-									ParkTransform(MotorDynamicParameter.CurrentPhaseA, MotorDynamicParameter.CurrentPhaseB, MotorDynamicParameter.CurrentPhaseC, &CoordinateTransformation.CurrentD, &CoordinateTransformation.CurrentQ, PositionSensor.EleAngle_degree + MotorStaticParameter.PowerAngleCompensation_degree + 30.0f);
+									ClarkTransform_arm(CoordinateTransformation.CurrentPhaseA, CoordinateTransformation.CurrentPhaseB, &CoordinateTransformation.CurrentAlpha, &CoordinateTransformation.CurrentBeta);
+		
+									ParkTransform_arm(CoordinateTransformation.CurrentAlpha, CoordinateTransformation.CurrentBeta, &CoordinateTransformation.CurrentD, &CoordinateTransformation.CurrentQ, PositionSensor.EleAngle_degree);
 		
 									UART_Transmit_DMA("%d\t", (int)(CoordinateTransformation.CurrentD * 1000));
 									UART_Transmit_DMA("%d\r\n", (int)(CoordinateTransformation.CurrentQ * 1000));
@@ -294,16 +296,16 @@ void ADC_IRQHandler(void)
 									break;
 
 		case CurrentControlMode : 	/*进行Park变换, 将三相电流转换为dq轴电流*/
-									ParkTransform(MotorDynamicParameter.CurrentPhaseA, MotorDynamicParameter.CurrentPhaseB, MotorDynamicParameter.CurrentPhaseC, &CoordinateTransformation.CurrentD, &CoordinateTransformation.CurrentQ, PositionSensor.EleAngle_degree + MotorStaticParameter.PowerAngleCompensation_degree);
+									ParkTransform(CoordinateTransformation.CurrentPhaseA, CoordinateTransformation.CurrentPhaseB, CoordinateTransformation.CurrentPhaseC, &CoordinateTransformation.CurrentD, &CoordinateTransformation.CurrentQ, PositionSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);
 									
 									/*电流环PI控制器*/
 									CurrentLoopController(CurrentLoop.ExpectedCurrentD, CurrentLoop.ExpectedCurrentQ, CoordinateTransformation.CurrentD, CoordinateTransformation.CurrentQ, &CurrentLoop.ControlVoltageD, &CurrentLoop.ControlVoltageQ);
 									
 									/*进行逆Park变换, 将转子坐标系下的dq轴电压转换为定子坐标系下的AlphaBeta轴电压*/
-									InverseParkTransform_TwoPhase(CurrentLoop.ControlVoltageD, CurrentLoop.ControlVoltageQ, &CoordinateTransformation.VoltageAlpha, &CoordinateTransformation.VoltageBeta, PositionSensor.EleAngle_degree + MotorStaticParameter.PowerAngleCompensation_degree);
+									InverseParkTransform(CurrentLoop.ControlVoltageD, CurrentLoop.ControlVoltageQ, &CoordinateTransformation.VolAlpha, &CoordinateTransformation.VolBeta, PositionSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);
 									
 									/*利用SVPWM算法调制电压矢量*/
-									SpaceVectorModulation(CoordinateTransformation.VoltageAlpha, CoordinateTransformation.VoltageBeta);
+									SpaceVectorModulation(CoordinateTransformation.VolAlpha, CoordinateTransformation.VolBeta);
 									
 									UART_Transmit_DMA("%d\t",(int)(CoordinateTransformation.CurrentD * 1000));
 									UART_Transmit_DMA("%d\r\n",(int)(CoordinateTransformation.CurrentQ * 1000));

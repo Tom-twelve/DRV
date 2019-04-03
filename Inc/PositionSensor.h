@@ -123,7 +123,7 @@
 	void GetMecAngle_IncrementalMode_14bit(void);
 	uint16_t TLE5012_ReadRegister(uint16_t command);
 	void EncoderIncrementalModeEnable(void);
-	void MeasureEleAngle_Encoder(float voltageD);
+	void MeasureEleAngle_Encoder(float VolD);
 #elif POSITION_SENSOR_TYPE == HallSensor_DRV5053
 	void GetPositionImformation(void);
 	void GetEleAngle(void);
@@ -132,7 +132,7 @@
 	void GetAvgMecAngularSpeed(void);
 	void HallInit(void);
 	float HallAngleTableComp(int eleAngleCalculate);
-	void MeasureEleAngle_HallSensor(float voltageD);
+	void MeasureEleAngle_HallSensor(float VolD);
 #else
 #error "Position Sensor Type Invalid"
 #endif

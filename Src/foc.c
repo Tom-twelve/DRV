@@ -40,10 +40,10 @@ extern struct CurrentLoop_t CurrentLoop;
 
  /** 
    * @brief		 Space vector pulse width modulation
-   * @param[in]  voltageAlpha  		input two-phase vector coordinate alpha
-   * @param[in]  voltageBeta   		input two-phase vector coordinate beta
+   * @param[in]  volAlpha  		input two-phase vector coordinate alpha
+   * @param[in]  volBeta   		input two-phase vector coordinate beta
    */
-void SpaceVectorModulation(float voltageAlpha, float voltageBeta)
+void SpaceVectorModulation(float volAlpha, float volBeta)
 {
 	const float StandardizationCoefficient = SQRT3 * TIM8_Autoreload / GeneratrixVoltage;
 	float U1 = 0;
@@ -58,11 +58,11 @@ void SpaceVectorModulation(float voltageAlpha, float voltageBeta)
 	uint32_t TC = 0;
 	uint8_t sectionFlag = 0;
 
-	U1 =  voltageBeta;
+	U1 =  volBeta;
 	
-	U2 = (SQRT3 * voltageAlpha - voltageBeta) / 2.0f;
+	U2 = (SQRT3 * volAlpha - volBeta) / 2.0f;
 	
-	U3 = ( - SQRT3 * voltageAlpha - voltageBeta) / 2.0f;
+	U3 = ( - SQRT3 * volAlpha - volBeta) / 2.0f;
 	
 	/*判断矢量电压所在扇区*/
 	if (U1 > 0)
@@ -198,20 +198,20 @@ void ParkTransform(float currentPhaseA, float currentPhaseB, float currentPhaseC
 
    /**
    * @brief  Floating-point Inverse Park transform
-   * @param[in]  voltageD       	input coordinate of rotor reference frame d
-   * @param[in]  voltageQ       	input coordinate of rotor reference frame q
-   * @param[out] voltageAlpha 		output two-phase orthogonal vector axis alpha
-   * @param[out] voltageBeta  		output two-phase orthogonal vector axis beta
+   * @param[in]  VolD       	input coordinate of rotor reference frame d
+   * @param[in]  VolQ       	input coordinate of rotor reference frame q
+   * @param[out] VolAlpha 		output two-phase orthogonal vector axis alpha
+   * @param[out] VolBeta  		output two-phase orthogonal vector axis beta
    * @param[in]  EleAngle			value of Ele angle
    */
-void InverseParkTransform_TwoPhase(float voltageD, float voltageQ, float *voltageAlpha, float *voltageBeta, float eleAngle)
+void InverseParkTransform(float VolD, float VolQ, float *VolAlpha, float *VolBeta, float eleAngle)
 {
 	float eleAngleSineValue = 0;
 	float eleAngleCosineValue = 0;
 	
 	arm_sin_cos_f32((float)eleAngle,  &eleAngleSineValue,  &eleAngleCosineValue);
 	
-	arm_inv_park_f32((float)voltageD, (float)voltageQ, voltageAlpha, voltageBeta, (float)eleAngleSineValue, (float)eleAngleCosineValue);
+	arm_inv_park_f32((float)VolD, (float)VolQ, VolAlpha, VolBeta, (float)eleAngleSineValue, (float)eleAngleCosineValue);
 }
 
    /**
@@ -232,62 +232,57 @@ void ClarkTransform(float currentPhaseA, float currentPhaseB, float currentPhase
 	*currentBeta  = 0.5f * SQRT3 * Coefficient_ConstantAmplitude * ((float)currentPhaseB - (float)currentPhaseC);
 }
 
-   /**
-   * @brief  Transform current to voltage under rotor coordinate
-   * @param[in]  currentD  		current of axis d
-   * @param[in]  currentQ  		current of axis q
-   * @param[out] voltageD  		voltage of axis d
-   * @param[out] voltageQ		voltage of axis q
-   */
-void PowerAngleCompensation(float expectedCurrentQ, float *powerAngleCompensation_degree)
-{
-	float powerAngleCompensation_rad = 0;
+void ParkTransform_arm(float currentAlpha, float currentBeta, float *currentD, float *currentQ, float eleAngle)
+{	
+	float eleAngleSineValue = 0;
+	float eleAngleCosineValue = 0;
 	
-	powerAngleCompensation_rad = arcsine((-2 * (InductanceD - InductanceQ) * expectedCurrentQ) / (RotatorFluxLinkage + sqrt_DSP(Square(RotatorFluxLinkage) + 8 * Square(InductanceD - InductanceQ) * Square(expectedCurrentQ))));
+	arm_sin_cos_f32((float)eleAngle,  &eleAngleSineValue,  &eleAngleCosineValue);
+	
+	arm_park_f32(currentAlpha, currentBeta, currentD, currentQ, eleAngleSineValue, eleAngleCosineValue);
+}
 
-	*powerAngleCompensation_degree = powerAngleCompensation_rad * 360.f	/ (2 * PI);
+void ClarkTransform_arm(float currentPhaseA, float currentPhaseB, float *currentAlpha, float *currentBeta)
+{
+	arm_clarke_f32(currentPhaseA, currentPhaseB, currentAlpha, currentBeta);
 }
 
    /**
-   * @brief  Transform current to voltage under rotor coordinate
-   * @param[in]  controlCurrentQ  		output of current loop
-   * @param[out] voltageD  				voltage of axis d
-   * @param[out] voltageQ				voltage of axis q
+   * @brief  power angle compensation
+   * @param[in]  expectedCurrentQ  			current of axis d
+   * @param[out] *powerAngleComp_degree  	compensation angle 
    */
-void CurrentVoltageTransform(float controlCurrentQ, float *voltageD, float *voltageQ, float actualEleAngularSpeed_rad)
+void PowerAngleComp(float expectedCurrentQ, float *powerAngleComp_degree)
 {
-	/*将80%的最大不失真Vq用于提供转速, 20%的最大不失真Vq用于提供转矩*/
-	const float targetEleAngularSpeed_rad = 0.8f * MaximumDistortionlessVoltage / RotatorFluxLinkage;
-	const float maximumTorque = 0.2f * (MaximumDistortionlessVoltage / PhaseResistance) * 1.5f * MotorPolePairs * RotatorFluxLinkage;
+	float PowerAngleComp_rad = 0;
 	
-	/*输出电压*/
-	*voltageD = -targetEleAngularSpeed_rad * InductanceQ * controlCurrentQ;
-	
-	*voltageQ = PhaseResistance * controlCurrentQ + targetEleAngularSpeed_rad * RotatorFluxLinkage;
+	PowerAngleComp_rad = arcsine((-2 * (InductanceD - InductanceQ) * expectedCurrentQ) / (RotatorFluxLinkage + sqrt_DSP(Square(RotatorFluxLinkage) + 8 * Square(InductanceD - InductanceQ) * Square(expectedCurrentQ))));
+
+	*powerAngleComp_degree = PowerAngleComp_rad * 360.f	/ (2 * PI);
 }
 
    /**
    * @brief  Calculate voltage of axis d and voltage of axis q
    * @param[in]  actualCurrentQ  					current of axis q
-   * @param[out] voltageD  							voltage of axis d
-   * @param[out] voltageQ							voltage of axis q
-   * @param[in]  actualEleAngularSpeed  		actual Ele angular speed(rad/s)
+   * @param[out] volD  							voltage of axis d
+   * @param[out] volQ							voltage of axis q
+   * @param[in]  actualEleAngularSpeed  		actual ele angular speed(rad/s)
    */
-void CalculateVoltage_dq(float actualCurrentQ, float *voltageD, float *voltageQ, float actualEleAngularSpeed_rad)
+void CalculateVoltage_dq(float actualCurrentQ, float *volD, float *volQ, float actualEleAngularSpeed_rad)
 {
-	*voltageD = -actualEleAngularSpeed_rad * InductanceQ * actualCurrentQ;
+	*volD = -actualEleAngularSpeed_rad * InductanceQ * actualCurrentQ;
 	
-	*voltageQ = PhaseResistance * actualCurrentQ + actualEleAngularSpeed_rad * RotatorFluxLinkage;
+	*volQ = PhaseResistance * actualCurrentQ + actualEleAngularSpeed_rad * RotatorFluxLinkage;
 }
 
    /**
    * @brief  Calculate electromagnetic torque
    * @param[in]   currentQ      				current of axis q
-   * @param[out]  electromagneticTorque      	electromagnetic torque
+   * @param[out]  EleTorque      	electromagnetic torque
    */
-void CalculateElectromagneticTorque(float actualCurrentQ, float *electromagneticTorque)
+void CalculateEleTorque(float actualCurrentQ, float *EleTorque)
 {
-	*electromagneticTorque = 1.5f * MotorPolePairs * actualCurrentQ * RotatorFluxLinkage;
+	*EleTorque = 1.5f * MotorPolePairs * actualCurrentQ * RotatorFluxLinkage;
 }
 
 /* USER CODE END */

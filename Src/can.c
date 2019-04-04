@@ -50,11 +50,12 @@ CAN_TxHeaderTypeDef TxMessage = { 0 };
 CAN_RxHeaderTypeDef RxMessage0 = { 0 };
 static uint32_t mbox;
 
-extern struct PositionSensor_t PositionSensor;
-extern struct SpeedLoop_t SpeedLoop;
-extern struct PositionLoop_t PositionLoop;
+extern struct SpdLoop_t SpdLoop;
+extern struct PosLoop_t PosLoop;
+extern struct CoordTrans_t CoordTrans;
+extern struct PosSensor_t PosSensor;
 extern struct MotorStaticParameter_t MotorStaticParameter;
-extern struct CoordinateTransformation_t CoordinateTransformation;
+
 /* USER CODE END 0 */
 
 CAN_HandleTypeDef hcan1;
@@ -169,15 +170,15 @@ void CANRespond(void)
 	{
 	case 0x40005155: //UQ   读取电压输出(V)
 		txData.data_uint32[0] = 0x00005155;
-		txData.data_float[1]  = CoordinateTransformation.VolQ;
+		txData.data_float[1]  = CoordTrans.VolQ;
 		CANSendData(txData);
 		CAN_RecieveStatus = 0;
 		break;
 
 	case 0x40005856: //VX   读取速度
 	{
-#if POSITION_SENSOR_TYPE == Encoder_TLE5012
-		const float velReport = (PositionSensor.MecAngle_rad /(2.f * PI) * 32768.f);
+#if POSITION_SENSOR_TYPE == ENCODER_TLE5012
+		const float velReport = (PosSensor.MecAngle_rad /(2.f * PI) * 32768.f);
 		txData.data_uint32[0] = 0x00005856;
 		txData.data_int32[1]  = (int32_t)(velReport);
 		CANSendData(txData);
@@ -187,7 +188,7 @@ void CANRespond(void)
 	}
 	case 0x40005149: //IQ	 读取转矩电流
 		txData.data_uint32[0] = 0x00005149;
-		txData.data_uint32[1] = (uint32_t)CoordinateTransformation.CurrentQ;
+		txData.data_uint32[1] = (uint32_t)CoordTrans.CurrQ;
 		CANSendData(txData);
 		CAN_RecieveStatus = 0;
 		break;
@@ -195,7 +196,7 @@ void CANRespond(void)
 	case 0x40005850: //PX   读取位置
 		txData.data_uint32[0] = 0x00005850;
 		
-		txData.data_int32[1]  = (int32_t)(PositionSensor.MecAngle_rad /(2.f * PI) * 32768.f) ;
+		txData.data_int32[1]  = (int32_t)(PosSensor.MecAngle_rad /(2.f * PI) * 32768.f) ;
 
 		CANSendData(txData);
 		CAN_RecieveStatus = 0;
@@ -239,40 +240,40 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 		case 0x00004F4D: //MO
 			if (receive.data_uint32[1] == 1)
 			{
-				SpeedLoop.ExpectedMecAngularSpeed = 0.f;
+				SpdLoop.ExptMecAngularSpeed = 0.f;
 				PWM_IT_CMD(ENABLE,ENABLE);
 			}
 			else
 			{
 				PWM_IT_CMD(DISABLE,ENABLE);
-				SpeedLoop.ExpectedMecAngularSpeed = 0.0f;
+				SpdLoop.ExptMecAngularSpeed = 0.0f;
 			}
 			break;
 		case 0x00004D55://先配置，再切换模式  //UM
 			if(receive.data_int32[1] == SpeedControlMode)
 			{
-//				SpeedLoop.Kp = VEL_CONTROL_KP;
-//				SpeedLoop.Ki = VEL_CONTROL_KI;
+//				SpdLoop.Kp = VEL_CONTROL_KP;
+//				SpdLoop.Ki = VEL_CONTROL_KI;
 				MotorStaticParameter.ControlMode = SpeedControlMode;
 			}
 			else if(receive.data_int32[1] == PositionControlMode)
 			{
-//				PositionLoop.Kp = POS_CONTROL_KP;
-//				PositionLoop.Kd = POS_CONTROL_KD;
+//				PosLoop..Kp = POS_CONTROL_KP;
+//				PosLoop..Kd = POS_CONTROL_KD;
 				MotorStaticParameter.ControlMode = PositionControlMode;
-				PositionLoop.ExpectedMecAngle = PositionSensor.MecAngle_rad + PositionSensor.AvgMecAngularSpeed_rad * CarrierPeriod_s;
+				PosLoop.ExptMecAngle = PosSensor.MecAngle_rad + PosSensor.AvgMecAngularSpeed_rad * CARRIER_PERIOD_S;
 			}
 			break;
 		case 0x0000564A: //JV
 
 
 		//value_checkout 
-//		SpeedLoop.ExpectedMecAngularSpeed =  -1 * SATURATION((float)(receive.data_int32[1]), -VEL_MAX, VEL_MAX)  * 0.000191650390625f;//主控以顺时针方向为正 
+//		SpdLoop.ExpectedMecAngularSpeed =  -1 * SATURATION((float)(receive.data_int32[1]), -VEL_MAX, VEL_MAX)  * 0.000191650390625f;//主控以顺时针方向为正 
 			break;
 
 		case 0x00004341: //AC
 
-			SpeedLoop.Acceleration =  (float)(receive.data_int32[1]) * 0.000191650390625f;
+			SpdLoop.Acceleration =  (float)(receive.data_int32[1]) * 0.000191650390625f;
 			
 			break;
 
@@ -281,14 +282,14 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 //			break;
 
 		case 0x00004150: //PA绝对位置
-			PositionLoop.ExpectedMecAngle = -1 * (float)(receive.data_int32[1]);
+			PosLoop.ExptMecAngle = -1 * (float)(receive.data_int32[1]);
 			break;
 
 		case 0x00005250: //PR相对位置
-			PositionLoop.ExpectedMecAngle = PositionSensor.MecAngle_rad + -1 * (float)(receive.data_int32[1]);
+			PosLoop.ExptMecAngle = PosSensor.MecAngle_rad + -1 * (float)(receive.data_int32[1]);
 			break;
 		case 0x00005100:
-			PositionSensor.MecAngle_rad = receive.data_int32[1];
+			PosSensor.MecAngle_rad = receive.data_int32[1];
 			break;
 			
 		case 0x40005155: //UQ  读取电压输出(mV)

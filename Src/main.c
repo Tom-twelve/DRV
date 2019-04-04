@@ -77,7 +77,6 @@
 
 /* USER CODE BEGIN PV */
 extern uint16_t DRV8323_SPI3_RxDataTemp;
-extern struct  CurrentLoop_t CurrentLoop;
 extern struct  MotorStaticParameter_t MotorStaticParameter;
 extern struct  CoordinateTransformation_t CoordinateTransformation;
 /* USER CODE END PV */
@@ -165,12 +164,12 @@ int main(void)
 		case WorkMode : ADC_CMD(ENABLE);	//包括使能ADC中断, 电机控制程序在ADC中断中执行
 		
 						break;
-		#if POSITION_SENSOR_TYPE == Encoder_TLE5012 
+		#if POSITION_SENSOR_TYPE == ENCODER_TLE5012 
 		
 		case TestMode : MeasureEleAngle_Encoder(1.0f);	//测定电角度, 设定d轴电压
 		
 						break;
-		#elif POSITION_SENSOR_TYPE == HallSensor_DRV5053
+		#elif POSITION_SENSOR_TYPE == HALL_SENSOR_DRV5053
 		
 		case TestMode : MeasureEleAngle_HallSensor(1.0f);	//测定电角度, 设定d轴电压
 		

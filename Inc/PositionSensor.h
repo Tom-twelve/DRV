@@ -1,10 +1,10 @@
 /**
  ******************************************************************************
- * @file		Encoder.h
+ * @file		PositionSensor.h
  * @author		WrathWings
  * @version 	V1.0
  * @date		2019.3.2
- * @brief		The header file of Encoder.c
+ * @brief		The header file of PositionSensor.c
  ******************************************************************************
  * @attention
  *
@@ -29,7 +29,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#if POSITION_SENSOR_TYPE == Encoder_TLE5012
+#if POSITION_SENSOR_TYPE == ENCODER_TLE5012
 
 	#define SPI_TX_ON           GPIOB->MODER &= 0xFFFFF3FF; GPIOB->MODER |= 0x00000800	// PB5--MOSI复用
 	#define SPI_TX_OFF          GPIOB->MODER &= 0xFFFFF3FF; GPIOB->MODER |= 0x00000000	//PB5--复位(输入模式)
@@ -53,7 +53,7 @@
 	
 	#define DIVIDE_NUM  20	//将360度n等分, 每次电角度增量为(360/DIVIDE_NUM)
 		
-#elif POSITION_SENSOR_TYPE == HallSensor_DRV5053
+#elif POSITION_SENSOR_TYPE == HALL_SENSOR_DRV5053
 
 	#define CALIBRATE_NUM	6
 	#define DIVIDE_NUM 		20	//将360度n等分, 每次电角度增量为(360/DIVIDE_NUM)
@@ -68,8 +68,8 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-#if POSITION_SENSOR_TYPE == Encoder_TLE5012
-	struct PositionSensor_t
+#if POSITION_SENSOR_TYPE == ENCODER_TLE5012
+	struct PosSensor_t
 	{
 		uint16_t MecAngle_AbsoluteMode_15bit;
 		uint16_t MecAngle_IncrementalMode_14bit;
@@ -82,8 +82,8 @@
 		float AvgEleAngularSpeed_rad;
 		uint16_t OriginalMecAngle_14bit;
 	};
-#elif POSITION_SENSOR_TYPE == HallSensor_DRV5053
-	struct PositionSensor_t
+#elif POSITION_SENSOR_TYPE == HALL_SENSOR_DRV5053
+	struct PosSensor_t
 	{
 		float HallMaxValue[2];	//一个电气周期内霍尔输出的最大值, ADC转换值(0~4096)
 		float HallMinValue[2];	//一个电气周期内霍尔输出的最小值, ADC转换值(0~4096)
@@ -112,7 +112,7 @@
 /* USER CODE BEGIN PFP */
 	
 
-#if POSITION_SENSOR_TYPE == Encoder_TLE5012
+#if POSITION_SENSOR_TYPE == ENCODER_TLE5012
 	void GetPositionImformation(void);
 	void GetMecAngle(void);
 	void GetMecAngularSpeed(void);
@@ -124,7 +124,7 @@
 	uint16_t TLE5012_ReadRegister(uint16_t command);
 	void EncoderIncrementalModeEnable(void);
 	void MeasureEleAngle_Encoder(float VolD);
-#elif POSITION_SENSOR_TYPE == HallSensor_DRV5053
+#elif POSITION_SENSOR_TYPE == HALL_SENSOR_DRV5053
 	void GetPositionImformation(void);
 	void GetEleAngle(void);
 	void GetEleAngularSpeed(void);

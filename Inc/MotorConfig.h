@@ -33,89 +33,89 @@
 #define TMOTOR_MN505_S_KV320			3
 
 /* Position Sensor Type */
-#define Encoder_TLE5012					1
-#define HallSensor_DRV5053				2
+#define ENCODER_TLE5012					1
+#define HALL_SENSOR_DRV5053				2
 
 /* Encoder Mode */
 #define Encoder_AbsoluteMode			1
 #define Encoder_IncrementalMode			2
 
 /* Gate Driver Type */
-#define GateDriver_DRV8323				1
-#define GateDriver_DRV8320				2
+#define GATE_DRIVER_DRV8323				1
+#define GATE_DRIVER_DRV8320				2
 
 /* MOSFET Type */
 #define CDS18535_63nC_1mOhm6			1
 #define IPD053N08N3G_52nC_5mOhm3		2
 
 /* Current Sensor */
-#define HallCurrentSensor_ACS781_150A	1
-#define Resistance_1mOhm				2
-#define Resistance_2mOhm				3
+#define HALL_CURR_SENSOR_ACS781_150A	1
+#define RES_1mOhm						2
+#define RES_2mOhm						3
 
 /****************************************Type Define End****************************************/
 
-#define RobotIdentifier		1U
+#define ROBOT_ID		1U
 
-#if RobotIdentifier == 1U		//编码器
+#if ROBOT_ID == 1U		//编码器
 	#define CAN_ID_NUM			3
 		#if CAN_ID_NUM == 1
 		#define MOTOR_TYPE 				SUNNYSKY_X4125_9_KV350	
 		#define	PHASE_SEQUENCE			NEGATIVE_SEQUENCE		
-		#define POSITION_SENSOR_TYPE	Encoder_TLE5012
-			#if POSITION_SENSOR_TYPE == Encoder_TLE5012
+		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
+			#if POSITION_SENSOR_TYPE == ENCODER_TLE5012
 			#define ENCODER_MODE		Encoder_AbsoluteMode
 			#endif
-		#define GATE_DRIVER_TYPE		GateDriver_DRV8320
+		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8320
 		#define MOSFET_TYPE				IPD053N08N3G_52nC_5mOhm3
-		#define CURRENT_SENSOR			HallCurrentSensor_ACS781_150A
+		#define CURRENT_SENSOR			HALL_CURR_SENSOR_ACS781_150A
 		#define GROUP_NUM           	0
 		#elif CAN_ID_NUM == 2
 		#define MOTOR_TYPE 				N5055_KV400	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
-		#define POSITION_SENSOR_TYPE	Encoder_TLE5012
-			#if POSITION_SENSOR_TYPE == Encoder_TLE5012
+		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
+			#if POSITION_SENSOR_TYPE == ENCODER_TLE5012
 			#define ENCODER_MODE		Encoder_AbsoluteMode
 			#endif
-		#define GATE_DRIVER_TYPE		GateDriver_DRV8320
+		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8320
 		#define MOSFET_TYPE				IPD053N08N3G_52nC_5mOhm3
-		#define CURRENT_SENSOR			HallCurrentSensor_ACS781_150A
+		#define CURRENT_SENSOR			HALL_CURR_SENSOR_ACS781_150A
 		#define GROUP_NUM          		0
 		#elif CAN_ID_NUM == 3
 		#define MOTOR_TYPE 				TMOTOR_MN505_S_KV320	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
-		#define POSITION_SENSOR_TYPE	Encoder_TLE5012
-			#if POSITION_SENSOR_TYPE == Encoder_TLE5012
+		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
+			#if POSITION_SENSOR_TYPE == ENCODER_TLE5012
 			#define ENCODER_MODE		Encoder_AbsoluteMode
 			#endif
-		#define GATE_DRIVER_TYPE		GateDriver_DRV8320
+		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8320
 		#define MOSFET_TYPE				IPD053N08N3G_52nC_5mOhm3
-		#define CURRENT_SENSOR			HallCurrentSensor_ACS781_150A
+		#define CURRENT_SENSOR			HALL_CURR_SENSOR_ACS781_150A
 		#define GROUP_NUM          		0
 		#endif
-#elif	RobotIdentifier == 2U	//霍尔
+#elif	ROBOT_ID == 2U	//霍尔
 		#define CAN_ID_NUM			1
 		#if CAN_ID_NUM == 1
 		#define MOTOR_TYPE 				BallScrewMotor_KV320	
 		#define	PHASE_SEQUENCE			NEGATIVE_SEQUENCE
-		#define POSITION_SENSOR_TYPE	HallSensor_DRV5053
-			#if POSITION_SENSOR_TYPE == Encoder_TLE5012
+		#define POSITION_SENSOR_TYPE	HALL_SENSOR_DRV5053
+			#if POSITION_SENSOR_TYPE == ENCODER_TLE5012
 			#define ENCODER_MODE		Encoder_AbsoluteMode
 			#endif
-		#define GATE_DRIVER_TYPE		GateDriver_DRV8320
+		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8320
 		#define MOSFET_TYPE				IPD053N08N3G_52nC_5mOhm3
-		#define CURRENT_SENSOR			HallCurrentSensor_ACS781_150A
+		#define CURRENT_SENSOR			HALL_CURR_SENSOR_ACS781_150A
 		#define GROUP_NUM          		0
 		#elif CAN_ID_NUM == 2
 		#define MOTOR_TYPE 				BallScrewMotor_KV320	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
-		#define POSITION_SENSOR_TYPE	HallSensor_DRV5053
-			#if POSITION_SENSOR_TYPE == Encoder_TLE5012
+		#define POSITION_SENSOR_TYPE	HALL_SENSOR_DRV5053
+			#if POSITION_SENSOR_TYPE == ENCODER_TLE5012
 			#define ENCODER_MODE		Encoder_AbsoluteMode
 			#endif
-		#define GATE_DRIVER_TYPE		GateDriver_DRV8320
+		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8320
 		#define MOSFET_TYPE				IPD053N08N3G_52nC_5mOhm3
-		#define CURRENT_SENSOR			HallCurrentSensor_ACS781_150A
+		#define CURRENT_SENSOR			HALL_CURR_SENSOR_ACS781_150A
 		#define GROUP_NUM          		0
 		#endif
 #endif
@@ -125,33 +125,33 @@
 
 /* Motor Type*/
 #if MOTOR_TYPE == SUNNYSKY_X4125_9_KV350	  
-	#define MotorPolePairs					7.f
-	#define	MotorKV								350.f
-	#define RotatorFluxLinkage					( ONE_BY_SQRT3 * 60 / (2 * PI * (MotorPolePairs) * (MotorKV)))
-	#define PhaseResistance						0.0186698157f	//(Ohm)
-	#define InductanceD							0.0000065f		//(H)
-	#define InductanceQ							0.000012f		//(H)
+	#define MOTOR_POLE_PAIRS					7.f
+	#define	MOTOR_KV							350.f
+	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * (MOTOR_POLE_PAIRS) * (MOTOR_KV)))
+	#define PHASE_RES							0.0186698157f	//(Ohm)
+	#define INDUCTANCE_D							0.0000065f		//(H)
+	#define INDUCTANCE_Q							0.000012f		//(H)
 #elif	MOTOR_TYPE == N5055_KV400
-	#define MotorPolePairs					7.f
-	#define	MotorKV								400.f
-	#define RotatorFluxLinkage					( ONE_BY_SQRT3 * 60 / (2 * PI * (MotorPolePairs) * (MotorKV)))
-	#define PhaseResistance						
-	#define InductanceD	
-	#define InductanceQ
+	#define MOTOR_POLE_PAIRS					7.f
+	#define	MOTOR_KV							400.f
+	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * (MOTOR_POLE_PAIRS) * (MOTOR_KV)))
+	#define PHASE_RES						
+	#define INDUCTANCE_D	
+	#define INDUCTANCE_Q
 #elif	MOTOR_TYPE == TMOTOR_MN505_S_KV320
-	#define MotorPolePairs					14.f
-	#define	MotorKV								320.f
-	#define RotatorFluxLinkage					( ONE_BY_SQRT3 * 60 / (2 * PI * (MotorPolePairs) * (MotorKV)))
-	#define PhaseResistance						0.019f	//(Ohm) T-MOTOR官方数据
-	#define InductanceD							0.000008f	//(H)
-	#define InductanceQ							0.000014f	//(H)
+	#define MOTOR_POLE_PAIRS					14.f
+	#define	MOTOR_KV							320.f
+	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * (MOTOR_POLE_PAIRS) * (MOTOR_KV)))
+	#define PHASE_RES							0.019f	//(Ohm) T-MOTOR官方数据
+	#define INDUCTANCE_D							0.000008f	//(H)
+	#define INDUCTANCE_Q							0.000014f	//(H)
 #elif	MOTOR_TYPE == BallScrewMotor_KV320	//与TMOTOR_MN505_S_KV320使用同一电枢
-	#define MotorPolePairs					14.f
-	#define	MotorKV								320.f
-	#define RotatorFluxLinkage					( ONE_BY_SQRT3 * 60 / (2 * PI * (MotorPolePairs) * (MotorKV)))
-	#define PhaseResistance						0.019f	//(Ohm) T-MOTOR官方数据
-	#define InductanceD							0.000008f	//(H)
-	#define InductanceQ							0.000014f	//(H)
+	#define MOTOR_POLE_PAIRS					14.f
+	#define	MOTOR_KV							320.f
+	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * (MOTOR_POLE_PAIRS) * (MOTOR_KV)))
+	#define PHASE_RES							0.019f	//(Ohm) T-MOTOR官方数据
+	#define INDUCTANCE_D							0.000008f	//(H)
+	#define INDUCTANCE_Q							0.000014f	//(H)
 #else
 #error "Motor Type Invalid"
 #endif

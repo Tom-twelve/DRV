@@ -91,7 +91,7 @@ void MX_TIM8_Init(void)
 
   TIM_InitStruct.Prescaler = 0;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_CENTER_DOWN;
-  TIM_InitStruct.Autoreload = TIM8_Autoreload;
+  TIM_InitStruct.Autoreload = TIM8_ARR;
   TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
   TIM_InitStruct.RepetitionCounter = 0;
   LL_TIM_Init(TIM8, &TIM_InitStruct);

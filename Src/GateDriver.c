@@ -25,7 +25,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* CODE BEGIN PV */
-#if GATE_DRIVER_TYPE == GateDriver_DRV8323
+#if GATE_DRIVER_TYPE == GATE_DRIVER_DRV8323
 	uint16_t DRV8323_SPI3_RxData[DRV8323_ReadCommandMessageNumber] = {0};
 	uint16_t DRV8323_SPI3_FaultStatusRegister[2] = {0};
 
@@ -56,7 +56,7 @@
 			DRV8323_SPI_DATA_FORMATTER(DRV8323_CMD_WRITE, DRV8323_ADDR_CSA_CONTROL_REGISTER,    0x2E3),
 		#endif
 	};
-#elif GATE_DRIVER_TYPE == GateDriver_DRV8320
+#elif GATE_DRIVER_TYPE == GATE_DRIVER_DRV8320
 
 	uint16_t DRV8320_SPI3_FaultStatusRegister[2] = {0};
 	uint16_t DRV8320_SPI3_RxData[DRV8320_ReadCommandMessageNumber] = {0};
@@ -101,7 +101,7 @@
 
 void GateDriverConfig(void)
 {
-	#if GATE_DRIVER_TYPE == GateDriver_DRV8323
+	#if GATE_DRIVER_TYPE == GATE_DRIVER_DRV8323
 		DRV8323_Enable;
 		
 		HAL_Delay(5);// 没有这个延时ADC会不准
@@ -133,7 +133,7 @@ void GateDriverConfig(void)
 			}
 		}
 		
-	#elif GATE_DRIVER_TYPE == GateDriver_DRV8320
+	#elif GATE_DRIVER_TYPE == GATE_DRIVER_DRV8320
 		DRV8320_Enable;
 		
 		HAL_Delay(2);
@@ -165,7 +165,7 @@ void GateDriverConfig(void)
 	#endif
 }
 
-#if GATE_DRIVER_TYPE == GateDriver_DRV8323
+#if GATE_DRIVER_TYPE == GATE_DRIVER_DRV8323
 	void DRV8323_ReadAllRegister(void)
 	{
 		for (uint8_t i = 0; i < DRV8323_ReadCommandMessageNumber; i++)
@@ -219,7 +219,7 @@ void GateDriverConfig(void)
 		
 		LL_mDelay(1);
 	}
-#elif GATE_DRIVER_TYPE == GateDriver_DRV8320
+#elif GATE_DRIVER_TYPE == GATE_DRIVER_DRV8320
 	void DRV8320_ReadAllRegister(void)
 	{
 		for (uint8_t i = 0; i < DRV8320_ReadCommandMessageNumber; i++)

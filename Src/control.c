@@ -24,17 +24,17 @@
 /* Private variables ---------------------------------------------------------*/
 /* CODE BEGIN PV */
 
-struct CurrentLoop_t CurrentLoop;
-struct SpeedLoop_t SpeedLoop;
-struct PositionLoop_t PositionLoop;
+struct CurrLoop_t CurrLoop;
+struct SpdLoop_t SpdLoop;
+struct PosLoop_t PosLoop;
 
 /* CODE END PV */
 
 /* External variables --------------------------------------------------------*/
 /* USER CODE BEGIN EV */
+extern struct CoordTrans_t CoordTrans;
+extern struct PosSensor_t PosSensor;
 extern struct MotorStaticParameter_t MotorStaticParameter;
-extern struct CoordinateTransformation_t CoordinateTransformation;
-extern struct PositionSensor_t PositionSensor;
 /* USER CODE END EV */
 
 /* USER CODE BEGIN */
@@ -48,183 +48,228 @@ void MotorEnable(void)
 	MotorStaticParameter.ControlMode = CurrentControlMode;
 	
 	/*采用Id = 0控制, 故设定d轴电流为零*/
-	CurrentLoop.ExpectedCurrentD = 0.f;
+	CurrLoop.ExptCurrD = 0.f;
 	
 	switch(MotorStaticParameter.ControlMode)
 	{
-		case VoltageControlMode :		/*测试用*/
-																MotorStaticParameter.PowerAngleComp_degree = 5.f;
+		case VoltageControlMode :	/*测试用*/
+									MotorStaticParameter.PowerAngleComp_degree = 5.f;
 		
-																break;
+									break;
 		
 		case CurrentControlMode : 	/*设定q轴电流*/
-																CurrentLoop.ExpectedCurrentQ = 25.f;
+									CurrLoop.ExptCurrQ = 25.f;
 									
-																/*设定电流环PI参数*/
-																CurrentLoop.Kp_D = 0.1f;
+									/*设定电流环PI参数*/
+									CurrLoop.Kp_D = 0.1f;
 																	
-																CurrentLoop.Ki_D = 0.1f;
+									CurrLoop.Ki_D = 0.1f;
 																	
-																CurrentLoop.Kp_Q = 0.5f;
+									CurrLoop.Kp_Q = 0.5f;
 
-																CurrentLoop.Ki_Q = 0.1f;
+									CurrLoop.Ki_Q = 0.1f;
 									
-																break;
+									break;
 		
-		case SpeedControlMode : 		/*设定角速度(°/s)*/
-																SpeedLoop.ExpectedMecAngularSpeed = 100.f * 2 * PI;	//degree per second
+		case SpeedControlMode : 	/*设定角速度(°/s)*/
+									SpdLoop.ExptMecAngularSpeed = 100.f * 2 * PI;	//degree per second
 																
-																/*设定加速度*/
-																SpeedLoop.Acceleration = 25.f * 2 * PI;	//degree per quadratic seconds
+									/*设定加速度*/
+									SpdLoop.Acceleration = 25.f * 2 * PI;	//degree per quadratic seconds
 								
-																/*设定电流环PI参数*/
-																CurrentLoop.Kp_D = CURRENT_CONTROL_KP_D;
+									/*设定电流环PI参数*/
+									CurrLoop.Kp_D = CURRENT_CONTROL_KP_D;
 																
-																CurrentLoop.Ki_D = CURRENT_CONTROL_KI_D;
+									CurrLoop.Ki_D = CURRENT_CONTROL_KI_D;
 																
-																CurrentLoop.Kp_Q = CURRENT_CONTROL_KP_Q;
-
-																CurrentLoop.Ki_Q = CURRENT_CONTROL_KI_Q;
+									CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q;
 								
-																/*设定速度环PI参数*/
-																SpeedLoop.Kp = 0.006f;
+									/*设定速度环PI参数*/
+									SpdLoop.Kp = 0.006f;
 																
-																SpeedLoop.Ki = 0.001f;
+									SpdLoop.Ki = 0.001f;
 								
-																break;
+									break;
 		
 		case PositionControlMode :	/*设定电流环PI参数*/
-																CurrentLoop.Kp_D = 0.1f;
+									CurrLoop.Kp_D = 0.1f;
 																	
-																CurrentLoop.Ki_D = 0.035f;
+									CurrLoop.Ki_D = 0.035f;
 																	
-																CurrentLoop.Kp_Q = 0.10f;
+									CurrLoop.Kp_Q = 0.10f;
 
-																CurrentLoop.Ki_Q = 0.05f;
+									CurrLoop.Ki_Q = 0.05f;
 									
-																/*设定位置环PI参数*/
-																PositionLoop.Kp = 0.0001f;
+									/*设定位置环PI参数*/
+									PosLoop.Kp = 0.0001f;
 																	
-																PositionLoop.Kd = 0.f;
+									PosLoop.Kd = 0.f;
 									
-																break;
+									break;
 	}
 }
 
-   /**
-   * @brief		Current control loop
+ /**
+   * @brief  电流环
+   * @param[in]  expectedCurrD     		期望Id
+   * @param[in]  expectedCurrQ      	期望Iq
+   * @param[in]  realityCurrD     		实际Id
+   * @param[in]  realityCurrQ      		实际Iq
+   * @param[out] controlVoltageD 		Vd输出
+   * @param[out] controlVoltageQ 		Vq输出
    */
-void CurrentLoopController(float expectedCurrentD, float expectedCurrentQ, float realityCurrentD, float realityCurrentQ, float *controlVoltageD, float *controlVoltageQ)
+void CurrentLoop(float exptCurrD, float exptCurrQ, float realityCurrD, float realityCurrQ, float *ctrlVolD, float *ctrlVolQ)
 {
-	float errorD = 0;
-	float errorQ = 0;
-	float controlCurrentD = 0;
-	float controlCurrentQ = 0;
-	static float integralErrorD = 0;
-	static float integralErrorQ = 0;
+	float errD = 0;
+	float errQ = 0;
+	float ctrlCurrD = 0;
+	float ctrlCurrQ = 0;
+	static float integralErrD = 0;
+	static float integralErrQ = 0;
 	
-	errorD = expectedCurrentD - realityCurrentD;
-	errorQ = expectedCurrentQ - realityCurrentQ;
+	errD = exptCurrD - realityCurrD;
+	errQ = exptCurrQ - realityCurrQ;
 	
 	/*PI控制器*/
-	controlCurrentD = CurrentLoop.Kp_D * errorD + CurrentLoop.Ki_D * integralErrorD;
-	controlCurrentQ = CurrentLoop.Kp_Q * errorQ + CurrentLoop.Ki_Q * integralErrorQ;
+	ctrlCurrD = CurrLoop.Kp_D * errD + CurrLoop.Ki_D * integralErrD;
+	ctrlCurrQ = CurrLoop.Kp_Q * errQ + CurrLoop.Ki_Q * integralErrQ;
 	
-	integralErrorD += errorD * CarrierPeriod_s;
-	integralErrorQ += errorQ * CarrierPeriod_s;
+	integralErrD += errD * CARRIER_PERIOD_S;
+	integralErrQ += errQ * CARRIER_PERIOD_S;
 	
 	/*积分限幅*/
-	if(integralErrorD >= CurrentControlLoopIntegralErrorLimit_D)
+	if(integralErrD >= CURR_INTEGRAL_ERR_LIM_D)
 	{
-		integralErrorD = CurrentControlLoopIntegralErrorLimit_D;
+		integralErrD = CURR_INTEGRAL_ERR_LIM_D;
 	}
 	
-	else if(integralErrorD <= -CurrentControlLoopIntegralErrorLimit_D)
+	else if(integralErrD <= -CURR_INTEGRAL_ERR_LIM_D)
 	{
-		integralErrorD = -CurrentControlLoopIntegralErrorLimit_D;
+		integralErrD = -CURR_INTEGRAL_ERR_LIM_D;
 	}
 	
-	if(integralErrorQ >= CurrentControlLoopIntegralErrorLimit_Q)
+	if(integralErrQ >= CURR_INTEGRAL_ERR_LIM_Q)
 	{
-		integralErrorQ = CurrentControlLoopIntegralErrorLimit_Q;
+		integralErrQ = CURR_INTEGRAL_ERR_LIM_Q;
 	}
 	
-	else if(integralErrorQ <= -CurrentControlLoopIntegralErrorLimit_Q)
+	else if(integralErrQ <= -CURR_INTEGRAL_ERR_LIM_Q)
 	{
-		integralErrorQ = -CurrentControlLoopIntegralErrorLimit_Q;
+		integralErrQ = -CURR_INTEGRAL_ERR_LIM_Q;
 	}
 	
 	/*反电动势补偿*/
 	
-	*controlVoltageD = 0;
-	*controlVoltageQ = controlCurrentQ + PositionSensor.AvgEleAngularSpeed_rad * RotatorFluxLinkage;
+	*ctrlVolD = 0;
+	*ctrlVolQ = ctrlCurrQ + PosSensor.AvgEleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
 }
 
-   /**
-   * @brief		Speed control loop
+ /**
+   * @brief  速度环
+   * @param[in]  expectedMecAngularSpeed     		期望机械角速度
+   * @param[in]  realityMecAngularSpeed      		实际机械角速度
+   * @param[out] controlCurrentQ 					Iq输出
    */
-void SpeedLoopController(float expectedMecAngularSpeed, float realityMecAngularSpeed, float *controlCurrentQ)
+void SpeedLoop(float exptMecAngularSpeed, float realityMecAngularSpeed, float *ctrlCurrQ)
 {
-	float error = 0;
-	static float integralError = 0;
+	float err = 0;
+	static float integralErr = 0;
 	
-	error = expectedMecAngularSpeed - realityMecAngularSpeed;
+	err = exptMecAngularSpeed - realityMecAngularSpeed;
 	
-	*controlCurrentQ = SpeedLoop.Kp * error + SpeedLoop.Ki * integralError;
+	*ctrlCurrQ = SpdLoop.Kp * err + SpdLoop.Ki * integralErr;
 	
-	integralError += error * CarrierPeriod_s;
+	integralErr += err * CARRIER_PERIOD_S;
 	
 	/*积分限幅*/
-	if(integralError >= SpeedControlLoopIntegralErrorLimit)
+	if(integralErr >= SPD_INTEGRAL_ERR_LIM)
 	{
-		integralError = SpeedControlLoopIntegralErrorLimit;
+		integralErr = SPD_INTEGRAL_ERR_LIM;
 	}
 	
-	else if(integralError <= -SpeedControlLoopIntegralErrorLimit)
+	else if(integralErr <= -SPD_INTEGRAL_ERR_LIM)	
 	{
-		integralError = -SpeedControlLoopIntegralErrorLimit;
+		integralErr = -SPD_INTEGRAL_ERR_LIM;
 	}
 }
 
-   /**
-   * @brief		Position control loop
+ /**
+   * @brief  位置环
+   * @param[in]  expectedMecAngle     		期望机械角度
+   * @param[in]  realityMecAngle      		实际机械角度
+   * @param[out] controlAngularSpeed 		角速度输出
    */
-void PositionLoopController(float expectedMecAngle, float realityMecAngle, float *controlCurrentQ)
+void PositionLoop(float exptMecAngle, float realityMecAngle, float *controlAngularSpeed)
 {
-	float error = 0;
-	static float lastError = 0;
+	float err = 0;
+	static float lastErr = 0;
 	
-	error = expectedMecAngle - realityMecAngle;
+	err = exptMecAngle - realityMecAngle;
 	
-	*controlCurrentQ = PositionLoop.Kp * error + PositionLoop.Kd * (error - lastError);
+	*controlAngularSpeed = PosLoop.Kp * err + PosLoop.Kd * (err - lastErr);
 	
-	lastError = error;
+	lastErr = err;
 }
 
-   /**
-   * @brief		Velocity slope  generator
+ /**
+   * @brief  斜坡生成器
+   * @param[in]  expectedVelocity      期望角速度
    */
-float VelocitySlopeGenerator(float expectedVelocity)
+float VelocitySlopeGenerator(float exptVelocity)
 {
 	static float velocityProcessVolume = 0.0f;
 	static float velocityStepValue = 0;
 	
-	velocityStepValue = SpeedLoop.Acceleration * CarrierPeriod_s;
+	velocityStepValue = SpdLoop.Acceleration * CARRIER_PERIOD_S;
 
-	if (velocityProcessVolume < (expectedVelocity - velocityStepValue))
+	if (velocityProcessVolume < (exptVelocity - velocityStepValue))
 	{
 		velocityProcessVolume += velocityStepValue;
 	}
-	else if (velocityProcessVolume > (expectedVelocity + velocityStepValue))
+	else if (velocityProcessVolume > (exptVelocity + velocityStepValue))
 	{
 		velocityProcessVolume -= velocityStepValue;
 	}
 	else
 	{
-		velocityProcessVolume = expectedVelocity;
+		velocityProcessVolume = exptVelocity;
 	}
 	
 	return velocityProcessVolume;
+}
+
+ /**
+   * @brief  电流控制器
+   */
+void CurrentController(void)
+{
+	/*进行Park变换, 将三相电流转换为dq轴电流*/
+	ParkTransform(CoordTrans.CurrA, CoordTrans.CurrB, CoordTrans.CurrC, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);
+	
+	/*电流环PI控制器*/
+	CurrentLoop(CurrLoop.ExptCurrD, CurrLoop.ExptCurrQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolD);
+	
+	/*进行逆Park变换, 将转子坐标系下的dq轴电压转换为定子坐标系下的AlphaBeta轴电压*/
+	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);
+	
+	/*利用SVPWM算法调制电压矢量*/
+	SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
+}
+
+ /**
+   * @brief  转速控制器
+   */
+void SpeedController(void)
+{
+	SpeedLoop(SpdLoop.ExptMecAngularSpeed, PosSensor.MecAngularSpeed_rad, &CurrLoop.ExptCurrQ);
+}
+
+ /**
+   * @brief  位置控制器
+   */
+void PositionController(void)
+{
+	PositionLoop(PosLoop.ExptMecAngle, PosSensor.MecAngle_rad, &SpdLoop.ExptMecAngularSpeed);
 }
 
 /* USER CODE END */

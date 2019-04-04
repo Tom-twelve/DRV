@@ -1,10 +1,10 @@
 /**
  ******************************************************************************
- * @file		Encoder.c
+ * @file		PositionSensor.c
  * @author		WrathWings
  * @version 	V1.0
  * @date		2019.3.2
- * @brief		Set and read encoder
+ * @brief		Set and read position sensor
  ******************************************************************************
  * @attention
  *
@@ -29,12 +29,12 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* CODE BEGIN PV */
-#if	POSITION_SENSOR_TYPE == Encoder_TLE5012
-	struct PositionSensor_t PositionSensor;
-	extern const short int EleAngleRef[DIVIDE_NUM * (uint8_t)MotorPolePairs + 2];
-	extern const int MecAngleRef[DIVIDE_NUM * (uint8_t)MotorPolePairs + 2];
-#elif	POSITION_SENSOR_TYPE == HallSensor_DRV5053
-	struct PositionSensor_t PositionSensor;
+#if	POSITION_SENSOR_TYPE == ENCODER_TLE5012
+	struct PosSensor_t PosSensor;
+	extern const short int EleAngleRef[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS + 2];
+	extern const int MecAngleRef[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS + 2];
+#elif	POSITION_SENSOR_TYPE == HALL_SENSOR_DRV5053
+	struct PosSensor_t PosSensor;
 	extern int GivenEle[CALIBRATE_NUM + 2];
 	extern int HallEle[CALIBRATE_NUM + 2];
 #else
@@ -47,7 +47,7 @@
 
 
 
-#if	POSITION_SENSOR_TYPE == Encoder_TLE5012
+#if	POSITION_SENSOR_TYPE == ENCODER_TLE5012
 	void GetPositionImformation(void)
 	{
 		#if	ENCODER_MODE == Encoder_AbsoluteMode
@@ -70,16 +70,16 @@
 
 	void GetMecAngle_AbsoluteMode_15bit(void)
 	{
-		PositionSensor.MecAngle_AbsoluteMode_15bit = (TLE5012_ReadRegister(TLE5012_Command_ReadCurrentValue_AngleValue) & 0x7FFF);
+		PosSensor.MecAngle_AbsoluteMode_15bit = (TLE5012_ReadRegister(TLE5012_Command_ReadCurrentValue_AngleValue) & 0x7FFF);
 	}
 
 	void GetMecAngle_IncrementalMode_14bit(void)
 	{
-		PositionSensor.MecAngle_IncrementalMode_14bit = (uint16_t)(PositionSensor.OriginalMecAngle_14bit + TIM2->CNT);
+		PosSensor.MecAngle_IncrementalMode_14bit = (uint16_t)(PosSensor.OriginalMecAngle_14bit + TIM2->CNT);
 		
-		if(PositionSensor.MecAngle_IncrementalMode_14bit >= 16384)
+		if(PosSensor.MecAngle_IncrementalMode_14bit >= 16384)
 		{
-			PositionSensor.MecAngle_IncrementalMode_14bit -= 16384;
+			PosSensor.MecAngle_IncrementalMode_14bit -= 16384;
 		}
 	}
 	
@@ -87,15 +87,15 @@
 	{
 		#if	ENCODER_MODE == Encoder_AbsoluteMode
 		
-		PositionSensor.MecAngle_degree = 360.f * (float)PositionSensor.MecAngle_AbsoluteMode_15bit / TLE5012_AbsoluteModeResolution;
+		PosSensor.MecAngle_degree = 360.f * (float)PosSensor.MecAngle_AbsoluteMode_15bit / TLE5012_AbsoluteModeResolution;
 		
-		PositionSensor.MecAngle_rad = (float)PositionSensor.MecAngle_degree / 360.f * 2.0f * PI;
+		PosSensor.MecAngle_rad = (float)PosSensor.MecAngle_degree / 360.f * 2.0f * PI;
 		
 		#elif ENCODER_MODE == Encoder_IncrementalMode
 		
-		PositionSensor.MecAngle_degree = 360.f * (float)PositionSensor.MecAngle_IncrementalMode_14bit / (TLE5012_IncrementalModeResolution * 4.f);
+		PosSensor.MecAngle_degree = 360.f * (float)PosSensor.MecAngle_IncrementalMode_14bit / (TLE5012_IncrementalModeResolution * 4.f);
 		
-		PositionSensor.MecAngle_rad = (float)PositionSensor.MecAngle_degree / 360.f * 2.0f * PI;
+		PosSensor.MecAngle_rad = (float)PosSensor.MecAngle_degree / 360.f * 2.0f * PI;
 		
 		#else
 		#error "Encoder Mode Invalid"
@@ -108,7 +108,7 @@
 		static float lastMecAngle = 0;
 		float angleDifference = 0;
 		
-		presentMecAngle = PositionSensor.MecAngle_rad;
+		presentMecAngle = PosSensor.MecAngle_rad;
 		
 		angleDifference = presentMecAngle - lastMecAngle;
 		
@@ -124,11 +124,11 @@
 		
 		#if ENCODER_MODE == Encoder_AbsoluteMode
 		
-		PositionSensor.MecAngularSpeed_rad = angleDifference / TLE5012_UpdateTime_0;
+		PosSensor.MecAngularSpeed_rad = angleDifference / TLE5012_UpdateTime_0;
 		
 		#elif ENCODER_MODE == Encoder_IncrementalMode
 		
-		PositionSensor.MecAngularSpeed_rad = angleDifference / CarrierPeriod_s;
+		PosSensor.MecAngularSpeed_rad = angleDifference / CARRIER_PERIOD_S;
 		
 		#else
 		#error "Encoder Mode Invalid"
@@ -147,7 +147,7 @@
 		static float Avg = 0.0f;
 		float old = array[pos];
 		
-		data = PositionSensor.MecAngularSpeed_rad;
+		data = PosSensor.MecAngularSpeed_rad;
 		
 		array[pos] = data;
 		
@@ -157,7 +157,7 @@
 
 		pos = (pos+1) % num;
 
-		PositionSensor.AvgMecAngularSpeed_rad = Avg;
+		PosSensor.AvgMecAngularSpeed_rad = Avg;
 	}
 
 	void GetEleAngle(void)
@@ -166,23 +166,23 @@
 		
 		#if ENCODER_MODE == Encoder_AbsoluteMode
 		
-		normPos = fmodf(PositionSensor.MecAngle_AbsoluteMode_15bit, TLE5012_AbsoluteModeResolution);	
+		normPos = fmodf(PosSensor.MecAngle_AbsoluteMode_15bit, TLE5012_AbsoluteModeResolution);	
 		
 		uint32_t index = UtilBiSearchInt(MecAngleRef, normPos, sizeof(MecAngleRef)/sizeof(MecAngleRef[0]));
 
 		uint32_t indexPlus1 = index + 1;
 		
-		PositionSensor.EleAngle_degree = fmodf(utils_map(PositionSensor.MecAngle_AbsoluteMode_15bit, MecAngleRef[index], MecAngleRef[indexPlus1], EleAngleRef[index], EleAngleRef[indexPlus1]), 360.f);
+		PosSensor.EleAngle_degree = fmodf(utils_map(PosSensor.MecAngle_AbsoluteMode_15bit, MecAngleRef[index], MecAngleRef[indexPlus1], EleAngleRef[index], EleAngleRef[indexPlus1]), 360.f);
 		
 		#elif ENCODER_MODE == Encoder_IncrementalMode
 		
-		normPos = fmodf(PositionSensor.MecAngle_IncrementalMode_14bit, TLE5012_IncrementalModeResolution * 4.f);	
+		normPos = fmodf(PosSensor.MecAngle_IncrementalMode_14bit, TLE5012_IncrementalModeResolution * 4.f);	
 		
 		uint32_t index = UtilBiSearchInt(MecAngleRef, normPos, sizeof(MecAngleRef)/sizeof(MecAngleRef[0]));
 
 		uint32_t indexPlus1 = index + 1;
 		
-		PositionSensor.EleAngle_degree = fmodf(utils_map(PositionSensor.MecAngle_IncrementalMode_14bit, MecAngleRef[index], MecAngleRef[indexPlus1], EleAngleRef[index], EleAngleRef[indexPlus1]), 360.f);
+		PosSensor.EleAngle_degree = fmodf(utils_map(PosSensor.MecAngle_IncrementalMode_14bit, MecAngleRef[index], MecAngleRef[indexPlus1], EleAngleRef[index], EleAngleRef[indexPlus1]), 360.f);
 		
 		#else
 		#error "Encoder Mode Invalid"
@@ -191,7 +191,7 @@
 
 	void GetAvgEleAngularSpeed(void)
 	{
-		PositionSensor.AvgEleAngularSpeed_rad = PositionSensor.AvgMecAngularSpeed_rad * MotorPolePairs;
+		PosSensor.AvgEleAngularSpeed_rad = PosSensor.AvgMecAngularSpeed_rad * MOTOR_POLE_PAIRS;
 	}
 
 	uint16_t TLE5012_ReadRegister(uint16_t command)
@@ -219,7 +219,7 @@
 		HAL_TIM_Encoder_Start(&htim2, TIM_CHANNEL_ALL);
 		
 		/*读取初始机械角度*/
-		PositionSensor.OriginalMecAngle_14bit = (uint16_t)(((float)(TLE5012_ReadRegister(TLE5012_Command_ReadCurrentValue_AngleValue) & 0x7FFF) / 32768.f) * 16384.f);
+		PosSensor.OriginalMecAngle_14bit = (uint16_t)(((float)(TLE5012_ReadRegister(TLE5012_Command_ReadCurrentValue_AngleValue) & 0x7FFF) / 32768.f) * 16384.f);
 	}
 	
 	/**
@@ -234,9 +234,9 @@
 		int EleAngle = 0;
 		static int16_t index_5012b = 1;
 		static int16_t index_bound = 0;
-		static int tempMecAngleRef[DIVIDE_NUM * (uint8_t)MotorPolePairs + 2] = {0};
-		static int tempEleAngleRef[DIVIDE_NUM * (uint8_t)MotorPolePairs + 2] = {0};
-		static int16_t tmpArray[DIVIDE_NUM * (uint8_t)MotorPolePairs] = {0};
+		static int tempMecAngleRef[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS + 2] = {0};
+		static int tempEleAngleRef[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS + 2] = {0};
+		static int16_t tmpArray[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS] = {0};
 
 		InverseParkTransform(VolD, 0.f, &VolAlpha, &VolBeta, 0.f);	//设定Uq = 0, 电角度为零
 		
@@ -244,7 +244,7 @@
 		
 		HAL_Delay(1000);
 		
-		for (int i = 0; i < MotorPolePairs; i++)
+		for (int i = 0; i < MOTOR_POLE_PAIRS; i++)
 		{
 			for(int j = 0; j < DIVIDE_NUM; j ++)
 			{
@@ -261,11 +261,11 @@
 				
 					#if ENCODER_MODE == Encoder_AbsoluteMode
 					
-					tempMecAngleRef[index_5012b] = PositionSensor.MecAngle_AbsoluteMode_15bit;
+					tempMecAngleRef[index_5012b] = PosSensor.MecAngle_AbsoluteMode_15bit;
 					
 					#elif ENCODER_MODE == Encoder_IncrementalMode
 					
-					tempMecAngleRef[index_5012b] = PositionSensor.MecAngle_IncrementalMode_14bit;
+					tempMecAngleRef[index_5012b] = PosSensor.MecAngle_IncrementalMode_14bit;
 					
 					#else
 					#error "Encoder Mode Invalid"
@@ -287,7 +287,7 @@
 
 				index_5012b++;
 				
-				if(index_5012b > DIVIDE_NUM * (uint8_t)MotorPolePairs)
+				if(index_5012b > DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS)
 				{
 					PutStr("EXCESS\r\n");SendBuf();
 					break;
@@ -301,40 +301,40 @@
 		
 		HAL_Delay(100);
 		
-		for(int i = index_bound, j = 0; i <= DIVIDE_NUM * (uint8_t)MotorPolePairs;i++,j++)
+		for(int i = index_bound, j = 0; i <= DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS;i++,j++)
 		{
 			tmpArray[j] =  tempMecAngleRef[i];
 		}
 		
-		for(int i = index_bound - 1,k = DIVIDE_NUM * (uint8_t)MotorPolePairs; i >= 0; i--, k--)
+		for(int i = index_bound - 1,k = DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS; i >= 0; i--, k--)
 		{
 			tempMecAngleRef[k] = tempMecAngleRef[i];
 		}
 		
-		for(int i = 1, k =0; k <=  DIVIDE_NUM * (uint8_t)MotorPolePairs - index_bound; i++,k++)
+		for(int i = 1, k =0; k <=  DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS - index_bound; i++,k++)
 		{
 			tempMecAngleRef[i] = tmpArray[k];
 		}
 		
 		tempEleAngleRef[1] = tmpData[1];
 		
-		for(int i = 1; i <= DIVIDE_NUM * (uint8_t)MotorPolePairs; i++)
+		for(int i = 1; i <= DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS; i++)
 		{
 			tempEleAngleRef[i + 1] = tempEleAngleRef[i] + 360 / DIVIDE_NUM;
 		}
 		
-		#if POSITION_SENSOR_TYPE == Encoder_TLE5012
+		#if POSITION_SENSOR_TYPE == ENCODER_TLE5012
 			#if ENCODER_MODE == Encoder_AbsoluteMode
 			
-			tempMecAngleRef[0] = tempMecAngleRef[DIVIDE_NUM * (uint8_t)MotorPolePairs] - (int32_t)TLE5012_AbsoluteModeResolution;
+			tempMecAngleRef[0] = tempMecAngleRef[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS] - (int32_t)TLE5012_AbsoluteModeResolution;
 			
-			tempMecAngleRef[DIVIDE_NUM * (uint8_t)MotorPolePairs + 1] = tempMecAngleRef[1] + (int32_t)TLE5012_AbsoluteModeResolution;
+			tempMecAngleRef[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS + 1] = tempMecAngleRef[1] + (int32_t)TLE5012_AbsoluteModeResolution;
 			
 			#elif ENCODER_MODE == Encoder_IncrementalMode
 
-			tempMecAngleRef[0] = tempMecAngleRef[DIVIDE_NUM * (uint8_t)MotorPolePairs] - (int32_t)(TLE5012_IncrementalModeResolution * 4.f);
+			tempMecAngleRef[0] = tempMecAngleRef[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS] - (int32_t)(TLE5012_IncrementalModeResolution * 4.f);
 			
-			tempMecAngleRef[DIVIDE_NUM * (uint8_t)MotorPolePairs + 1] = tempMecAngleRef[1] + (int32_t)(TLE5012_IncrementalModeResolution * 4.f);
+			tempMecAngleRef[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS + 1] = tempMecAngleRef[1] + (int32_t)(TLE5012_IncrementalModeResolution * 4.f);
 			
 			#else
 			#error "Encoder Mode Invalid"
@@ -343,7 +343,7 @@
 
 		tempEleAngleRef[0] = tempEleAngleRef[1] - 360 / DIVIDE_NUM;
 
-		for(int i = 0; i < DIVIDE_NUM * (uint8_t)MotorPolePairs + 2; i++)
+		for(int i = 0; i < DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS + 2; i++)
 		{
 			UART_Transmit_DMA("%d\t,\t%d\t,\r\n", (int)tempEleAngleRef[i], (int)tempMecAngleRef[i]);
 			
@@ -353,7 +353,7 @@
 		}
 	}
 	
-#elif	POSITION_SENSOR_TYPE == HallSensor_DRV5053
+#elif	POSITION_SENSOR_TYPE == HALL_SENSOR_DRV5053
 	void GetPositionImformation(void)
 	{
 		GetEleAngle(); //计算电角度
@@ -365,27 +365,27 @@
 	void HallInit(void)
 	{
 		/*初始化霍尔的标定值*/
-		#if	 RobotIdentifier == 2U
+		#if	 ROBOT_ID == 2U
 			#if CAN_ID_NUM == 1
-				PositionSensor.HallMaxValue[0] = 1809;
-				PositionSensor.HallMaxValue[1] = 1788;
-				PositionSensor.HallMinValue[0] = 810;
-				PositionSensor.HallMinValue[1] = 861;
-				PositionSensor.HallZeroValue[0] = 1311;
-				PositionSensor.HallZeroValue[1] = 1322;
+				PosSensor.HallMaxValue[0] = 1809;
+				PosSensor.HallMaxValue[1] = 1788;
+				PosSensor.HallMinValue[0] = 810;
+				PosSensor.HallMinValue[1] = 861;
+				PosSensor.HallZeroValue[0] = 1311;
+				PosSensor.HallZeroValue[1] = 1322;
 			#elif CAN_ID_NUM == 2
-				PositionSensor.HallMaxValue[0] = 1794;
-				PositionSensor.HallMaxValue[1] = 1784;
-				PositionSensor.HallMinValue[0] = 861;
-				PositionSensor.HallMinValue[1] = 918;
-				PositionSensor.HallZeroValue[0] = 1327;
-				PositionSensor.HallZeroValue[1] = 1351;
+				PosSensor.HallMaxValue[0] = 1794;
+				PosSensor.HallMaxValue[1] = 1784;
+				PosSensor.HallMinValue[0] = 861;
+				PosSensor.HallMinValue[1] = 918;
+				PosSensor.HallZeroValue[0] = 1327;
+				PosSensor.HallZeroValue[1] = 1351;
 			#endif
 		#endif
 		
 		/*零点归一化处理*/
-		PositionSensor.HallNormalizedActualValue[0] = Normalized((PositionSensor.HallZeroValue[0] - PositionSensor.HallMinValue[0]) / (PositionSensor.HallMaxValue[0] - PositionSensor.HallMinValue[0]));
-		PositionSensor.HallNormalizedActualValue[1] = Normalized((PositionSensor.HallZeroValue[1] - PositionSensor.HallMinValue[1]) / (PositionSensor.HallMaxValue[1] - PositionSensor.HallMinValue[1]));
+		PosSensor.HallNormalizedActualValue[0] = Normalized((PosSensor.HallZeroValue[0] - PosSensor.HallMinValue[0]) / (PosSensor.HallMaxValue[0] - PosSensor.HallMinValue[0]));
+		PosSensor.HallNormalizedActualValue[1] = Normalized((PosSensor.HallZeroValue[1] - PosSensor.HallMinValue[1]) / (PosSensor.HallMaxValue[1] - PosSensor.HallMinValue[1]));
 		
 		HAL_Delay(10);
 		
@@ -397,9 +397,9 @@
 	  */
 	void GetAvgMecAngularSpeed()
 	{
-		PositionSensor.AvgMecAngularSpeed_rad = PositionSensor.AvgEleAngularSpeed_rad / MotorPolePairs;
+		PosSensor.AvgMecAngularSpeed_rad = PosSensor.AvgEleAngularSpeed_rad / MOTOR_POLE_PAIRS;
 		
-		PositionSensor.AvgMecAngularSpeed_degree = RadToDegree(PositionSensor.AvgMecAngularSpeed_rad);
+		PosSensor.AvgMecAngularSpeed_degree = RadToDegree(PosSensor.AvgMecAngularSpeed_rad);
 	}
 	
 	/**
@@ -410,25 +410,25 @@
 		static float eleAngleCalculate = 0;
 		
 		/*归一化处理, 注意浮点数强制转换时候的符号问题*/
-		PositionSensor.HallNormalizedActualValue[0] = Normalized((PositionSensor.HallActualValue[0] - PositionSensor.HallMinValue[0]) / (PositionSensor.HallMaxValue[0] - PositionSensor.HallMinValue[0]));
-		PositionSensor.HallNormalizedActualValue[1] = Normalized((PositionSensor.HallActualValue[1] - PositionSensor.HallMinValue[1]) / (PositionSensor.HallMaxValue[1] - PositionSensor.HallMinValue[1]));
+		PosSensor.HallNormalizedActualValue[0] = Normalized((PosSensor.HallActualValue[0] - PosSensor.HallMinValue[0]) / (PosSensor.HallMaxValue[0] - PosSensor.HallMinValue[0]));
+		PosSensor.HallNormalizedActualValue[1] = Normalized((PosSensor.HallActualValue[1] - PosSensor.HallMinValue[1]) / (PosSensor.HallMaxValue[1] - PosSensor.HallMinValue[1]));
 
 		#if	PHASE_SEQUENCE == POSITIVE_SEQUENCE
 		
-		eleAngleCalculate = (atan2f(PositionSensor.HallNormalizedActualValue[0] - PositionSensor.HallNormalizedZeroValue[0], PositionSensor.HallNormalizedActualValue[1] - PositionSensor.HallNormalizedZeroValue[1]) * 57.29578f);
+		eleAngleCalculate = (atan2f(PosSensor.HallNormalizedActualValue[0] - PosSensor.HallNormalizedZeroValue[0], PosSensor.HallNormalizedActualValue[1] - PosSensor.HallNormalizedZeroValue[1]) * 57.29578f);
 		
 		#elif PHASE_SEQUENCE == NEGATIVE_SEQUENCE
 		
-		eleAngleCalculate = (atan2f(PositionSensor.HallNormalizedActualValue[1] - PositionSensor.HallNormalizedZeroValue[1], PositionSensor.HallNormalizedActualValue[0] - PositionSensor.HallNormalizedZeroValue[0]) * 57.29578f);
+		eleAngleCalculate = (atan2f(PosSensor.HallNormalizedActualValue[1] - PosSensor.HallNormalizedZeroValue[1], PosSensor.HallNormalizedActualValue[0] - PosSensor.HallNormalizedZeroValue[0]) * 57.29578f);
 		
 		#endif
 		
 		/*查表补偿，得到的里程曲线与不使用查表法时基本一致（r^2均为1），因此不会随着运行时间变长而出现里程误差*/
 		eleAngleCalculate = RadToDegree(HallAngleTableComp(eleAngleCalculate)); 
 		
-		PositionSensor.EleAngle_rad = eleAngleCalculate;
+		PosSensor.EleAngle_rad = eleAngleCalculate;
 		
-		PositionSensor.EleAngle_degree = RadToDegree(eleAngleCalculate);
+		PosSensor.EleAngle_degree = RadToDegree(eleAngleCalculate);
 	}
 	
 	/**
@@ -439,11 +439,11 @@
 		float eleAngleDiff_rad = 0;
 		static float eleAngleLast = 0;
 		
-		eleAngleDiff_rad = util_norm_float(PositionSensor.EleAngle_rad - eleAngleLast, -PI, PI, 2.f * PI);
+		eleAngleDiff_rad = util_norm_float(PosSensor.EleAngle_rad - eleAngleLast, -PI, PI, 2.f * PI);
 		
-		PositionSensor.EleAngularSpeed_rad = eleAngleDiff_rad / CarrierPeriod_s;
+		PosSensor.EleAngularSpeed_rad = eleAngleDiff_rad / CARRIER_PERIOD_S;
 		
-		PositionSensor.EleAngularSpeed_degree = RadToDegree(PositionSensor.EleAngularSpeed_rad);
+		PosSensor.EleAngularSpeed_degree = RadToDegree(PosSensor.EleAngularSpeed_rad);
 	}
 	
 	/**
@@ -459,7 +459,7 @@
 		static float Avg = 0.0f;
 		float old = array[pos];
 		
-		data = PositionSensor.EleAngularSpeed_rad;
+		data = PosSensor.EleAngularSpeed_rad;
 		
 		array[pos] = data;
 		
@@ -469,9 +469,9 @@
 
 		pos = (pos+1) % num;
 
-		PositionSensor.AvgEleAngularSpeed_rad = Avg;
+		PosSensor.AvgEleAngularSpeed_rad = Avg;
 		
-		PositionSensor.AvgEleAngularSpeed_degree = RadToDegree(PositionSensor.AvgEleAngularSpeed_rad);
+		PosSensor.AvgEleAngularSpeed_degree = RadToDegree(PosSensor.AvgEleAngularSpeed_rad);
 	}
 	
 
@@ -505,24 +505,24 @@
 		static float hall2Value = 0;
 		static float eleAngleCalculate = 0;
 		static float HallCalibrateTable[2][CALIBRATE_NUM + 2] = {0};
-		static float hall1[(uint8_t)MotorPolePairs][DIVIDE_NUM] = {0};
-		static float hall2[(uint8_t)MotorPolePairs][DIVIDE_NUM] = {0};
+		static float hall1[(uint8_t)MOTOR_POLE_PAIRS][DIVIDE_NUM] = {0};
+		static float hall2[(uint8_t)MOTOR_POLE_PAIRS][DIVIDE_NUM] = {0};
 		
 		InverseParkTransform_TwoPhase(VolD, 0.f, &VolAlpha, &VolBeta, 0.f);	//设定Vq = 0, 电角度为零
 		
 		SpaceVectorModulation(VolAlpha, VolBeta);
 		
 		/*零点归一化处理*/
-		PositionSensor.HallNormalizedActualValue[0] = Normalized((PositionSensor.HallZeroValue[0] - PositionSensor.HallMinValue[0]) / (PositionSensor.HallMaxValue[0] - PositionSensor.HallMinValue[0]));
-		PositionSensor.HallNormalizedActualValue[1] = Normalized((PositionSensor.HallZeroValue[1] - PositionSensor.HallMinValue[1]) / (PositionSensor.HallMaxValue[1] - PositionSensor.HallMinValue[1]));
+		PosSensor.HallNormalizedActualValue[0] = Normalized((PosSensor.HallZeroValue[0] - PosSensor.HallMinValue[0]) / (PosSensor.HallMaxValue[0] - PosSensor.HallMinValue[0]));
+		PosSensor.HallNormalizedActualValue[1] = Normalized((PosSensor.HallZeroValue[1] - PosSensor.HallMinValue[1]) / (PosSensor.HallMaxValue[1] - PosSensor.HallMinValue[1]));
 		
 		HAL_Delay(1000);
 		
 		/*测量TEST_ROUNDS圈并取平均值以保证霍尔值准确度*/
 		for(uint8_t round = 0; round < TEST_ROUNDS; round++)
 		{
-			/*共MotorPolePairs个电气周期*/
-			for (uint8_t pairs = 0; pairs < MotorPolePairs; pairs++)
+			/*共MOTOR_POLE_PAIRS个电气周期*/
+			for (uint8_t pairs = 0; pairs < MOTOR_POLE_PAIRS; pairs++)
 			{
 				/*每个电气周期切分为DIVIDE_NUM份*/
 				for(uint8_t divNum = 0; divNum < DIVIDE_NUM; divNum ++)
@@ -539,8 +539,8 @@
 						/*延时以保证ADC值已更新*/
 						HAL_Delay(10);
 						
-						hall1Value += PositionSensor.HallActualValue[0] / SAMPLING_TIMES;
-						hall2Value += PositionSensor.HallActualValue[1] / SAMPLING_TIMES;
+						hall1Value += PosSensor.HallActualValue[0] / SAMPLING_TIMES;
+						hall2Value += PosSensor.HallActualValue[1] / SAMPLING_TIMES;
 					}				
 			
 					hall1[pairs][divNum] += hall1Value / TEST_ROUNDS;
@@ -548,13 +548,13 @@
 					
 					/***********************解算电角度***********************CODE BEGIN**********************/
 					
-					PositionSensor.HallNormalizedActualValue[0] = Normalized((PositionSensor.HallActualValue[0] - PositionSensor.HallMinValue[0]) / (PositionSensor.HallMaxValue[0] - PositionSensor.HallMinValue[0]));
-					PositionSensor.HallNormalizedActualValue[1] = Normalized((PositionSensor.HallActualValue[1] - PositionSensor.HallMinValue[1]) / (PositionSensor.HallMaxValue[1] - PositionSensor.HallMinValue[1]));
+					PosSensor.HallNormalizedActualValue[0] = Normalized((PosSensor.HallActualValue[0] - PosSensor.HallMinValue[0]) / (PosSensor.HallMaxValue[0] - PosSensor.HallMinValue[0]));
+					PosSensor.HallNormalizedActualValue[1] = Normalized((PosSensor.HallActualValue[1] - PosSensor.HallMinValue[1]) / (PosSensor.HallMaxValue[1] - PosSensor.HallMinValue[1]));
 
 					#if	PHASE_SEQUENCE == NEGATIVE_SEQUENCE
-						eleAngleCalculate = RadToDegree((atan2f(PositionSensor.HallNormalizedActualValue[1] - PositionSensor.HallNormalizedActualValue[1], PositionSensor.HallNormalizedActualValue[0] - PositionSensor.HallNormalizedActualValue[0]) * 57.29578f));
+						eleAngleCalculate = RadToDegree((atan2f(PosSensor.HallNormalizedActualValue[1] - PosSensor.HallNormalizedActualValue[1], PosSensor.HallNormalizedActualValue[0] - PosSensor.HallNormalizedActualValue[0]) * 57.29578f));
 					#elif PHASE_SEQUENCE == POSITIVE_SEQUENCE
-						eleAngleCalculate = RadToDegree((PositionSensor.HallNormalizedActualValue[0] - PositionSensor.HallNormalizedActualValue[0], PositionSensor.HallNormalizedActualValue[1] - PositionSensor.HallNormalizedActualValue[1]) * 57.29578f));
+						eleAngleCalculate = RadToDegree((PosSensor.HallNormalizedActualValue[0] - PosSensor.HallNormalizedActualValue[0], PosSensor.HallNormalizedActualValue[1] - PosSensor.HallNormalizedActualValue[1]) * 57.29578f));
 					#endif
 					
 					/***********************解算电角度***********************CODE END************************/
@@ -577,18 +577,18 @@
 		
 		uint32_t hall1Average = 0;
 		uint32_t hall2Average = 0;
-		int32_t max1[(uint8_t)MotorPolePairs] = {0};
-		int32_t max2[(uint8_t)MotorPolePairs] = {0};
-		int32_t min1[(uint8_t)MotorPolePairs] = {0};
-		int32_t min2[(uint8_t)MotorPolePairs] = {0};
-		int32_t zero1[(uint8_t)MotorPolePairs] = {0};
-		int32_t zero2[(uint8_t)MotorPolePairs] = {0};
+		int32_t max1[(uint8_t)MOTOR_POLE_PAIRS] = {0};
+		int32_t max2[(uint8_t)MOTOR_POLE_PAIRS] = {0};
+		int32_t min1[(uint8_t)MOTOR_POLE_PAIRS] = {0};
+		int32_t min2[(uint8_t)MOTOR_POLE_PAIRS] = {0};
+		int32_t zero1[(uint8_t)MOTOR_POLE_PAIRS] = {0};
+		int32_t zero2[(uint8_t)MOTOR_POLE_PAIRS] = {0};
 		uint32_t maxIndex = 0, minIndex = 0;
 		
 		HAL_Delay(100);
 		
 		/*计算出霍尔值中的最大值、最小值、零点值*/
-		for(int pairs = 0; pairs < MotorPolePairs; pairs++)
+		for(int pairs = 0; pairs < MOTOR_POLE_PAIRS; pairs++)
 		{
 			arm_max_q31((int32_t*)hall1[pairs], DIVIDE_NUM, (int32_t*)&max1[pairs], &maxIndex);
 			arm_max_q31((int32_t*)hall2[pairs], DIVIDE_NUM, (int32_t*)&max2[pairs], &maxIndex);
@@ -604,28 +604,28 @@
 		
 		HAL_Delay(200);
 		
-		PositionSensor.HallMaxValue[0] = 0;
-		PositionSensor.HallMaxValue[1] = 0;
-		PositionSensor.HallMinValue[0] = 0;
-		PositionSensor.HallMinValue[1] = 0;
-		PositionSensor.HallZeroValue[0] = 0;
-		PositionSensor.HallZeroValue[1] = 0;	
+		PosSensor.HallMaxValue[0] = 0;
+		PosSensor.HallMaxValue[1] = 0;
+		PosSensor.HallMinValue[0] = 0;
+		PosSensor.HallMinValue[1] = 0;
+		PosSensor.HallZeroValue[0] = 0;
+		PosSensor.HallZeroValue[1] = 0;	
 		
-		for(int pairs = 0; pairs < MotorPolePairs; pairs++)
+		for(int pairs = 0; pairs < MOTOR_POLE_PAIRS; pairs++)
 		{
-			PositionSensor.HallMaxValue[0] += max1[pairs] / MotorPolePairs;
-			PositionSensor.HallMaxValue[1] += max2[pairs] / MotorPolePairs;
-			PositionSensor.HallMinValue[0] += min1[pairs] / MotorPolePairs;
-			PositionSensor.HallMinValue[1] += min2[pairs] / MotorPolePairs;
-			PositionSensor.HallZeroValue[0] += zero1[pairs] / MotorPolePairs;
-			PositionSensor.HallZeroValue[1] += zero2[pairs] / MotorPolePairs;
+			PosSensor.HallMaxValue[0] += max1[pairs] / MOTOR_POLE_PAIRS;
+			PosSensor.HallMaxValue[1] += max2[pairs] / MOTOR_POLE_PAIRS;
+			PosSensor.HallMinValue[0] += min1[pairs] / MOTOR_POLE_PAIRS;
+			PosSensor.HallMinValue[1] += min2[pairs] / MOTOR_POLE_PAIRS;
+			PosSensor.HallZeroValue[0] += zero1[pairs] / MOTOR_POLE_PAIRS;
+			PosSensor.HallZeroValue[1] += zero2[pairs] / MOTOR_POLE_PAIRS;
 		}
 		
 		PutStr("write in Hall Init:\r\n");SendBuf();
 		
 		HAL_Delay(10);
 		
-		UART_Transmit_DMA("%d\t%d\t%d\t%d\t%d\t%d\t\r\n",(int)PositionSensor.HallMaxValue[0], (int)PositionSensor.HallMaxValue[1], (int)PositionSensor.HallMinValue[0], (int)PositionSensor.HallMinValue[1], (int)PositionSensor.HallZeroValue[0], (int)PositionSensor.HallZeroValue[1]);
+		UART_Transmit_DMA("%d\t%d\t%d\t%d\t%d\t%d\t\r\n",(int)PosSensor.HallMaxValue[0], (int)PosSensor.HallMaxValue[1], (int)PosSensor.HallMinValue[0], (int)PosSensor.HallMinValue[1], (int)PosSensor.HallZeroValue[0], (int)PosSensor.HallZeroValue[1]);
 		
 		SendBuf();
 		
@@ -642,8 +642,8 @@
 		SpaceVectorModulation(VolAlpha, VolBeta);
 		
 		/*零点归一化处理*/
-		PositionSensor.HallNormalizedActualValue[0] = Normalized((PositionSensor.HallZeroValue[0] - PositionSensor.HallMinValue[0]) / (PositionSensor.HallMaxValue[0] - PositionSensor.HallMinValue[0]));
-		PositionSensor.HallNormalizedActualValue[1] = Normalized((PositionSensor.HallZeroValue[1] - PositionSensor.HallMinValue[1]) / (PositionSensor.HallMaxValue[1] - PositionSensor.HallMinValue[1]));
+		PosSensor.HallNormalizedActualValue[0] = Normalized((PosSensor.HallZeroValue[0] - PosSensor.HallMinValue[0]) / (PosSensor.HallMaxValue[0] - PosSensor.HallMinValue[0]));
+		PosSensor.HallNormalizedActualValue[1] = Normalized((PosSensor.HallZeroValue[1] - PosSensor.HallMinValue[1]) / (PosSensor.HallMaxValue[1] - PosSensor.HallMinValue[1]));
 		
 		hall1Value = 0;
 		hall2Value = 0;
@@ -659,24 +659,24 @@
 			for(int times = 0 ; times < SAMPLING_TIMES; times++)
 			{
 				HAL_Delay(10);
-				hall1Value += PositionSensor.HallActualValue[0] / SAMPLING_TIMES;//ADC2
-				hall2Value += PositionSensor.HallActualValue[1] / SAMPLING_TIMES;
+				hall1Value += PosSensor.HallActualValue[0] / SAMPLING_TIMES;//ADC2
+				hall2Value += PosSensor.HallActualValue[1] / SAMPLING_TIMES;
 			}
 
 			HallCalibrateTable[0][div] = div * 360.f / CALIBRATE_NUM;  
 			
 			/***********************解算电角度***********************CODE BEGIN**********************/
 					
-			PositionSensor.HallNormalizedActualValue[0] = Normalized((PositionSensor.HallActualValue[0] - PositionSensor.HallMinValue[0]) / (PositionSensor.HallMaxValue[0] - PositionSensor.HallMinValue[0]));
-			PositionSensor.HallNormalizedActualValue[1] = Normalized((PositionSensor.HallActualValue[1] - PositionSensor.HallMinValue[1]) / (PositionSensor.HallMaxValue[1] - PositionSensor.HallMinValue[1]));
+			PosSensor.HallNormalizedActualValue[0] = Normalized((PosSensor.HallActualValue[0] - PosSensor.HallMinValue[0]) / (PosSensor.HallMaxValue[0] - PosSensor.HallMinValue[0]));
+			PosSensor.HallNormalizedActualValue[1] = Normalized((PosSensor.HallActualValue[1] - PosSensor.HallMinValue[1]) / (PosSensor.HallMaxValue[1] - PosSensor.HallMinValue[1]));
 
 			#if	PHASE_SEQUENCE == NEGATIVE_SEQUENCE
 			
-				eleAngleCalculate = RadToDegree((atan2f(PositionSensor.HallNormalizedActualValue[1] - PositionSensor.HallNormalizedActualValue[1], PositionSensor.HallNormalizedActualValue[0] - PositionSensor.HallNormalizedActualValue[0]) * 57.29578f));
+				eleAngleCalculate = RadToDegree((atan2f(PosSensor.HallNormalizedActualValue[1] - PosSensor.HallNormalizedActualValue[1], PosSensor.HallNormalizedActualValue[0] - PosSensor.HallNormalizedActualValue[0]) * 57.29578f));
 			
 			#elif PHASE_SEQUENCE == POSITIVE_SEQUENCE
 				
-				eleAngleCalculate = RadToDegree((PositionSensor.HallNormalizedActualValue[0] - PositionSensor.HallNormalizedActualValue[0], PositionSensor.HallNormalizedActualValue[1] - PositionSensor.HallNormalizedActualValue[1]) * 57.29578f));
+				eleAngleCalculate = RadToDegree((PosSensor.HallNormalizedActualValue[0] - PosSensor.HallNormalizedActualValue[0], PosSensor.HallNormalizedActualValue[1] - PosSensor.HallNormalizedActualValue[1]) * 57.29578f));
 			
 			#endif
 			

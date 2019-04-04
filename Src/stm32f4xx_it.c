@@ -80,13 +80,14 @@ extern ADC_HandleTypeDef hadc1;
 extern ADC_HandleTypeDef hadc2;
 extern ADC_HandleTypeDef hadc3;
 
-extern struct PositionSensor_t PositionSensor;
-extern struct SpeedLoop_t SpeedLoop;
-extern struct CurrentLoop_t CurrentLoop;
-extern struct PositionLoop_t PositionLoop;
+extern struct PosLoop_t PosLoop;
+extern struct SpdLoop_t SpdLoop;
+extern struct CurrLoop_t CurrLoop;
+extern struct CoordTrans_t	CoordTrans;
+extern struct PosSensor_t PosSensor;
 extern struct MotorStaticParameter_t MotorStaticParameter;
 extern struct MotorDynamicParameter_t MotorDynamicParameter;
-extern struct CoordinateTransformation_t CoordinateTransformation;
+
 
 /* USER CODE END EV */
 
@@ -281,44 +282,45 @@ void ADC_IRQHandler(void)
 	
 	switch(MotorStaticParameter.ControlMode)
 	{
-		case VoltageControlMode :	InverseParkTransform(0.f, 5.0f, &CoordinateTransformation.VolAlpha, &CoordinateTransformation.VolBeta, PositionSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);
+		case VoltageControlMode :	InverseParkTransform(0.f, 5.0f, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);
 									
-															SpaceVectorModulation(CoordinateTransformation.VolAlpha, CoordinateTransformation.VolBeta);
+									SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
 
-															/*测试用*/
-															ClarkTransform_arm(CoordinateTransformation.CurrentPhaseA, CoordinateTransformation.CurrentPhaseB, &CoordinateTransformation.CurrentAlpha, &CoordinateTransformation.CurrentBeta);
+									/*测试用*/
+									ClarkTransform(CoordTrans.CurrA, CoordTrans.CurrB, CoordTrans.CurrC, &CoordTrans.CurrAlpha, &CoordTrans.CurrBeta);
 								
-															ParkTransform_arm(CoordinateTransformation.CurrentAlpha, CoordinateTransformation.CurrentBeta, &CoordinateTransformation.CurrentD, &CoordinateTransformation.CurrentQ, PositionSensor.EleAngle_degree);
+									ParkTransform_arm(CoordTrans.CurrAlpha, CoordTrans.CurrBeta, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree);
+							
+									UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrD * 1000));
+									UART_Transmit_DMA("%d\r\n", (int)(CoordTrans.CurrQ * 1000));
 								
-															UART_Transmit_DMA("%d\t", (int)(CoordinateTransformation.CurrentD * 1000));
-															UART_Transmit_DMA("%d\r\n", (int)(CoordinateTransformation.CurrentQ * 1000));
-								
-															break;
+									break;
 
-		case CurrentControlMode : 	/*进行Park变换, 将三相电流转换为dq轴电流*/
-																ParkTransform(CoordinateTransformation.CurrentPhaseA, CoordinateTransformation.CurrentPhaseB, CoordinateTransformation.CurrentPhaseC, &CoordinateTransformation.CurrentD, &CoordinateTransformation.CurrentQ, PositionSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);
+		case CurrentControlMode : 	/*电流控制器, 包括Clark变换, Park变换, 电流PI控制器, RevPark变换, SVPWM算法*/
+									CurrentController();
 																
-																ClarkTransform_arm(CoordinateTransformation.CurrentPhaseA, CoordinateTransformation.CurrentPhaseB, &CoordinateTransformation.CurrentAlpha, &CoordinateTransformation.CurrentBeta);
-																ParkTransform_arm(CoordinateTransformation.CurrentAlpha, CoordinateTransformation.CurrentBeta, &CoordinateTransformation.CurrentD, &CoordinateTransformation.CurrentQ, PositionSensor.EleAngle_degree);
+									UART_Transmit_DMA("%d\t",(int)(CoordTrans.CurrD * 1000));
+									UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrQ * 1000));
+																
+									break;
+
+		case SpeedControlMode :		/*电流控制器, 包括Clark变换, Park变换, 电流PI控制器, RevPark变换, SVPWM算法*/
+									CurrentController();
 		
-																/*电流环PI控制器*/
-																CurrentLoopController(CurrentLoop.ExpectedCurrentD, CurrentLoop.ExpectedCurrentQ, CoordinateTransformation.CurrentD, CoordinateTransformation.CurrentQ, &CurrentLoop.ControlVoltageD, &CurrentLoop.ControlVoltageQ);
-																
-																/*进行逆Park变换, 将转子坐标系下的dq轴电压转换为定子坐标系下的AlphaBeta轴电压*/
-																InverseParkTransform(CurrentLoop.ControlVoltageD, CurrentLoop.ControlVoltageQ, &CoordinateTransformation.VolAlpha, &CoordinateTransformation.VolBeta, PositionSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);
-																
-																/*利用SVPWM算法调制电压矢量*/
-																SpaceVectorModulation(CoordinateTransformation.VolAlpha, CoordinateTransformation.VolBeta);
-																
-																UART_Transmit_DMA("%d\t",(int)(CoordinateTransformation.CurrentD * 1000));
-																UART_Transmit_DMA("%d\r\n",(int)(CoordinateTransformation.CurrentQ * 1000));
-																
-																break;
-		case SpeedControlMode :
-								
-								break;
-		case PositionControlMode :	
+									/*转速控制器, 包括转速PI控制器*/
+									SpeedController();
+									
+									break;
+		
+		case PositionControlMode :	/*电流控制器, 包括Clark变换, Park变换, 电流PI控制器, RevPark变换, SVPWM算法*/
+									CurrentController();
+		
+									/*转速控制器, 包括转速PI控制器*/
+									SpeedController();
 
+									/*位置控制器, 包括位置PD控制器*/
+									PositionController();
+		
 									break;
 	}
 	

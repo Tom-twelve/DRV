@@ -31,19 +31,19 @@
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 
-struct CoordinateTransformation_t
+struct CoordTrans_t
 {
-	float CurrentPhaseA;
-	float CurrentPhaseB;
-	float CurrentPhaseC;
+	float CurrA;
+	float CurrB;
+	float CurrC;
 	float VolAlpha;
 	float VolBeta;
 	float VolD;
 	float VolQ;
-	float CurrentAlpha;
-	float CurrentBeta;
-	float CurrentD;
-	float CurrentQ;
+	float CurrAlpha;
+	float CurrBeta;
+	float CurrD;
+	float CurrQ;
 };
 
 struct MotorDynamicParameter_t
@@ -65,12 +65,12 @@ struct MotorStaticParameter_t
 /* USER CODE BEGIN PD */
 #define	GeneratrixVoltage					25.0f		//(V)
 #define	MaximumDistortionlessVoltage		(ONE_BY_SQRT3 * GeneratrixVoltage)	//(V)
-#define CarrierFrequency					25000.f		//(Hz)
-#define CarrierPeriod_s						(1.f / CarrierFrequency)		//(s)
-#define CarrierPeriod_us					(CarrierPeriod_s * 1000000.f)	//(us)
-#define MCU_Frequency						180000000.f		//(Hz)
-#define TIM8_Autoreload 					(int)((MCU_Frequency / CarrierFrequency) / 2.f )
-#define ADC_ExternalTrigger_CCR				(TIM8_Autoreload - 12)	//通过TIM8_CH4触发ADC, 超前量为ADC采样所需时间
+#define CARRIER_FREQ						25000.f		//(Hz)
+#define CARRIER_PERIOD_S					(1.f / CARRIER_FREQ)		//(s)
+#define CARRIER_PERIOD_US					(CARRIER_PERIOD_S * 1000000.f)	//(us)
+#define MCU_FREQ							180000000.f		//(Hz)
+#define TIM8_ARR 							(int)((MCU_FREQ / CARRIER_FREQ) / 2.f )
+#define ADC_ExternalTrigger_CCR				(TIM8_ARR - 12)	//通过TIM8_CH4触发ADC, 超前量为ADC采样所需时间
 
 #if		PHASE_SEQUENCE == POSITIVE_SEQUENCE
 #define CCR_PhaseA      	TIM8->CCR3

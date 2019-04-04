@@ -18,9 +18,9 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* CODE BEGIN PTD */
-#if POSITION_SENSOR_TYPE == Encoder_TLE5012
+#if POSITION_SENSOR_TYPE == ENCODER_TLE5012
 	#if ENCODER_MODE == Encoder_AbsoluteMode
-		#if RobotIdentifier == 1U
+		#if ROBOT_ID == 1U
 			#if CAN_ID_NUM == 1
 			const short int EleAngleRef[] = 
 			{144	,
@@ -1174,7 +1174,7 @@
 			#endif
 		#endif
 	#elif ENCODER_MODE == Encoder_IncrementalMode
-		#if RobotIdentifier == 1U
+		#if ROBOT_ID == 1U
 			#if CAN_ID_NUM == 1
 			const short int EleAngleRef[] = 
 			{144	,
@@ -2330,8 +2330,8 @@
 	#else
 	#error "Encoder Mode Invalid"
 	#endif
-#elif POSITION_SENSOR_TYPE == HallSensor_DRV5053
-	#if RobotIdentifier == 1U
+#elif POSITION_SENSOR_TYPE == HALL_SENSOR_DRV5053
+	#if ROBOT_ID == 1U
 		#if CAN_ID_NUM == 1
 			int GivenEle[CALIBRATE_NUM + 2] =
 			{
@@ -2381,7 +2381,7 @@
 			370,
 			};
 		#endif
-	#elif RobotIdentifier == 2U
+	#elif ROBOT_ID == 2U
 		#if CAN_ID_NUM == 1
 			int GivenEle[CALIBRATE_NUM + 2] =
 			{

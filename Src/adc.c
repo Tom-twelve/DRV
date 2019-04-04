@@ -45,7 +45,7 @@ uint32_t ADC_CurrentConvertedValue_PhaseA = 0;
 uint32_t ADC_CurrentConvertedValue_PhaseB = 0;
 uint32_t ADC_CurrentConvertedValue_PhaseC = 0;
 
-extern struct CoordinateTransformation_t CoordinateTransformation;
+extern struct CoordTrans_t CoordTrans;
 
 /* USER CODE END 0 */
 
@@ -405,18 +405,18 @@ void GetPhaseCurrent(void)
 	#error "Phase Sequence Invalid"
 	#endif
 	
-	#if CURRENT_SENSOR == Resistance_1mOhm
-	CoordinateTransformation.CurrentPhaseA = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseA / 4096.f) / CurrentAmplifierGain) / 0.001f;
-	CoordinateTransformation.CurrentPhaseB = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseB / 4096.f) / CurrentAmplifierGain) / 0.001f;
-	CoordinateTransformation.CurrentPhaseC = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseC / 4096.f) / CurrentAmplifierGain) / 0.001f;
-	#elif CURRENT_SENSOR == Resistance_2mOhm
-	CoordinateTransformation.CurrentPhaseA = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseA / 4096.f) / CurrentAmplifierGain) / 0.002f;
-	CoordinateTransformation.CurrentPhaseB = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseB / 4096.f) / CurrentAmplifierGain) / 0.002f;
-	CoordinateTransformation.CurrentPhaseC = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseC / 4096.f) / CurrentAmplifierGain) / 0.002f;
-	#elif CURRENT_SENSOR == HallCurrentSensor_ACS781_150A
-	CoordinateTransformation.CurrentPhaseA = (3.3f * (float)ADC_CurrentConvertedValue_PhaseA / 4096.f - 1.65f) / HallSensor_ACS781_150A_Gain;
-	CoordinateTransformation.CurrentPhaseB = (3.3f * (float)ADC_CurrentConvertedValue_PhaseB / 4096.f - 1.65f) / HallSensor_ACS781_150A_Gain;
-	CoordinateTransformation.CurrentPhaseC = (3.3f * (float)ADC_CurrentConvertedValue_PhaseC / 4096.f - 1.65f) / HallSensor_ACS781_150A_Gain;
+	#if CURRENT_SENSOR == RES_1mOhm
+	CoordTrans.CurrA = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseA / 4096.f) / CurrentAmplifierGain) / 0.001f;
+	CoordTrans.CurrB = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseB / 4096.f) / CurrentAmplifierGain) / 0.001f;
+	CoordTrans.CurrC = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseC / 4096.f) / CurrentAmplifierGain) / 0.001f;
+	#elif CURRENT_SENSOR == RES_2mOhm
+	CoordTrans.CurrA = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseA / 4096.f) / CurrentAmplifierGain) / 0.002f;
+	CoordTrans.CurrB = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseB / 4096.f) / CurrentAmplifierGain) / 0.002f;
+	CoordTrans.CurrC = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseC / 4096.f) / CurrentAmplifierGain) / 0.002f;
+	#elif CURRENT_SENSOR == HALL_CURR_SENSOR_ACS781_150A
+	CoordTrans.CurrA = (3.3f * (float)ADC_CurrentConvertedValue_PhaseA / 4096.f - 1.65f) / HallSensor_ACS781_150A_Gain;
+	CoordTrans.CurrB = (3.3f * (float)ADC_CurrentConvertedValue_PhaseB / 4096.f - 1.65f) / HallSensor_ACS781_150A_Gain;
+	CoordTrans.CurrC = (3.3f * (float)ADC_CurrentConvertedValue_PhaseC / 4096.f - 1.65f) / HallSensor_ACS781_150A_Gain;
 	#else
 	#error "Current Sampling Mode Invalid"
 	#endif

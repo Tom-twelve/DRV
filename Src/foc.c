@@ -23,7 +23,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* CODE BEGIN PV */
-struct CoordinateTransformation_t	CoordinateTransformation;
+struct CoordTrans_t	CoordTrans;
 struct MotorDynamicParameter_t		MotorDynamicParameter;
 struct MotorStaticParameter_t		MotorStaticParameter;
 	
@@ -31,8 +31,8 @@ struct MotorStaticParameter_t		MotorStaticParameter;
 
 /* External variables --------------------------------------------------------*/
 /* USER CODE BEGIN EV */
-extern struct PositionSensor_t PositionSensor;
-extern struct CurrentLoop_t CurrentLoop;
+
+extern struct PosSensor_t PosSensor;
 
 /* USER CODE END EV */
 
@@ -45,7 +45,7 @@ extern struct CurrentLoop_t CurrentLoop;
    */
 void SpaceVectorModulation(float volAlpha, float volBeta)
 {
-	const float StandardizationCoefficient = SQRT3 * TIM8_Autoreload / GeneratrixVoltage;
+	const float StandardizationCoefficient = SQRT3 * TIM8_ARR / GeneratrixVoltage;
 	float U1 = 0;
 	float U2 = 0;
 	float U3 = 0;
@@ -114,15 +114,15 @@ void SpaceVectorModulation(float volAlpha, float volBeta)
 	}
 
 	/*电压矢量超出正六边形范围时按比例缩小电压矢量, 防止波形失真*/
-	if (Tx + Ty > TIM8_Autoreload)
+	if (Tx + Ty > TIM8_ARR)
 	{
 		tx  = Tx;
 		ty  = Ty;
-		Tx  = tx / (tx + ty) * TIM8_Autoreload;
-		Ty  = ty / (tx + ty) * TIM8_Autoreload;
+		Tx  = tx / (tx + ty) * TIM8_ARR;
+		Ty  = ty / (tx + ty) * TIM8_ARR;
 	}
 
-	TA  = (TIM8_Autoreload - Tx - Ty) / 2.0f;
+	TA  = (TIM8_ARR - Tx - Ty) / 2.0f;
 	TB  = TA + Tx;
 	TC  = TB + Ty;
 	
@@ -158,9 +158,9 @@ void SpaceVectorModulation(float volAlpha, float volBeta)
 			 CCR_PhaseC = TB; 
 			 break;
 
-	default: CCR_PhaseA = TIM8_Autoreload; 
-			 CCR_PhaseB = TIM8_Autoreload; 
-			 CCR_PhaseC = TIM8_Autoreload; 
+	default: CCR_PhaseA = TIM8_ARR; 
+			 CCR_PhaseB = TIM8_ARR; 
+			 CCR_PhaseC = TIM8_ARR; 
 			 break;
 	}
 }
@@ -224,12 +224,12 @@ void InverseParkTransform(float VolD, float VolQ, float *VolAlpha, float *VolBet
    */
 void ClarkTransform(float currentPhaseA, float currentPhaseB, float currentPhaseC, float *currentAlpha, float *currentBeta)
 {
-	const float Coefficient_ConstantPower = 0.8164965809f;
-	const float Coefficient_ConstantAmplitude = 0.6666666667f;
+	const float Coeff_ConstantPower = 0.8164965809f;
+	const float Coeff_ConstantAmplitude = 0.6666666667f;
 	
-	*currentAlpha = Coefficient_ConstantAmplitude * ((float)currentPhaseA - 0.5f * (float)currentPhaseB - 0.5f * (float)currentPhaseC);
+	*currentAlpha = Coeff_ConstantAmplitude * ((float)currentPhaseA - 0.5f * (float)currentPhaseB - 0.5f * (float)currentPhaseC);
 	
-	*currentBeta  = 0.5f * SQRT3 * Coefficient_ConstantAmplitude * ((float)currentPhaseB - (float)currentPhaseC);
+	*currentBeta  = 0.5f * SQRT3 * Coeff_ConstantAmplitude * ((float)currentPhaseB - (float)currentPhaseC);
 }
 
 void ParkTransform_arm(float currentAlpha, float currentBeta, float *currentD, float *currentQ, float eleAngle)
@@ -256,7 +256,7 @@ void PowerAngleComp(float expectedCurrentQ, float *powerAngleComp_degree)
 {
 	float PowerAngleComp_rad = 0;
 	
-	PowerAngleComp_rad = arcsine((-2 * (InductanceD - InductanceQ) * expectedCurrentQ) / (RotatorFluxLinkage + sqrt_DSP(Square(RotatorFluxLinkage) + 8 * Square(InductanceD - InductanceQ) * Square(expectedCurrentQ))));
+	PowerAngleComp_rad = arcsine((-2 * (INDUCTANCE_D - INDUCTANCE_Q) * expectedCurrentQ) / (ROTATOR_FLUX_LINKAGE + sqrt_DSP(Square(ROTATOR_FLUX_LINKAGE) + 8 * Square(INDUCTANCE_D - INDUCTANCE_Q) * Square(expectedCurrentQ))));
 
 	*powerAngleComp_degree = PowerAngleComp_rad * 360.f	/ (2 * PI);
 }
@@ -270,9 +270,9 @@ void PowerAngleComp(float expectedCurrentQ, float *powerAngleComp_degree)
    */
 void CalculateVoltage_dq(float actualCurrentQ, float *volD, float *volQ, float actualEleAngularSpeed_rad)
 {
-	*volD = -actualEleAngularSpeed_rad * InductanceQ * actualCurrentQ;
+	*volD = -actualEleAngularSpeed_rad * INDUCTANCE_Q * actualCurrentQ;
 	
-	*volQ = PhaseResistance * actualCurrentQ + actualEleAngularSpeed_rad * RotatorFluxLinkage;
+	*volQ = PHASE_RES * actualCurrentQ + actualEleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
 }
 
    /**
@@ -282,7 +282,7 @@ void CalculateVoltage_dq(float actualCurrentQ, float *volD, float *volQ, float a
    */
 void CalculateEleTorque(float actualCurrentQ, float *EleTorque)
 {
-	*EleTorque = 1.5f * MotorPolePairs * actualCurrentQ * RotatorFluxLinkage;
+	*EleTorque = 1.5f * MOTOR_POLE_PAIRS * actualCurrentQ * ROTATOR_FLUX_LINKAGE;
 }
 
 /* USER CODE END */

@@ -26,46 +26,46 @@
 /* USER CODE BEGIN PTD */
 
 /* USER CODE END PTD */
-struct CurrentLoop_t
+struct CurrLoop_t
 {
-	float ExpectedCurrentD;
-	float ExpectedCurrentQ;
-	float ControlVoltageD;
-	float ControlVoltageQ;
+	float ExptCurrD;
+	float ExptCurrQ;
+	float CtrlVolD;
+	float CtrlVolQ;
 	float Kp_D;
 	float Ki_D;
 	float Kp_Q;
 	float Ki_Q;
 };
 
-struct SpeedLoop_t
+struct SpdLoop_t
 {
-	float ExpectedMecAngularSpeed;	//degree per second
-	float Acceleration;
+	float ExptMecAngularSpeed;	//期望机械角速度(rad/s)
+	float Acceleration;		//加速度(rad/s2)
 	float Kp;
 	float Ki;
 };
 
-struct PositionLoop_t
+struct PosLoop_t
 {
-	float ExpectedMecAngle;	//degree
+	float ExptMecAngle;	//degree
 	float Kp;
 	float Kd;
 };
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define CurrentControlLoopIntegralErrorLimit_D 		2.5f	//(A)
+#define CURR_INTEGRAL_ERR_LIM_D 		2.5f	//(A)
 
-#define CurrentControlLoopIntegralErrorLimit_Q 		2.5f	//(A)
+#define CURR_INTEGRAL_ERR_LIM_Q 		2.5f	//(A)
 
-#define SpeedControlLoopIntegralErrorLimit 			(10.0f * 2 * PI)		//(°/s)
+#define SPD_INTEGRAL_ERR_LIM			(10.0f * 2 * PI)		//(rad/s)
 
-#define CURRENT_CONTROL_KP_D			(InductanceD * 500.f)		//d轴电感 * 电流环截止频率
-#define CURRENT_CONTROL_KI_D			(PhaseResistance * 500.f)	//相电阻 * 电流环截止频率
+#define CURRENT_CONTROL_KP_D			(INDUCTANCE_D * 500.f)		//d轴电感 * 电流环截止频率
+#define CURRENT_CONTROL_KI_D			(PHASE_RES * 500.f)	//相电阻 * 电流环截止频率
 
-#define CURRENT_CONTROL_KP_Q			(InductanceQ * 500.f)		//q轴电感 * 电流环截止频率
-#define CURRENT_CONTROL_KI_Q			(PhaseResistance * 500.f)	//相电阻 * 电流环截止频率
+#define CURRENT_CONTROL_KP_Q			(INDUCTANCE_Q * 500.f)		//q轴电感 * 电流环截止频率
+#define CURRENT_CONTROL_KI_Q			(PHASE_RES * 500.f)	//相电阻 * 电流环截止频率
 
 #define SPEED_CONTROL_KP	
 #define SPEED_CONTROL_KI
@@ -87,11 +87,13 @@ struct PositionLoop_t
 /* USER CODE BEGIN PFP */
 
 void MotorEnable(void);
-void CurrentLoopController(float expectedCurrentD, float expectedCurrentQ, float realityCurrentD, float realityCurrentQ, float *controlVoltageD, float *controlVoltageQ);
-void SpeedLoopController(float expectedMecAngularSpeed, float realityMecAngularSpeed, float *controlCurrentQ);
-void PositionLoopController(float expectedMecAngle, float realityMecAngle, float *controlCurrentQ);
-float VelocitySlopeGenerator(float expectedVelocity);
-
+void CurrentLoop(float exptCurrD, float exptCurrQ, float realityCurrD, float realityCurrQ, float *ctrlVolD, float *ctrlVolQ);
+void SpeedLoop(float expectedMecAngularSpeed, float realityMecAngularSpeed, float *controlCurrentQ);
+void PositionLoop(float exptMecAngle, float realityMecAngle, float *controlAngularSpeed);
+float VelocitySlopeGenerator(float exptVelocity);
+void CurrentController(void);
+void SpeedController(void);
+void PositionController(void);
 /* USER CODE END PFP */
 
 

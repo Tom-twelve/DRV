@@ -162,8 +162,8 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realityCurrD, float rea
 	
 	/*反电动势补偿*/
 	
-	*ctrlVolD = 0;
-	*ctrlVolQ = ctrlCurrQ + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
+	*ctrlVolD = - ctrlCurrD * PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q;
+	*ctrlVolQ = ctrlCurrQ * PHASE_RES + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
 }
 
  /**

@@ -164,20 +164,10 @@ int main(void)
 		case WorkMode : ADC_CMD(ENABLE);	//包括使能ADC中断, 电机控制程序在ADC中断中执行
 		
 						break;
-		#if POSITION_SENSOR_TYPE == ENCODER_TLE5012 
 		
 		case TestMode : MeasureEleAngle_Encoder(1.0f);	//测定电角度, 设定d轴电压
 		
 						break;
-		#elif POSITION_SENSOR_TYPE == HALL_SENSOR_DRV5053
-		
-		case TestMode : MeasureEleAngle_HallSensor(1.0f);	//测定电角度, 设定d轴电压
-		
-						break;
-	
-		#else
-		#error "Position Sensor Type Invalid"
-		#endif
 	}
 
   /* USER CODE END 2 */

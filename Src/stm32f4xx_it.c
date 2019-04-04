@@ -302,26 +302,25 @@ void ADC_IRQHandler(void)
 																
 									break;
 
-		case SpeedControlMode :		/*电流控制器, 包括Clark变换, Park变换, 电流PI控制器, RevPark变换, SVPWM算法*/
-									CurrentController();
-		
-									/*转速控制器, 包括转速PI控制器*/
+		case SpeedControlMode :		/*转速控制器, 包括转速PI控制器*/
 									SpeedController();
+		
+									/*电流控制器, 包括Clark变换, Park变换, 电流PI控制器, RevPark变换, SVPWM算法*/
+									CurrentController();
 									
 									UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrD * 1000));
 									UART_Transmit_DMA("%d\r\n", (int)(CoordTrans.CurrQ * 1000));
-//									UART_Transmit_DMA("%d\r\n", (int)(PosSensor.MecAngularSpeed_rad));
 		
 									break;
 		
-		case PositionControlMode :	/*电流控制器, 包括Clark变换, Park变换, 电流PI控制器, RevPark变换, SVPWM算法*/
-									CurrentController();
-		
+		case PositionControlMode :	/*位置控制器, 包括位置PD控制器*/
+									PositionController();
+									
 									/*转速控制器, 包括转速PI控制器*/
 									SpeedController();
-
-									/*位置控制器, 包括位置PD控制器*/
-									PositionController();
+		
+									/*电流控制器, 包括Clark变换, Park变换, 电流PI控制器, RevPark变换, SVPWM算法*/
+									CurrentController();
 		
 									break;
 	}

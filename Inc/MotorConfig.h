@@ -3,7 +3,7 @@
  * @file		MotorConfig.h
  * @author		WrathWings
  * @version 	V1.0
- * @date		2018.1.17
+ * @date		2019.1.17
  * @brief		The header file of MotorConfig.c
  ******************************************************************************
  * @attention
@@ -34,7 +34,6 @@
 
 /* Position Sensor Type */
 #define ENCODER_TLE5012					1
-#define HALL_SENSOR_DRV5053				2
 
 /* Encoder Mode */
 #define Encoder_AbsoluteMode			1
@@ -63,9 +62,7 @@
 		#define MOTOR_TYPE 				SUNNYSKY_X4125_9_KV350	
 		#define	PHASE_SEQUENCE			NEGATIVE_SEQUENCE		
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
-			#if POSITION_SENSOR_TYPE == ENCODER_TLE5012
-			#define ENCODER_MODE		Encoder_AbsoluteMode
-			#endif
+		#define ENCODER_MODE			Encoder_AbsoluteMode
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8320
 		#define MOSFET_TYPE				IPD053N08N3G_52nC_5mOhm3
 		#define CURRENT_SENSOR			HALL_CURR_SENSOR_ACS781_150A
@@ -74,9 +71,7 @@
 		#define MOTOR_TYPE 				N5055_KV400	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
-			#if POSITION_SENSOR_TYPE == ENCODER_TLE5012
-			#define ENCODER_MODE		Encoder_AbsoluteMode
-			#endif
+		#define ENCODER_MODE			Encoder_AbsoluteMode
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8320
 		#define MOSFET_TYPE				IPD053N08N3G_52nC_5mOhm3
 		#define CURRENT_SENSOR			HALL_CURR_SENSOR_ACS781_150A
@@ -85,34 +80,7 @@
 		#define MOTOR_TYPE 				TMOTOR_MN505_S_KV320	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
-			#if POSITION_SENSOR_TYPE == ENCODER_TLE5012
-			#define ENCODER_MODE		Encoder_AbsoluteMode
-			#endif
-		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8320
-		#define MOSFET_TYPE				IPD053N08N3G_52nC_5mOhm3
-		#define CURRENT_SENSOR			HALL_CURR_SENSOR_ACS781_150A
-		#define GROUP_NUM          		0
-		#endif
-#elif	ROBOT_ID == 2U	//»ô¶û
-		#define CAN_ID_NUM			1
-		#if CAN_ID_NUM == 1
-		#define MOTOR_TYPE 				BallScrewMotor_KV320	
-		#define	PHASE_SEQUENCE			NEGATIVE_SEQUENCE
-		#define POSITION_SENSOR_TYPE	HALL_SENSOR_DRV5053
-			#if POSITION_SENSOR_TYPE == ENCODER_TLE5012
-			#define ENCODER_MODE		Encoder_AbsoluteMode
-			#endif
-		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8320
-		#define MOSFET_TYPE				IPD053N08N3G_52nC_5mOhm3
-		#define CURRENT_SENSOR			HALL_CURR_SENSOR_ACS781_150A
-		#define GROUP_NUM          		0
-		#elif CAN_ID_NUM == 2
-		#define MOTOR_TYPE 				BallScrewMotor_KV320	
-		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
-		#define POSITION_SENSOR_TYPE	HALL_SENSOR_DRV5053
-			#if POSITION_SENSOR_TYPE == ENCODER_TLE5012
-			#define ENCODER_MODE		Encoder_AbsoluteMode
-			#endif
+		#define ENCODER_MODE			Encoder_AbsoluteMode
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8320
 		#define MOSFET_TYPE				IPD053N08N3G_52nC_5mOhm3
 		#define CURRENT_SENSOR			HALL_CURR_SENSOR_ACS781_150A

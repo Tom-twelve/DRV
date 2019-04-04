@@ -43,6 +43,7 @@ float UtilPI_Control(arm_pid_instance_f32 *S, float err);
 float UtilPID_Control(arm_pid_instance_f32 *S, float err);
 float arcsine(float value);
 float sqrt_DSP(float inputValue);
+float AverageFilter(float inputData);
 void GetData(int32_t data);
 void SendData(void);
 #endif

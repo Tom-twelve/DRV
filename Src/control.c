@@ -45,7 +45,7 @@ void MotorEnable(void)
 	PWM_IT_CMD(ENABLE,ENABLE);
 	
 	/*设定控制模式*/
-	MotorStaticParameter.ControlMode = CurrentControlMode;
+	MotorStaticParameter.ControlMode = SpeedControlMode;
 	
 	/*采用Id = 0控制, 故设定d轴电流为零*/
 	CurrLoop.ExptCurrD = 0.f;
@@ -65,29 +65,31 @@ void MotorEnable(void)
 																	
 									CurrLoop.Ki_D = 0.1f;
 																	
-									CurrLoop.Kp_Q = 0.5f;
+									CurrLoop.Kp_Q = 0.45f;
 
 									CurrLoop.Ki_Q = 0.1f;
 									
 									break;
 		
-		case SpeedControlMode : 	/*设定角速度(°/s)*/
-									SpdLoop.ExptMecAngularSpeed = 100.f * 2 * PI;	//degree per second
+		case SpeedControlMode : 	/*设定角速度(rad/s)*/
+									SpdLoop.ExptMecAngularSpeed = 40.f * 2 * PI;	//degree per second
 																
-									/*设定加速度*/
+									/*设定加速度(rad/s2)*/
 									SpdLoop.Acceleration = 25.f * 2 * PI;	//degree per quadratic seconds
 								
 									/*设定电流环PI参数*/
-									CurrLoop.Kp_D = CURRENT_CONTROL_KP_D;
+									CurrLoop.Kp_D = 0.1f;
 																
-									CurrLoop.Ki_D = CURRENT_CONTROL_KI_D;
-																
-									CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q;
+									CurrLoop.Ki_D = 0.1f;
+									
+									CurrLoop.Kp_Q = 0.45f;
+		
+									CurrLoop.Ki_Q = 0.1f;
 								
 									/*设定速度环PI参数*/
-									SpdLoop.Kp = 0.006f;
+									SpdLoop.Kp = 0.1f;
 																
-									SpdLoop.Ki = 0.001f;
+									SpdLoop.Ki = 0.01f;
 								
 									break;
 		
@@ -161,7 +163,7 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realityCurrD, float rea
 	/*反电动势补偿*/
 	
 	*ctrlVolD = 0;
-	*ctrlVolQ = ctrlCurrQ + PosSensor.AvgEleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
+	*ctrlVolQ = ctrlCurrQ + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
 }
 
  /**
@@ -243,11 +245,17 @@ float VelocitySlopeGenerator(float exptVelocity)
    */
 void CurrentController(void)
 {
+	static float compRatio = 0;
+	
+	compRatio = 1.5f;
+	
+	MotorStaticParameter.PowerAngleComp_degree = compRatio * CARRIER_PERIOD_S * PosSensor.EleAngle_degree;
+	
 	/*进行Park变换, 将三相电流转换为dq轴电流*/
 	ParkTransform(CoordTrans.CurrA, CoordTrans.CurrB, CoordTrans.CurrC, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);
 	
 	/*电流环PI控制器*/
-	CurrentLoop(CurrLoop.ExptCurrD, CurrLoop.ExptCurrQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolD);
+	CurrentLoop(CurrLoop.ExptCurrD, CurrLoop.ExptCurrQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
 	
 	/*进行逆Park变换, 将转子坐标系下的dq轴电压转换为定子坐标系下的AlphaBeta轴电压*/
 	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);

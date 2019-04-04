@@ -76,10 +76,9 @@
 		float MecAngle_degree;
 		float MecAngle_rad;
 		float MecAngularSpeed_rad;
-		float AvgMecAngularSpeed_rad;
 		float EleAngle_degree;
 		float EleAngle_rad;
-		float AvgEleAngularSpeed_rad;
+		float EleAngularSpeed_rad;
 		uint16_t OriginalMecAngle_14bit;
 	};
 #elif POSITION_SENSOR_TYPE == HALL_SENSOR_DRV5053
@@ -116,9 +115,8 @@
 	void GetPositionImformation(void);
 	void GetMecAngle(void);
 	void GetMecAngularSpeed(void);
-	void GetAvgMecAngularSpeed(void);
 	void GetEleAngle(void);
-	void GetAvgEleAngularSpeed(void);
+	void GetEleAngularSpeed(void);
 	void GetMecAngle_AbsoluteMode_15bit(void);
 	void GetMecAngle_IncrementalMode_14bit(void);
 	uint16_t TLE5012_ReadRegister(uint16_t command);

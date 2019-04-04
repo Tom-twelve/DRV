@@ -286,10 +286,8 @@ void ADC_IRQHandler(void)
 									
 									SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
 
-									/*测试用*/
-									ClarkTransform(CoordTrans.CurrA, CoordTrans.CurrB, CoordTrans.CurrC, &CoordTrans.CurrAlpha, &CoordTrans.CurrBeta);
-								
-									ParkTransform_arm(CoordTrans.CurrAlpha, CoordTrans.CurrBeta, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree);
+									/*测试用*/								
+									ParkTransform(CoordTrans.CurrA, CoordTrans.CurrB, CoordTrans.CurrC, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);
 							
 									UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrD * 1000));
 									UART_Transmit_DMA("%d\r\n", (int)(CoordTrans.CurrQ * 1000));
@@ -310,6 +308,10 @@ void ADC_IRQHandler(void)
 									/*转速控制器, 包括转速PI控制器*/
 									SpeedController();
 									
+									UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrD * 1000));
+									UART_Transmit_DMA("%d\r\n", (int)(CoordTrans.CurrQ * 1000));
+//									UART_Transmit_DMA("%d\r\n", (int)(PosSensor.MecAngularSpeed_rad));
+		
 									break;
 		
 		case PositionControlMode :	/*电流控制器, 包括Clark变换, Park变换, 电流PI控制器, RevPark变换, SVPWM算法*/

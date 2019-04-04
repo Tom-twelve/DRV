@@ -63,9 +63,8 @@
 		#endif
 		GetMecAngle(); //计算机械角度
 		GetMecAngularSpeed(); //计算机械角速度
-		GetAvgMecAngularSpeed(); //计算机械角速度均值
 		GetEleAngle(); //计算电角度
-		GetAvgEleAngularSpeed();  //计算电角速度均值
+		GetEleAngularSpeed();  //计算电角速度
 	}
 
 	void GetMecAngle_AbsoluteMode_15bit(void)
@@ -112,6 +111,8 @@
 		
 		angleDifference = presentMecAngle - lastMecAngle;
 		
+		lastMecAngle = presentMecAngle;
+		
 		if(angleDifference > PI)
 		{
 			angleDifference -= 2.f * PI;
@@ -124,40 +125,17 @@
 		
 		#if ENCODER_MODE == Encoder_AbsoluteMode
 		
-		PosSensor.MecAngularSpeed_rad = angleDifference / TLE5012_UpdateTime_0;
+		PosSensor.MecAngularSpeed_rad = AverageFilter(angleDifference / TLE5012_UpdateTime_1);
 		
 		#elif ENCODER_MODE == Encoder_IncrementalMode
 		
-		PosSensor.MecAngularSpeed_rad = angleDifference / CARRIER_PERIOD_S;
+		PosSensor.MecAngularSpeed_rad = AverageFilter(angleDifference / CARRIER_PERIOD_S);
 		
 		#else
 		#error "Encoder Mode Invalid"
 		#endif
 		
-		lastMecAngle = presentMecAngle;
-	}
-
-	void GetAvgMecAngularSpeed(void)
-	{
-		const uint8_t num = 6;
-		static float array[num] = {0};
-		static uint8_t pos = 0;
-		static float data = 0.0f;
-		static float sum = 0.0f;
-		static float Avg = 0.0f;
-		float old = array[pos];
 		
-		data = PosSensor.MecAngularSpeed_rad;
-		
-		array[pos] = data;
-		
-		sum = (sum - old) + data;
-		
-		Avg = sum / num;
-
-		pos = (pos+1) % num;
-
-		PosSensor.AvgMecAngularSpeed_rad = Avg;
 	}
 
 	void GetEleAngle(void)
@@ -189,9 +167,9 @@
 		#endif
 	}
 
-	void GetAvgEleAngularSpeed(void)
+	void GetEleAngularSpeed(void)
 	{
-		PosSensor.AvgEleAngularSpeed_rad = PosSensor.AvgMecAngularSpeed_rad * MOTOR_POLE_PAIRS;
+		PosSensor.EleAngularSpeed_rad = AverageFilter(PosSensor.MecAngularSpeed_rad * MOTOR_POLE_PAIRS);
 	}
 
 	uint16_t TLE5012_ReadRegister(uint16_t command)
@@ -397,9 +375,9 @@
 	  */
 	void GetAvgMecAngularSpeed()
 	{
-		PosSensor.AvgMecAngularSpeed_rad = PosSensor.AvgEleAngularSpeed_rad / MOTOR_POLE_PAIRS;
+		PosSensor.MecAngularSpeed_rad = PosSensor.EleAngularSpeed_rad / MOTOR_POLE_PAIRS;
 		
-		PosSensor.AvgMecAngularSpeed_degree = RadToDegree(PosSensor.AvgMecAngularSpeed_rad);
+		PosSensor.AvgMecAngularSpeed_degree = RadToDegree(PosSensor.MecAngularSpeed_rad);
 	}
 	
 	/**
@@ -469,9 +447,9 @@
 
 		pos = (pos+1) % num;
 
-		PosSensor.AvgEleAngularSpeed_rad = Avg;
+		PosSensor.EleAngularSpeed_rad = Avg;
 		
-		PosSensor.AvgEleAngularSpeed_degree = RadToDegree(PosSensor.AvgEleAngularSpeed_rad);
+		PosSensor.AvgEleAngularSpeed_degree = RadToDegree(PosSensor.EleAngularSpeed_rad);
 	}
 	
 

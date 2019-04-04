@@ -183,6 +183,29 @@ float sqrt_DSP(float inputValue)
 	return outputValue;
 }
 
+float AverageFilter(float inputData)
+{
+	const uint8_t FilterOrder = 6;
+	static float array[FilterOrder] = {0};
+	static uint8_t pos = 0;
+	static float data = 0.0f;
+	static float sum = 0.0f;
+	static float Avg = 0.0f;
+	float old = array[pos];
+		
+	data = inputData;
+		
+	array[pos] = data;
+		
+	sum = (sum - old) + data;
+		
+	Avg = sum / FilterOrder;
+
+	pos = (pos+1) % FilterOrder;
+
+	return Avg;
+}
+	
 /*Keil读取数据*/
 int TempDataArray[1000] = {0};
 int DataReadyFlag = 0;

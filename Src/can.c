@@ -261,7 +261,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 //				PosLoop..Kp = POS_CONTROL_KP;
 //				PosLoop..Kd = POS_CONTROL_KD;
 				MotorStaticParameter.ControlMode = PositionControlMode;
-				PosLoop.ExptMecAngle = PosSensor.MecAngle_rad + PosSensor.AvgMecAngularSpeed_rad * CARRIER_PERIOD_S;
+				PosLoop.ExptMecAngle = PosSensor.MecAngle_rad + PosSensor.MecAngularSpeed_rad * CARRIER_PERIOD_S;
 			}
 			break;
 		case 0x0000564A: //JV

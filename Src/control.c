@@ -53,43 +53,43 @@ void MotorEnable(void)
 	switch(MotorStaticParameter.ControlMode)
 	{
 		case VoltageControlMode :	/*测试用*/
-									MotorStaticParameter.PowerAngleComp_degree = 5.f;
+//									MotorStaticParameter.PowerAngleComp_degree = 5.0f * CARRIER_PERIOD_S * PosSensor.EleAngularSpeed_degree;
 		
 									break;
 		
 		case CurrentControlMode : 	/*设定q轴电流*/
-									CurrLoop.ExptCurrQ = 25.f;
+									CurrLoop.ExptCurrQ = 10.f;
 									
 									/*设定电流环PI参数*/
-									CurrLoop.Kp_D = 0.1f;
-																	
+									CurrLoop.Kp_D = 0.5f;
+																
 									CurrLoop.Ki_D = 0.1f;
-																	
-									CurrLoop.Kp_Q = 0.45f;
-
+									
+									CurrLoop.Kp_Q = 0.9f;
+		
 									CurrLoop.Ki_Q = 0.1f;
 									
 									break;
 		
 		case SpeedControlMode : 	/*设定角速度(rad/s)*/
-									SpdLoop.ExptMecAngularSpeed = 40.f * 2 * PI;	//degree per second
+									SpdLoop.ExptMecAngularSpeed = 50.f * 2 * PI;	//degree per second
 																
 									/*设定加速度(rad/s2)*/
-									SpdLoop.Acceleration = 25.f * 2 * PI;	//degree per quadratic seconds
+									SpdLoop.Acceleration = 100.f * 2 * PI;	//degree per quadratic seconds
 								
 									/*设定电流环PI参数*/
-									CurrLoop.Kp_D = 0.1f;
+									CurrLoop.Kp_D = 0.5f;
 																
 									CurrLoop.Ki_D = 0.1f;
 									
-									CurrLoop.Kp_Q = 0.45f;
+									CurrLoop.Kp_Q = 0.4f;
 		
 									CurrLoop.Ki_Q = 0.1f;
 								
 									/*设定速度环PI参数*/
-									SpdLoop.Kp = 0.1f;
+									SpdLoop.Kp = 0.3f;
 																
-									SpdLoop.Ki = 0.01f;
+									SpdLoop.Ki = 0.4f;
 								
 									break;
 		
@@ -247,9 +247,9 @@ void CurrentController(void)
 {
 	static float compRatio = 0;
 	
-	compRatio = 1.5f;
+	compRatio = 110.0f;
 	
-	MotorStaticParameter.PowerAngleComp_degree = compRatio * CARRIER_PERIOD_S * PosSensor.EleAngle_degree;
+	MotorStaticParameter.PowerAngleComp_degree = compRatio * CARRIER_PERIOD_S * PosSensor.EleAngularSpeed_degree;
 	
 	/*进行Park变换, 将三相电流转换为dq轴电流*/
 	ParkTransform(CoordTrans.CurrA, CoordTrans.CurrB, CoordTrans.CurrC, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);
@@ -269,7 +269,7 @@ void CurrentController(void)
    */
 void SpeedController(void)
 {
-	SpeedLoop(SpdLoop.ExptMecAngularSpeed, PosSensor.MecAngularSpeed_rad, &CurrLoop.ExptCurrQ);
+	SpeedLoop(VelocitySlopeGenerator(SpdLoop.ExptMecAngularSpeed), PosSensor.MecAngularSpeed_rad, &CurrLoop.ExptCurrQ);
 }
 
  /**

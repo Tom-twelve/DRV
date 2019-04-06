@@ -59,7 +59,7 @@ struct PosLoop_t
 
 #define CURR_INTEGRAL_ERR_LIM_Q 		2.5f	//(A)
 
-#define SPD_INTEGRAL_ERR_LIM			(10.0f * 2 * PI)		//(rad/s)
+#define SPD_INTEGRAL_ERR_LIM			(25.0f * 2 * PI)		//(rad/s)
 
 #define CURRENT_CONTROL_KP_D			(INDUCTANCE_D * 500.f)		//d轴电感 * 电流环截止频率
 #define CURRENT_CONTROL_KI_D			(PHASE_RES * 500.f)	//相电阻 * 电流环截止频率

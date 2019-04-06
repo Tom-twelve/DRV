@@ -70,6 +70,7 @@
 		float EleAngle_degree;
 		float EleAngle_rad;
 		float EleAngularSpeed_rad;
+		float EleAngularSpeed_degree;
 		uint16_t OriginalMecAngle_14bit;
 	};
 #else

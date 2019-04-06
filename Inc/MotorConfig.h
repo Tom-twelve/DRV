@@ -111,8 +111,8 @@
 	#define	MOTOR_KV							320.f
 	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * (MOTOR_POLE_PAIRS) * (MOTOR_KV)))
 	#define PHASE_RES							0.019f	//(Ohm) T-MOTOR官方数据
-	#define INDUCTANCE_D							0.000008f	//(H)
-	#define INDUCTANCE_Q							0.000014f	//(H)
+	#define INDUCTANCE_D						0.000008f	//(H)
+	#define INDUCTANCE_Q						0.000014f	//(H)
 #elif	MOTOR_TYPE == BallScrewMotor_KV320	//与TMOTOR_MN505_S_KV320使用同一电枢
 	#define MOTOR_POLE_PAIRS					14.f
 	#define	MOTOR_KV							320.f

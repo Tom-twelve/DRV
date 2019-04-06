@@ -100,6 +100,13 @@
 		float presentMecAngle = 0;
 		static float lastMecAngle = 0;
 		float angleDifference = 0;
+		const uint8_t FilterOrder = 6;
+		static float array[FilterOrder] = {0};
+		static uint8_t pos = 0;
+		static float data = 0.f;
+		static float sum = 0.f;
+		static float avg = 0.f;
+		static float old = 0.f;
 		
 		presentMecAngle = PosSensor.MecAngle_rad;
 		
@@ -117,19 +124,27 @@
 			angleDifference += 2.f * PI;
 		}
 		
+		old = array[pos];
+
 		#if ENCODER_MODE == Encoder_AbsoluteMode
 		
-		PosSensor.MecAngularSpeed_rad = AverageFilter(angleDifference / TLE5012_UpdateTime_1);
+		array[pos] = angleDifference / TLE5012_UpdateTime_1;
 		
 		#elif ENCODER_MODE == Encoder_IncrementalMode
 		
-		PosSensor.MecAngularSpeed_rad = AverageFilter(angleDifference / CARRIER_PERIOD_S);
+		array[pos] = angleDifference / CARRIER_PERIOD_S;
 		
 		#else
 		#error "Encoder Mode Invalid"
 		#endif
+			
+		sum = (sum - old) + array[pos];
+			
+		avg = sum / FilterOrder;
+
+		pos = (pos+1) % FilterOrder;
 		
-		
+		PosSensor.MecAngularSpeed_rad = avg;
 	}
 
 	void GetEleAngle(void)
@@ -163,7 +178,27 @@
 
 	void GetEleAngularSpeed(void)
 	{
-		PosSensor.EleAngularSpeed_rad = AverageFilter(PosSensor.MecAngularSpeed_rad * MOTOR_POLE_PAIRS);
+		const uint8_t FilterOrder = 6;
+		static float array[FilterOrder] = {0};
+		static uint8_t pos = 0;
+		static float data = 0.f;
+		static float sum = 0.f;
+		static float avg = 0.f;
+		static float old = 0.f;
+			
+		old = array[pos];
+		
+		array[pos] = PosSensor.MecAngularSpeed_rad * MOTOR_POLE_PAIRS;
+			
+		sum = (sum - old) + array[pos];
+			
+		avg = sum / FilterOrder;
+
+		pos = (pos+1) % FilterOrder;
+	
+		PosSensor.EleAngularSpeed_rad = avg;
+		
+		PosSensor.EleAngularSpeed_degree = RadToDegree(PosSensor.EleAngularSpeed_rad);
 	}
 
 	uint16_t TLE5012_ReadRegister(uint16_t command)
@@ -322,6 +357,13 @@
 			SendBuf();
 		
 			HAL_Delay(15);
+		}
+		
+		PWM_IT_CMD(DISABLE, DISABLE);
+		
+		while(1)
+		{
+			HAL_Delay(1);
 		}
 	}
 	

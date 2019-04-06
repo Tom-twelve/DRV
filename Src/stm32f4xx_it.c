@@ -282,22 +282,22 @@ void ADC_IRQHandler(void)
 	
 	switch(MotorStaticParameter.ControlMode)
 	{
-		case VoltageControlMode :	InverseParkTransform(0.f, 5.0f, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);
+		case VoltageControlMode :	MotorStaticParameter.PowerAngleComp_degree = 110.0f * CARRIER_PERIOD_S * PosSensor.EleAngularSpeed_degree;
+			
+									InverseParkTransform(0.f, 5.0f, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);
 									
 									SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
 
 									/*测试用*/								
 									ParkTransform(CoordTrans.CurrA, CoordTrans.CurrB, CoordTrans.CurrC, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);
-							
-									UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrD * 1000));
-									UART_Transmit_DMA("%d\r\n", (int)(CoordTrans.CurrQ * 1000));
+						
 								
 									break;
 
 		case CurrentControlMode : 	/*电流控制器, 包括Clark变换, Park变换, 电流PI控制器, RevPark变换, SVPWM算法*/
 									CurrentController();
 																
-									UART_Transmit_DMA("%d\t",(int)(CoordTrans.CurrD * 1000));
+									UART_Transmit_DMA("%d\t", (int)(CurrLoop.CtrlVolQ * 1000));
 									UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrQ * 1000));
 																
 									break;
@@ -308,8 +308,17 @@ void ADC_IRQHandler(void)
 									/*电流控制器, 包括Clark变换, Park变换, 电流PI控制器, RevPark变换, SVPWM算法*/
 									CurrentController();
 									
-									UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrD * 1000));
-									UART_Transmit_DMA("%d\r\n", (int)(CoordTrans.CurrQ * 1000));
+									
+//									UART_Transmit_DMA("%d\t", (int)(PosSensor.MecAngularSpeed_rad));
+//									UART_Transmit_DMA("%d\r\n", (int)(CoordTrans.CurrQ * 1000));
+		
+//									UART_Transmit_DMA("%d\t",(int)(CurrLoop.CtrlVolD * 1000));
+//									UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrD * 1000));
+		
+									UART_Transmit_DMA("%d\t",(int)(CurrLoop.CtrlVolQ * 1000));
+									UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrA * 1000));
+		
+//									UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrA * 1000));
 		
 									break;
 		

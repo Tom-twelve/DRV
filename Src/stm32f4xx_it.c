@@ -282,7 +282,7 @@ void ADC_IRQHandler(void)
 	
 	switch(MotorStaticParameter.ControlMode)
 	{
-		case VoltageControlMode :	MotorStaticParameter.PowerAngleComp_degree = 110.0f * CARRIER_PERIOD_S * PosSensor.EleAngularSpeed_degree;
+		case VoltageControlMode :	MotorStaticParameter.PowerAngleComp_degree = 70.0f * CARRIER_PERIOD_S * PosSensor.EleAngularSpeed_degree;
 			
 									InverseParkTransform(0.f, 5.0f, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);
 									

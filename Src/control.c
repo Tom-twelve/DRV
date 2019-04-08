@@ -45,7 +45,7 @@ void MotorEnable(void)
 	PWM_IT_CMD(ENABLE,ENABLE);
 	
 	/*设定控制模式*/
-	MotorStaticParameter.ControlMode = SpeedControlMode;
+	MotorStaticParameter.ControlMode = CurrentControlMode;
 	
 	/*采用Id = 0控制, 故设定d轴电流为零*/
 	CurrLoop.ExptCurrD = 0.f;
@@ -53,19 +53,18 @@ void MotorEnable(void)
 	switch(MotorStaticParameter.ControlMode)
 	{
 		case VoltageControlMode :	/*测试用*/
-//									MotorStaticParameter.PowerAngleComp_degree = 5.0f * CARRIER_PERIOD_S * PosSensor.EleAngularSpeed_degree;
 		
 									break;
 		
 		case CurrentControlMode : 	/*设定q轴电流*/
-									CurrLoop.ExptCurrQ = 10.f;
+									CurrLoop.ExptCurrQ = 5.f;
 									
 									/*设定电流环PI参数*/
 									CurrLoop.Kp_D = 0.5f;
 																
 									CurrLoop.Ki_D = 0.1f;
 									
-									CurrLoop.Kp_Q = 0.9f;
+									CurrLoop.Kp_Q = 1.75f;
 		
 									CurrLoop.Ki_Q = 0.1f;
 									
@@ -271,7 +270,7 @@ void CurrentController(void)
 {
 	static float compRatio = 0;
 	
-	compRatio = 110.0f;
+	compRatio = 70.0f;
 	
 	MotorStaticParameter.PowerAngleComp_degree = compRatio * CARRIER_PERIOD_S * PosSensor.EleAngularSpeed_degree;
 	

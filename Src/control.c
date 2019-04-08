@@ -241,6 +241,30 @@ float VelocitySlopeGenerator(float exptVelocity)
 }
 
  /**
+   * @brief  电流环输入限幅
+   * @param[in]  exptCurr      期望Iq
+   */
+float CurrentExpectedLimit(float exptCurr)
+{
+	if(exptCurr >= CURR_EXPT_LIM_Q)
+	{
+		exptCurr = CURR_EXPT_LIM_Q;
+	}
+	
+	else if(exptCurr <= -CURR_EXPT_LIM_Q)
+	{
+		exptCurr = -CURR_EXPT_LIM_Q;
+	}
+	
+	else
+	{
+		exptCurr = exptCurr;
+	}
+	
+	return exptCurr;
+}
+
+ /**
    * @brief  电流控制器
    */
 void CurrentController(void)
@@ -255,7 +279,7 @@ void CurrentController(void)
 	ParkTransform(CoordTrans.CurrA, CoordTrans.CurrB, CoordTrans.CurrC, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);
 	
 	/*电流环PI控制器*/
-	CurrentLoop(CurrLoop.ExptCurrD, CurrLoop.ExptCurrQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
+	CurrentLoop(CurrLoop.ExptCurrD, CurrentExpectedLimit(CurrLoop.ExptCurrQ), CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
 	
 	/*进行逆Park变换, 将转子坐标系下的dq轴电压转换为定子坐标系下的AlphaBeta轴电压*/
 	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);

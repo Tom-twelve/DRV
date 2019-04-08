@@ -97,8 +97,8 @@
 	#define	MOTOR_KV							350.f
 	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * (MOTOR_POLE_PAIRS) * (MOTOR_KV)))
 	#define PHASE_RES							0.0186698157f	//(Ohm)
-	#define INDUCTANCE_D							0.0000065f		//(H)
-	#define INDUCTANCE_Q							0.000012f		//(H)
+	#define INDUCTANCE_D						0.0000065f		//(H)
+	#define INDUCTANCE_Q						0.000012f		//(H)
 #elif	MOTOR_TYPE == N5055_KV400
 	#define MOTOR_POLE_PAIRS					7.f
 	#define	MOTOR_KV							400.f
@@ -109,7 +109,7 @@
 #elif	MOTOR_TYPE == TMOTOR_MN505_S_KV320
 	#define MOTOR_POLE_PAIRS					14.f
 	#define	MOTOR_KV							320.f
-	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * (MOTOR_POLE_PAIRS) * (MOTOR_KV)))
+	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * MOTOR_POLE_PAIRS * MOTOR_KV))
 	#define PHASE_RES							0.019f	//(Ohm) T-MOTOR官方数据
 	#define INDUCTANCE_D						0.000008f	//(H)
 	#define INDUCTANCE_Q						0.000014f	//(H)
@@ -118,8 +118,8 @@
 	#define	MOTOR_KV							320.f
 	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * (MOTOR_POLE_PAIRS) * (MOTOR_KV)))
 	#define PHASE_RES							0.019f	//(Ohm) T-MOTOR官方数据
-	#define INDUCTANCE_D							0.000008f	//(H)
-	#define INDUCTANCE_Q							0.000014f	//(H)
+	#define INDUCTANCE_D						0.000008f	//(H)
+	#define INDUCTANCE_Q						0.000014f	//(H)
 #else
 #error "Motor Type Invalid"
 #endif

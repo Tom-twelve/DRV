@@ -55,17 +55,18 @@ struct PosLoop_t
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define CURR_INTEGRAL_ERR_LIM_D 		2.5f	//(A)
+#define CURR_EXPT_LIM_Q					75.0f	//(A), 期望Iq限幅
 
-#define CURR_INTEGRAL_ERR_LIM_Q 		2.5f	//(A)
+#define CURR_INTEGRAL_ERR_LIM_D 		2.5f	//(A), Id控制器积分限幅
+#define CURR_INTEGRAL_ERR_LIM_Q 		2.5f	//(A), Iq控制器积分限幅
 
-#define SPD_INTEGRAL_ERR_LIM			(25.0f * 2 * PI)		//(rad/s)
+#define SPD_INTEGRAL_ERR_LIM			(10.0f * 2 * PI)		//(rad/s)
 
-#define CURRENT_CONTROL_KP_D			(INDUCTANCE_D * 500.f)		//d轴电感 * 电流环截止频率
-#define CURRENT_CONTROL_KI_D			(PHASE_RES * 500.f)	//相电阻 * 电流环截止频率
+#define CURRENT_CONTROL_KP_D			(INDUCTANCE_D * 500.f)	//d轴电感 * 电流环截止频率
+#define CURRENT_CONTROL_KI_D			(PHASE_RES * 500.f)		//相电阻 * 电流环截止频率
 
-#define CURRENT_CONTROL_KP_Q			(INDUCTANCE_Q * 500.f)		//q轴电感 * 电流环截止频率
-#define CURRENT_CONTROL_KI_Q			(PHASE_RES * 500.f)	//相电阻 * 电流环截止频率
+#define CURRENT_CONTROL_KP_Q			(INDUCTANCE_Q * 500.f)	//q轴电感 * 电流环截止频率
+#define CURRENT_CONTROL_KI_Q			(PHASE_RES * 500.f)		//相电阻 * 电流环截止频率
 
 #define SPEED_CONTROL_KP	
 #define SPEED_CONTROL_KI
@@ -73,13 +74,13 @@ struct PosLoop_t
 #define POSITION_CONTROL_KP	
 #define POSITION_CONTROL_KD
 
-#define	VoltageControlMode 			0
-#define CurrentControlMode 			1
-#define SpeedControlMode 			2
-#define PositionControlMode 		3
+#define	VoltageControlMode 				0
+#define CurrentControlMode 				1
+#define SpeedControlMode 				2
+#define PositionControlMode 			3
 
-#define WorkMode					1
-#define TestMode 					2
+#define WorkMode						1
+#define TestMode 						2
 
 /* USER CODE END PD */
 

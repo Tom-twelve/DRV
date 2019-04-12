@@ -88,9 +88,9 @@ struct PosLoop_t
 /* USER CODE BEGIN PFP */
 
 void MotorEnable(void);
-void CurrentLoop(float exptCurrD, float exptCurrQ, float realityCurrD, float realityCurrQ, float *ctrlVolD, float *ctrlVolQ);
-void SpeedLoop(float expectedMecAngularSpeed, float realityMecAngularSpeed, float *controlCurrentQ);
-void PositionLoop(float exptMecAngle, float realityMecAngle, float *controlAngularSpeed);
+void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCurrQ, float *ctrlVolD, float *ctrlVolQ);
+void SpeedLoop(float expectedMecAngularSpeed, float realMecAngularSpeed, float *controlCurrentQ);
+void PositionLoop(float exptMecAngle, float realMecAngle, float *controlAngularSpeed);
 float VelocitySlopeGenerator(float exptVelocity);
 void CurrentController(void);
 void SpeedController(void);

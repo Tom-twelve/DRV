@@ -114,12 +114,12 @@ void MotorEnable(void)
    * @brief  电流环
    * @param[in]  expectedCurrD     		期望Id
    * @param[in]  expectedCurrQ      	期望Iq
-   * @param[in]  realityCurrD     		实际Id
-   * @param[in]  realityCurrQ      		实际Iq
+   * @param[in]  realCurrD     			实际Id
+   * @param[in]  realCurrQ      		实际Iq
    * @param[out] controlVoltageD 		Vd输出
    * @param[out] controlVoltageQ 		Vq输出
    */
-void CurrentLoop(float exptCurrD, float exptCurrQ, float realityCurrD, float realityCurrQ, float *ctrlVolD, float *ctrlVolQ)
+void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCurrQ, float *ctrlVolD, float *ctrlVolQ)
 {
 	float errD = 0;
 	float errQ = 0;
@@ -128,8 +128,8 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realityCurrD, float rea
 	static float integralErrD = 0;
 	static float integralErrQ = 0;
 	
-	errD = exptCurrD - realityCurrD;
-	errQ = exptCurrQ - realityCurrQ;
+	errD = exptCurrD - realCurrD;
+	errQ = exptCurrQ - realCurrQ;
 	
 	/*PI控制器*/
 	ctrlCurrD = CurrLoop.Kp_D * errD + CurrLoop.Ki_D * integralErrD;
@@ -159,24 +159,24 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realityCurrD, float rea
 		integralErrQ = -CURR_INTEGRAL_ERR_LIM_Q;
 	}
 	
-	/*反电动势补偿*/
+	/*转速补偿*/
 	
-	*ctrlVolD = ctrlCurrD * PHASE_RES - CoordTrans.CurrQ * PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q;
-	*ctrlVolQ = ctrlCurrQ * PHASE_RES + PosSensor.EleAngularSpeed_rad * INDUCTANCE_D * CoordTrans.CurrD + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
+	*ctrlVolD = ctrlCurrD + CoordTrans.CurrD * PHASE_RES - PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ;
+	*ctrlVolQ = ctrlCurrQ + CoordTrans.CurrQ * PHASE_RES + PosSensor.EleAngularSpeed_rad * INDUCTANCE_D * CoordTrans.CurrD + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
 }
 
  /**
    * @brief  速度环
    * @param[in]  expectedMecAngularSpeed     		期望机械角速度
-   * @param[in]  realityMecAngularSpeed      		实际机械角速度
+   * @param[in]  realMecAngularSpeed      			实际机械角速度
    * @param[out] controlCurrentQ 					Iq输出
    */
-void SpeedLoop(float exptMecAngularSpeed, float realityMecAngularSpeed, float *ctrlCurrQ)
+void SpeedLoop(float exptMecAngularSpeed, float realMecAngularSpeed, float *ctrlCurrQ)
 {
 	float err = 0;
 	static float integralErr = 0;
 	
-	err = exptMecAngularSpeed - realityMecAngularSpeed;
+	err = exptMecAngularSpeed - realMecAngularSpeed;
 	
 	*ctrlCurrQ = SpdLoop.Kp * err + SpdLoop.Ki * integralErr;
 	
@@ -197,15 +197,15 @@ void SpeedLoop(float exptMecAngularSpeed, float realityMecAngularSpeed, float *c
  /**
    * @brief  位置环
    * @param[in]  expectedMecAngle     		期望机械角度
-   * @param[in]  realityMecAngle      		实际机械角度
+   * @param[in]  realMecAngle      		实际机械角度
    * @param[out] controlAngularSpeed 		角速度输出
    */
-void PositionLoop(float exptMecAngle, float realityMecAngle, float *controlAngularSpeed)
+void PositionLoop(float exptMecAngle, float realMecAngle, float *controlAngularSpeed)
 {
 	float err = 0;
 	static float lastErr = 0;
 	
-	err = exptMecAngle - realityMecAngle;
+	err = exptMecAngle - realMecAngle;
 	
 	*controlAngularSpeed = PosLoop.Kp * err + PosLoop.Kd * (err - lastErr);
 	

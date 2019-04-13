@@ -45,7 +45,7 @@ void MotorEnable(void)
 	PWM_IT_CMD(ENABLE,ENABLE);
 	
 	/*设定控制模式*/
-	MotorStaticParameter.ControlMode = VoltageControlMode;
+	MotorStaticParameter.ControlMode = SpeedControlMode;
 	
 	/*采用Id = 0控制, 故设定d轴电流为零*/
 	CurrLoop.ExptCurrD = 0.f;
@@ -64,7 +64,7 @@ void MotorEnable(void)
 																
 									CurrLoop.Ki_D = 0.1f;
 									
-									CurrLoop.Kp_Q = 1.75f;
+									CurrLoop.Kp_Q = 1.0f;
 		
 									CurrLoop.Ki_Q = 0.1f;
 									
@@ -74,14 +74,14 @@ void MotorEnable(void)
 									SpdLoop.ExptMecAngularSpeed = 50.f * 2 * PI;	//degree per second
 																
 									/*设定加速度(rad/s2)*/
-									SpdLoop.Acceleration = 100.f * 2 * PI;	//degree per quadratic seconds
+									SpdLoop.Acceleration = 500.f * 2 * PI;	//degree per quadratic seconds
 								
 									/*设定电流环PI参数*/
-									CurrLoop.Kp_D = 0.5f;
+									CurrLoop.Kp_D = 1.0f;
 																
 									CurrLoop.Ki_D = 0.1f;
 									
-									CurrLoop.Kp_Q = 0.4f;
+									CurrLoop.Kp_Q = 1.0f;
 		
 									CurrLoop.Ki_Q = 0.1f;
 								
@@ -144,9 +144,9 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 		integralErrD = CURR_INTEGRAL_ERR_LIM_D;
 	}
 	
-	else if(integralErrD <= -CURR_INTEGRAL_ERR_LIM_D)
+	else if(integralErrD <= - CURR_INTEGRAL_ERR_LIM_D)
 	{
-		integralErrD = -CURR_INTEGRAL_ERR_LIM_D;
+		integralErrD = - CURR_INTEGRAL_ERR_LIM_D;
 	}
 	
 	if(integralErrQ >= CURR_INTEGRAL_ERR_LIM_Q)
@@ -154,15 +154,15 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 		integralErrQ = CURR_INTEGRAL_ERR_LIM_Q;
 	}
 	
-	else if(integralErrQ <= -CURR_INTEGRAL_ERR_LIM_Q)
+	else if(integralErrQ <= - CURR_INTEGRAL_ERR_LIM_Q)
 	{
-		integralErrQ = -CURR_INTEGRAL_ERR_LIM_Q;
+		integralErrQ = - CURR_INTEGRAL_ERR_LIM_Q;
 	}
 	
-	/*转速补偿*/
+	/*转速前馈*/
 	
-	*ctrlVolD = ctrlCurrD + CoordTrans.CurrD * PHASE_RES - PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ;
-	*ctrlVolQ = ctrlCurrQ + CoordTrans.CurrQ * PHASE_RES + PosSensor.EleAngularSpeed_rad * INDUCTANCE_D * CoordTrans.CurrD + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
+	*ctrlVolD = ctrlCurrD * PHASE_RES + CoordTrans.CurrD * PHASE_RES - PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ;
+	*ctrlVolQ = ctrlCurrQ * PHASE_RES + CoordTrans.CurrQ * PHASE_RES + PosSensor.EleAngularSpeed_rad * INDUCTANCE_D * CoordTrans.CurrD + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
 }
 
  /**

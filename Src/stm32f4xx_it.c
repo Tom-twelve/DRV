@@ -310,6 +310,9 @@ void ADC_IRQHandler(void)
 									/*电流控制器, 包括Clark变换, Park变换, 电流PI控制器, RevPark变换, SVPWM算法*/
 									CurrentController();
 									
+									UART_Transmit_DMA("%d\t", (int)(CurrLoop.CtrlVolD * 1000));
+									UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrD * 1000));
+		
 									break;
 		
 		case PositionControlMode :	/*位置控制器, 包括位置PD控制器*/

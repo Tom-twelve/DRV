@@ -55,10 +55,10 @@ struct PosLoop_t
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define CURR_EXPT_LIM_Q					75.0f	//(A), 期望Iq限幅
+#define CURR_EXPT_LIM_Q					50.0f	//(A), 期望Iq限幅
 
-#define CURR_INTEGRAL_ERR_LIM_D 		2.5f	//(A), Id控制器积分限幅
-#define CURR_INTEGRAL_ERR_LIM_Q 		2.5f	//(A), Iq控制器积分限幅
+#define CURR_INTEGRAL_ERR_LIM_D 		35.0f	//(A), Id控制器积分限幅
+#define CURR_INTEGRAL_ERR_LIM_Q 		10.0f	//(A), Iq控制器积分限幅
 
 #define SPD_INTEGRAL_ERR_LIM			(10.0f * 2 * PI)		//(rad/s)
 

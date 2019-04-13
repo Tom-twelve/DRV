@@ -60,11 +60,11 @@ void MotorEnable(void)
 									CurrLoop.ExptCurrQ = 25.f;
 									
 									/*设定电流环PI参数*/
-									CurrLoop.Kp_D = 1.0f;
+									CurrLoop.Kp_D = 2.75f;
 																
-									CurrLoop.Ki_D = 0.1f;
+									CurrLoop.Ki_D = 4.0f;
 									
-									CurrLoop.Kp_Q = 1.0f;
+									CurrLoop.Kp_Q = 2.0f;
 		
 									CurrLoop.Ki_Q = 0.1f;
 									
@@ -77,11 +77,11 @@ void MotorEnable(void)
 									SpdLoop.Acceleration = 500.f * 2 * PI;	//degree per quadratic seconds
 								
 									/*设定电流环PI参数*/
-									CurrLoop.Kp_D = 1.0f;
+									CurrLoop.Kp_D = 2.75f;
 																
-									CurrLoop.Ki_D = 0.1f;
+									CurrLoop.Ki_D = 4.0f;
 									
-									CurrLoop.Kp_Q = 1.0f;
+									CurrLoop.Kp_Q = 2.0f;
 		
 									CurrLoop.Ki_Q = 0.1f;
 								
@@ -160,7 +160,7 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 	}
 	
 	/*转速前馈*/
-	
+
 	*ctrlVolD = ctrlCurrD * PHASE_RES + CoordTrans.CurrD * PHASE_RES - PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ;
 	*ctrlVolQ = ctrlCurrQ * PHASE_RES + CoordTrans.CurrQ * PHASE_RES + PosSensor.EleAngularSpeed_rad * INDUCTANCE_D * CoordTrans.CurrD + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
 }

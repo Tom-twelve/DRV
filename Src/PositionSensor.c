@@ -132,7 +132,7 @@
 		
 		#elif ENCODER_MODE == Encoder_IncrementalMode
 		
-		array[pos] = angleDifference / CARRIER_PERIOD_S;
+		array[pos] = angleDifference / CARRIER_PERIOD_s;
 		
 		#else
 		#error "Encoder Mode Invalid"

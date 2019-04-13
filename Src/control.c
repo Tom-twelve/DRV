@@ -135,8 +135,8 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 	ctrlCurrD = CurrLoop.Kp_D * errD + CurrLoop.Ki_D * integralErrD;
 	ctrlCurrQ = CurrLoop.Kp_Q * errQ + CurrLoop.Ki_Q * integralErrQ;
 	
-	integralErrD += errD * CARRIER_PERIOD_S;
-	integralErrQ += errQ * CARRIER_PERIOD_S;
+	integralErrD += errD * CARRIER_PERIOD_s;
+	integralErrQ += errQ * CARRIER_PERIOD_s;
 	
 	/*积分限幅*/
 	if(integralErrD >= CURR_INTEGRAL_ERR_LIM_D)
@@ -180,7 +180,7 @@ void SpeedLoop(float exptMecAngularSpeed, float realMecAngularSpeed, float *ctrl
 	
 	*ctrlCurrQ = SpdLoop.Kp * err + SpdLoop.Ki * integralErr;
 	
-	integralErr += err * CARRIER_PERIOD_S;
+	integralErr += err * CARRIER_PERIOD_s;
 	
 	/*积分限幅*/
 	if(integralErr >= SPD_INTEGRAL_ERR_LIM)
@@ -221,7 +221,7 @@ float VelocitySlopeGenerator(float exptVelocity)
 	static float velocityProcessVolume = 0.0f;
 	static float velocityStepValue = 0;
 	
-	velocityStepValue = SpdLoop.Acceleration * CARRIER_PERIOD_S;
+	velocityStepValue = SpdLoop.Acceleration * CARRIER_PERIOD_s;
 
 	if (velocityProcessVolume < (exptVelocity - velocityStepValue))
 	{
@@ -272,7 +272,7 @@ void CurrentController(void)
 	
 	compRatio = 70.0f;
 	
-	MotorStaticParameter.PowerAngleComp_degree = compRatio * CARRIER_PERIOD_S * PosSensor.EleAngularSpeed_degree;
+	MotorStaticParameter.PowerAngleComp_degree = compRatio * CARRIER_PERIOD_s * PosSensor.EleAngularSpeed_degree;
 	
 	/*进行Park变换, 将三相电流转换为dq轴电流*/
 	ParkTransform(CoordTrans.CurrA, CoordTrans.CurrB, CoordTrans.CurrC, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);

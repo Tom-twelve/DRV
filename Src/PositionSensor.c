@@ -59,11 +59,13 @@
 		GetMecAngularSpeed(); //计算机械角速度
 		GetEleAngle(); //计算电角度
 		GetEleAngularSpeed();  //计算电角速度
+		TLE5012_ReadFSYNC();	//读取FSYNC值
+		EncoderLostDetection();		//编码器异常检测
 	}
 
 	void GetMecAngle_AbsoluteMode_15bit(void)
 	{
-		PosSensor.MecAngle_AbsoluteMode_15bit = (TLE5012_ReadRegister(TLE5012_Command_ReadCurrentValue_AngleValue) & 0x7FFF);
+		PosSensor.MecAngle_AbsoluteMode_15bit = (TLE5012_ReadRegister(TLE5012_Command_ReadCurrentValue_AngleValue, &PosSensor.SafetyWord)) & 0x7FFF;
 	}
 
 	void GetMecAngle_IncrementalMode_14bit(void)
@@ -201,10 +203,51 @@
 		PosSensor.EleAngularSpeed_degree = RadToDegree(PosSensor.EleAngularSpeed_rad);
 	}
 
-	uint16_t TLE5012_ReadRegister(uint16_t command)
+	void TLE5012_ReadFSYNC(void)
+	{
+		PosSensor.FSYNC = (TLE5012_ReadRegister(TLE5012_Command_ReadCurrentValue_FSYNC, &PosSensor.SafetyWord)) >> 9;
+	}
+	
+	void EncoderLostDetection()
+	{
+		uint8_t cnt = 0;
+		
+		PosSensor.SafetyWord >>= 12;
+		
+		/*通过TLE5012的SafetyWord判断编码器是否异常*/
+		if(PosSensor.SafetyWord != 0x07)
+		{
+			cnt++;
+			
+			if(cnt > 10)
+			{
+				PWM_IT_CMD(DISABLE,ENABLE);
+				
+				/*通过CAN总线向主控发送编码器异常*/
+//				errorCode.data_int32[0] = 0xCCCCCCCC;
+//				errorCode.data_int32[1] = 0xCCCCCCCC;
+					
+//				CANSendData(errorCode);
+				
+				PutNum((uint16_t)PosSensor.SafetyWord,'\t');	
+				PutStr("ENCODER LOST\r\n");	
+				SendBuf();
+				
+				cnt = 0;
+			}
+		}
+		else
+		{
+			if(cnt > 0)	
+			{
+				cnt--;
+			}
+		}
+	}
+	
+	uint16_t TLE5012_ReadRegister(uint16_t command, uint16_t *safetyWord)
 	{
 		uint16_t data = 0;
-		uint16_t safetyWord = 0;
 		
 		TLE5012_SPI1_ChipSelect;
 		
@@ -212,7 +255,7 @@
 		SPI_TX_OFF;
 		
 		SPI_Receive(SPI1, &data, TimeOut);
-		SPI_Receive(SPI1, &safetyWord, TimeOut);
+		SPI_Receive(SPI1, safetyWord, TimeOut);
 		
 		TLE5012_SPI1_ChipDiselect;
 		SPI_TX_ON;
@@ -226,7 +269,7 @@
 		HAL_TIM_Encoder_Start(&htim2, TIM_CHANNEL_ALL);
 		
 		/*读取初始机械角度*/
-		PosSensor.OriginalMecAngle_14bit = (uint16_t)(((float)(TLE5012_ReadRegister(TLE5012_Command_ReadCurrentValue_AngleValue) & 0x7FFF) / 32768.f) * 16384.f);
+		PosSensor.OriginalMecAngle_14bit = (uint16_t)(((float)(TLE5012_ReadRegister(TLE5012_Command_ReadCurrentValue_AngleValue, &PosSensor.SafetyWord) & 0x7FFF) / 32768.f) * 16384.f);
 	}
 	
 	/**

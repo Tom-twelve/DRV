@@ -53,6 +53,15 @@ struct PosLoop_t
 	float Kd;
 };
 
+struct Regulator_t
+{
+	float Kp;
+	float Ki;
+	float Kd;
+	float ActualPeriod_s;
+	int16_t TargetFSYNC;
+};
+
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define CURR_EXPT_LIM_Q					50.0f	//(A), 期望Iq限幅
@@ -73,6 +82,11 @@ struct PosLoop_t
 
 #define POSITION_CONTROL_KP	
 #define POSITION_CONTROL_KD
+
+#define PERIOD_REGULATOR_KP (0.6 * 0.00596f)
+#define PERIOD_REGULATOR_KI (5 * 0.005952380952381 * DEFAULT_CARRIER_PERIOD_s)  // 前面两项为ki参数，由于PWM周期应该变化不大所以使用一常数
+#define PERIOD_REGULATOR_KD (5 * 0.005952380952381) // 参数待调（这个初值是通过简单的计算一下，假设偏差的差分出现了1的变动，改变多少周期粗略的估计的，并非使用KD = Kd / dt)
+#define PERIOD_REGULATOR_LIM			6	//载波周期调节器限幅值	
 
 #define	VoltageControlMode 				0
 #define CurrentControlMode 				1
@@ -95,6 +109,7 @@ float VelocitySlopeGenerator(float exptVelocity);
 void CurrentController(void);
 void SpeedController(void);
 void PositionController(void);
+void PeriodRegulator(void);
 /* USER CODE END PFP */
 
 

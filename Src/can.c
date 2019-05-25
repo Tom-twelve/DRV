@@ -54,6 +54,7 @@ extern struct SpdLoop_t SpdLoop;
 extern struct PosLoop_t PosLoop;
 extern struct CoordTrans_t CoordTrans;
 extern struct PosSensor_t PosSensor;
+extern struct Regulator_t Regulator;
 extern struct MotorStaticParameter_t MotorStaticParameter;
 
 /* USER CODE END 0 */
@@ -261,7 +262,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 //				PosLoop..Kp = POS_CONTROL_KP;
 //				PosLoop..Kd = POS_CONTROL_KD;
 				MotorStaticParameter.ControlMode = PositionControlMode;
-				PosLoop.ExptMecAngle = PosSensor.MecAngle_rad + PosSensor.MecAngularSpeed_rad * CARRIER_PERIOD_s;
+				PosLoop.ExptMecAngle = PosSensor.MecAngle_rad + PosSensor.MecAngularSpeed_rad * Regulator.ActualPeriod_s;
 			}
 			break;
 		case 0x0000564A: //JV

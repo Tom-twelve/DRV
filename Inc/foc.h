@@ -65,11 +65,11 @@ struct MotorStaticParameter_t
 /* USER CODE BEGIN PD */
 #define	GeneratrixVoltage					25.0f		//(V)
 #define	MaximumDistortionlessVoltage		(ONE_BY_SQRT3 * GeneratrixVoltage)	//(V)
-#define CARRIER_FREQ						20000.f		//(Hz)
-#define CARRIER_PERIOD_s					(1.f / CARRIER_FREQ)		//(s)
-#define CARRIER_PERIOD_us					(CARRIER_PERIOD_s * 1000000.f)	//(us)
+#define DEFAULT_CARRIER_FREQ				20000.f		//(Hz)
+#define DEFAULT_CARRIER_PERIOD_s			(1.f / DEFAULT_CARRIER_FREQ)		//(s)
+#define DEFAULT_CARRIER_PERIOD_us			(DEFAULT_CARRIER_PERIOD_s * 1000000.f)	//(us)
 #define MCU_FREQ							180000000.f		//(Hz)
-#define TIM8_ARR 							(int)((MCU_FREQ / CARRIER_FREQ) / 2.f )
+#define TIM8_ARR 							(int)((MCU_FREQ / DEFAULT_CARRIER_FREQ) / 2.f )
 #define ADC_ExternalTrigger_CCR				(TIM8_ARR - 12)	//通过TIM8_CH4触发ADC, 超前量为ADC采样所需时间
 
 #if		PHASE_SEQUENCE == POSITIVE_SEQUENCE

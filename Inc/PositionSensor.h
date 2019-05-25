@@ -45,7 +45,10 @@
 	#define TLE5012_Command_ReadUpdatedValue_AngleValue		0x8421	
 
 	#define TLE5012_Command_ReadCurrentValue_AngularSpeed 	0x8031	
-	#define TLE5012_Command_ReadUpdatedValue_AngularSpeed	0x8431	
+	#define TLE5012_Command_ReadUpdatedValue_AngularSpeed	0x8431
+		
+	#define TLE5012_Command_ReadCurrentValue_FSYNC			0x8051	
+	#define TLE5012_Command_ReadUpdatedValue_FSYNC			0x8451
 	
 	#define TLE5012_AbsoluteModeResolution					32768.f
 	#define TLE5012_IncrementalModeResolution				4096.f
@@ -72,7 +75,10 @@
 		float EleAngularSpeed_rad;
 		float EleAngularSpeed_degree;
 		uint16_t OriginalMecAngle_14bit;
+		uint16_t FSYNC;
+		uint16_t SafetyWord;
 	};
+
 #else
 #error "Position Sensor Type Invalid"
 #endif
@@ -91,7 +97,9 @@
 	void GetEleAngularSpeed(void);
 	void GetMecAngle_AbsoluteMode_15bit(void);
 	void GetMecAngle_IncrementalMode_14bit(void);
-	uint16_t TLE5012_ReadRegister(uint16_t command);
+	void TLE5012_ReadFSYNC(void);
+	void EncoderLostDetection(void);
+	uint16_t TLE5012_ReadRegister(uint16_t command, uint16_t *safetyWord);
 	void EncoderIncrementalModeEnable(void);
 	void MeasureEleAngle_Encoder(float VolD);
 #else

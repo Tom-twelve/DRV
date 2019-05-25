@@ -27,6 +27,7 @@
 struct CurrLoop_t CurrLoop;
 struct SpdLoop_t SpdLoop;
 struct PosLoop_t PosLoop;
+struct Regulator_t Regulator;
 
 /* CODE END PV */
 
@@ -135,8 +136,8 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 	ctrlCurrD = CurrLoop.Kp_D * errD + CurrLoop.Ki_D * integralErrD;
 	ctrlCurrQ = CurrLoop.Kp_Q * errQ + CurrLoop.Ki_Q * integralErrQ;
 	
-	integralErrD += errD * CARRIER_PERIOD_s;
-	integralErrQ += errQ * CARRIER_PERIOD_s;
+	integralErrD += errD * Regulator.ActualPeriod_s;
+	integralErrQ += errQ * Regulator.ActualPeriod_s;
 	
 	/*积分限幅*/
 	if(integralErrD >= CURR_INTEGRAL_ERR_LIM_D)
@@ -180,7 +181,7 @@ void SpeedLoop(float exptMecAngularSpeed, float realMecAngularSpeed, float *ctrl
 	
 	*ctrlCurrQ = SpdLoop.Kp * err + SpdLoop.Ki * integralErr;
 	
-	integralErr += err * CARRIER_PERIOD_s;
+	integralErr += err * Regulator.ActualPeriod_s;
 	
 	/*积分限幅*/
 	if(integralErr >= SPD_INTEGRAL_ERR_LIM)
@@ -221,7 +222,7 @@ float VelocitySlopeGenerator(float exptVelocity)
 	static float velocityProcessVolume = 0.0f;
 	static float velocityStepValue = 0;
 	
-	velocityStepValue = SpdLoop.Acceleration * CARRIER_PERIOD_s;
+	velocityStepValue = SpdLoop.Acceleration * Regulator.ActualPeriod_s;
 
 	if (velocityProcessVolume < (exptVelocity - velocityStepValue))
 	{
@@ -272,7 +273,7 @@ void CurrentController(void)
 	
 	compRatio = 70.0f;
 	
-	MotorStaticParameter.PowerAngleComp_degree = compRatio * CARRIER_PERIOD_s * PosSensor.EleAngularSpeed_degree;
+	MotorStaticParameter.PowerAngleComp_degree = compRatio * Regulator.ActualPeriod_s * PosSensor.EleAngularSpeed_degree;
 	
 	/*进行Park变换, 将三相电流转换为dq轴电流*/
 	ParkTransform(CoordTrans.CurrA, CoordTrans.CurrB, CoordTrans.CurrC, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);
@@ -282,6 +283,9 @@ void CurrentController(void)
 	
 	/*进行逆Park变换, 将转子坐标系下的dq轴电压转换为定子坐标系下的AlphaBeta轴电压*/
 	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);
+	
+	/*载波周期调节器, 尽可能使载波周期与编码器周期同步*/
+	PeriodRegulator();
 	
 	/*利用SVPWM算法调制电压矢量*/
 	SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
@@ -301,6 +305,63 @@ void SpeedController(void)
 void PositionController(void)
 {
 	PositionLoop(PosLoop.ExptMecAngle, PosSensor.MecAngle_rad, &SpdLoop.ExptMecAngularSpeed);
+}
+
+ /**
+   * @brief  载波周期调节器
+   */
+void PeriodRegulator(void)
+{
+	/*PWM输出的系统周期，注意此变量不是系统实际运行的周期，是一个中间变量，是PID的输出，在幅值上是连续的变量*/
+	/*定时器的周期是不能连续的设定的，只能以1/168000000 = 0.005952380952381us为步长设定。*/
+	int16_t err = 0;
+	static int16_t lastErr = 0;
+	static int16_t preErr = 0;
+	float diffTerm = 0;
+	static float PWMPeriod_PID = DEFAULT_CARRIER_PERIOD_us;
+	register int RegulatedARR; // PID控制器输出的ARR值, register关键字可加速运算
+	
+	/*设定PID参数及目标FSYNC值*/
+	Regulator.Kp = PERIOD_REGULATOR_KP;
+	Regulator.Ki = PERIOD_REGULATOR_KI;
+	Regulator.Kd = PERIOD_REGULATOR_KD;
+	Regulator.TargetFSYNC = 4;
+	
+	err = util_norm_int(Regulator.TargetFSYNC - (int)PosSensor.FSYNC, -16, 16, 32);
+
+	/*增量式PI控制器*/
+	PWMPeriod_PID = Regulator.Kp * (err - lastErr) + Regulator.Ki * err;
+
+	/*由于无论系统周期比磁编码器周期更长还是更短，err大于零和err小于零的可能性都是一样的*/
+	/*只应用PI调节时周期相差比较大时有可能出现正反馈或者不调节的情况，如系统周期比磁编码器周期更长，
+	*但是err小于0的情况, 当误差绝对值增大时，才应用D调节，以期解决上述情况
+	*/
+	if ((err > 0 && err - lastErr > 0) || (err < 0 && err - lastErr < 0))
+	{
+		diffTerm = Regulator.Kd * (err - 2 * lastErr + preErr);
+		
+		PWMPeriod_PID += diffTerm;
+	}
+	
+	lastErr = err;
+	preErr = lastErr;
+	
+	/*PID限幅, 防止系统失控*/
+	if(PWMPeriod_PID > DEFAULT_CARRIER_PERIOD_us + PERIOD_REGULATOR_LIM)
+	{
+		PWMPeriod_PID = DEFAULT_CARRIER_PERIOD_us;
+	}
+	if(PWMPeriod_PID < DEFAULT_CARRIER_PERIOD_us - PERIOD_REGULATOR_LIM)
+	{
+		PWMPeriod_PID = DEFAULT_CARRIER_PERIOD_us;
+	}
+	
+	/*离散，得到实际的系统周期*/
+	RegulatedARR = PWMPeriod_PID * 90;
+	Regulator.ActualPeriod_s = PWMPeriod_PID * 1e-6;
+	
+	/*改变定时器的ARR寄存器，实际改变周期*/
+	TIM1->ARR = RegulatedARR - 1;
 }
 
 /* USER CODE END */

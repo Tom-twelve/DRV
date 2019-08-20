@@ -3,7 +3,7 @@
  * @file		foc.h
  * @author		WrathWings
  * @version 	V1.0
- * @date		2018.1.17
+ * @date		2019.1.17
  * @brief		The header file of foc.c
  ******************************************************************************
  * @attention
@@ -63,9 +63,8 @@ struct MotorStaticParameter_t
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define	GeneratrixVoltage					25.0f		//(V)
-#define	MaximumDistortionlessVoltage		(ONE_BY_SQRT3 * GeneratrixVoltage)	//(V)
-#define DEFAULT_CARRIER_FREQ				22500.f		//(Hz)
+#define	GENERATRIX_VOL						25.0f		//(V)
+#define DEFAULT_CARRIER_FREQ				20000.f		//(Hz)
 #define DEFAULT_CARRIER_PERIOD_s			(1.f / DEFAULT_CARRIER_FREQ)		//(s)
 #define DEFAULT_CARRIER_PERIOD_us			(DEFAULT_CARRIER_PERIOD_s * 1000000.f)	//(us)
 #define MCU_FREQ							180000000.f		//(Hz)

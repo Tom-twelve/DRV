@@ -478,6 +478,11 @@
               <FileType>1</FileType>
               <FilePath>..\Src\control.c</FilePath>
             </File>
+            <File>
+              <FileName>observer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\observer.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

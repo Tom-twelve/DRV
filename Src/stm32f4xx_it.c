@@ -282,29 +282,21 @@ void ADC_IRQHandler(void)
 	
 	switch(MotorStaticParameter.ControlMode)
 	{
-		case VoltageControlMode :	MotorStaticParameter.PowerAngleComp_degree = 70.0f * DEFAULT_CARRIER_PERIOD_s * PosSensor.EleAngularSpeed_degree;
+		case VOL_CTRL_MODE :		MotorStaticParameter.PowerAngleComp_degree = DEFAULT_CARRIER_PERIOD_s * PosSensor.EleAngularSpeed_degree;
 			
-									InverseParkTransform(2.0f, 0.0f, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + 90.0f);
+									InverseParkTransform(0.0f, 2.0f, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);
 									
 									SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
 
 									/*测试用*/								
 									ParkTransform(CoordTrans.CurrA, CoordTrans.CurrB, CoordTrans.CurrC, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);
 						
-//									UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrD * 1000));
-//									UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrQ * 1000)); 
+									//UART_Transmit_DMA("%d\t", (int)(MotorStaticParameter.PowerAngleComp_degree * 1000));
+									UART_Transmit_DMA("%d\r\n",(int)(MotorStaticParameter.PowerAngleComp_degree * 1000)); 
 		
 									break;
 
-		case CurrentControlMode : 	/*电流控制器, 包括Clark变换, Park变换, 电流PI控制器, RevPark变换, SVPWM算法*/
-									CurrentController();
-																
-									UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrD * 1000));
-									UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrQ * 1000));
-																
-									break;
-
-		case SpeedControlMode :		/*转速控制器, 包括转速PI控制器*/
+		case SPD_CURR_CTRL_MODE :		/*转速控制器, 包括转速PI控制器*/
 									SpeedController();
 		
 									/*电流控制器, 包括Clark变换, Park变换, 电流PI控制器, RevPark变换, SVPWM算法*/
@@ -315,7 +307,7 @@ void ADC_IRQHandler(void)
 		
 									break;
 		
-		case PositionControlMode :	/*位置控制器, 包括位置PD控制器*/
+		case POS_SPD_CURR_CTRL_MODE :	/*位置控制器, 包括位置PD控制器*/
 									PositionController();
 									
 									/*转速控制器, 包括转速PI控制器*/

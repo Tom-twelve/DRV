@@ -45,7 +45,7 @@ extern struct PosSensor_t PosSensor;
    */
 void SpaceVectorModulation(float volAlpha, float volBeta)
 {
-	const float StandardizationCoefficient = SQRT3 * TIM8_ARR / GeneratrixVoltage;
+	const float StandardizationCoefficient = SQRT3 * TIM8_ARR / GENERATRIX_VOL;
 	float U1 = 0;
 	float U2 = 0;
 	float U3 = 0;

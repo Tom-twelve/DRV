@@ -15,7 +15,7 @@
 #define SQRT3_BY_2      (0.86602540378f)
 
 // Squared
-#define Square(x)       ((x) * (x))
+#define SQUARE(x)       ((x) * (x))
 #define MAX(a, b)                               (((a) > (b)) ? (a) : (b))
 #define MIN(a, b)                               (((a) < (b)) ? (a) : (b))
 #define SATURATION(val, boundMin, boundMax)     MIN(MAX((val), (boundMin)), (boundMax))

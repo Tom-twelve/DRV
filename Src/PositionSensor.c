@@ -288,7 +288,7 @@
 		static int tempEleAngleRef[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS + 2] = {0};
 		static int16_t tmpArray[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS] = {0};
 
-		InverseParkTransform(VolD, 0.f, &VolAlpha, &VolBeta, 0.f);	//设定Uq = 0, 电角度为零
+		InverseParkTransform(VolD, 0.f, &VolAlpha, &VolBeta, 0.f);	//设定Vq = 0, 电角度为零
 		
 		SpaceVectorModulation(VolAlpha, VolBeta);
 		

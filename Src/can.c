@@ -231,17 +231,17 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 			}
 			break;
 		case 0x00004D55://先配置，再切换模式  //UM
-			if(receive.data_int32[1] == SpeedControlMode)
+			if(receive.data_int32[1] == SPD_CURR_CTRL_MODE)
 			{
 //				SpdLoop.Kp = VEL_CONTROL_KP;
 //				SpdLoop.Ki = VEL_CONTROL_KI;
-				MotorStaticParameter.ControlMode = SpeedControlMode;
+				MotorStaticParameter.ControlMode = SPD_CURR_CTRL_MODE;
 			}
-			else if(receive.data_int32[1] == PositionControlMode)
+			else if(receive.data_int32[1] == POS_SPD_CURR_CTRL_MODE)
 			{
 //				PosLoop..Kp = POS_CONTROL_KP;
 //				PosLoop..Kd = POS_CONTROL_KD;
-				MotorStaticParameter.ControlMode = PositionControlMode;
+				MotorStaticParameter.ControlMode = POS_SPD_CURR_CTRL_MODE;
 				PosLoop.ExptMecAngle = PosSensor.MecAngle_rad + PosSensor.MecAngularSpeed_rad * Regulator.ActualPeriod_s;
 			}
 			break;

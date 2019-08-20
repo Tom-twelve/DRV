@@ -100,7 +100,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
-	MotorStaticParameter.MotorMode = WorkMode;	//设定模式, 正常工作或测定电角度 ( WorkMode or TestMode )
+	MotorStaticParameter.MotorMode = WORK_MODE;	//设定模式, 正常工作或测定电角度 ( WORK_MODE or MEASURE_MODE )
 	
   /* USER CODE END 1 */
   
@@ -158,15 +158,15 @@ int main(void)
 	#endif
 	
 	/*使能PWM, 设定参数*/
-	MotorEnable();
+	DriverInit();
 	
 	switch(MotorStaticParameter.MotorMode)
 	{
-		case WorkMode : ADC_CMD(ENABLE);	//包括使能ADC中断, 电机控制程序在ADC中断中执行
+		case WORK_MODE : ADC_CMD(ENABLE);	//包括使能ADC中断, 电机控制程序在ADC中断中执行
 		
 						break;
 		
-		case TestMode : MeasureEleAngle_Encoder(0.6f);	//测定电角度, 设定d轴电压
+		case MEASURE_MODE : MeasureEleAngle_Encoder(0.6f);	//测定电角度, 设定d轴电压
 		
 						break;
 	}

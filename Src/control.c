@@ -40,75 +40,72 @@ extern struct MotorStaticParameter_t MotorStaticParameter;
 
 /* USER CODE BEGIN */
 
-void MotorEnable(void)
+void DriverInit(void)
 {
 	/*使能PWM输出*/
 	PWM_IT_CMD(ENABLE,ENABLE);
 	
 	/*设定控制模式*/
-	MotorStaticParameter.ControlMode = VoltageControlMode;
+	MotorStaticParameter.ControlMode = SPD_CURR_CTRL_MODE;
 	
 	/*采用Id = 0控制, 故设定d轴电流为零*/
 	CurrLoop.ExptCurrD = 0.f;
 	
 	switch(MotorStaticParameter.ControlMode)
 	{
-		case VoltageControlMode :	/*测试用*/
+		case VOL_CTRL_MODE :			/*测试用*/
 		
-									break;
+										break;
 		
-		case CurrentControlMode : 	/*设定q轴电流*/
-									CurrLoop.ExptCurrQ = 25.f;
-									
-									/*设定电流环PI参数*/
-									CurrLoop.Kp_D = 2.75f;
-																
-									CurrLoop.Ki_D = 4.0f;
-									
-									CurrLoop.Kp_Q = 2.0f;
-		
-									CurrLoop.Ki_Q = 0.1f;
-									
-									break;
-		
-		case SpeedControlMode : 	/*设定角速度(rad/s)*/
-									SpdLoop.ExptMecAngularSpeed = 50.f * 2 * PI;	//degree per second
-																
-									/*设定加速度(rad/s2)*/
-									SpdLoop.Acceleration = 500.f * 2 * PI;	//degree per quadratic seconds
-								
-									/*设定电流环PI参数*/
-									CurrLoop.Kp_D = 2.75f;
-																
-									CurrLoop.Ki_D = 4.0f;
-									
-									CurrLoop.Kp_Q = 2.0f;
-		
-									CurrLoop.Ki_Q = 0.1f;
-								
-									/*设定速度环PI参数*/
-									SpdLoop.Kp = 0.3f;
-																
-									SpdLoop.Ki = 0.4f;
-								
-									break;
-		
-		case PositionControlMode :	/*设定电流环PI参数*/
-									CurrLoop.Kp_D = 0.1f;
-																	
-									CurrLoop.Ki_D = 0.035f;
-																	
-									CurrLoop.Kp_Q = 0.10f;
+		case SPD_CURR_CTRL_MODE : 	
+										CurrentLoopInit();
 
-									CurrLoop.Ki_Q = 0.05f;
-									
-									/*设定位置环PI参数*/
-									PosLoop.Kp = 0.0001f;
-																	
-									PosLoop.Kd = 0.f;
-									
-									break;
+										SpeedLoopInit();
+
+										break;
+		
+		case POS_SPD_CURR_CTRL_MODE :	
+										CurrentLoopInit();
+										
+										SpeedLoopInit();
+										
+										PositionLoopInit();
+			
+										break;
 	}
+}
+
+ /**
+   * @brief  电流环参数初始化
+   */
+void CurrentLoopInit(void)
+{
+	/*设定电流环PI参数*/
+	CurrLoop.Kp_D = CURRENT_CONTROL_KP_D * 1.0f;												
+	CurrLoop.Ki_D = CURRENT_CONTROL_KI_D * 1.0f;						
+	CurrLoop.Kp_Q = CURRENT_CONTROL_KP_Q * 1.0f;
+	CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q * 1.0f;
+}
+
+ /**
+   * @brief  速度环参数初始化
+   */
+void SpeedLoopInit(void)
+{
+	/*设定速度环PI参数*/
+	SpdLoop.Kp = 1.0f;	
+	SpdLoop.Ki = 0.0f;
+	SpdLoop.ExptMecAngularSpeed = 25.f * 2 * PI;	//期望速度，degree per second
+	SpdLoop.Acceleration = 5000.f * 2 * PI;	//期望加速度，degree per quadratic seconds
+}
+
+ /**
+   * @brief  位置环参数初始化
+   */
+void PositionLoopInit(void)
+{									
+	PosLoop.Kp = 0.0001f;
+	PosLoop.Kd = 0.f;		
 }
 
  /**
@@ -269,20 +266,14 @@ float CurrentExpectedLimit(float exptCurr)
    */
 void CurrentController(void)
 {
-	static float compRatio = 0;
-	
-	compRatio = 70.0f;
-	
-	MotorStaticParameter.PowerAngleComp_degree = compRatio * Regulator.ActualPeriod_s * PosSensor.EleAngularSpeed_degree;
-	
 	/*进行Park变换, 将三相电流转换为dq轴电流*/
-	ParkTransform(CoordTrans.CurrA, CoordTrans.CurrB, CoordTrans.CurrC, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);
+	ParkTransform(CoordTrans.CurrA, CoordTrans.CurrB, CoordTrans.CurrC, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree);
 	
 	/*电流环PI控制器*/
 	CurrentLoop(CurrLoop.ExptCurrD, CurrentExpectedLimit(CurrLoop.ExptCurrQ), CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
 	
 	/*进行逆Park变换, 将转子坐标系下的dq轴电压转换为定子坐标系下的AlphaBeta轴电压*/
-	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);
+	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree);
 	
 	/*载波周期调节器, 尽可能使载波周期与编码器周期同步*/
 	PeriodRegulator();

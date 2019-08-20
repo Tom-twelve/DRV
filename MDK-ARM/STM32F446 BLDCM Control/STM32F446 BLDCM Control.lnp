@@ -15,6 +15,7 @@
 "stm32f446 bldcm control\motorconfig.o"
 "stm32f446 bldcm control\foc.o"
 "stm32f446 bldcm control\control.o"
+"stm32f446 bldcm control\observer.o"
 "stm32f446 bldcm control\gatedriver.o"
 "stm32f446 bldcm control\positionsensor.o"
 "stm32f446 bldcm control\stm32f4xx_ll_gpio.o"

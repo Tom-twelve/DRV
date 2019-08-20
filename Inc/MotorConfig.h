@@ -57,7 +57,7 @@
 #define ROBOT_ID		1U
 
 #if ROBOT_ID == 1U		//±àÂëÆ÷
-	#define CAN_ID_NUM			3
+	#define CAN_ID_NUM			2
 		#if CAN_ID_NUM == 1
 		#define MOTOR_TYPE 				SUNNYSKY_X4125_9_KV350	
 		#define	PHASE_SEQUENCE			NEGATIVE_SEQUENCE		
@@ -69,7 +69,7 @@
 		#define GROUP_NUM           	0
 		#elif CAN_ID_NUM == 2
 		#define MOTOR_TYPE 				N5055_KV400	
-		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
+		#define	PHASE_SEQUENCE			NEGATIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
 		#define ENCODER_MODE			Encoder_AbsoluteMode
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8320
@@ -78,7 +78,7 @@
 		#define GROUP_NUM          		0
 		#elif CAN_ID_NUM == 3
 		#define MOTOR_TYPE 				TMOTOR_MN505_S_KV320	
-		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
+		#define	PHASE_SEQUENCE			NEGATIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
 		#define ENCODER_MODE			Encoder_AbsoluteMode
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8320
@@ -103,9 +103,9 @@
 	#define MOTOR_POLE_PAIRS					7.f
 	#define	MOTOR_KV							400.f
 	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * (MOTOR_POLE_PAIRS) * (MOTOR_KV)))
-	#define PHASE_RES						
-	#define INDUCTANCE_D	
-	#define INDUCTANCE_Q
+	#define PHASE_RES							0.0186698157f	//(Ohm)
+	#define INDUCTANCE_D						0.0000065f		//(H)
+	#define INDUCTANCE_Q						0.000012f		//(H)
 #elif	MOTOR_TYPE == TMOTOR_MN505_S_KV320
 	#define MOTOR_POLE_PAIRS					14.f
 	#define	MOTOR_KV							320.f

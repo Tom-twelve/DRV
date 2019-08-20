@@ -46,7 +46,7 @@ void MotorEnable(void)
 	PWM_IT_CMD(ENABLE,ENABLE);
 	
 	/*设定控制模式*/
-	MotorStaticParameter.ControlMode = SpeedControlMode;
+	MotorStaticParameter.ControlMode = VoltageControlMode;
 	
 	/*采用Id = 0控制, 故设定d轴电流为零*/
 	CurrLoop.ExptCurrD = 0.f;

@@ -282,17 +282,17 @@ void ADC_IRQHandler(void)
 	
 	switch(MotorStaticParameter.ControlMode)
 	{
-		case VoltageControlMode :	//MotorStaticParameter.PowerAngleComp_degree = 70.0f * CARRIER_PERIOD_s * PosSensor.EleAngularSpeed_degree;
+		case VoltageControlMode :	MotorStaticParameter.PowerAngleComp_degree = 70.0f * DEFAULT_CARRIER_PERIOD_s * PosSensor.EleAngularSpeed_degree;
 			
-									InverseParkTransform(2.0f, 0.0f, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);
+									InverseParkTransform(2.0f, 0.0f, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + 90.0f);
 									
 									SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
 
 									/*≤‚ ‘”√*/								
 									ParkTransform(CoordTrans.CurrA, CoordTrans.CurrB, CoordTrans.CurrC, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);
 						
-									UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrD * 1000));
-									UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrQ * 1000));
+//									UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrD * 1000));
+//									UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrQ * 1000)); 
 		
 									break;
 

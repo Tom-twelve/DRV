@@ -48,8 +48,9 @@
 
 /* USER CODE BEGIN Includes */
 #include "foc.h"
-#include "Encoder.h"
+#include "PositionSensor.h"
 #include "MotorConfig.h"
+#include "usart.h"
 /* USER CODE END Includes */
 
 extern CAN_HandleTypeDef hcan1;

@@ -182,7 +182,7 @@ float sqrt_DSP(float inputValue)
 	
 	return outputValue;
 }
-
+	
 /*Keil读取数据*/
 int TempDataArray[1000] = {0};
 int DataReadyFlag = 0;

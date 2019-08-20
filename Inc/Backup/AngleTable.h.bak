@@ -16,8 +16,10 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* CODE BEGIN Includes */
-#include "stm32f4xx_hal.h"
 #include "MotorConfig.h"
+#include "PositionSensor.h"
+#include "stm32f4xx_hal.h"
+
 /* CODE END Includes */
 
 /* Private define ------------------------------------------------------------*/

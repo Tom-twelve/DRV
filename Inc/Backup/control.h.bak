@@ -26,46 +26,56 @@
 /* USER CODE BEGIN PTD */
 
 /* USER CODE END PTD */
-struct CurrentLoop_t
+struct CurrLoop_t
 {
-	float ExpectedCurrentD;
-	float ExpectedCurrentQ;
-	float ControlVoltageD;
-	float ControlVoltageQ;
+	float ExptCurrD;
+	float ExptCurrQ;
+	float CtrlVolD;
+	float CtrlVolQ;
 	float Kp_D;
 	float Ki_D;
 	float Kp_Q;
 	float Ki_Q;
 };
 
-struct SpeedLoop_t
+struct SpdLoop_t
 {
-	float ExpectedMecAngularSpeed;	//degree per second
-	float Acceleration;
+	float ExptMecAngularSpeed;	//期望机械角速度(rad/s)
+	float Acceleration;		//加速度(rad/s2)
 	float Kp;
 	float Ki;
 };
 
-struct PositionLoop_t
+struct PosLoop_t
 {
-	float ExpectedMecAngle;	//degree
+	float ExptMecAngle;	//degree
 	float Kp;
 	float Kd;
 };
 
+struct Regulator_t
+{
+	float Kp;
+	float Ki;
+	float Kd;
+	float ActualPeriod_s;
+	int16_t TargetFSYNC;
+};
+
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define CurrentControlLoopIntegralErrorLimit_D 		2.5f	//(A)
+#define CURR_EXPT_LIM_Q					50.0f	//(A), 期望Iq限幅
 
-#define CurrentControlLoopIntegralErrorLimit_Q 		2.5f	//(A)
+#define CURR_INTEGRAL_ERR_LIM_D 		35.0f	//(A), Id控制器积分限幅
+#define CURR_INTEGRAL_ERR_LIM_Q 		10.0f	//(A), Iq控制器积分限幅
 
-#define SpeedControlLoopIntegralErrorLimit 			(10.0f * 2 * PI)		//(°/s)
+#define SPD_INTEGRAL_ERR_LIM			(10.0f * 2 * PI)		//(rad/s)
 
-#define CURRENT_CONTROL_KP_D			(InductanceD * 500.f)		//d轴电感 * 电流环截止频率
-#define CURRENT_CONTROL_KI_D			(PhaseResistance * 500.f)	//相电阻 * 电流环截止频率
+#define CURRENT_CONTROL_KP_D			(INDUCTANCE_D * 500.f)	//d轴电感 * 电流环截止频率
+#define CURRENT_CONTROL_KI_D			(PHASE_RES * 500.f)		//相电阻 * 电流环截止频率
 
-#define CURRENT_CONTROL_KP_Q			(InductanceQ * 500.f)		//q轴电感 * 电流环截止频率
-#define CURRENT_CONTROL_KI_Q			(PhaseResistance * 500.f)	//相电阻 * 电流环截止频率
+#define CURRENT_CONTROL_KP_Q			(INDUCTANCE_Q * 500.f)	//q轴电感 * 电流环截止频率
+#define CURRENT_CONTROL_KI_Q			(PHASE_RES * 500.f)		//相电阻 * 电流环截止频率
 
 #define SPEED_CONTROL_KP	
 #define SPEED_CONTROL_KI
@@ -73,13 +83,18 @@ struct PositionLoop_t
 #define POSITION_CONTROL_KP	
 #define POSITION_CONTROL_KD
 
-#define	VoltageControlMode 			0
-#define CurrentControlMode 			1
-#define SpeedControlMode 			2
-#define PositionControlMode 		3
+#define PERIOD_REGULATOR_KP (0.6 * 0.00596f)
+#define PERIOD_REGULATOR_KI (5 * 0.005952380952381 * DEFAULT_CARRIER_PERIOD_s)  // 前面两项为ki参数，由于PWM周期应该变化不大所以使用一常数
+#define PERIOD_REGULATOR_KD (5 * 0.005952380952381) // 参数待调（这个初值是通过简单的计算一下，假设偏差的差分出现了1的变动，改变多少周期粗略的估计的，并非使用KD = Kd / dt)
+#define PERIOD_REGULATOR_LIM			6	//载波周期调节器限幅值	
 
-#define WorkMode					1
-#define TestMode 					2
+#define	VoltageControlMode 				0
+#define CurrentControlMode 				1
+#define SpeedControlMode 				2
+#define PositionControlMode 			3
+
+#define WorkMode						1
+#define TestMode 						2
 
 /* USER CODE END PD */
 
@@ -87,11 +102,14 @@ struct PositionLoop_t
 /* USER CODE BEGIN PFP */
 
 void MotorEnable(void);
-void CurrentLoopController(float expectedCurrentD, float expectedCurrentQ, float realityCurrentD, float realityCurrentQ, float *controlVoltageD, float *controlVoltageQ);
-void SpeedLoopController(float expectedMecAngularSpeed, float realityMecAngularSpeed, float *controlCurrentQ);
-void PositionLoopController(float expectedMecAngle, float realityMecAngle, float *controlCurrentQ);
-float VelocitySlopeGenerator(float expectedVelocity);
-
+void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCurrQ, float *ctrlVolD, float *ctrlVolQ);
+void SpeedLoop(float expectedMecAngularSpeed, float realMecAngularSpeed, float *controlCurrentQ);
+void PositionLoop(float exptMecAngle, float realMecAngle, float *controlAngularSpeed);
+float VelocitySlopeGenerator(float exptVelocity);
+void CurrentController(void);
+void SpeedController(void);
+void PositionController(void);
+void PeriodRegulator(void);
 /* USER CODE END PFP */
 
 

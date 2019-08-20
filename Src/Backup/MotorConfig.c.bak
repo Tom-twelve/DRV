@@ -1,10 +1,10 @@
 /**
  ******************************************************************************
- * @file		tle5012.c
+ * @file		MotorConfig.c
  * @author		WrathWings
  * @version 	V1.0
  * @date		2019.1.17
- * @brief		Read and set the encoder TLE5012
+ * @brief		config motor
  ******************************************************************************
  * @attention
  *

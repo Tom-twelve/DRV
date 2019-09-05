@@ -38,7 +38,7 @@ extern struct PosSensor_t PosSensor;
  /** 
    * @brief		 Measure phase residence and inductance of axis q
    */
-void MeasurePhaseRes(float iq)
+void MeasurePhaseRes(float iq, uint16_t sampleTime)
 {
 	static uint8_t status = 0;
 	static int count = 0;
@@ -57,7 +57,7 @@ void MeasurePhaseRes(float iq)
 				}
 				break;
 		case 1:
-				CurrentLoop(0.f, , CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
+				CurrentLoop(0.f, iq, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
 				InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, eleAngle);
 				SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
 		

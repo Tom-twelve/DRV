@@ -1,0 +1,233 @@
+/**
+ ******************************************************************************
+ * @file		observer.c
+ * @author		WrathWings
+ * @version 	V1.0
+ * @date		2019.8.20
+ * @brief		State observer
+ ******************************************************************************
+ * @attention
+ *
+ ******************************************************************************
+ */
+ 
+ /* Private includes ----------------------------------------------------------*/
+/* CODE BEGIN Includes */
+#include "observer.h"
+/* CODE END Includes */
+
+/* Private typedef -----------------------------------------------------------*/
+/* CODE BEGIN PTD */
+
+/* CODE END PTD */
+
+/* Private variables ---------------------------------------------------------*/
+/* CODE BEGIN PV */
+
+/* CODE END PV */
+
+/* External variables --------------------------------------------------------*/
+/* USER CODE BEGIN EV */
+extern struct CoordTrans_t	CoordTrans;
+extern struct CurrLoop_t	CurrLoop;
+extern struct PosSensor_t PosSensor;
+/* USER CODE END EV */
+
+/* USER CODE BEGIN */
+
+ /** 
+   * @brief		 Measure phase residence and inductance of axis q
+   * @param[in]  currQ     		iq
+   * @param[in]  sample      	采样次数
+   */
+uint8_t MeasurePhaseRes(float currQ, uint16_t sample)
+{
+	static uint8_t state = 0;
+	static uint8_t sampleTimes = 0;
+	static uint8_t overFlag = 0;
+	static int residence = 0;
+	static int count = 0;
+	static float eleAngle = 0;
+	static float totalCurr = 0;
+	static float totalVol = 0;
+	
+	switch(state)
+	{
+		case 0:
+				count++;
+				if(count >= 10)
+				{
+					state++;
+					count = 0;
+				}
+				break;
+		case 1:
+				CurrentLoop(0.f, currQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
+				InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, eleAngle);
+				SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
+		
+				count++;
+		
+				if(count >= 10000)
+				{
+					totalCurr += sqrtf(SQUARE(CoordTrans.CurrD) + SQUARE(CoordTrans.CurrQ));
+					totalVol += sqrtf(SQUARE(CurrLoop.CtrlVolD) + SQUARE(CurrLoop.CtrlVolQ));
+					
+					sampleTimes++;
+					
+					if(sampleTimes >= sample && overFlag == 0)
+					{
+						residence = (totalVol / sample) / (totalCurr / sample) * 2.f / 3.f; 
+						UART_Transmit_DMA("phase resistor: %d",(int)(residence * 1e6));		SendBuf();	
+						
+						count = 0;
+						overFlag = 1;
+						
+						return 1;
+					}
+				}	
+				break;
+	}
+	
+	return 0;
+}
+
+ /** 
+   * @brief		 Measure phase residence and inductance of axis q
+   * @param[in]  carrierPeriod     	载波周期（us）
+   * @param[in]  sample      		采样次数
+   */
+uint8_t MeasurePhaseInductance(uint16_t carrierPeriod, uint16_t sample)
+{
+	const  uint8_t	offsetTimes = 5;
+	static uint8_t	state = 0;
+	static uint8_t	overFlag = 0;
+	static uint16_t sampleTimes = 0;
+	static uint32_t tim8_arr = 0;
+	static uint32_t count = 0;
+	static float	inductance = 0;
+	static float	eleAngle = 0;
+	static float	totalCurr = 0;
+	
+	tim8_arr = carrierPeriod * 90 - 1;
+	
+	count++;
+	
+	if(count >= 50)
+	{		
+		TIM8->ARR = tim8_arr;
+		TIM8->CCR4 = 0;
+		
+		if(sampleTimes < sample)
+		{
+			switch(state)
+			{
+				case 0:
+					CCR_PhaseA = 0;
+					CCR_PhaseB = 0;
+					CCR_PhaseC = 0;
+					state++;
+					break;
+				case 1:
+					CCR_PhaseA = 0;
+					CCR_PhaseB = tim8_arr;
+					CCR_PhaseC = tim8_arr;
+					state++;
+					break;
+				case 2:
+					if(sampleTimes >= offsetTimes)
+					{
+						totalCurr += CoordTrans.CurrA;
+					}
+					CCR_PhaseA = 0;
+					CCR_PhaseB = 0;
+					CCR_PhaseC = 0;
+					sampleTimes++;
+					state++;
+					break;
+				case 3:
+					/*此周期无操作，等待线圈电流归零*/
+					state++;
+					break;
+				case 4:
+					CCR_PhaseA = tim8_arr;
+					CCR_PhaseB = 0;
+					CCR_PhaseC = tim8_arr;
+					state++;
+					break;
+				case 5:
+					if(sampleTimes >= offsetTimes)
+					{
+						totalCurr += CoordTrans.CurrB;
+					}
+					CCR_PhaseA = 0;
+					CCR_PhaseB = 0;
+					CCR_PhaseC = 0;
+					sampleTimes++;
+					state++;
+					break;
+				case 6:
+					/*此周期无操作，等待线圈电流归零*/
+					state++;
+					break;
+				case 7:
+					CCR_PhaseA = tim8_arr;
+					CCR_PhaseB = tim8_arr;
+					CCR_PhaseC = 0;
+					state++;					
+					break;
+				case 8:
+					if(sampleTimes >= offsetTimes)
+					{
+						totalCurr += CoordTrans.CurrA + CoordTrans.CurrB;
+					}
+					CCR_PhaseA = 0;
+					CCR_PhaseB = 0;
+					CCR_PhaseC = 0;
+					sampleTimes++;
+					state++;				
+					break;
+				case 9:
+					state = 0;
+					count = 0;
+					break;
+			}
+		}
+		else
+		{
+			CCR_PhaseA = 0;
+			CCR_PhaseB = 0;
+			CCR_PhaseC = 0;
+			
+			if(overFlag == 0)
+			{
+				inductance = (GENERATRIX_VOL * carrierPeriod) / (totalCurr / (sampleTimes - offsetTimes));
+				UART_Transmit_DMA("phase inductance: %d",(int)(inductance * 1e6));		SendBuf();	
+				
+				overFlag = 1;
+				
+				return	1;
+			}
+			
+		}
+	}
+	
+	return 0;
+}
+
+void MeasureParameters(void)
+{
+	static uint8_t overFlag = 0;
+	
+	if(overFlag == 0)
+	{
+		overFlag = MeasurePhaseRes(15.f, 100);
+	}
+	else if(overFlag == 1)
+	{
+		MeasurePhaseInductance(20, 200);
+	}
+}
+/* USER CODE END */
+
+/************************ (C) COPYRIGHT ACTION *****END OF FILE****/

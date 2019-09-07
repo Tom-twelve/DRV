@@ -483,6 +483,11 @@
               <FileType>1</FileType>
               <FilePath>..\Src\observer.c</FilePath>
             </File>
+            <File>
+              <FileName>identify.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\identify.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

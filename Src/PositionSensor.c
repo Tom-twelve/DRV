@@ -105,7 +105,6 @@
 		const uint8_t FilterOrder = 6;
 		static float array[FilterOrder] = {0};
 		static uint8_t pos = 0;
-		static float data = 0.f;
 		static float sum = 0.f;
 		static float avg = 0.f;
 		static float old = 0.f;

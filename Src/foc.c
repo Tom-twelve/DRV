@@ -128,39 +128,39 @@ void SpaceVectorModulation(float volAlpha, float volBeta)
 	
 	switch (sectionFlag)
 	{
-	case 3:  CCR_PhaseA = TA; 
-			 CCR_PhaseB = TB; 
-			 CCR_PhaseC = TC; 
+	case 3:  CCR_PHASE_A = TA; 
+			 CCR_PHASE_B = TB; 
+			 CCR_PHASE_C = TC; 
 			 break;
 
-	case 1:  CCR_PhaseA = TB; 
-			 CCR_PhaseB = TA; 
-			 CCR_PhaseC = TC; 
+	case 1:  CCR_PHASE_A = TB; 
+			 CCR_PHASE_B = TA; 
+			 CCR_PHASE_C = TC; 
 			 break;
 
-	case 5:  CCR_PhaseA = TC; 
-			 CCR_PhaseB = TA; 
-			 CCR_PhaseC = TB; 
+	case 5:  CCR_PHASE_A = TC; 
+			 CCR_PHASE_B = TA; 
+			 CCR_PHASE_C = TB; 
 			 break; 
 
-	case 4:  CCR_PhaseA = TC; 
-			 CCR_PhaseB = TB; 
-			 CCR_PhaseC = TA; 
+	case 4:  CCR_PHASE_A = TC; 
+			 CCR_PHASE_B = TB; 
+			 CCR_PHASE_C = TA; 
 			 break; 
 
-	case 6:  CCR_PhaseA = TB; 
-			 CCR_PhaseB = TC; 
-			 CCR_PhaseC = TA; 
+	case 6:  CCR_PHASE_A = TB; 
+			 CCR_PHASE_B = TC; 
+			 CCR_PHASE_C = TA; 
 			 break;
 
-	case 2:  CCR_PhaseA = TA; 
-			 CCR_PhaseB = TC; 
-			 CCR_PhaseC = TB; 
+	case 2:  CCR_PHASE_A = TA; 
+			 CCR_PHASE_B = TC; 
+			 CCR_PHASE_C = TB; 
 			 break;
 
-	default: CCR_PhaseA = TIM8_ARR; 
-			 CCR_PhaseB = TIM8_ARR; 
-			 CCR_PhaseC = TIM8_ARR; 
+	default: CCR_PHASE_A = TIM8_ARR; 
+			 CCR_PHASE_B = TIM8_ARR; 
+			 CCR_PHASE_C = TIM8_ARR; 
 			 break;
 	}
 }
@@ -256,7 +256,7 @@ void PowerAngleComp(float expectedCurrentQ, float *powerAngleComp_degree)
 {
 	float PowerAngleComp_rad = 0;
 	
-	PowerAngleComp_rad = arcsine((-2 * (INDUCTANCE_D - INDUCTANCE_Q) * expectedCurrentQ) / (ROTATOR_FLUX_LINKAGE + sqrt_DSP(Square(ROTATOR_FLUX_LINKAGE) + 8 * Square(INDUCTANCE_D - INDUCTANCE_Q) * Square(expectedCurrentQ))));
+	PowerAngleComp_rad = arcsine((-2 * (INDUCTANCE_D - INDUCTANCE_Q) * expectedCurrentQ) / (ROTATOR_FLUX_LINKAGE + sqrt_DSP(SQUARE(ROTATOR_FLUX_LINKAGE) + 8 * SQUARE(INDUCTANCE_D - INDUCTANCE_Q) * SQUARE(expectedCurrentQ))));
 
 	*powerAngleComp_degree = PowerAngleComp_rad * 360.f	/ (2 * PI);
 }

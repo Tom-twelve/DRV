@@ -72,13 +72,13 @@ struct MotorStaticParameter_t
 #define ADC_ExternalTrigger_CCR				(TIM8_ARR - 12)	//通过TIM8_CH4触发ADC, 超前量为ADC采样所需时间
 
 #if		PHASE_SEQUENCE == POSITIVE_SEQUENCE
-#define CCR_PhaseA      	TIM8->CCR3
-#define CCR_PhaseB          TIM8->CCR2
-#define CCR_PhaseC          TIM8->CCR1
+#define CCR_PHASE_A      	 TIM8->CCR3
+#define CCR_PHASE_B          TIM8->CCR2
+#define CCR_PHASE_C          TIM8->CCR1
 #elif	PHASE_SEQUENCE == NEGATIVE_SEQUENCE
-#define CCR_PhaseA          TIM8->CCR1
-#define CCR_PhaseB          TIM8->CCR2
-#define CCR_PhaseC          TIM8->CCR3
+#define CCR_PHASE_A          TIM8->CCR1
+#define CCR_PHASE_B          TIM8->CCR2
+#define CCR_PHASE_C          TIM8->CCR3
 #else
 #error "Phase Sequence Invalid"
 #endif

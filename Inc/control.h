@@ -64,18 +64,18 @@ struct Regulator_t
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define CURR_EXPT_LIM_Q					35.0f	//(A), 期望Iq限幅
+#define CURR_EXPT_LIM_Q					15.0f	//(A), 期望Iq限幅
 
 #define CURR_INTEGRAL_ERR_LIM_D 		5.0f	//(A), Id控制器积分限幅
 #define CURR_INTEGRAL_ERR_LIM_Q 		5.0f	//(A), Iq控制器积分限幅
 
-#define SPD_INTEGRAL_ERR_LIM			(10.0f * 2 * PI)		//(rad/s)
+#define SPD_INTEGRAL_ERR_LIM			(15.0f * 2 * PI)		//(rad/s)
 
 #define CURRENT_CONTROL_KP_D			(INDUCTANCE_Q * 1500.f)	//q轴电感 * 电流环带宽
-#define CURRENT_CONTROL_KI_D			(PHASE_RES * 1500.f)		//相电阻 * 电流环带宽
+#define CURRENT_CONTROL_KI_D			(PHASE_RES * 1500.f)	//相电阻 * 电流环带宽
 
 #define CURRENT_CONTROL_KP_Q			(INDUCTANCE_Q * 1500.f)	//q轴电感 * 电流环带宽
-#define CURRENT_CONTROL_KI_Q			(PHASE_RES * 1500.f)		//相电阻 * 电流环带宽
+#define CURRENT_CONTROL_KI_Q			(PHASE_RES * 1500.f)	//相电阻 * 电流环带宽
 
 #define SPEED_CONTROL_KP	
 #define SPEED_CONTROL_KI
@@ -88,9 +88,9 @@ struct Regulator_t
 #define PERIOD_REGULATOR_KD 			(5 * 0.005952380952381) // 参数待调（这个初值是通过简单的计算一下，假设偏差的差分出现了1的变动，改变多少周期粗略的估计的，并非使用KD = Kd / dt)
 #define PERIOD_REGULATOR_LIM			6	//载波周期调节器限幅值	
 
-#define	VOL_CTRL_MODE 				0
-#define SPD_CURR_CTRL_MODE 			1
-#define POS_SPD_CURR_CTRL_MODE 		2
+#define	VOL_CTRL_MODE 					0
+#define SPD_CURR_CTRL_MODE 				1
+#define POS_SPD_CURR_CTRL_MODE 			2
 
 #define WORK_MODE						1
 #define MEASURE_ANGLE_TABLE_MODE		2
@@ -109,7 +109,6 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 void SpeedLoop(float expectedMecAngularSpeed, float realMecAngularSpeed, float *controlCurrentQ);
 void PositionLoop(float exptMecAngle, float realMecAngle, float *controlAngularSpeed);
 float VelocitySlopeGenerator(float exptVelocity);
-float CurrentExpectedLimit(float exptCurr);
 void CurrentController(void);
 void SpeedController(void);
 void PositionController(void);

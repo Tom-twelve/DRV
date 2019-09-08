@@ -291,7 +291,6 @@ void ADC_IRQHandler(void)
 										/*测试用*/								
 										ParkTransform(CoordTrans.CurrA, CoordTrans.CurrB, CoordTrans.CurrC, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + Driver.PowerAngleComp_degree);
 							
-										//UART_Transmit_DMA("%d\t", (int)(MotorStaticParameter.PowerAngleComp_degree * 1000));
 										UART_Transmit_DMA("%d\r\n",(int)(Driver.PowerAngleComp_degree * 1000)); 
 			
 										break;
@@ -302,8 +301,8 @@ void ADC_IRQHandler(void)
 										/*电流控制器, 包括Clark变换, Park变换, 电流PI控制器, RevPark变换, SVPWM算法*/
 										CurrentController();
 										
-										UART_Transmit_DMA("%d\t", (int)(CurrLoop.CtrlVolD * 1000));
-										UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrD * 1000));
+										UART_Transmit_DMA("%d\t", (int)(PosSensor.MecAngularSpeed_rad));
+										UART_Transmit_DMA("%d\r\n",(int)(PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE * 1000));
 			
 										break;
 			

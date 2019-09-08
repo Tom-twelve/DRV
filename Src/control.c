@@ -93,9 +93,9 @@ void CurrentLoopInit(void)
 void SpeedLoopInit(void)
 {
 	/*设定速度环PI参数*/
-	SpdLoop.Kp = 1.0f;	
-	SpdLoop.Ki = 0.0f;
-	SpdLoop.ExptMecAngularSpeed = 25.f * 2 * PI;	//期望速度，degree per second
+	SpdLoop.Kp = 1.5f;	
+	SpdLoop.Ki = 0.1f;
+	SpdLoop.ExptMecAngularSpeed = 100.f * 2 * PI;	//期望速度，degree per second
 	SpdLoop.Acceleration = 5000.f * 2 * PI;	//期望加速度，degree per quadratic seconds
 }
 
@@ -135,30 +135,15 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 	integralErrQ += errQ * Regulator.ActualPeriod_s;
 	
 	/*积分限幅*/
-	if(integralErrD >= CURR_INTEGRAL_ERR_LIM_D)
-	{
-		integralErrD = CURR_INTEGRAL_ERR_LIM_D;
-	}
-	
-	else if(integralErrD <= - CURR_INTEGRAL_ERR_LIM_D)
-	{
-		integralErrD = - CURR_INTEGRAL_ERR_LIM_D;
-	}
-	
-	if(integralErrQ >= CURR_INTEGRAL_ERR_LIM_Q)
-	{
-		integralErrQ = CURR_INTEGRAL_ERR_LIM_Q;
-	}
-	
-	else if(integralErrQ <= - CURR_INTEGRAL_ERR_LIM_Q)
-	{
-		integralErrQ = - CURR_INTEGRAL_ERR_LIM_Q;
-	}
+	AmplitudeLimit(&integralErrD, CURR_INTEGRAL_ERR_LIM_D, -CURR_INTEGRAL_ERR_LIM_D);
+	AmplitudeLimit(&integralErrQ, CURR_INTEGRAL_ERR_LIM_Q, -CURR_INTEGRAL_ERR_LIM_Q);
 	
 	/*转速前馈*/ 
-
-//	*ctrlVolD = *ctrlVolD - PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ;
-//	*ctrlVolQ = *ctrlVolQ + CoordTrans.CurrQ * PHASE_RES + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
+	*ctrlVolD = *ctrlVolD - PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ;
+	*ctrlVolQ = *ctrlVolQ + CoordTrans.CurrQ * PHASE_RES + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
+	
+	/*电流环d轴电流限幅, 若限幅过宽启动时振动严重*/
+	AmplitudeLimit(ctrlVolD, 1.0f, -1.0f);
 }
 
  /**
@@ -188,6 +173,9 @@ void SpeedLoop(float exptMecAngularSpeed, float realMecAngularSpeed, float *ctrl
 	{
 		integralErr = -SPD_INTEGRAL_ERR_LIM;
 	}
+	
+	/*速度环输出限幅*/
+	AmplitudeLimit(ctrlCurrQ, CURR_EXPT_LIM_Q, -CURR_EXPT_LIM_Q);
 }
 
  /**
@@ -236,30 +224,6 @@ float VelocitySlopeGenerator(float exptVelocity)
 }
 
  /**
-   * @brief  电流环输入限幅
-   * @param[in]  exptCurr      期望Iq
-   */
-float CurrentExpectedLimit(float exptCurr)
-{
-	if(exptCurr >= CURR_EXPT_LIM_Q)
-	{
-		exptCurr = CURR_EXPT_LIM_Q;
-	}
-	
-	else if(exptCurr <= -CURR_EXPT_LIM_Q)
-	{
-		exptCurr = -CURR_EXPT_LIM_Q;
-	}
-	
-	else
-	{
-		exptCurr = exptCurr;
-	}
-	
-	return exptCurr;
-}
-
- /**
    * @brief  电流控制器
    */
 void CurrentController(void)
@@ -268,7 +232,7 @@ void CurrentController(void)
 	ParkTransform(CoordTrans.CurrA, CoordTrans.CurrB, CoordTrans.CurrC, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree);
 	
 	/*电流环PI控制器*/
-	CurrentLoop(CurrLoop.ExptCurrD, CurrentExpectedLimit(CurrLoop.ExptCurrQ), CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
+	CurrentLoop(CurrLoop.ExptCurrD, CurrLoop.ExptCurrQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
 	
 	/*进行逆Park变换, 将转子坐标系下的dq轴电压转换为定子坐标系下的AlphaBeta轴电压*/
 	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree);
@@ -350,7 +314,7 @@ void PeriodRegulator(void)
 	Regulator.ActualPeriod_s = PWMPeriod_PID * 1e-6;
 	
 	/*改变定时器的ARR寄存器，实际改变周期*/
-	TIM1->ARR = RegulatedARR - 1;
+	TIM8->ARR = RegulatedARR - 1;
 }
 
 /* USER CODE END */

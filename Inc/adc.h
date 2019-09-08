@@ -37,7 +37,8 @@ extern ADC_HandleTypeDef hadc3;
 /* USER CODE BEGIN Private defines */
 
 #define CurrentAmplifierGain 			40.0f
-#define HallSensor_ACS781_150A_Gain		0.0088f	//V/A
+#define HallSensor_ACS781_50A_Gain		0.0264f	// V/A
+#define HallSensor_ACS781_150A_Gain		0.0088f	// V/A	
 
 /* USER CODE END Private defines */
 

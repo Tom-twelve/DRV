@@ -57,4 +57,4 @@ stm32f446\ bldcm\ control/stm32f4xx_it.o: ../Src/stm32f4xx_it.c \
   ../Inc/spi.h ../Inc/MotorConfig.h ../Inc/AngleTable.h ../Inc/util.h \
   D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdbool.h ../Inc/control.h \
   ../Inc/usart.h D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdarg.h \
-  ../Inc/GateDriver.h
+  ../Inc/GateDriver.h ../Inc/identify.h

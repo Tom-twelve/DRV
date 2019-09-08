@@ -35,7 +35,7 @@ struct Regulator_t Regulator;
 /* USER CODE BEGIN EV */
 extern struct CoordTrans_t CoordTrans;
 extern struct PosSensor_t PosSensor;
-extern struct MotorStaticParameter_t MotorStaticParameter;
+extern struct Driver_t Driver;
 /* USER CODE END EV */
 
 /* USER CODE BEGIN */
@@ -46,12 +46,12 @@ void DriverInit(void)
 	PWM_IT_CMD(ENABLE,ENABLE);
 	
 	/*设定控制模式*/
-	MotorStaticParameter.ControlMode = SPD_CURR_CTRL_MODE;
+	Driver.ControlMode = SPD_CURR_CTRL_MODE;
 	
 	/*采用Id = 0控制, 故设定d轴电流为零*/
 	CurrLoop.ExptCurrD = 0.f;
 	
-	switch(MotorStaticParameter.ControlMode)
+	switch(Driver.ControlMode)
 	{
 		case VOL_CTRL_MODE :			/*测试用*/
 		
@@ -121,8 +121,6 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 {
 	float errD = 0;
 	float errQ = 0;
-	float ctrlCurrD = 0;
-	float ctrlCurrQ = 0;
 	static float integralErrD = 0;
 	static float integralErrQ = 0;
 	
@@ -130,8 +128,8 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 	errQ = exptCurrQ - realCurrQ;
 	
 	/*PI控制器*/
-	ctrlCurrD = CurrLoop.Kp_D * errD + CurrLoop.Ki_D * integralErrD;
-	ctrlCurrQ = CurrLoop.Kp_Q * errQ + CurrLoop.Ki_Q * integralErrQ;
+	*ctrlVolD = CurrLoop.Kp_D * errD + CurrLoop.Ki_D * integralErrD;
+	*ctrlVolQ = CurrLoop.Kp_Q * errQ + CurrLoop.Ki_Q * integralErrQ;
 	
 	integralErrD += errD * Regulator.ActualPeriod_s;
 	integralErrQ += errQ * Regulator.ActualPeriod_s;
@@ -157,10 +155,10 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 		integralErrQ = - CURR_INTEGRAL_ERR_LIM_Q;
 	}
 	
-	/*转速前馈*/
+	/*转速前馈*/ 
 
-	*ctrlVolD = ctrlCurrD * PHASE_RES + CoordTrans.CurrD * PHASE_RES - PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ;
-	*ctrlVolQ = ctrlCurrQ * PHASE_RES + CoordTrans.CurrQ * PHASE_RES + PosSensor.EleAngularSpeed_rad * INDUCTANCE_D * CoordTrans.CurrD + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
+//	*ctrlVolD = *ctrlVolD - PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ;
+//	*ctrlVolQ = *ctrlVolQ + CoordTrans.CurrQ * PHASE_RES + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
 }
 
  /**

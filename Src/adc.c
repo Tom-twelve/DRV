@@ -393,6 +393,10 @@ void GetPhaseCurrent(void)
 	CoordTrans.CurrA = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseA / 4096.f) / CurrentAmplifierGain) / 0.002f;
 	CoordTrans.CurrB = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseB / 4096.f) / CurrentAmplifierGain) / 0.002f;
 	CoordTrans.CurrC = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseC / 4096.f) / CurrentAmplifierGain) / 0.002f;
+	#elif CURRENT_SENSOR == HALL_CURR_SENSOR_ACS781_50A
+	CoordTrans.CurrA = - (3.3f * (float)ADC_CurrentConvertedValue_PhaseA / 4096.f - 1.65f) / HallSensor_ACS781_50A_Gain;
+	CoordTrans.CurrB = - (3.3f * (float)ADC_CurrentConvertedValue_PhaseB / 4096.f - 1.65f) / HallSensor_ACS781_50A_Gain;
+	CoordTrans.CurrC = - (3.3f * (float)ADC_CurrentConvertedValue_PhaseC / 4096.f - 1.65f) / HallSensor_ACS781_50A_Gain;
 	#elif CURRENT_SENSOR == HALL_CURR_SENSOR_ACS781_150A
 	CoordTrans.CurrA = (3.3f * (float)ADC_CurrentConvertedValue_PhaseA / 4096.f - 1.65f) / HallSensor_ACS781_150A_Gain;
 	CoordTrans.CurrB = (3.3f * (float)ADC_CurrentConvertedValue_PhaseB / 4096.f - 1.65f) / HallSensor_ACS781_150A_Gain;

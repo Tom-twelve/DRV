@@ -19,7 +19,7 @@
 /* Private typedef -----------------------------------------------------------*/
 /* CODE BEGIN PTD */
 #if POSITION_SENSOR_TYPE == ENCODER_TLE5012
-	#if ENCODER_MODE == Encoder_AbsoluteMode
+	#if ENCODER_MODE == ENCODER_ABSOLUTE_MODE
 		#if ROBOT_ID == 1U
 			#if CAN_ID_NUM == 1
 			const short int EleAngleRef[] = 
@@ -1173,7 +1173,7 @@
 			};
 			#endif
 		#endif
-	#elif ENCODER_MODE == Encoder_IncrementalMode
+	#elif ENCODER_MODE == ENCODER_INCREMENTAL_MODE
 		#if ROBOT_ID == 1U
 			#if CAN_ID_NUM == 1
 			const short int EleAngleRef[] = 

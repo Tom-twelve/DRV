@@ -31,6 +31,7 @@
 extern struct CoordTrans_t	CoordTrans;
 extern struct CurrLoop_t	CurrLoop;
 extern struct PosSensor_t PosSensor;
+
 /* USER CODE END EV */
 
 /* USER CODE BEGIN */
@@ -63,6 +64,7 @@ uint8_t MeasureResidence(float targetSampleTimes, float currQ, float *residence)
 			}
 			break;
 		case 1:
+			ParkTransform(CoordTrans.CurrA, CoordTrans.CurrB, CoordTrans.CurrC, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree);
 			CurrentLoop(0.f, currQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
 			InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree);
 			SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
@@ -90,139 +92,145 @@ uint8_t MeasureResidence(float targetSampleTimes, float currQ, float *residence)
   /** 
    * @brief		 Measure phase inductance
    * @param[in]  targetSampleTimes     	期望采样次数
-   * @param[in]  currQ      		    
+   * @param[in]  duty      		    
    * @param[out] inductance 				相电感
    */
-uint8_t MeasureInductance(float sampleTimes, float duty,float *inductance)
+uint8_t MeasureInductance(float targetSampleTimes, float duty,float *inductance)
 {
-		static uint8_t inducState = 0;
 	//duty 需要大于0.2
-	static float V = 24.f; 
-	int dutyCnt = duty * PWM_N - 1;
-	static int sampleTime = 0;
-	static float tot_current = 0;
-//	static float currentRecord[3][SAMPLE] = {0};
+	
+	const uint8_t sampleOffsetTimes = 0;
+	const uint32_t dutyCnt = duty * TIM8_ARR - 1;
+	static uint8_t inductanceState = 0;
 	static uint8_t sendFlag = 0;
-	static int count = 0;
-#define TEST_OFFSET 5	
+	static uint16_t sampleTime = 0;
+	static uint32_t count = 0;
+	static float totalCurr = 0;
 
 	count++;
+	
 	if(count >= 50)
 	{		
 		TIM1->ARR = dutyCnt;
 		TIM1->CCR4 = dutyCnt-1;
-		if(sampleTime < sample)
+		if(sampleTime < targetSampleTimes)
 		{
-			switch(inducState)
+			switch(inductanceState)
 			{
 				case 0:
-					APHASE = 0;
-					BPHASE = 0;
-					CPHASE = 0;
-					inducState++;
+					CCR_PHASE_A = 0;
+					CCR_PHASE_B = 0;
+					CCR_PHASE_C = 0;
+					inductanceState++;
 					break;
 				case 1:
 #if PHASE_SEQUENCE == POSITIVE_SEQUENCE			
-					APHASE = 0;
-					BPHASE = dutyCnt;
-					CPHASE = dutyCnt;
-					inducState++;
-#elif PHASE_SEQUENCE ==  NEGATIVE_SEQUENCE
-					APHASE = dutyCnt;
-					BPHASE = 0;
-					CPHASE = 0;
-					inducState++;
+					CCR_PHASE_A = 0;
+					CCR_PHASE_B = dutyCnt;
+					CCR_PHASE_C = dutyCnt;
+					inductanceState++;
+#elif PHASE_SEQUENCE == NEGATIVE_SEQUENCE
+					CCR_PHASE_A = dutyCnt;
+					CCR_PHASE_B = 0;
+					CCR_PHASE_C = 0;
+					inductanceState++;
 #endif
 					break;
 				case 2:
-					if(sampleTime >= TEST_OFFSET)
+					if(sampleTime >= sampleOffsetTimes)
 #if PHASE_SEQUENCE == POSITIVE_SEQUENCE		
-						tot_current += Driver.Status.StateCurrent.ia;
+						totalCurr += CoordTrans.CurrA;
 #elif PHASE_SEQUENCE == NEGATIVE_SEQUENCE
-						tot_current += -Driver.Status.StateCurrent.ia;
+						totalCurr += -CoordTrans.CurrA;
 #endif					
-//					currentRecord[0][sampleTime] = Driver.Status.StateCurrent.ia;
-					APHASE = 0;
-					BPHASE = 0;
-					CPHASE = 0;
+					CCR_PHASE_A = 0;
+					CCR_PHASE_B = 0;
+					CCR_PHASE_C = 0;
 					sampleTime++;
-					inducState++;
+					inductanceState++;
+					
 					break;
 				case 3:
-					inducState++;
+					inductanceState++;
+				
 					break;
 				case 4:
-					APHASE = dutyCnt;
-					BPHASE = 0;
-					CPHASE = dutyCnt;
-					inducState++;
+					CCR_PHASE_A = dutyCnt;
+					CCR_PHASE_B = 0;
+					CCR_PHASE_C = dutyCnt;
+					inductanceState++;
 					break;
 				case 5:
-					if(sampleTime >= TEST_OFFSET)
-						tot_current += Driver.Status.StateCurrent.ib;
-//					currentRecord[1][sampleTime] = Driver.Status.StateCurrent.ib;
-					APHASE = 0;
-					BPHASE = 0;
-					CPHASE = 0;
+					if(sampleTime >= sampleOffsetTimes)
+					{
+						totalCurr += CoordTrans.CurrB;
+					}
+					CCR_PHASE_A = 0;
+					CCR_PHASE_B = 0;
+					CCR_PHASE_C = 0;
+					
 					sampleTime++;
-					inducState++;
+					inductanceState++;
+					
 					break;
 				case 6:
-					inducState = 7;
+					inductanceState = 7;
+				
 					break;
 				case 7:
 #if PHASE_SEQUENCE == POSITIVE_SEQUENCE		
-					APHASE = 0;
-					BPHASE = 0;
-					CPHASE = dutyCnt;
-					inducState++;		
-#elif PHASE_SEQUENCE ==  NEGATIVE_SEQUENCE
-					APHASE = dutyCnt;
-					BPHASE = dutyCnt;
-					CPHASE = 0;
-					inducState++;
+					CCR_PHASE_A = 0;
+					CCR_PHASE_B = 0;
+					CCR_PHASE_C = dutyCnt;
+				
+					inductanceState++;		
+#elif PHASE_SEQUENCE == NEGATIVE_SEQUENCE
+					CCR_PHASE_A = dutyCnt;
+					CCR_PHASE_B = dutyCnt;
+					CCR_PHASE_C = 0;
+				
+					inductanceState++;
 #endif				
 					break;
 				case 8:
-					if(sampleTime >= TEST_OFFSET)
-#if PHASE_SEQUENCE == POSITIVE_SEQUENCE	
-						tot_current +=  -Driver.Status.StateCurrent.ic;
-#elif	PHASE_SEQUENCE == NEGATIVE_SEQUENCE	
-						tot_current +=  Driver.Status.StateCurrent.ic;//(Driver.Status.StateCurrent.ia + Driver.Status.StateCurrent.ib);		
-#endif
-//					currentRecord[2][sampleTime] = Driver.Status.StateCurrent.ic;
-					APHASE = 0;
-					BPHASE = 0;
-					CPHASE = 0;
+					if(sampleTime >= sampleOffsetTimes)
+					{
+						#if PHASE_SEQUENCE == POSITIVE_SEQUENCE	
+						totalCurr +=  -CoordTrans.CurrC;
+						#elif	PHASE_SEQUENCE == NEGATIVE_SEQUENCE	
+						totalCurr +=  CoordTrans.CurrC;		
+						#endif
+					}
+					
+					CCR_PHASE_A = 0;
+					CCR_PHASE_B = 0;
+					CCR_PHASE_C = 0;
+					
 					sampleTime++;
-					inducState++;				
+					inductanceState++;	
+					
 					break;
 				case 9:
-					inducState = 0;
+					inductanceState = 0;
 					count = 0;
+				
 					break;
 			}
 		}
 		else
 		{
-			APHASE = 0;
-			BPHASE = 0;
-			CPHASE = 0;
+			CCR_PHASE_A = 0;
+			CCR_PHASE_B = 0;
+			CCR_PHASE_C = 0;
+			
 			if(sendFlag == 0)
 			{
-				*ind = (V - (tot_current / (sampleTime - TEST_OFFSET) * Driver.Status.StateStruct.res)) * (1 * duty * Driver.System.SysPeriod.s) / (tot_current / (sampleTime - TEST_OFFSET))  * 2.f / 3.f;
-//				DMAPRINTF("%d %d %d\r\n",(int)(induc*1e6),(int)(tot_current / (sampleTime - TEST_OFFSET)*1e6),(int)(duty*10));
-//				for(int i = 0; i < SAMPLE;i++)	
-//				{
-//					DMAPRINTF("%d %d %d\r\n",(int)(currentRecord[0][i] * 1000.f),(int)(currentRecord[1][i] * 1000.f),(int)(currentRecord[2][i] * 1000.f));
-					sendFlag = 1;
-//				}
-//				resistor = voltage / (tot_current / (sampleTime - TEST_OFFSET))*1e6 * 2.f / 3.f;
-//				DMAPRINTF("%d %d\r\n",(int)(resistor),(int)(tot_current / (sampleTime - TEST_OFFSET)*1e6));SendBuf();
+				*inductance = GENERATRIX_VOL * (duty * DEFAULT_CARRIER_PERIOD_s) / (totalCurr / (sampleTime - sampleOffsetTimes))  * 2.f / 3.f;
+				
+				sendFlag = 1;
 			}
 			else if(sendFlag == 1)
 			{
-//				SendBuf();
 				sendFlag = 2;
 			}
 			else if(sendFlag == 2)
@@ -239,8 +247,8 @@ uint8_t MeasureInductance(float sampleTimes, float duty,float *inductance)
    */
 void MeasureParameters(void)
 {
-	float residence = 0;
-	float inductance = 0;
+	static float residence = 0;
+	static float inductance = 0;
 	static int state = 0;
 	static int flag = 0;
 	static int wait = 0;
@@ -278,7 +286,10 @@ void MeasureParameters(void)
 			}
 			break;
 		case 4:
-			UART_Transmit_DMA("phase residence: %d uOhm\t phase inductance: %d uH\r\n",(int)(residence * 1e6),(int)(inductance * 1e6));	SendBuf();			
+			UART_Transmit_DMA("\r\nphase residence: %d uOhm \t phase inductance: %d uH \r\n",(int)(residence * 1e6),(int)(inductance * 1e6));	
+			PutStr("\r\nParameters Measure Over \r\n");	
+			SendBuf();
+		
 			state++;
 			break;
 	}

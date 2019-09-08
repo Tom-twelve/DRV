@@ -36,7 +36,7 @@
 
 uint8_t MeasureResidence(float sampleTimes, float current, float *residence);
 uint8_t MeasureInductance(float sampleTimes, float duty,float *inductance);
-
+void MeasureParameters(void);
 /* USER CODE END PFP */
 
 

@@ -24,8 +24,7 @@
 /* Private variables ---------------------------------------------------------*/
 /* CODE BEGIN PV */
 struct CoordTrans_t	CoordTrans;
-struct MotorDynamicParameter_t		MotorDynamicParameter;
-struct MotorStaticParameter_t		MotorStaticParameter;
+struct Driver_t		Driver;
 	
 /* CODE END PV */
 

@@ -77,7 +77,7 @@
 
 /* USER CODE BEGIN PV */
 extern uint16_t DRV8323_SPI3_RxDataTemp;
-extern struct  MotorStaticParameter_t MotorStaticParameter;
+extern struct Driver_t Driver;
 extern struct  CoordinateTransformation_t CoordinateTransformation;
 /* USER CODE END PV */
 
@@ -100,7 +100,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
-	MotorStaticParameter.MotorMode = WORK_MODE;	//设定模式, 正常工作或测定电角度 ( WORK_MODE or MEASURE_MODE )
+	Driver.UnitMode = WORK_MODE;	//设定模式, 正常工作或测定电角度 ( WORK_MODE or MEASURE_ANGLE_TABLE_MODE or MEASURE_PARAM_MODE )
 	
   /* USER CODE END 1 */
   
@@ -150,7 +150,7 @@ int main(void)
 	/*初始化栅极驱动器*/
 	GateDriverConfig();
 
-	#if ENCODER_MODE == Encoder_IncrementalMode
+	#if ENCODER_MODE == ENCODER_INCREMENTAL_MODE
 	
 	/*使能增量式*/
 	EncoderIncrementalModeEnable();
@@ -160,13 +160,16 @@ int main(void)
 	/*使能PWM, 设定参数*/
 	DriverInit();
 	
-	switch(MotorStaticParameter.MotorMode)
+	switch(Driver.UnitMode)
 	{
 		case WORK_MODE : ADC_CMD(ENABLE);	//包括使能ADC中断, 电机控制程序在ADC中断中执行
 		
 						break;
 		
-		case MEASURE_MODE : MeasureEleAngle_Encoder(0.6f);	//测定电角度, 设定d轴电压
+		case MEASURE_ANGLE_TABLE_MODE : MeasureEleAngle_Encoder(0.6f);	//测定电角度, 设定d轴电压
+		
+						break;
+		case MEASURE_PARAM_MODE : ADC_CMD(ENABLE);
 		
 						break;
 	}

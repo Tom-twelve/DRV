@@ -35,7 +35,7 @@ extern struct PosLoop_t PosLoop;
 extern struct CoordTrans_t CoordTrans;
 extern struct PosSensor_t PosSensor;
 extern struct Regulator_t Regulator;
-extern struct MotorStaticParameter_t MotorStaticParameter;
+extern struct Driver_t Driver;
 
 /* USER CODE END 0 */
 
@@ -235,13 +235,13 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 			{
 //				SpdLoop.Kp = VEL_CONTROL_KP;
 //				SpdLoop.Ki = VEL_CONTROL_KI;
-				MotorStaticParameter.ControlMode = SPD_CURR_CTRL_MODE;
+				Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			}
 			else if(receive.data_int32[1] == POS_SPD_CURR_CTRL_MODE)
 			{
 //				PosLoop..Kp = POS_CONTROL_KP;
 //				PosLoop..Kd = POS_CONTROL_KD;
-				MotorStaticParameter.ControlMode = POS_SPD_CURR_CTRL_MODE;
+				Driver.ControlMode = POS_SPD_CURR_CTRL_MODE;
 				PosLoop.ExptMecAngle = PosSensor.MecAngle_rad + PosSensor.MecAngularSpeed_rad * Regulator.ActualPeriod_s;
 			}
 			break;

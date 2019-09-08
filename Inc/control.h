@@ -92,8 +92,9 @@ struct Regulator_t
 #define SPD_CURR_CTRL_MODE 			1
 #define POS_SPD_CURR_CTRL_MODE 		2
 
-#define WORK_MODE					1
-#define MEASURE_MODE				2
+#define WORK_MODE						1
+#define MEASURE_ANGLE_TABLE_MODE		2
+#define MEASURE_PARAM_MODE				3
 
 /* USER CODE END PD */
 

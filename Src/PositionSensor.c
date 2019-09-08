@@ -44,11 +44,11 @@
 #if	POSITION_SENSOR_TYPE == ENCODER_TLE5012
 	void GetPositionImformation(void)
 	{
-		#if	ENCODER_MODE == Encoder_AbsoluteMode
+		#if	ENCODER_MODE == ENCODER_ABSOLUTE_MODE
 		
 		GetMecAngle_AbsoluteMode_15bit();  //绝对式, 读取编码器角度值寄存器
 		
-		#elif ENCODER_MODE == Encoder_IncrementalMode
+		#elif ENCODER_MODE == ENCODER_INCREMENTAL_MODE
 		
 		GetMecAngle_IncrementalMode_14bit();  //增量式, TLE5012的12位增量式编码器经过4倍频后精度提高至14位
 		
@@ -80,13 +80,13 @@
 	
 	void GetMecAngle(void)
 	{
-		#if	ENCODER_MODE == Encoder_AbsoluteMode
+		#if	ENCODER_MODE == ENCODER_ABSOLUTE_MODE
 		
 		PosSensor.MecAngle_degree = 360.f * (float)PosSensor.MecAngle_AbsoluteMode_15bit / TLE5012_AbsoluteModeResolution;
 		
 		PosSensor.MecAngle_rad = (float)PosSensor.MecAngle_degree / 360.f * 2.0f * PI;
 		
-		#elif ENCODER_MODE == Encoder_IncrementalMode
+		#elif ENCODER_MODE == ENCODER_INCREMENTAL_MODE
 		
 		PosSensor.MecAngle_degree = 360.f * (float)PosSensor.MecAngle_IncrementalMode_14bit / (TLE5012_IncrementalModeResolution * 4.f);
 		
@@ -127,11 +127,11 @@
 		
 		old = array[pos];
 
-		#if ENCODER_MODE == Encoder_AbsoluteMode
+		#if ENCODER_MODE == ENCODER_ABSOLUTE_MODE
 		
 		array[pos] = angleDifference / TLE5012_UpdateTime_1;
 		
-		#elif ENCODER_MODE == Encoder_IncrementalMode
+		#elif ENCODER_MODE == ENCODER_INCREMENTAL_MODE
 		
 		array[pos] = angleDifference / DEFAULT_CARRIER_PERIOD_s;
 		
@@ -152,7 +152,7 @@
 	{
 		float normPos = 0;
 		
-		#if ENCODER_MODE == Encoder_AbsoluteMode
+		#if ENCODER_MODE == ENCODER_ABSOLUTE_MODE
 		
 		normPos = fmodf(PosSensor.MecAngle_AbsoluteMode_15bit, TLE5012_AbsoluteModeResolution);	
 		
@@ -162,7 +162,7 @@
 		
 		PosSensor.EleAngle_degree = fmodf(utils_map(PosSensor.MecAngle_AbsoluteMode_15bit, MecAngleRef[index], MecAngleRef[indexPlus1], EleAngleRef[index], EleAngleRef[indexPlus1]), 360.f);
 		
-		#elif ENCODER_MODE == Encoder_IncrementalMode
+		#elif ENCODER_MODE == ENCODER_INCREMENTAL_MODE
 		
 		normPos = fmodf(PosSensor.MecAngle_IncrementalMode_14bit, TLE5012_IncrementalModeResolution * 4.f);	
 		
@@ -308,11 +308,11 @@
 				HAL_Delay(200);
 
 				
-					#if ENCODER_MODE == Encoder_AbsoluteMode
+					#if ENCODER_MODE == ENCODER_ABSOLUTE_MODE
 					
 					tempMecAngleRef[index_5012b] = PosSensor.MecAngle_AbsoluteMode_15bit;
 					
-					#elif ENCODER_MODE == Encoder_IncrementalMode
+					#elif ENCODER_MODE == ENCODER_INCREMENTAL_MODE
 					
 					tempMecAngleRef[index_5012b] = PosSensor.MecAngle_IncrementalMode_14bit;
 					
@@ -373,13 +373,13 @@
 		}
 		
 		#if POSITION_SENSOR_TYPE == ENCODER_TLE5012
-			#if ENCODER_MODE == Encoder_AbsoluteMode
+			#if ENCODER_MODE == ENCODER_ABSOLUTE_MODE
 			
 			tempMecAngleRef[0] = tempMecAngleRef[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS] - (int32_t)TLE5012_AbsoluteModeResolution;
 			
 			tempMecAngleRef[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS + 1] = tempMecAngleRef[1] + (int32_t)TLE5012_AbsoluteModeResolution;
 			
-			#elif ENCODER_MODE == Encoder_IncrementalMode
+			#elif ENCODER_MODE == ENCODER_INCREMENTAL_MODE
 
 			tempMecAngleRef[0] = tempMecAngleRef[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS] - (int32_t)(TLE5012_IncrementalModeResolution * 4.f);
 			

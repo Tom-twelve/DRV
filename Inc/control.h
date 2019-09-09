@@ -38,6 +38,11 @@ struct CurrLoop_t
 	float Ki_Q;
 };
 
+struct VolCtrl_t
+{
+	float BEMF
+};
+
 struct SpdLoop_t
 {
 	float ExptMecAngularSpeed;	//期望机械角速度(rad/s)
@@ -71,7 +76,7 @@ struct Regulator_t
 
 #define SPD_INTEGRAL_ERR_LIM			(15.0f * 2 * PI)		//(rad/s)
 
-#define CURRENT_CONTROL_KP_D			(INDUCTANCE_Q * 1500.f)	//q轴电感 * 电流环带宽
+#define CURRENT_CONTROL_KP_D			(INDUCTANCE_D * 1500.f)	//q轴电感 * 电流环带宽
 #define CURRENT_CONTROL_KI_D			(PHASE_RES * 1500.f)	//相电阻 * 电流环带宽
 
 #define CURRENT_CONTROL_KP_Q			(INDUCTANCE_Q * 1500.f)	//q轴电感 * 电流环带宽
@@ -88,9 +93,10 @@ struct Regulator_t
 #define PERIOD_REGULATOR_KD 			(5 * 0.005952380952381) // 参数待调（这个初值是通过简单的计算一下，假设偏差的差分出现了1的变动，改变多少周期粗略的估计的，并非使用KD = Kd / dt)
 #define PERIOD_REGULATOR_LIM			6	//载波周期调节器限幅值	
 
-#define	VOL_CTRL_MODE 					0
 #define SPD_CURR_CTRL_MODE 				1
 #define POS_SPD_CURR_CTRL_MODE 			2
+#define	SPD_VOL_CTRL_MODE 				3
+#define	POS_SPD_VOL_CTRL_MODE 			4
 
 #define WORK_MODE						1
 #define MEASURE_ANGLE_TABLE_MODE		2
@@ -103,6 +109,7 @@ struct Regulator_t
 
 void DriverInit(void);
 void CurrentLoopInit(void);
+void VoltageController(void);
 void SpeedLoopInit(void);
 void PositionLoopInit(void);
 void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCurrQ, float *ctrlVolD, float *ctrlVolQ);

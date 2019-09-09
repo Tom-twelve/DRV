@@ -282,27 +282,14 @@ void ADC_IRQHandler(void)
 	{
 		switch(Driver.ControlMode)
 		{
-			case VOL_CTRL_MODE :		Driver.PowerAngleComp_degree = DEFAULT_CARRIER_PERIOD_s * PosSensor.EleAngularSpeed_degree;
-				
-										InverseParkTransform(0.0f, 2.0f, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + Driver.PowerAngleComp_degree);
-										
-										SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
-
-										/*测试用*/								
-										ParkTransform(CoordTrans.CurrA, CoordTrans.CurrB, CoordTrans.CurrC, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + Driver.PowerAngleComp_degree);
-							
-										UART_Transmit_DMA("%d\r\n",(int)(Driver.PowerAngleComp_degree * 1000)); 
-			
-										break;
-
-			case SPD_CURR_CTRL_MODE :		/*转速控制器, 包括转速PI控制器*/
+			case SPD_CURR_CTRL_MODE :	/*转速控制器, 包括转速PI控制器*/
 										SpeedController();
 			
 										/*电流控制器, 包括Clark变换, Park变换, 电流PI控制器, RevPark变换, SVPWM算法*/
 										CurrentController();
 										
-										UART_Transmit_DMA("%d\t", (int)(PosSensor.MecAngularSpeed_rad));
-										UART_Transmit_DMA("%d\r\n",(int)(PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE * 1000));
+										UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrD * 1000));
+										UART_Transmit_DMA("%d\r\n",(int)(PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ * 1000));
 			
 										break;
 			
@@ -314,6 +301,13 @@ void ADC_IRQHandler(void)
 			
 										/*电流控制器, 包括Clark变换, Park变换, 电流PI控制器, RevPark变换, SVPWM算法*/
 										CurrentController();
+			
+										break;
+			case SPD_VOL_CTRL_MODE :	
+			
+										break;
+			
+			case POS_SPD_VOL_CTRL_MODE :	
 			
 										break;
 		}

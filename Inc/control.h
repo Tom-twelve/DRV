@@ -40,7 +40,13 @@ struct CurrLoop_t
 
 struct VolCtrl_t
 {
-	float BEMF
+	float BEMF;
+	float CtrlVolD;
+	float CtrlVolQ;
+	float VolLimit;
+	float CompRatio;
+	float PowerAngleComp_degree;	
+	float PowerAngleComp_rad;
 };
 
 struct SpdLoop_t
@@ -109,6 +115,7 @@ struct Regulator_t
 
 void DriverInit(void);
 void CurrentLoopInit(void);
+void VoltageControllerInit(void);
 void VoltageController(void);
 void SpeedLoopInit(void);
 void PositionLoopInit(void);

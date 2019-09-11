@@ -27,6 +27,7 @@
 struct CurrLoop_t CurrLoop;
 struct SpdLoop_t SpdLoop;
 struct PosLoop_t PosLoop;
+struct VolCtrl_t VolCtrl;
 struct Regulator_t Regulator;
 
 /* CODE END PV */
@@ -46,7 +47,7 @@ void DriverInit(void)
 	PWM_IT_CMD(ENABLE,ENABLE);
 	
 	/*设定控制模式*/
-	Driver.ControlMode = SPD_CURR_CTRL_MODE;
+	Driver.ControlMode = SPD_VOL_CTRL_MODE;
 	
 	/*采用Id = 0控制, 故设定d轴电流为零*/
 	CurrLoop.ExptCurrD = 0.f;
@@ -69,7 +70,10 @@ void DriverInit(void)
 			
 										break;
 		case SPD_VOL_CTRL_MODE :		
-			
+										VoltageControllerInit();
+		
+										SpeedLoopInit();
+		
 										break;
 		
 		case POS_SPD_VOL_CTRL_MODE :		
@@ -92,6 +96,18 @@ void CurrentLoopInit(void)
 }
 
  /**
+   * @brief  电压控制器参数初始化
+   */
+void VoltageControllerInit(void)
+{
+	/*设定电压限幅*/
+	VolCtrl.VolLimit = 3.0f;
+	
+	/*设定功角补偿系数*/
+	VolCtrl.CompRatio = 80.0f;
+}
+
+ /**
    * @brief  速度环参数初始化
    */
 void SpeedLoopInit(void)
@@ -106,11 +122,11 @@ void SpeedLoopInit(void)
 	}
 	else if(Driver.ControlMode == SPD_VOL_CTRL_MODE)
 	{
-		/*设定速度环PI参数*/
-		SpdLoop.Kp = 1.5f;	
-		SpdLoop.Ki = 0.1f;
+		/*速度环单环控制，设定速度环PI参数*/
+		SpdLoop.Kp = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS * 5.5f) * 1.0f;	
+		SpdLoop.Ki = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS * 5.5f) * 1.0f;
 		SpdLoop.ExptMecAngularSpeed = 100.f * 2 * PI;	//期望速度，degree per second
-		SpdLoop.Acceleration = 5000.f * 2 * PI;	//期望加速度，degree per quadratic seconds
+		SpdLoop.Acceleration = 100.f * 2 * PI;	//期望加速度，degree per quadratic seconds
 	}
 }
 
@@ -191,8 +207,11 @@ void SpeedLoop(float exptMecAngularSpeed, float realMecAngularSpeed, float *ctrl
 	/*积分限幅*/
 	AmplitudeLimit(ctrlCurrQ, SPD_INTEGRAL_ERR_LIM, -SPD_INTEGRAL_ERR_LIM);
 
-	/*速度环输出限幅*/
-	AmplitudeLimit(ctrlCurrQ, CURR_EXPT_LIM_Q, -CURR_EXPT_LIM_Q);
+	if(Driver.ControlMode == SPD_CURR_CTRL_MODE || Driver.ControlMode == POS_SPD_CURR_CTRL_MODE)
+	{
+		/*速度环输出限幅*/
+		AmplitudeLimit(ctrlCurrQ, CURR_EXPT_LIM_Q, -CURR_EXPT_LIM_Q);
+	}
 }
 
  /**
@@ -267,16 +286,19 @@ void CurrentController(void)
 void VoltageController(void)
 {
 	/*采用Id = 0控制, 设Vd = 0时, Id近似为零*/
-	CurrLoop.CtrlVolD = 0.f;
+	VolCtrl.CtrlVolD = 0.f;
 	
 	/*CurrLoop.ExptCurrQ为速度环输出量*/
-	CurrLoop.CtrlVolQ = CurrLoop.ExptCurrQ;
+	VolCtrl.CtrlVolQ = CurrLoop.ExptCurrQ;
 	
-	/*利用转速估算其反电动势, 从而限制Vq的大小*/
-	AmplitudeLimit(&CurrLoop.CtrlVolQ, ROTATOR_FLUX_LINKAGE * PosSensor.EleAngularSpeed_rad + , -CURR_EXPT_LIM_Q);
+	/*计算q轴反电动势*/
+	VolCtrl.BEMF = ROTATOR_FLUX_LINKAGE * PosSensor.EleAngularSpeed_rad;
+	
+	/*Vq限幅*/
+	AmplitudeLimit(&VolCtrl.CtrlVolQ, VolCtrl.BEMF + VolCtrl.VolLimit, VolCtrl.BEMF - VolCtrl.VolLimit);
 	
 	/*进行逆Park变换, 将转子坐标系下的dq轴电压转换为定子坐标系下的AlphaBeta轴电压*/
-	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree);
+	InverseParkTransform(VolCtrl.CtrlVolD, VolCtrl.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + VolCtrl.CompRatio * PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s);
 	
 	/*载波周期调节器, 尽可能使载波周期与编码器周期同步*/
 	PeriodRegulator();

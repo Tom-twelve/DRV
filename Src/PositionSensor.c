@@ -18,7 +18,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* CODE BEGIN PTD */
-
+extern struct Regulator_t Regulator;
 /* CODE END PTD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -129,7 +129,7 @@
 
 		#if ENCODER_MODE == ENCODER_ABSOLUTE_MODE
 		
-		array[pos] = angleDifference / TLE5012_UpdateTime_1;
+		array[pos] = angleDifference / Regulator.ActualPeriod_s;
 		
 		#elif ENCODER_MODE == ENCODER_INCREMENTAL_MODE
 		

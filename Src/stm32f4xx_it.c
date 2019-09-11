@@ -85,6 +85,7 @@ extern struct SpdLoop_t SpdLoop;
 extern struct CurrLoop_t CurrLoop;
 extern struct CoordTrans_t	CoordTrans;
 extern struct PosSensor_t PosSensor;
+extern struct VolCtrl_t VolCtrl;
 extern struct Driver_t Driver;
 
 /* USER CODE END EV */
@@ -303,7 +304,14 @@ void ADC_IRQHandler(void)
 										CurrentController();
 			
 										break;
-			case SPD_VOL_CTRL_MODE :	
+			case SPD_VOL_CTRL_MODE :	/*转速控制器*/
+										SpeedController();
+										
+										/*电压控制器*/
+										VoltageController();
+			
+										UART_Transmit_DMA("%d\t", (int)(VolCtrl.BEMF * 1000));
+										UART_Transmit_DMA("%d\r\n",(int)((VolCtrl.CtrlVolQ) * 1000));
 			
 										break;
 			

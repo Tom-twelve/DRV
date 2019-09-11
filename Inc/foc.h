@@ -48,8 +48,6 @@ struct CoordTrans_t
 
 struct Driver_t
 {
-	float PowerAngleComp_degree;	
-	float PowerAngleComp_rad;
 	uint8_t InitCompleteFlag;
 	uint8_t ControlMode;	//速度控制模式或位置控制模式
 	uint8_t UnitMode;		//正常工作模式或测量电角度模式

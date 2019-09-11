@@ -33,10 +33,10 @@
 	#define SPI_TX_ON           GPIOB->MODER &= 0xFFFFF3FF; GPIOB->MODER |= 0x00000800	// PB5--MOSI复用
 	#define SPI_TX_OFF          GPIOB->MODER &= 0xFFFFF3FF; GPIOB->MODER |= 0x00000000	//PB5--复位(输入模式)
 
-	#define	TLE5012_UpdateTime_0		0.0000213f	//(us)	
-	#define	TLE5012_UpdateTime_1		0.0000427f	//(us)	
-	#define	TLE5012_UpdateTime_2		0.0000853f	//(us)	
-	#define	TLE5012_UpdateTime_3		0.0001706f	//(us)	
+	#define	TLE5012_UpdateTime_0		0.0000213f	//(s)	
+	#define	TLE5012_UpdateTime_1		0.0000427f	//(s)	
+	#define	TLE5012_UpdateTime_2		0.0000853f	//(s)	
+	#define	TLE5012_UpdateTime_3		0.0001706f	//(s)	
 		
 	#define	TLE5012_SPI1_ChipSelect				LL_GPIO_ResetOutputPin(Encoder_SPI1_NSS_GPIO_Port, Encoder_SPI1_NSS_Pin)
 	#define	TLE5012_SPI1_ChipDiselect			LL_GPIO_SetOutputPin(Encoder_SPI1_NSS_GPIO_Port, Encoder_SPI1_NSS_Pin)

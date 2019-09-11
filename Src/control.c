@@ -104,7 +104,7 @@ void VoltageControllerInit(void)
 	VolCtrl.VolLimit = 3.0f;
 	
 	/*设定功角补偿系数*/
-	VolCtrl.CompRatio = 80.0f;
+	VolCtrl.CompRatio = 95.0f;
 }
 
  /**
@@ -124,8 +124,8 @@ void SpeedLoopInit(void)
 	{
 		/*速度环单环控制，设定速度环PI参数*/
 		SpdLoop.Kp = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS * 5.5f) * 1.0f;	
-		SpdLoop.Ki = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS * 5.5f) * 1.0f;
-		SpdLoop.ExptMecAngularSpeed = 100.f * 2 * PI;	//期望速度，degree per second
+		SpdLoop.Ki = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS * 5.5f) * 0.2f;
+		SpdLoop.ExptMecAngularSpeed = 80.f * 2 * PI;	//期望速度，degree per second
 		SpdLoop.Acceleration = 100.f * 2 * PI;	//期望加速度，degree per quadratic seconds
 	}
 }
@@ -135,13 +135,13 @@ void SpeedLoopInit(void)
    */
 void PositionLoopInit(void)
 {				
-	if(Driver.ControlMode == SPD_CURR_CTRL_MODE)
+	if(Driver.ControlMode == POS_SPD_CURR_CTRL_MODE)
 	{
 		/*设定位置环PI参数*/
 		PosLoop.Kp = 0.0f;
 		PosLoop.Kd = 0.f;	
 	}
-	else if(Driver.ControlMode == SPD_VOL_CTRL_MODE)
+	else if(Driver.ControlMode == POS_SPD_VOL_CTRL_MODE)
 	{
 		/*设定位置环PI参数*/
 		PosLoop.Kp = 0.0f;
@@ -288,9 +288,6 @@ void VoltageController(void)
 	/*采用Id = 0控制, 设Vd = 0时, Id近似为零*/
 	VolCtrl.CtrlVolD = 0.f;
 	
-	/*CurrLoop.ExptCurrQ为速度环输出量*/
-	VolCtrl.CtrlVolQ = CurrLoop.ExptCurrQ;
-	
 	/*计算q轴反电动势*/
 	VolCtrl.BEMF = ROTATOR_FLUX_LINKAGE * PosSensor.EleAngularSpeed_rad;
 	
@@ -312,7 +309,14 @@ void VoltageController(void)
    */
 void SpeedController(void)
 {
-	SpeedLoop(VelocitySlopeGenerator(SpdLoop.ExptMecAngularSpeed), PosSensor.MecAngularSpeed_rad, &CurrLoop.ExptCurrQ);
+	if(Driver.ControlMode == SPD_CURR_CTRL_MODE || Driver.ControlMode == POS_SPD_CURR_CTRL_MODE)
+	{
+		SpeedLoop(VelocitySlopeGenerator(SpdLoop.ExptMecAngularSpeed), PosSensor.MecAngularSpeed_rad, &CurrLoop.ExptCurrQ);
+	}
+	else if(Driver.ControlMode == SPD_VOL_CTRL_MODE || Driver.ControlMode == POS_SPD_VOL_CTRL_MODE)
+	{
+		SpeedLoop(VelocitySlopeGenerator(SpdLoop.ExptMecAngularSpeed), PosSensor.MecAngularSpeed_rad, &VolCtrl.CtrlVolQ);
+	}
 }
 
  /**

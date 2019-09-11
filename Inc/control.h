@@ -80,7 +80,7 @@ struct Regulator_t
 #define CURR_INTEGRAL_ERR_LIM_D 		5.0f	//(A), Id控制器积分限幅
 #define CURR_INTEGRAL_ERR_LIM_Q 		5.0f	//(A), Iq控制器积分限幅
 
-#define SPD_INTEGRAL_ERR_LIM			(15.0f * 2 * PI)		//(rad/s)
+#define SPD_INTEGRAL_ERR_LIM			(1.0f * 2 * PI)		//(rad/s)
 
 #define CURRENT_CONTROL_KP_D			(INDUCTANCE_D * 1500.f)	//q轴电感 * 电流环带宽
 #define CURRENT_CONTROL_KI_D			(PHASE_RES * 1500.f)	//相电阻 * 电流环带宽

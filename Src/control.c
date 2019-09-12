@@ -52,6 +52,8 @@ void DriverInit(void)
 	/*采用Id = 0控制, 故设定d轴电流为零*/
 	CurrLoop.ExptCurrD = 0.f;
 	
+	Regulator.ActualPeriod_s = DEFAULT_CARRIER_PERIOD_s;
+	
 	switch(Driver.ControlMode)
 	{
 		case SPD_CURR_CTRL_MODE : 	
@@ -69,6 +71,7 @@ void DriverInit(void)
 										PositionLoopInit();
 			
 										break;
+		
 		case SPD_VOL_CTRL_MODE :		
 										VoltageControllerInit();
 		
@@ -76,8 +79,13 @@ void DriverInit(void)
 		
 										break;
 		
-		case POS_SPD_VOL_CTRL_MODE :		
-			
+		case POS_SPD_VOL_CTRL_MODE :	
+										VoltageControllerInit();
+		
+										SpeedLoopInit();
+		
+										PositionLoopInit();
+
 										break;
 		
 	}
@@ -120,12 +128,26 @@ void SpeedLoopInit(void)
 		SpdLoop.ExptMecAngularSpeed = 100.f * 2 * PI;	//期望速度，degree per second
 		SpdLoop.Acceleration = 5000.f * 2 * PI;	//期望加速度，degree per quadratic seconds
 	}
+	else if(Driver.ControlMode == POS_SPD_CURR_CTRL_MODE)
+	{
+		/*速度-电流双环控制，设定速度环PI参数*/
+		SpdLoop.Kp = 1.5f;	
+		SpdLoop.Ki = 0.1f;
+		SpdLoop.Acceleration = 5000.f * 2 * PI;	//期望加速度，degree per quadratic seconds
+	}
 	else if(Driver.ControlMode == SPD_VOL_CTRL_MODE)
 	{
 		/*速度环单环控制，设定速度环PI参数*/
 		SpdLoop.Kp = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS * 5.5f) * 1.0f;	
 		SpdLoop.Ki = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS * 25.0f) * 1.0f;
 		SpdLoop.ExptMecAngularSpeed = 80.f * 2 * PI;	//期望速度，degree per second
+		SpdLoop.Acceleration = 5000.f * 2 * PI;	//期望加速度，degree per quadratic seconds
+	}
+	else if(Driver.ControlMode == POS_SPD_VOL_CTRL_MODE)
+	{
+		/*位置-速度双环控制，设定速度环PI参数*/
+		SpdLoop.Kp = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS * 5.5f) * 1.0f;	
+		SpdLoop.Ki = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS * 25.0f) * 1.0f;
 		SpdLoop.Acceleration = 5000.f * 2 * PI;	//期望加速度，degree per quadratic seconds
 	}
 }
@@ -144,8 +166,8 @@ void PositionLoopInit(void)
 	else if(Driver.ControlMode == POS_SPD_VOL_CTRL_MODE)
 	{
 		/*设定位置环PI参数*/
-		PosLoop.Kp = 0.0f;
-		PosLoop.Kd = 0.f;	
+		PosLoop.Kp = 80.5f * 1.0f;
+		PosLoop.Kd = 8.5f * 1.0f;	
 	}	
 }
 
@@ -220,14 +242,17 @@ void SpeedLoop(float exptMecAngularSpeed, float realMecAngularSpeed, float *ctrl
    * @param[in]  realMecAngle      		实际机械角度
    * @param[out] controlAngularSpeed 		角速度输出
    */
-void PositionLoop(float exptMecAngle, float realMecAngle, float *controlAngularSpeed)
+void PositionLoop(float exptMecAngle, float realMecAngle, float *ctrlAngularSpeed)
 {
 	float err = 0;
 	static float lastErr = 0;
-	
+	static float diffErr = 0;
+		
 	err = exptMecAngle - realMecAngle;
 	
-	*controlAngularSpeed = PosLoop.Kp * err + PosLoop.Kd * (err - lastErr);
+	diffErr = (err - lastErr) / Regulator.ActualPeriod_s;
+	
+	*ctrlAngularSpeed = PosLoop.Kp * err + PosLoop.Kd * diffErr;
 	
 	lastErr = err;
 }
@@ -284,7 +309,7 @@ void CurrentController(void)
    * @brief  电压控制器
    */
 void VoltageController(void)
-{
+{  
 	/*采用Id = 0控制, 设Vd = 0时, Id近似为零*/
 	VolCtrl.CtrlVolD = 0.f;
 	

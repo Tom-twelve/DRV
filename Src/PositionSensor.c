@@ -129,11 +129,11 @@ extern struct Regulator_t Regulator;
 
 		#if ENCODER_MODE == ENCODER_ABSOLUTE_MODE
 		
-		array[pos] = angleDifference / DEFAULT_CARRIER_PERIOD_s;
+		array[pos] = angleDifference / Regulator.ActualPeriod_s;
 		
 		#elif ENCODER_MODE == ENCODER_INCREMENTAL_MODE
 		
-		array[pos] = angleDifference / DEFAULT_CARRIER_PERIOD_s;
+		array[pos] = angleDifference / Regulator.ActualPeriod_s;
 		
 		#else
 		#error "Encoder Mode Invalid"

@@ -31,7 +31,7 @@
 extern struct CoordTrans_t	CoordTrans;
 extern struct CurrLoop_t	CurrLoop;
 extern struct PosSensor_t PosSensor;
-
+extern struct Regulator_t Regulator;
 /* USER CODE END EV */
 
 /* USER CODE BEGIN */
@@ -225,7 +225,7 @@ uint8_t MeasureInductance(float targetSampleTimes, float duty,float *inductance)
 			
 			if(sendFlag == 0)
 			{
-				*inductance = GENERATRIX_VOL * (duty * DEFAULT_CARRIER_PERIOD_s) / (totalCurr / (sampleTime - sampleOffsetTimes))  * 2.f / 3.f;
+				*inductance = GENERATRIX_VOL * (duty * Regulator.ActualPeriod_s) / (totalCurr / (sampleTime - sampleOffsetTimes))  * 2.f / 3.f;
 				
 				sendFlag = 1;
 			}

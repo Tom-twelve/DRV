@@ -304,6 +304,7 @@ void ADC_IRQHandler(void)
 										CurrentController();
 			
 										break;
+			
 			case SPD_VOL_CTRL_MODE :	/*转速控制器*/
 										SpeedController();
 										
@@ -316,7 +317,18 @@ void ADC_IRQHandler(void)
 			
 										break;
 			
-			case POS_SPD_VOL_CTRL_MODE :	
+			case POS_SPD_VOL_CTRL_MODE :	/*位置控制器*/
+										PositionController();
+				
+										/*转速控制器*/
+										SpeedController();
+										
+										/*电压控制器*/
+										VoltageController();
+			
+										UART_Transmit_DMA("%d\t", (int)(SpdLoop.ExptMecAngularSpeed - PosSensor.MecAngularSpeed_rad));
+										UART_Transmit_DMA("%d\t", (int)(VolCtrl.BEMF * 1000));
+										UART_Transmit_DMA("%d\r\n",(int)((VolCtrl.CtrlVolQ) * 1000));
 			
 										break;
 		}

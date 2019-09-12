@@ -124,9 +124,9 @@ void SpeedLoopInit(void)
 	{
 		/*速度环单环控制，设定速度环PI参数*/
 		SpdLoop.Kp = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS * 5.5f) * 1.0f;	
-		SpdLoop.Ki = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS * 5.5f) * 0.2f;
+		SpdLoop.Ki = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS * 25.0f) * 1.0f;
 		SpdLoop.ExptMecAngularSpeed = 80.f * 2 * PI;	//期望速度，degree per second
-		SpdLoop.Acceleration = 100.f * 2 * PI;	//期望加速度，degree per quadratic seconds
+		SpdLoop.Acceleration = 5000.f * 2 * PI;	//期望加速度，degree per quadratic seconds
 	}
 }
 
@@ -205,7 +205,7 @@ void SpeedLoop(float exptMecAngularSpeed, float realMecAngularSpeed, float *ctrl
 	integralErr += err * Regulator.ActualPeriod_s;
 	
 	/*积分限幅*/
-	AmplitudeLimit(ctrlCurrQ, SPD_INTEGRAL_ERR_LIM, -SPD_INTEGRAL_ERR_LIM);
+	AmplitudeLimit(&integralErr, SPD_INTEGRAL_ERR_LIM, -SPD_INTEGRAL_ERR_LIM);
 
 	if(Driver.ControlMode == SPD_CURR_CTRL_MODE || Driver.ControlMode == POS_SPD_CURR_CTRL_MODE)
 	{

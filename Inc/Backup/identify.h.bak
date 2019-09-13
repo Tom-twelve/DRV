@@ -1,18 +1,18 @@
 /**
  ******************************************************************************
- * @file		observer.h
+ * @file		identify.h
  * @author		WrathWings
  * @version 	V1.0
- * @date		2019.8.20
- * @brief		The header file of observer.c
+ * @date		2019.9.5
+ * @brief		The header file of identify.c
  ******************************************************************************
  * @attention
  *
  ******************************************************************************
  */
  /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __OBSERVER_H
-#define __OBSERVER_H
+#ifndef __IDENTIFY_H
+#define __IDENTIFY_H
 
 /* Private includes ----------------------------------------------------------*/
 /* CODE BEGIN Includes */
@@ -34,6 +34,9 @@
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
 
+uint8_t MeasureResidence(float sampleTimes, float current, float *residence);
+uint8_t MeasureInductance(float sampleTimes, float duty,float *inductance);
+void MeasureParameters(void);
 /* USER CODE END PFP */
 
 

@@ -178,13 +178,15 @@ extern struct MainController_t MainController;
 		
 		#if ENCODER_MODE == ENCODER_ABSOLUTE_MODE
 		
-		normPos = fmodf(PosSensor.MecAngle_AbsoluteMode_15bit, TLE5012_ABS_MODE_RESOLUTION);	
-		
-		uint32_t index = UtilBiSearchInt(MecAngleRef, normPos, sizeof(MecAngleRef)/sizeof(MecAngleRef[0]));
+//		normPos = fmodf(PosSensor.MecAngle_AbsoluteMode_15bit, TLE5012_ABS_MODE_RESOLUTION);	
+//		
+//		uint32_t index = UtilBiSearchInt(MecAngleRef, normPos, sizeof(MecAngleRef)/sizeof(MecAngleRef[0]));
 
-		uint32_t indexPlus1 = index + 1;
+//		uint32_t indexPlus1 = index + 1;
+//		
+//		PosSensor.EleAngle_degree = fmodf(utils_map(PosSensor.MecAngle_AbsoluteMode_15bit, MecAngleRef[index], MecAngleRef[indexPlus1], EleAngleRef[index], EleAngleRef[indexPlus1]), 360.f);
 		
-		PosSensor.EleAngle_degree = fmodf(utils_map(PosSensor.MecAngle_AbsoluteMode_15bit, MecAngleRef[index], MecAngleRef[indexPlus1], EleAngleRef[index], EleAngleRef[indexPlus1]), 360.f);
+		PosSensor.EleAngle_degree = ((float)(PosSensor.MecAngle_AbsoluteMode_15bit - PosSensor.PosOffset) / (float)(TLE5012_ABS_MODE_RESOLUTION / MOTOR_POLE_PAIRS_NUM)) * 360.f;
 		
 		#elif ENCODER_MODE == ENCODER_INCREMENTAL_MODE
 		
@@ -299,130 +301,197 @@ extern struct MainController_t MainController;
 	* @brief  Measure reference Ele angle
 	* @param[in]  volD      voltage of axis d
 	*/
-	void MeasureEleAngle_Encoder(float volD)
+//	void MeasureEleAngle_Encoder(float volD)
+//	{
+//		float volAlpha = 0;
+//		float volBeta = 0;
+//		int16_t tempData[2] = {0};
+//		int EleAngle = 0;
+//		static int16_t index_5012b = 1;
+//		static int16_t index_bound = 0;
+//		static int tempMecAngleRef[DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM + 2] = {0};
+//		static int tempEleAngleRef[DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM + 2] = {0};
+//		static int16_t tempArray[DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM] = {0};
+
+//		InverseParkTransform(volD, 0.f, &volAlpha, &volBeta, 0.f);	//设定Vq = 0, 电角度为零
+//		
+//		SpaceVectorModulation(volAlpha, volBeta);
+//		
+//		HAL_Delay(1000);
+//		
+//		for (int i = 0; i < MOTOR_POLE_PAIRS_NUM; i++)
+//		{
+//			for(int j = 0; j < DIVIDE_NUM; j ++)
+//			{
+//				GetPositionImformation();
+//				
+//				EleAngle = j * 360 / DIVIDE_NUM;
+//				
+//				InverseParkTransform(volD, 0.f, &volAlpha, &volBeta, EleAngle);
+//				
+//				SpaceVectorModulation(volAlpha, volBeta);
+//				
+//				HAL_Delay(200);
+
+//				
+//					#if ENCODER_MODE == ENCODER_ABSOLUTE_MODE
+//					
+//					tempMecAngleRef[index_5012b] = PosSensor.MecAngle_AbsoluteMode_15bit;
+//					
+//					#elif ENCODER_MODE == ENCODER_INCREMENTAL_MODE
+//					
+//					tempMecAngleRef[index_5012b] = PosSensor.MecAngle_IncrementalMode_14bit;
+//					
+//					#else
+//					#error "Encoder Mode Invalid"
+//					#endif
+//				
+
+//				if(tempMecAngleRef[index_5012b] < 1000 && tempMecAngleRef[index_5012b - 1] > 10000 && index_5012b > 1)
+//				{
+//					tempData[0] = tempMecAngleRef[index_5012b];
+//					
+//					tempData[1] = EleAngle;
+//					
+//					index_bound = index_5012b;
+//				}
+//				
+//				UART_Transmit_DMA("\t/*Angle*/\t %d \t /*Encoder*/\t %d \r\n", (int)(EleAngle), (int)tempMecAngleRef[index_5012b]); 
+//			
+//				SendBuf();
+
+//				index_5012b++;
+//				
+//				if(index_5012b > DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM)
+//				{
+//					PutStr("EXCESS\r\n");SendBuf();
+//					break;
+//				}
+//			}
+//		}
+//		
+//		/*	发送电角度表	*/
+//		
+//		PutStr("\r\n\r\n\r\n\r\n");SendBuf();
+//		
+//		HAL_Delay(100);
+//		
+//		for(int i = index_bound, j = 0; i <= DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM;i++,j++)
+//		{
+//			tempArray[j] =  tempMecAngleRef[i];
+//		}
+//		
+//		for(int i = index_bound - 1,k = DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM; i >= 0; i--, k--)
+//		{
+//			tempMecAngleRef[k] = tempMecAngleRef[i];
+//		}
+//		
+//		for(int i = 1, k =0; k <=  DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM - index_bound; i++,k++)
+//		{
+//			tempMecAngleRef[i] = tempArray[k];
+//		}
+//		
+//		tempEleAngleRef[1] = tempData[1];
+//		
+//		for(int i = 1; i <= DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM; i++)
+//		{
+//			tempEleAngleRef[i + 1] = tempEleAngleRef[i] + 360 / DIVIDE_NUM;
+//		}
+//		
+//		#if POSITION_SENSOR_TYPE == ENCODER_TLE5012
+//			#if ENCODER_MODE == ENCODER_ABSOLUTE_MODE
+//			
+//			tempMecAngleRef[0] = tempMecAngleRef[DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM] - TLE5012_ABS_MODE_RESOLUTION;
+//			
+//			tempMecAngleRef[DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM + 1] = tempMecAngleRef[1] + TLE5012_ABS_MODE_RESOLUTION;
+//			
+//			#elif ENCODER_MODE == ENCODER_INCREMENTAL_MODE
+
+//			tempMecAngleRef[0] = tempMecAngleRef[DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM] - (int32_t)(TLE5012_IncrementalModeResolution * 4.f);
+//			
+//			tempMecAngleRef[DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM + 1] = tempMecAngleRef[1] + (int32_t)(TLE5012_IncrementalModeResolution * 4.f);
+//			
+//			#else
+//			#error "Encoder Mode Invalid"
+//			#endif
+//		#endif
+
+//		tempEleAngleRef[0] = tempEleAngleRef[1] - 360 / DIVIDE_NUM;
+
+//		for(int i = 0; i < DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM + 2; i++)
+//		{
+//			UART_Transmit_DMA("%d\t,\t%d\t,\r\n", (int)tempEleAngleRef[i], (int)tempMecAngleRef[i]);
+//			
+//			SendBuf();
+//		
+//			HAL_Delay(15);
+//		}
+//		
+//		PWM_IT_CMD(DISABLE, DISABLE);
+//		
+//		while(1)
+//		{
+//			HAL_Delay(1);
+//		}
+//	}
+	void CorrectPosOffset_Encoder(float volD)
 	{
 		float volAlpha = 0;
 		float volBeta = 0;
-		int16_t tempData[2] = {0};
-		int EleAngle = 0;
-		static int16_t index_5012b = 1;
-		static int16_t index_bound = 0;
-		static int tempMecAngleRef[DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM + 2] = {0};
-		static int tempEleAngleRef[DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM + 2] = {0};
-		static int16_t tempArray[DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM] = {0};
-
-		InverseParkTransform(volD, 0.f, &volAlpha, &volBeta, 0.f);	//设定Vq = 0, 电角度为零
+		uint16_t position = 0;
+		uint16_t lastPosition = 0;
+		uint16_t count = 0;
+		uint16_t times = 0;
 		
+		PutStr("Correct Begin...\r\n\r\n");SendBuf();
+		
+		InverseParkTransform(volD, 0.f, &volAlpha, &volBeta, 0.f);
 		SpaceVectorModulation(volAlpha, volBeta);
+		LL_mDelay(500);
 		
-		HAL_Delay(1000);
+		InverseParkTransform(volD, 0.f, &volAlpha, &volBeta, 60.f);
+		SpaceVectorModulation(volAlpha, volBeta);
+		LL_mDelay(500);
 		
-		for (int i = 0; i < MOTOR_POLE_PAIRS_NUM; i++)
+		InverseParkTransform(volD, 0.f, &volAlpha, &volBeta, 120.f);
+		SpaceVectorModulation(volAlpha, volBeta);
+		LL_mDelay(500);
+		
+		InverseParkTransform(volD, 0.f, &volAlpha, &volBeta, -120.f);
+		SpaceVectorModulation(volAlpha, volBeta);
+		LL_mDelay(500);
+		
+		InverseParkTransform(volD, 0.f, &volAlpha, &volBeta, -60.f);
+		SpaceVectorModulation(volAlpha, volBeta);
+		LL_mDelay(500);
+		
+		InverseParkTransform(volD, 0.f, &volAlpha, &volBeta, 0.f);
+		SpaceVectorModulation(volAlpha, volBeta);
+		LL_mDelay(500);
+		
+		GetPositionImformation();
+		
+		for(times = 0; times < 200; times++)
 		{
-			for(int j = 0; j < DIVIDE_NUM; j ++)
-			{
-				GetPositionImformation();
-				
-				EleAngle = j * 360 / DIVIDE_NUM;
-				
-				InverseParkTransform(volD, 0.f, &volAlpha, &volBeta, EleAngle);
-				
-				SpaceVectorModulation(volAlpha, volBeta);
-				
-				HAL_Delay(200);
-
-				
-					#if ENCODER_MODE == ENCODER_ABSOLUTE_MODE
-					
-					tempMecAngleRef[index_5012b] = PosSensor.MecAngle_AbsoluteMode_15bit;
-					
-					#elif ENCODER_MODE == ENCODER_INCREMENTAL_MODE
-					
-					tempMecAngleRef[index_5012b] = PosSensor.MecAngle_IncrementalMode_14bit;
-					
-					#else
-					#error "Encoder Mode Invalid"
-					#endif
-				
-
-				if(tempMecAngleRef[index_5012b] < 1000 && tempMecAngleRef[index_5012b - 1] > 10000 && index_5012b > 1)
-				{
-					tempData[0] = tempMecAngleRef[index_5012b];
-					
-					tempData[1] = EleAngle;
-					
-					index_bound = index_5012b;
-				}
-				
-				UART_Transmit_DMA("\t/*Angle*/\t %d \t /*Encoder*/\t %d \r\n", (int)(EleAngle), (int)tempMecAngleRef[index_5012b]); 
+			lastPosition = position;
 			
-				SendBuf();
-
-				index_5012b++;
+			position = PosSensor.MecAngle_AbsoluteMode_15bit;
+			
+			if((times > 100) && (abs((int16_t)(position - lastPosition))<5))
+			{
+				count++;
 				
-				if(index_5012b > DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM)
+				if(count > 30) 
 				{
-					PutStr("EXCESS\r\n");SendBuf();
+					PosSensor.PosOffset = position;
+					
+					UART_Transmit_DMA("Position Offset:	%d \r\nCorrect Finished", (int)PosSensor.PosOffset);SendBuf();
+					
 					break;
 				}
 			}
-		}
-		
-		/*	发送电角度表	*/
-		
-		PutStr("\r\n\r\n\r\n\r\n");SendBuf();
-		
-		HAL_Delay(100);
-		
-		for(int i = index_bound, j = 0; i <= DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM;i++,j++)
-		{
-			tempArray[j] =  tempMecAngleRef[i];
-		}
-		
-		for(int i = index_bound - 1,k = DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM; i >= 0; i--, k--)
-		{
-			tempMecAngleRef[k] = tempMecAngleRef[i];
-		}
-		
-		for(int i = 1, k =0; k <=  DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM - index_bound; i++,k++)
-		{
-			tempMecAngleRef[i] = tempArray[k];
-		}
-		
-		tempEleAngleRef[1] = tempData[1];
-		
-		for(int i = 1; i <= DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM; i++)
-		{
-			tempEleAngleRef[i + 1] = tempEleAngleRef[i] + 360 / DIVIDE_NUM;
-		}
-		
-		#if POSITION_SENSOR_TYPE == ENCODER_TLE5012
-			#if ENCODER_MODE == ENCODER_ABSOLUTE_MODE
 			
-			tempMecAngleRef[0] = tempMecAngleRef[DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM] - TLE5012_ABS_MODE_RESOLUTION;
-			
-			tempMecAngleRef[DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM + 1] = tempMecAngleRef[1] + TLE5012_ABS_MODE_RESOLUTION;
-			
-			#elif ENCODER_MODE == ENCODER_INCREMENTAL_MODE
-
-			tempMecAngleRef[0] = tempMecAngleRef[DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM] - (int32_t)(TLE5012_IncrementalModeResolution * 4.f);
-			
-			tempMecAngleRef[DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM + 1] = tempMecAngleRef[1] + (int32_t)(TLE5012_IncrementalModeResolution * 4.f);
-			
-			#else
-			#error "Encoder Mode Invalid"
-			#endif
-		#endif
-
-		tempEleAngleRef[0] = tempEleAngleRef[1] - 360 / DIVIDE_NUM;
-
-		for(int i = 0; i < DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM + 2; i++)
-		{
-			UART_Transmit_DMA("%d\t,\t%d\t,\r\n", (int)tempEleAngleRef[i], (int)tempMecAngleRef[i]);
-			
-			SendBuf();
-		
-			HAL_Delay(15);
+			LL_mDelay(5);
 		}
 		
 		PWM_IT_CMD(DISABLE, DISABLE);
@@ -432,7 +501,6 @@ extern struct MainController_t MainController;
 			HAL_Delay(1);
 		}
 	}
-
 	
 #else
 #error "Position Sensor Type Invalid"

@@ -85,10 +85,10 @@ extern struct SpdLoop_t SpdLoop;
 extern struct CurrLoop_t CurrLoop;
 extern struct CoordTrans_t	CoordTrans;
 extern struct PosSensor_t PosSensor;
-extern struct MotorStaticParameter_t MotorStaticParameter;
-extern struct MotorDynamicParameter_t MotorDynamicParameter;
-
-
+extern struct VolCtrl_t VolCtrl;
+extern struct MainController_t MainController;
+extern struct Regulator_t Regulator;
+extern struct Driver_t Driver;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -280,51 +280,61 @@ void ADC_IRQHandler(void)
 	
 	GetPositionImformation();
 	
-	switch(MotorStaticParameter.ControlMode)
+	if(Driver.UnitMode == WORK_MODE)
 	{
-		case VoltageControlMode :	MotorStaticParameter.PowerAngleComp_degree = 70.0f * DEFAULT_CARRIER_PERIOD_s * PosSensor.EleAngularSpeed_degree;
+		switch(Driver.ControlMode)
+		{
+			case SPD_CURR_CTRL_MODE :	/*转速控制器, 包括转速PI控制器*/
+										SpeedController();
 			
-									InverseParkTransform(2.0f, 0.0f, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + 90.0f);
-									
-									SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
-
-									/*测试用*/								
-									ParkTransform(CoordTrans.CurrA, CoordTrans.CurrB, CoordTrans.CurrC, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + MotorStaticParameter.PowerAngleComp_degree);
-						
-//									UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrD * 1000));
-//									UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrQ * 1000)); 
-		
-									break;
-
-		case CurrentControlMode : 	/*电流控制器, 包括Clark变换, Park变换, 电流PI控制器, RevPark变换, SVPWM算法*/
-									CurrentController();
-																
-									UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrD * 1000));
-									UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrQ * 1000));
-																
-									break;
-
-		case SpeedControlMode :		/*转速控制器, 包括转速PI控制器*/
-									SpeedController();
-		
-									/*电流控制器, 包括Clark变换, Park变换, 电流PI控制器, RevPark变换, SVPWM算法*/
-									CurrentController();
-									
-									UART_Transmit_DMA("%d\t", (int)(CurrLoop.CtrlVolD * 1000));
-									UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrD * 1000));
-		
-									break;
-		
-		case PositionControlMode :	/*位置控制器, 包括位置PD控制器*/
-									PositionController();
-									
-									/*转速控制器, 包括转速PI控制器*/
-									SpeedController();
-		
-									/*电流控制器, 包括Clark变换, Park变换, 电流PI控制器, RevPark变换, SVPWM算法*/
-									CurrentController();
-		
-									break;
+										/*电流控制器, 包括Clark变换, Park变换, 电流PI控制器, RevPark变换, SVPWM算法*/
+										CurrentController();
+										
+										UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrD * 1000));
+										UART_Transmit_DMA("%d\r\n",(int)(PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ * 1000));
+			
+										break;
+			
+			case POS_SPD_CURR_CTRL_MODE :	/*位置控制器, 包括位置PD控制器*/
+										PositionController();
+										
+										/*转速控制器, 包括转速PI控制器*/
+										SpeedController();
+			
+										/*电流控制器, 包括Clark变换, Park变换, 电流PI控制器, RevPark变换, SVPWM算法*/
+										CurrentController();
+			
+										break;
+			
+			case SPD_VOL_CTRL_MODE :	/*转速控制器*/
+										SpeedController();
+										
+										/*电压控制器*/
+										VoltageController();
+			
+										UART_Transmit_DMA("%d\t", (int)(PosSensor.EleAngle_degree));
+										UART_Transmit_DMA("%d\r\n",(int)(PosSensor.MecAngle_AbsoluteMode_15bit));
+			
+										break;
+			
+			case POS_SPD_VOL_CTRL_MODE :	/*位置控制器*/
+										PositionController();
+				
+										/*转速控制器*/
+										SpeedController();
+										
+										/*电压控制器*/
+										VoltageController();
+			
+										UART_Transmit_DMA("%d\t", (int)(MainController.ExptMecAngle_pulse));
+										UART_Transmit_DMA("%d\r\n",(int)(MainController.RefMecAngle_pulse));
+			
+										break;
+		}
+	}
+	else if(Driver.UnitMode == MEASURE_PARAM_MODE)
+	{
+		MeasureParameters();
 	}
 	
 	__HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_JEOC);

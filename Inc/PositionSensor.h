@@ -74,6 +74,7 @@
 		float EleAngle_rad;
 		float EleAngularSpeed_rad;
 		float EleAngularSpeed_degree;
+		uint16_t PosOffset;
 		uint16_t OriginalMecAngle_14bit;
 		uint16_t FSYNC;
 		uint16_t SafetyWord;
@@ -102,7 +103,7 @@
 	void EncoderLostDetection(void);
 	uint16_t TLE5012_ReadRegister(uint16_t command, uint16_t *safetyWord);
 	void EncoderIncrementalModeEnable(void);
-	void MeasureEleAngle_Encoder(float volD);
+	void CorrectPosOffset_Encoder(float volD);
 #else
 #error "Position Sensor Type Invalid"
 #endif

@@ -60,7 +60,7 @@ struct Driver_t
 #define	GENERATRIX_VOL						24.0f		//(V)
 #define DEFAULT_CARRIER_FREQ				20000.f		//(Hz)
 #define DEFAULT_CARRIER_PERIOD_s			(1.f / DEFAULT_CARRIER_FREQ)		//(s)
-#define DEFAULT_CARRIER_PERIOD_us			(DEFAULT_CARRIER_PERIOD_s * 1000000.f)	//(us)
+#define DEFAULT_CARRIER_PERIOD_us			((float)DEFAULT_CARRIER_PERIOD_s * 1e6)	//(us)
 #define MCU_FREQ							180000000.f		//(Hz)
 #define TIM8_ARR 							(int)((MCU_FREQ / DEFAULT_CARRIER_FREQ) / 2.f )
 #define ADC_ExternalTrigger_CCR				(TIM8_ARR - 12)	//通过TIM8_CH4触发ADC, 超前量为ADC采样所需时间

@@ -312,8 +312,8 @@ void ADC_IRQHandler(void)
 										/*µçÑ¹¿ØÖÆÆ÷*/
 										VoltageController();
 			
-										UART_Transmit_DMA("%d\t", (int)(VolCtrl.CompRatio * PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s));
-										UART_Transmit_DMA("%d\r\n",(int)(PosSensor.MecAngle_AbsoluteMode_15bit));
+										UART_Transmit_DMA("%d\t", (int)(Regulator.ActualPeriod_s * 1e6));
+										UART_Transmit_DMA("%d\r\n",(int)(PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s));
 			
 										break;
 			

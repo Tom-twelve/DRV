@@ -1,17 +1,5 @@
 #include "util.h"
 	
-_Bool EvenParityCheck(uint32_t data)
-{
-	_Bool a = 1;
-	while(data)
-	{
-		a=!a;//改为 count++;可以计算该数二进制中包含1的个数
-		data&=(data-1);
-	}
-	return a;
-}
-
-
 int utils_truncate_number_abs(float *number, float max) {
 	int did_trunc = 0;
 
@@ -129,39 +117,6 @@ uint32_t UtilBiSearchInt(const int sortedIntArr[], int find, uint32_t maxN)
 }
 
 /**
- * @brief  float形增量式PI调节器
- * @param  None
- * @retval deltaU 控制量增量
- */
-float UtilPI_Control(arm_pid_instance_f32 *S, float err)
-{
-	// 移动偏差队列
-	S->state[2] = S->state[1]; //外部使用D调节时可能会用到
-	S->state[1] = S->state[0];
-	// 填入新偏差
-	S->state[0] = err;
-	// 计算控制量增量
-  return S->A0 * S->state[0] + S->A1 * S->state[1];
-}
-
-
-/**
- * @brief  float形增量式PID调节器
- * @param  None
- * @retval deltaU 控制量增量
- */
-float UtilPID_Control(arm_pid_instance_f32 *S, float err)
-{
-	// 移动偏差队列
-	S->state[2] = S->state[1];
-	S->state[1] = S->state[0];
-	// 填入新偏差
-	S->state[0] = err;
-	// 计算控制量增量
-  return S->A0 * S->state[0] + S->A1 * S->state[1] + S->A2 * S->state[2];
-}
-
-/**
  * @brief  Arcsine
  */
 float arcsine(float value)
@@ -182,55 +137,16 @@ float sqrt_DSP(float inputValue)
 	
 	return outputValue;
 }
-	
-/*Keil读取数据*/
-int TempDataArray[1000] = {0};
-int DataReadyFlag = 0;
-	
-void GetData(int32_t data)
-{
-	static uint16_t i = 0;
-	static uint16_t j = 0;
-	
-	j++;
-	
-	if(j >= 50000)
-	{
-		j = 50000;
-		
-		if(i < 1000)
-		{
-			TempDataArray[i] = data;
-	
-			i++;
-		}	
-		
-		if(i >= 1000)
-		{
-			i = 1000;
-			
-			PWM_IT_CMD(DISABLE, DISABLE);
-			
-			DataReadyFlag = 1;
-			
-			ADC_CMD(DISABLE);
-		}
-	}
-}
 
-void SendData(void)
-{
-	if(DataReadyFlag)
+void AmplitudeLimit(float *value, float upLimit, float downLimit)
+{	
+	if(*value >= upLimit)
 	{
-		DataReadyFlag = 0;
-		
-		for(uint16_t k = 0; k < 1000; k++)
-		{
-			UART_Transmit_DMA("%d\r\n",(int)(TempDataArray[k]));
-			for(uint16_t m = 0; m < 1000; m++)
-			{
-			
-			}
-		}
+		*value	= upLimit;
+	}
+	else if(*value <= downLimit)
+	{
+		*value = downLimit;
 	}
 }
+	

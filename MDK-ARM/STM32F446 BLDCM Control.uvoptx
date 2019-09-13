@@ -175,6 +175,11 @@
           <WinNumber>1</WinNumber>
           <ItemText>PosSensor.MecAngle_rad</ItemText>
         </Ww>
+        <Ww>
+          <count>3</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Regulator.ActualPeriod_s</ItemText>
+        </Ww>
       </WatchWindow1>
       <MemoryWindow1>
         <Mm>

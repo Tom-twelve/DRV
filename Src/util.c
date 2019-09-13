@@ -138,7 +138,7 @@ float sqrt_DSP(float inputValue)
 	return outputValue;
 }
 
-void AmplitudeLimit(float *value, float upLimit, float downLimit)
+void Saturation(float *value, float upLimit, float downLimit)
 {	
 	if(*value >= upLimit)
 	{

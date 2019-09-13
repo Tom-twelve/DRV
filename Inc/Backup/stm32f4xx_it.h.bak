@@ -48,6 +48,7 @@
 #include "control.h"
 #include "usart.h"
 #include "GateDriver.h"
+#include "identify.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

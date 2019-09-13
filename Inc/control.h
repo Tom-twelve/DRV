@@ -104,10 +104,10 @@ struct MainController_t
 #define POSITION_CONTROL_KP	
 #define POSITION_CONTROL_KD
 
-#define PERIOD_REGULATOR_KP 			(0.6 * 0.00596f)
-#define PERIOD_REGULATOR_KI 			(5 * 0.005952380952381 * DEFAULT_CARRIER_PERIOD_s)
-#define PERIOD_REGULATOR_KD 			(5 * 0.005952380952381) // 参数待调（这个初值是通过简单的计算一下，假设偏差的差分出现了1的变动，改变多少周期粗略的估计的，并非使用KD = Kd / dt)
-#define PERIOD_REGULATOR_LIM			6	//载波周期调节器限幅值	
+#define PERIOD_REGULATOR_KP 			(0.3 * 0.00596f)
+#define PERIOD_REGULATOR_KI 			(0.005952380952381 * DEFAULT_CARRIER_PERIOD_s)
+#define PERIOD_REGULATOR_KD 			(0.005952380952381) // 参数待调（这个初值是通过简单的计算一下，假设偏差的差分出现了1的变动，改变多少周期粗略的估计的，并非使用KD = Kd / dt)
+#define PERIOD_REGULATOR_LIM			5	//载波周期调节器限幅值	
 
 #define SPD_CURR_CTRL_MODE 				1
 #define POS_SPD_CURR_CTRL_MODE 			2

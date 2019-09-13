@@ -35,7 +35,7 @@ extern struct PosLoop_t PosLoop;
 extern struct CoordTrans_t CoordTrans;
 extern struct PosSensor_t PosSensor;
 extern struct Regulator_t Regulator;
-extern struct MotorStaticParameter_t MotorStaticParameter;
+extern struct Driver_t Driver;
 
 /* USER CODE END 0 */
 
@@ -221,28 +221,28 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 		case 0x00004F4D: //MO
 			if (receive.data_uint32[1] == 1)
 			{
-				SpdLoop.ExptMecAngularSpeed = 0.f;
+				SpdLoop.ExptMecAngularSpeed_rad = 0.f;
 				PWM_IT_CMD(ENABLE,ENABLE);
 			}
 			else
 			{
 				PWM_IT_CMD(DISABLE,ENABLE);
-				SpdLoop.ExptMecAngularSpeed = 0.0f;
+				SpdLoop.ExptMecAngularSpeed_rad = 0.0f;
 			}
 			break;
 		case 0x00004D55://先配置，再切换模式  //UM
-			if(receive.data_int32[1] == SpeedControlMode)
+			if(receive.data_int32[1] == SPD_CURR_CTRL_MODE)
 			{
 //				SpdLoop.Kp = VEL_CONTROL_KP;
 //				SpdLoop.Ki = VEL_CONTROL_KI;
-				MotorStaticParameter.ControlMode = SpeedControlMode;
+				Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			}
-			else if(receive.data_int32[1] == PositionControlMode)
+			else if(receive.data_int32[1] == POS_SPD_CURR_CTRL_MODE)
 			{
 //				PosLoop..Kp = POS_CONTROL_KP;
 //				PosLoop..Kd = POS_CONTROL_KD;
-				MotorStaticParameter.ControlMode = PositionControlMode;
-				PosLoop.ExptMecAngle = PosSensor.MecAngle_rad + PosSensor.MecAngularSpeed_rad * Regulator.ActualPeriod_s;
+				Driver.ControlMode = POS_SPD_CURR_CTRL_MODE;
+				PosLoop.ExptMecAngle_rad = PosSensor.MecAngle_rad + PosSensor.MecAngularSpeed_rad * Regulator.ActualPeriod_s;
 			}
 			break;
 		case 0x0000564A: //JV
@@ -263,11 +263,11 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 //			break;
 
 		case 0x00004150: //PA绝对位置
-			PosLoop.ExptMecAngle = -1 * (float)(receive.data_int32[1]);
+			PosLoop.ExptMecAngle_rad = -1 * (float)(receive.data_int32[1]);
 			break;
 
 		case 0x00005250: //PR相对位置
-			PosLoop.ExptMecAngle = PosSensor.MecAngle_rad + -1 * (float)(receive.data_int32[1]);
+			PosLoop.ExptMecAngle_rad = PosSensor.MecAngle_rad + -1 * (float)(receive.data_int32[1]);
 			break;
 		case 0x00005100:
 			PosSensor.MecAngle_rad = receive.data_int32[1];

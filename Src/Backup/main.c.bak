@@ -77,8 +77,9 @@
 
 /* USER CODE BEGIN PV */
 extern uint16_t DRV8323_SPI3_RxDataTemp;
-extern struct  MotorStaticParameter_t MotorStaticParameter;
-extern struct  CoordinateTransformation_t CoordinateTransformation;
+extern struct Driver_t Driver;
+extern struct  SpdLoop_t SpdLoop;
+extern struct  MainController_t MainController;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -100,7 +101,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
-	MotorStaticParameter.MotorMode = WorkMode;	//设定模式, 正常工作或测定电角度 ( WorkMode or TestMode )
+	Driver.UnitMode = WORK_MODE;	//设定模式, 正常工作或测定电角度 ( WORK_MODE or MEASURE_ANGLE_TABLE_MODE or MEASURE_PARAM_MODE )
 	
   /* USER CODE END 1 */
   
@@ -150,23 +151,28 @@ int main(void)
 	/*初始化栅极驱动器*/
 	GateDriverConfig();
 
-	#if ENCODER_MODE == Encoder_IncrementalMode
+	#if ENCODER_MODE == ENCODER_INCREMENTAL_MODE
 	
 	/*使能增量式*/
 	EncoderIncrementalModeEnable();
 	
 	#endif
 	
-	/*使能PWM, 设定参数*/
-	MotorEnable();
+	LL_mDelay(100);
 	
-	switch(MotorStaticParameter.MotorMode)
+	/*使能PWM, 设定参数*/
+	DriverInit();
+	
+	switch(Driver.UnitMode)
 	{
-		case WorkMode : ADC_CMD(ENABLE);	//包括使能ADC中断, 电机控制程序在ADC中断中执行
+		case WORK_MODE : ADC_CMD(ENABLE);	//包括使能ADC中断, 电机控制程序在ADC中断中执行
 		
 						break;
 		
-		case TestMode : MeasureEleAngle_Encoder(0.6f);	//测定电角度, 设定d轴电压
+		case MEASURE_ANGLE_TABLE_MODE : CorrectPosOffset_Encoder(0.7f);	//测定电角度, 设定d轴电压
+		
+						break;
+		case MEASURE_PARAM_MODE : ADC_CMD(ENABLE);
 		
 						break;
 	}
@@ -181,6 +187,22 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	  
+	  
+//	  SpdLoop.ExptMecAngularSpeed_rad = 30.f * 2.f * PI;
+//	  
+//	  LL_mDelay(1000);
+//	  
+//	  SpdLoop.ExptMecAngularSpeed_rad = -30.f * 2.f * PI;
+//	  
+//	  LL_mDelay(1000);
+	  
+//	  MainController.ExptMecAngle_pulse = 10000;
+//	  
+//	  LL_mDelay(1000);
+//	  
+//	  MainController.ExptMecAngle_pulse = -10000;
+//	  
+//	  LL_mDelay(1000);
   }
   /* USER CODE END 3 */
 }

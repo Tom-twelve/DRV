@@ -24,8 +24,7 @@
 /* Private variables ---------------------------------------------------------*/
 /* CODE BEGIN PV */
 struct CoordTrans_t	CoordTrans;
-struct MotorDynamicParameter_t		MotorDynamicParameter;
-struct MotorStaticParameter_t		MotorStaticParameter;
+struct Driver_t		Driver;
 	
 /* CODE END PV */
 
@@ -45,7 +44,7 @@ extern struct PosSensor_t PosSensor;
    */
 void SpaceVectorModulation(float volAlpha, float volBeta)
 {
-	const float StandardizationCoefficient = SQRT3 * TIM8_ARR / GeneratrixVoltage;
+	const float StandardizationCoefficient = SQRT3 * TIM8_ARR / GENERATRIX_VOL;
 	float U1 = 0;
 	float U2 = 0;
 	float U3 = 0;
@@ -128,39 +127,39 @@ void SpaceVectorModulation(float volAlpha, float volBeta)
 	
 	switch (sectionFlag)
 	{
-	case 3:  CCR_PhaseA = TA; 
-			 CCR_PhaseB = TB; 
-			 CCR_PhaseC = TC; 
+	case 3:  CCR_PHASE_A = TA; 
+			 CCR_PHASE_B = TB; 
+			 CCR_PHASE_C = TC; 
 			 break;
 
-	case 1:  CCR_PhaseA = TB; 
-			 CCR_PhaseB = TA; 
-			 CCR_PhaseC = TC; 
+	case 1:  CCR_PHASE_A = TB; 
+			 CCR_PHASE_B = TA; 
+			 CCR_PHASE_C = TC; 
 			 break;
 
-	case 5:  CCR_PhaseA = TC; 
-			 CCR_PhaseB = TA; 
-			 CCR_PhaseC = TB; 
+	case 5:  CCR_PHASE_A = TC; 
+			 CCR_PHASE_B = TA; 
+			 CCR_PHASE_C = TB; 
 			 break; 
 
-	case 4:  CCR_PhaseA = TC; 
-			 CCR_PhaseB = TB; 
-			 CCR_PhaseC = TA; 
+	case 4:  CCR_PHASE_A = TC; 
+			 CCR_PHASE_B = TB; 
+			 CCR_PHASE_C = TA; 
 			 break; 
 
-	case 6:  CCR_PhaseA = TB; 
-			 CCR_PhaseB = TC; 
-			 CCR_PhaseC = TA; 
+	case 6:  CCR_PHASE_A = TB; 
+			 CCR_PHASE_B = TC; 
+			 CCR_PHASE_C = TA; 
 			 break;
 
-	case 2:  CCR_PhaseA = TA; 
-			 CCR_PhaseB = TC; 
-			 CCR_PhaseC = TB; 
+	case 2:  CCR_PHASE_A = TA; 
+			 CCR_PHASE_B = TC; 
+			 CCR_PHASE_C = TB; 
 			 break;
 
-	default: CCR_PhaseA = TIM8_ARR; 
-			 CCR_PhaseB = TIM8_ARR; 
-			 CCR_PhaseC = TIM8_ARR; 
+	default: CCR_PHASE_A = TIM8_ARR; 
+			 CCR_PHASE_B = TIM8_ARR; 
+			 CCR_PHASE_C = TIM8_ARR; 
 			 break;
 	}
 }
@@ -198,20 +197,20 @@ void ParkTransform(float currentPhaseA, float currentPhaseB, float currentPhaseC
 
    /**
    * @brief  Floating-point Inverse Park transform
-   * @param[in]  VolD       	input coordinate of rotor reference frame d
-   * @param[in]  VolQ       	input coordinate of rotor reference frame q
-   * @param[out] VolAlpha 		output two-phase orthogonal vector axis alpha
-   * @param[out] VolBeta  		output two-phase orthogonal vector axis beta
+   * @param[in]  volD       	input coordinate of rotor reference frame d
+   * @param[in]  volQ       	input coordinate of rotor reference frame q
+   * @param[out] volAlpha 		output two-phase orthogonal vector axis alpha
+   * @param[out] volBeta  		output two-phase orthogonal vector axis beta
    * @param[in]  EleAngle			value of Ele angle
    */
-void InverseParkTransform(float VolD, float VolQ, float *VolAlpha, float *VolBeta, float eleAngle)
+void InverseParkTransform(float volD, float volQ, float *volAlpha, float *volBeta, float eleAngle)
 {
 	float eleAngleSineValue = 0;
 	float eleAngleCosineValue = 0;
 	
 	arm_sin_cos_f32((float)eleAngle,  &eleAngleSineValue,  &eleAngleCosineValue);
 	
-	arm_inv_park_f32((float)VolD, (float)VolQ, VolAlpha, VolBeta, (float)eleAngleSineValue, (float)eleAngleCosineValue);
+	arm_inv_park_f32((float)volD, (float)volQ, volAlpha, volBeta, (float)eleAngleSineValue, (float)eleAngleCosineValue);
 }
 
    /**
@@ -248,41 +247,13 @@ void ClarkTransform_arm(float currentPhaseA, float currentPhaseB, float *current
 }
 
    /**
-   * @brief  power angle compensation
-   * @param[in]  expectedCurrentQ  			current of axis d
-   * @param[out] *powerAngleComp_degree  	compensation angle 
-   */
-void PowerAngleComp(float expectedCurrentQ, float *powerAngleComp_degree)
-{
-	float PowerAngleComp_rad = 0;
-	
-	PowerAngleComp_rad = arcsine((-2 * (INDUCTANCE_D - INDUCTANCE_Q) * expectedCurrentQ) / (ROTATOR_FLUX_LINKAGE + sqrt_DSP(Square(ROTATOR_FLUX_LINKAGE) + 8 * Square(INDUCTANCE_D - INDUCTANCE_Q) * Square(expectedCurrentQ))));
-
-	*powerAngleComp_degree = PowerAngleComp_rad * 360.f	/ (2 * PI);
-}
-
-   /**
-   * @brief  Calculate voltage of axis d and voltage of axis q
-   * @param[in]  actualCurrentQ  					current of axis q
-   * @param[out] volD  							voltage of axis d
-   * @param[out] volQ							voltage of axis q
-   * @param[in]  actualEleAngularSpeed  		actual ele angular speed(rad/s)
-   */
-void CalculateVoltage_dq(float actualCurrentQ, float *volD, float *volQ, float actualEleAngularSpeed_rad)
-{
-	*volD = -actualEleAngularSpeed_rad * INDUCTANCE_Q * actualCurrentQ;
-	
-	*volQ = PHASE_RES * actualCurrentQ + actualEleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
-}
-
-   /**
    * @brief  Calculate electromagnetic torque
    * @param[in]   currentQ      				current of axis q
    * @param[out]  EleTorque      	electromagnetic torque
    */
 void CalculateEleTorque(float actualCurrentQ, float *EleTorque)
 {
-	*EleTorque = 1.5f * MOTOR_POLE_PAIRS * actualCurrentQ * ROTATOR_FLUX_LINKAGE;
+	*EleTorque = 1.5f * MOTOR_POLE_PAIRS_NUM * actualCurrentQ * ROTATOR_FLUX_LINKAGE;
 }
 
 /* USER CODE END */

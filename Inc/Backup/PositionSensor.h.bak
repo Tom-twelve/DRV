@@ -33,10 +33,10 @@
 	#define SPI_TX_ON           GPIOB->MODER &= 0xFFFFF3FF; GPIOB->MODER |= 0x00000800	// PB5--MOSI复用
 	#define SPI_TX_OFF          GPIOB->MODER &= 0xFFFFF3FF; GPIOB->MODER |= 0x00000000	//PB5--复位(输入模式)
 
-	#define	TLE5012_UpdateTime_0		0.0000213f	//(us)	
-	#define	TLE5012_UpdateTime_1		0.0000427f	//(us)	
-	#define	TLE5012_UpdateTime_2		0.0000853f	//(us)	
-	#define	TLE5012_UpdateTime_3		0.0001706f	//(us)	
+	#define	TLE5012_UpdateTime_0		0.0000213f	//(s)	
+	#define	TLE5012_UpdateTime_1		0.0000427f	//(s)	
+	#define	TLE5012_UpdateTime_2		0.0000853f	//(s)	
+	#define	TLE5012_UpdateTime_3		0.0001706f	//(s)	
 		
 	#define	TLE5012_SPI1_ChipSelect				LL_GPIO_ResetOutputPin(Encoder_SPI1_NSS_GPIO_Port, Encoder_SPI1_NSS_Pin)
 	#define	TLE5012_SPI1_ChipDiselect			LL_GPIO_SetOutputPin(Encoder_SPI1_NSS_GPIO_Port, Encoder_SPI1_NSS_Pin)
@@ -50,8 +50,8 @@
 	#define TLE5012_Command_ReadCurrentValue_FSYNC			0x8051	
 	#define TLE5012_Command_ReadUpdatedValue_FSYNC			0x8451
 	
-	#define TLE5012_AbsoluteModeResolution					32768.f
-	#define TLE5012_IncrementalModeResolution				4096.f
+	#define TLE5012_ABS_MODE_RESOLUTION						32768
+	#define TLE5012_IncrementalModeResolution				4096
 	
 	#define DIVIDE_NUM  20	//将360度n等分, 每次电角度增量为(360/DIVIDE_NUM)
 #else
@@ -74,6 +74,7 @@
 		float EleAngle_rad;
 		float EleAngularSpeed_rad;
 		float EleAngularSpeed_degree;
+		uint16_t PosOffset;
 		uint16_t OriginalMecAngle_14bit;
 		uint16_t FSYNC;
 		uint16_t SafetyWord;
@@ -92,6 +93,7 @@
 #if POSITION_SENSOR_TYPE == ENCODER_TLE5012
 	void GetPositionImformation(void);
 	void GetMecAngle(void);
+	void GetRefMecAngle(void);
 	void GetMecAngularSpeed(void);
 	void GetEleAngle(void);
 	void GetEleAngularSpeed(void);
@@ -101,7 +103,7 @@
 	void EncoderLostDetection(void);
 	uint16_t TLE5012_ReadRegister(uint16_t command, uint16_t *safetyWord);
 	void EncoderIncrementalModeEnable(void);
-	void MeasureEleAngle_Encoder(float VolD);
+	void CorrectPosOffset_Encoder(float volD);
 #else
 #error "Position Sensor Type Invalid"
 #endif

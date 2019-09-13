@@ -19,6 +19,7 @@
 /* Private typedef -----------------------------------------------------------*/
 /* CODE BEGIN PTD */
 extern struct Regulator_t Regulator;
+extern struct MainController_t MainController;
 /* CODE END PTD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -56,6 +57,7 @@ extern struct Regulator_t Regulator;
 		#error "Encoder Mode Invalid"
 		#endif
 		GetMecAngle(); //计算机械角度
+		GetRefMecAngle(); //计算参考机械角度（主控用）
 		GetMecAngularSpeed(); //计算机械角速度
 		GetEleAngle(); //计算电角度
 		GetEleAngularSpeed();  //计算电角速度
@@ -82,7 +84,7 @@ extern struct Regulator_t Regulator;
 	{
 		#if	ENCODER_MODE == ENCODER_ABSOLUTE_MODE
 		
-		PosSensor.MecAngle_degree = 360.f * (float)PosSensor.MecAngle_AbsoluteMode_15bit / TLE5012_AbsoluteModeResolution;
+		PosSensor.MecAngle_degree = 360.f * (float)PosSensor.MecAngle_AbsoluteMode_15bit / TLE5012_ABS_MODE_RESOLUTION;
 		
 		PosSensor.MecAngle_rad = (float)PosSensor.MecAngle_degree / 360.f * 2.0f * PI;
 		
@@ -96,7 +98,29 @@ extern struct Regulator_t Regulator;
 		#error "Encoder Mode Invalid"
 		#endif
 	}
-
+	
+	void GetRefMecAngle(void)
+	{
+		int delta = 0;
+		
+		MainController.PresentMecAngle_pulse = PosSensor.MecAngle_AbsoluteMode_15bit;
+		
+		delta = MainController.PresentMecAngle_pulse - MainController.LastMecAngle_pulse;
+		
+		MainController.LastMecAngle_pulse = MainController.PresentMecAngle_pulse;
+		
+		if(delta < -(TLE5012_ABS_MODE_RESOLUTION / 2))
+		{
+			delta += TLE5012_ABS_MODE_RESOLUTION;
+		}		
+		else if(delta > (TLE5012_ABS_MODE_RESOLUTION / 2))
+		{
+			delta -= TLE5012_ABS_MODE_RESOLUTION;
+		}
+		
+		MainController.RefMecAngle_pulse += delta;
+	}
+	
 	void GetMecAngularSpeed(void)
 	{
 		float presentMecAngle = 0;
@@ -154,7 +178,7 @@ extern struct Regulator_t Regulator;
 		
 		#if ENCODER_MODE == ENCODER_ABSOLUTE_MODE
 		
-		normPos = fmodf(PosSensor.MecAngle_AbsoluteMode_15bit, TLE5012_AbsoluteModeResolution);	
+		normPos = fmodf(PosSensor.MecAngle_AbsoluteMode_15bit, TLE5012_ABS_MODE_RESOLUTION);	
 		
 		uint32_t index = UtilBiSearchInt(MecAngleRef, normPos, sizeof(MecAngleRef)/sizeof(MecAngleRef[0]));
 
@@ -199,7 +223,7 @@ extern struct Regulator_t Regulator;
 	
 		PosSensor.EleAngularSpeed_rad = avg;
 		
-		PosSensor.EleAngularSpeed_degree = RadToDegree(PosSensor.EleAngularSpeed_rad);
+		PosSensor.EleAngularSpeed_degree = RAD_TO_DEGREE(PosSensor.EleAngularSpeed_rad);
 	}
 
 	void TLE5012_ReadFSYNC(void)
@@ -225,7 +249,7 @@ extern struct Regulator_t Regulator;
 				/*通过CAN总线向主控发送编码器异常*/
 //				errorCode.data_int32[0] = 0xCCCCCCCC;
 //				errorCode.data_int32[1] = 0xCCCCCCCC;
-					
+//					
 //				CANSendData(errorCode);
 				
 				PutNum((uint16_t)PosSensor.SafetyWord,'\t');	
@@ -375,9 +399,9 @@ extern struct Regulator_t Regulator;
 		#if POSITION_SENSOR_TYPE == ENCODER_TLE5012
 			#if ENCODER_MODE == ENCODER_ABSOLUTE_MODE
 			
-			tempMecAngleRef[0] = tempMecAngleRef[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS] - (int32_t)TLE5012_AbsoluteModeResolution;
+			tempMecAngleRef[0] = tempMecAngleRef[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS] - (int32_t)TLE5012_ABS_MODE_RESOLUTION;
 			
-			tempMecAngleRef[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS + 1] = tempMecAngleRef[1] + (int32_t)TLE5012_AbsoluteModeResolution;
+			tempMecAngleRef[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS + 1] = tempMecAngleRef[1] + (int32_t)TLE5012_ABS_MODE_RESOLUTION;
 			
 			#elif ENCODER_MODE == ENCODER_INCREMENTAL_MODE
 

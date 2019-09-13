@@ -50,8 +50,8 @@
 	#define TLE5012_Command_ReadCurrentValue_FSYNC			0x8051	
 	#define TLE5012_Command_ReadUpdatedValue_FSYNC			0x8451
 	
-	#define TLE5012_AbsoluteModeResolution					32768.f
-	#define TLE5012_IncrementalModeResolution				4096.f
+	#define TLE5012_ABS_MODE_RESOLUTION						32768
+	#define TLE5012_IncrementalModeResolution				4096
 	
 	#define DIVIDE_NUM  20	//将360度n等分, 每次电角度增量为(360/DIVIDE_NUM)
 #else
@@ -92,6 +92,7 @@
 #if POSITION_SENSOR_TYPE == ENCODER_TLE5012
 	void GetPositionImformation(void);
 	void GetMecAngle(void);
+	void GetRefMecAngle(void);
 	void GetMecAngularSpeed(void);
 	void GetEleAngle(void);
 	void GetEleAngularSpeed(void);

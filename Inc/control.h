@@ -51,15 +51,16 @@ struct VolCtrl_t
 
 struct SpdLoop_t
 {
-	float ExptMecAngularSpeed;	//期望机械角速度(rad/s)
-	float Acceleration;		//加速度(rad/s2)
+	float ExptMecAngularSpeed_rad;		//期望机械角速度(rad/s), 弧度制
+	float Acceleration;					//加速度(rad/s2), 弧度制
 	float Kp;
 	float Ki;
 };
 
 struct PosLoop_t
 {
-	float ExptMecAngle;	//degree
+	float ExptMecAngle_rad;			//目标角度, 弧度制
+	float MaxMecAngularSpeed_rad; 	//位置环最大输出速度, 弧度制
 	float Kp;
 	float Kd;
 };
@@ -71,6 +72,15 @@ struct Regulator_t
 	float Kd;
 	float ActualPeriod_s;
 	int16_t TargetFSYNC;
+};
+
+struct MainController_t
+{
+	int16_t ExptMecAngularSpeed_pulse;	//目标机械角速度, 脉冲
+	int16_t ExptMecAngle_pulse;			//目标位置, 脉冲
+	int RefMecAngle_pulse;			//参考机械角度, 上电时置零, 脉冲
+	uint16_t PresentMecAngle_pulse;
+	uint16_t LastMecAngle_pulse;
 };
 
 /* Private define ------------------------------------------------------------*/
@@ -119,6 +129,7 @@ void VoltageControllerInit(void);
 void VoltageController(void);
 void SpeedLoopInit(void);
 void PositionLoopInit(void);
+void ZeroPosInit(void);
 void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCurrQ, float *ctrlVolD, float *ctrlVolQ);
 void SpeedLoop(float expectedMecAngularSpeed, float realMecAngularSpeed, float *ctrlCurrQ);
 void PositionLoop(float exptMecAngle, float realMecAngle, float *ctrlAngularSpeed);

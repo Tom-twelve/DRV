@@ -57,7 +57,7 @@ struct Driver_t
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define	GENERATRIX_VOL						25.0f		//(V)
+#define	GENERATRIX_VOL						24.0f		//(V)
 #define DEFAULT_CARRIER_FREQ				20000.f		//(Hz)
 #define DEFAULT_CARRIER_PERIOD_s			(1.f / DEFAULT_CARRIER_FREQ)		//(s)
 #define DEFAULT_CARRIER_PERIOD_us			(DEFAULT_CARRIER_PERIOD_s * 1000000.f)	//(us)
@@ -83,13 +83,11 @@ struct Driver_t
 /* USER CODE BEGIN PFP */
 void SpaceVectorModulation(float volAlpha, float volBeta);
 void ParkTransform(float currentPhaseA, float currentPhaseB, float currentPhaseC, float *currentD, float *currentQ, float eleAngle);
-void InverseParkTransform(float VolD, float VolQ, float *VolAlpha, float *VolBeta, float eleAngle);
+void InverseParkTransform(float volD, float volQ, float *volAlpha, float *volBeta, float eleAngle);
 void ClarkTransform(float currentPhaseA, float currentPhaseB, float currentPhaseC, float *currentAlpha, float *currentBeta);
 void ParkTransform_arm(float currentAlpha, float currentBeta, float *currentD, float *currentQ, float eleAngle);
 void ClarkTransform_arm(float currentPhaseA, float currentPhaseB, float *currentAlpha, float *currentBeta);
-void PowerAngleComp(float expectedCurrentQ, float *powerAngleComp_degree);
 void CalculateEleTorque(float actualCurrentQ, float *eleTorque);
-void CalculateVoltage_dq(float actualCurrentQ, float *volD, float *volQ, float actualEleAngularSpeed_rad);
 
 /* USER CODE END PFP */
 

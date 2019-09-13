@@ -221,13 +221,13 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 		case 0x00004F4D: //MO
 			if (receive.data_uint32[1] == 1)
 			{
-				SpdLoop.ExptMecAngularSpeed = 0.f;
+				SpdLoop.ExptMecAngularSpeed_rad = 0.f;
 				PWM_IT_CMD(ENABLE,ENABLE);
 			}
 			else
 			{
 				PWM_IT_CMD(DISABLE,ENABLE);
-				SpdLoop.ExptMecAngularSpeed = 0.0f;
+				SpdLoop.ExptMecAngularSpeed_rad = 0.0f;
 			}
 			break;
 		case 0x00004D55://先配置，再切换模式  //UM
@@ -242,7 +242,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 //				PosLoop..Kp = POS_CONTROL_KP;
 //				PosLoop..Kd = POS_CONTROL_KD;
 				Driver.ControlMode = POS_SPD_CURR_CTRL_MODE;
-				PosLoop.ExptMecAngle = PosSensor.MecAngle_rad + PosSensor.MecAngularSpeed_rad * Regulator.ActualPeriod_s;
+				PosLoop.ExptMecAngle_rad = PosSensor.MecAngle_rad + PosSensor.MecAngularSpeed_rad * Regulator.ActualPeriod_s;
 			}
 			break;
 		case 0x0000564A: //JV
@@ -263,11 +263,11 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 //			break;
 
 		case 0x00004150: //PA绝对位置
-			PosLoop.ExptMecAngle = -1 * (float)(receive.data_int32[1]);
+			PosLoop.ExptMecAngle_rad = -1 * (float)(receive.data_int32[1]);
 			break;
 
 		case 0x00005250: //PR相对位置
-			PosLoop.ExptMecAngle = PosSensor.MecAngle_rad + -1 * (float)(receive.data_int32[1]);
+			PosLoop.ExptMecAngle_rad = PosSensor.MecAngle_rad + -1 * (float)(receive.data_int32[1]);
 			break;
 		case 0x00005100:
 			PosSensor.MecAngle_rad = receive.data_int32[1];

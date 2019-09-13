@@ -86,8 +86,9 @@ extern struct CurrLoop_t CurrLoop;
 extern struct CoordTrans_t	CoordTrans;
 extern struct PosSensor_t PosSensor;
 extern struct VolCtrl_t VolCtrl;
+extern struct MainController_t MainController;
+extern struct Regulator_t Regulator;
 extern struct Driver_t Driver;
-
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -306,13 +307,12 @@ void ADC_IRQHandler(void)
 										break;
 			
 			case SPD_VOL_CTRL_MODE :	/*转速控制器*/
-										SpeedController();
-										
-										/*电压控制器*/
+//										SpeedController();
+//										
+//										/*电压控制器*/
 										VoltageController();
 			
-										UART_Transmit_DMA("%d\t", (int)(SpdLoop.ExptMecAngularSpeed - PosSensor.MecAngularSpeed_rad));
-										UART_Transmit_DMA("%d\t", (int)(VolCtrl.BEMF * 1000));
+										UART_Transmit_DMA("%d\t", (int)(VolCtrl.CompRatio * PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s));
 										UART_Transmit_DMA("%d\r\n",(int)((VolCtrl.CtrlVolQ) * 1000));
 			
 										break;
@@ -326,9 +326,8 @@ void ADC_IRQHandler(void)
 										/*电压控制器*/
 										VoltageController();
 			
-										UART_Transmit_DMA("%d\t", (int)(SpdLoop.ExptMecAngularSpeed - PosSensor.MecAngularSpeed_rad));
-										UART_Transmit_DMA("%d\t", (int)(VolCtrl.BEMF * 1000));
-										UART_Transmit_DMA("%d\r\n",(int)((VolCtrl.CtrlVolQ) * 1000));
+										UART_Transmit_DMA("%d\t", (int)(MainController.ExptMecAngle_pulse));
+										UART_Transmit_DMA("%d\r\n",(int)(MainController.RefMecAngle_pulse));
 			
 										break;
 		}

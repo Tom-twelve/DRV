@@ -197,20 +197,20 @@ void ParkTransform(float currentPhaseA, float currentPhaseB, float currentPhaseC
 
    /**
    * @brief  Floating-point Inverse Park transform
-   * @param[in]  VolD       	input coordinate of rotor reference frame d
-   * @param[in]  VolQ       	input coordinate of rotor reference frame q
-   * @param[out] VolAlpha 		output two-phase orthogonal vector axis alpha
-   * @param[out] VolBeta  		output two-phase orthogonal vector axis beta
+   * @param[in]  volD       	input coordinate of rotor reference frame d
+   * @param[in]  volQ       	input coordinate of rotor reference frame q
+   * @param[out] volAlpha 		output two-phase orthogonal vector axis alpha
+   * @param[out] volBeta  		output two-phase orthogonal vector axis beta
    * @param[in]  EleAngle			value of Ele angle
    */
-void InverseParkTransform(float VolD, float VolQ, float *VolAlpha, float *VolBeta, float eleAngle)
+void InverseParkTransform(float volD, float volQ, float *volAlpha, float *volBeta, float eleAngle)
 {
 	float eleAngleSineValue = 0;
 	float eleAngleCosineValue = 0;
 	
 	arm_sin_cos_f32((float)eleAngle,  &eleAngleSineValue,  &eleAngleCosineValue);
 	
-	arm_inv_park_f32((float)VolD, (float)VolQ, VolAlpha, VolBeta, (float)eleAngleSineValue, (float)eleAngleCosineValue);
+	arm_inv_park_f32((float)volD, (float)volQ, volAlpha, volBeta, (float)eleAngleSineValue, (float)eleAngleCosineValue);
 }
 
    /**
@@ -244,34 +244,6 @@ void ParkTransform_arm(float currentAlpha, float currentBeta, float *currentD, f
 void ClarkTransform_arm(float currentPhaseA, float currentPhaseB, float *currentAlpha, float *currentBeta)
 {
 	arm_clarke_f32(currentPhaseA, currentPhaseB, currentAlpha, currentBeta);
-}
-
-   /**
-   * @brief  power angle compensation
-   * @param[in]  expectedCurrentQ  			current of axis d
-   * @param[out] *powerAngleComp_degree  	compensation angle 
-   */
-void PowerAngleComp(float expectedCurrentQ, float *powerAngleComp_degree)
-{
-	float PowerAngleComp_rad = 0;
-	
-	PowerAngleComp_rad = arcsine((-2 * (INDUCTANCE_D - INDUCTANCE_Q) * expectedCurrentQ) / (ROTATOR_FLUX_LINKAGE + sqrt_DSP(SQUARE(ROTATOR_FLUX_LINKAGE) + 8 * SQUARE(INDUCTANCE_D - INDUCTANCE_Q) * SQUARE(expectedCurrentQ))));
-
-	*powerAngleComp_degree = PowerAngleComp_rad * 360.f	/ (2 * PI);
-}
-
-   /**
-   * @brief  Calculate voltage of axis d and voltage of axis q
-   * @param[in]  actualCurrentQ  					current of axis q
-   * @param[out] volD  							voltage of axis d
-   * @param[out] volQ							voltage of axis q
-   * @param[in]  actualEleAngularSpeed  		actual ele angular speed(rad/s)
-   */
-void CalculateVoltage_dq(float actualCurrentQ, float *volD, float *volQ, float actualEleAngularSpeed_rad)
-{
-	*volD = -actualEleAngularSpeed_rad * INDUCTANCE_Q * actualCurrentQ;
-	
-	*volQ = PHASE_RES * actualCurrentQ + actualEleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
 }
 
    /**

@@ -78,7 +78,8 @@
 /* USER CODE BEGIN PV */
 extern uint16_t DRV8323_SPI3_RxDataTemp;
 extern struct Driver_t Driver;
-extern struct  CoordinateTransformation_t CoordinateTransformation;
+extern struct  SpdLoop_t SpdLoop;
+extern struct  MainController_t MainController;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -157,6 +158,8 @@ int main(void)
 	
 	#endif
 	
+	LL_mDelay(100);
+	
 	/*使能PWM, 设定参数*/
 	DriverInit();
 	
@@ -166,7 +169,7 @@ int main(void)
 		
 						break;
 		
-		case MEASURE_ANGLE_TABLE_MODE : MeasureEleAngle_Encoder(0.6f);	//测定电角度, 设定d轴电压
+		case MEASURE_ANGLE_TABLE_MODE : MeasureEleAngle_Encoder(0.7f);	//测定电角度, 设定d轴电压
 		
 						break;
 		case MEASURE_PARAM_MODE : ADC_CMD(ENABLE);
@@ -184,6 +187,22 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	  
+	  
+//	  SpdLoop.ExptMecAngularSpeed_rad = 30.f * 2.f * PI;
+//	  
+//	  LL_mDelay(1000);
+//	  
+//	  SpdLoop.ExptMecAngularSpeed_rad = -30.f * 2.f * PI;
+//	  
+//	  LL_mDelay(1000);
+	  
+//	  MainController.ExptMecAngle_pulse = 10000;
+//	  
+//	  LL_mDelay(1000);
+//	  
+//	  MainController.ExptMecAngle_pulse = -10000;
+//	  
+//	  LL_mDelay(1000);
   }
   /* USER CODE END 3 */
 }

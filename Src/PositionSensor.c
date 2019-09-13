@@ -32,8 +32,8 @@ extern struct MainController_t MainController;
 /* CODE BEGIN PV */
 #if	POSITION_SENSOR_TYPE == ENCODER_TLE5012
 	struct PosSensor_t PosSensor;
-	extern const short int EleAngleRef[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS + 2];
-	extern const int MecAngleRef[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS + 2];
+	extern const short int EleAngleRef[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS_NUM + 2];
+	extern const int MecAngleRef[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS_NUM + 2];
 #else
 #error "Position Sensor Type Invalid"
 #endif
@@ -213,7 +213,7 @@ extern struct MainController_t MainController;
 			
 		old = array[pos];
 		
-		array[pos] = PosSensor.MecAngularSpeed_rad * MOTOR_POLE_PAIRS;
+		array[pos] = PosSensor.MecAngularSpeed_rad * MOTOR_POLE_PAIRS_NUM;
 			
 		sum = (sum - old) + array[pos];
 			
@@ -297,27 +297,27 @@ extern struct MainController_t MainController;
 	
 	/**
 	* @brief  Measure reference Ele angle
-	* @param[in]  VolD      voltage of axis d
+	* @param[in]  volD      voltage of axis d
 	*/
-	void MeasureEleAngle_Encoder(float VolD)
+	void MeasureEleAngle_Encoder(float volD)
 	{
-		float VolAlpha = 0;
-		float VolBeta = 0;
-		int16_t tmpData[2] = {0};
+		float volAlpha = 0;
+		float volBeta = 0;
+		int16_t tempData[2] = {0};
 		int EleAngle = 0;
 		static int16_t index_5012b = 1;
 		static int16_t index_bound = 0;
-		static int tempMecAngleRef[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS + 2] = {0};
-		static int tempEleAngleRef[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS + 2] = {0};
-		static int16_t tmpArray[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS] = {0};
+		static int tempMecAngleRef[DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM + 2] = {0};
+		static int tempEleAngleRef[DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM + 2] = {0};
+		static int16_t tempArray[DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM] = {0};
 
-		InverseParkTransform(VolD, 0.f, &VolAlpha, &VolBeta, 0.f);	//设定Vq = 0, 电角度为零
+		InverseParkTransform(volD, 0.f, &volAlpha, &volBeta, 0.f);	//设定Vq = 0, 电角度为零
 		
-		SpaceVectorModulation(VolAlpha, VolBeta);
+		SpaceVectorModulation(volAlpha, volBeta);
 		
 		HAL_Delay(1000);
 		
-		for (int i = 0; i < MOTOR_POLE_PAIRS; i++)
+		for (int i = 0; i < MOTOR_POLE_PAIRS_NUM; i++)
 		{
 			for(int j = 0; j < DIVIDE_NUM; j ++)
 			{
@@ -325,9 +325,9 @@ extern struct MainController_t MainController;
 				
 				EleAngle = j * 360 / DIVIDE_NUM;
 				
-				InverseParkTransform(VolD, 0.f, &VolAlpha, &VolBeta, EleAngle);
+				InverseParkTransform(volD, 0.f, &volAlpha, &volBeta, EleAngle);
 				
-				SpaceVectorModulation(VolAlpha, VolBeta);
+				SpaceVectorModulation(volAlpha, volBeta);
 				
 				HAL_Delay(200);
 
@@ -347,9 +347,9 @@ extern struct MainController_t MainController;
 
 				if(tempMecAngleRef[index_5012b] < 1000 && tempMecAngleRef[index_5012b - 1] > 10000 && index_5012b > 1)
 				{
-					tmpData[0] = tempMecAngleRef[index_5012b];
+					tempData[0] = tempMecAngleRef[index_5012b];
 					
-					tmpData[1] = EleAngle;
+					tempData[1] = EleAngle;
 					
 					index_bound = index_5012b;
 				}
@@ -360,7 +360,7 @@ extern struct MainController_t MainController;
 
 				index_5012b++;
 				
-				if(index_5012b > DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS)
+				if(index_5012b > DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM)
 				{
 					PutStr("EXCESS\r\n");SendBuf();
 					break;
@@ -370,28 +370,28 @@ extern struct MainController_t MainController;
 		
 		/*	发送电角度表	*/
 		
-		PutStr("\r\n\r\n\r\n\r\n");
+		PutStr("\r\n\r\n\r\n\r\n");SendBuf();
 		
 		HAL_Delay(100);
 		
-		for(int i = index_bound, j = 0; i <= DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS;i++,j++)
+		for(int i = index_bound, j = 0; i <= DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM;i++,j++)
 		{
-			tmpArray[j] =  tempMecAngleRef[i];
+			tempArray[j] =  tempMecAngleRef[i];
 		}
 		
-		for(int i = index_bound - 1,k = DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS; i >= 0; i--, k--)
+		for(int i = index_bound - 1,k = DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM; i >= 0; i--, k--)
 		{
 			tempMecAngleRef[k] = tempMecAngleRef[i];
 		}
 		
-		for(int i = 1, k =0; k <=  DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS - index_bound; i++,k++)
+		for(int i = 1, k =0; k <=  DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM - index_bound; i++,k++)
 		{
-			tempMecAngleRef[i] = tmpArray[k];
+			tempMecAngleRef[i] = tempArray[k];
 		}
 		
-		tempEleAngleRef[1] = tmpData[1];
+		tempEleAngleRef[1] = tempData[1];
 		
-		for(int i = 1; i <= DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS; i++)
+		for(int i = 1; i <= DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM; i++)
 		{
 			tempEleAngleRef[i + 1] = tempEleAngleRef[i] + 360 / DIVIDE_NUM;
 		}
@@ -399,15 +399,15 @@ extern struct MainController_t MainController;
 		#if POSITION_SENSOR_TYPE == ENCODER_TLE5012
 			#if ENCODER_MODE == ENCODER_ABSOLUTE_MODE
 			
-			tempMecAngleRef[0] = tempMecAngleRef[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS] - (int32_t)TLE5012_ABS_MODE_RESOLUTION;
+			tempMecAngleRef[0] = tempMecAngleRef[DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM] - TLE5012_ABS_MODE_RESOLUTION;
 			
-			tempMecAngleRef[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS + 1] = tempMecAngleRef[1] + (int32_t)TLE5012_ABS_MODE_RESOLUTION;
+			tempMecAngleRef[DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM + 1] = tempMecAngleRef[1] + TLE5012_ABS_MODE_RESOLUTION;
 			
 			#elif ENCODER_MODE == ENCODER_INCREMENTAL_MODE
 
-			tempMecAngleRef[0] = tempMecAngleRef[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS] - (int32_t)(TLE5012_IncrementalModeResolution * 4.f);
+			tempMecAngleRef[0] = tempMecAngleRef[DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM] - (int32_t)(TLE5012_IncrementalModeResolution * 4.f);
 			
-			tempMecAngleRef[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS + 1] = tempMecAngleRef[1] + (int32_t)(TLE5012_IncrementalModeResolution * 4.f);
+			tempMecAngleRef[DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM + 1] = tempMecAngleRef[1] + (int32_t)(TLE5012_IncrementalModeResolution * 4.f);
 			
 			#else
 			#error "Encoder Mode Invalid"
@@ -416,7 +416,7 @@ extern struct MainController_t MainController;
 
 		tempEleAngleRef[0] = tempEleAngleRef[1] - 360 / DIVIDE_NUM;
 
-		for(int i = 0; i < DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS + 2; i++)
+		for(int i = 0; i < DIVIDE_NUM * MOTOR_POLE_PAIRS_NUM + 2; i++)
 		{
 			UART_Transmit_DMA("%d\t,\t%d\t,\r\n", (int)tempEleAngleRef[i], (int)tempMecAngleRef[i]);
 			
@@ -432,6 +432,7 @@ extern struct MainController_t MainController;
 			HAL_Delay(1);
 		}
 	}
+
 	
 #else
 #error "Position Sensor Type Invalid"

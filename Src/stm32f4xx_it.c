@@ -307,13 +307,13 @@ void ADC_IRQHandler(void)
 										break;
 			
 			case SPD_VOL_CTRL_MODE :	/*转速控制器*/
-//										SpeedController();
-//										
-//										/*电压控制器*/
+										SpeedController();
+										
+										/*电压控制器*/
 										VoltageController();
 			
 										UART_Transmit_DMA("%d\t", (int)(VolCtrl.CompRatio * PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s));
-										UART_Transmit_DMA("%d\r\n",(int)((VolCtrl.CtrlVolQ) * 1000));
+										UART_Transmit_DMA("%d\r\n",(int)(PosSensor.MecAngle_AbsoluteMode_15bit));
 			
 										break;
 			

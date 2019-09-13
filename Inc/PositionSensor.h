@@ -102,7 +102,7 @@
 	void EncoderLostDetection(void);
 	uint16_t TLE5012_ReadRegister(uint16_t command, uint16_t *safetyWord);
 	void EncoderIncrementalModeEnable(void);
-	void MeasureEleAngle_Encoder(float VolD);
+	void MeasureEleAngle_Encoder(float volD);
 #else
 #error "Position Sensor Type Invalid"
 #endif

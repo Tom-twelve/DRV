@@ -94,30 +94,30 @@
 
 /* Motor Type*/
 #if MOTOR_TYPE == SUNNYSKY_X4125_9_KV350	  
-	#define MOTOR_POLE_PAIRS					7.f
+	#define MOTOR_POLE_PAIRS_NUM					7
 	#define	MOTOR_KV							350.f
-	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * (MOTOR_POLE_PAIRS) * (MOTOR_KV)))
+	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * ((float)MOTOR_POLE_PAIRS_NUM) * (MOTOR_KV)))
 	#define PHASE_RES							0.0186698157f	//(Ohm)
 	#define INDUCTANCE_D						0.0000065f		//(H)
 	#define INDUCTANCE_Q						0.000012f		//(H)
 #elif	MOTOR_TYPE == N5055_KV400
-	#define MOTOR_POLE_PAIRS					7.f
+	#define MOTOR_POLE_PAIRS_NUM					7
 	#define	MOTOR_KV							400.f
-	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * (MOTOR_POLE_PAIRS) * (MOTOR_KV)))
+	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * ((float)MOTOR_POLE_PAIRS_NUM) * (MOTOR_KV)))
 	#define PHASE_RES							(50.f * (float)1e-6)	//(Ohm)
 	#define INDUCTANCE_D						(55.f * (float)1e-6)	//(H)
 	#define INDUCTANCE_Q						(55.f * (float)1e-6)	//(H)
 #elif	MOTOR_TYPE == TMOTOR_MN505_S_KV320
-	#define MOTOR_POLE_PAIRS					14.f
+	#define MOTOR_POLE_PAIRS_NUM					14
 	#define	MOTOR_KV							320.f
-	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * MOTOR_POLE_PAIRS * MOTOR_KV))
+	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * (float)MOTOR_POLE_PAIRS_NUM * MOTOR_KV))
 	#define PHASE_RES							0.019f	//(Ohm) T-MOTOR官方数据
 	#define INDUCTANCE_D						0.000008f	//(H)
 	#define INDUCTANCE_Q						0.000014f	//(H)
 #elif	MOTOR_TYPE == BallScrewMotor_KV320	//与TMOTOR_MN505_S_KV320使用同一电枢
-	#define MOTOR_POLE_PAIRS					14.f
+	#define MOTOR_POLE_PAIRS_NUM					14
 	#define	MOTOR_KV							320.f
-	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * (MOTOR_POLE_PAIRS) * (MOTOR_KV)))
+	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * ((float)MOTOR_POLE_PAIRS_NUM) * (MOTOR_KV)))
 	#define PHASE_RES							0.019f	//(Ohm) T-MOTOR官方数据
 	#define INDUCTANCE_D						0.000008f	//(H)
 	#define INDUCTANCE_Q						0.000014f	//(H)

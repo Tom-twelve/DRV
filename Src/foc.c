@@ -253,7 +253,7 @@ void ClarkTransform_arm(float currentPhaseA, float currentPhaseB, float *current
    */
 void CalculateEleTorque(float actualCurrentQ, float *EleTorque)
 {
-	*EleTorque = 1.5f * MOTOR_POLE_PAIRS * actualCurrentQ * ROTATOR_FLUX_LINKAGE;
+	*EleTorque = 1.5f * MOTOR_POLE_PAIRS_NUM * actualCurrentQ * ROTATOR_FLUX_LINKAGE;
 }
 
 /* USER CODE END */

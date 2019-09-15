@@ -162,7 +162,10 @@ int main(void)
 	
 	/*使能PWM, 设定参数*/
 	DriverInit();
-	
+			
+	/*使能CAN总线*/
+	CAN_Enable();
+		
 	switch(Driver.UnitMode)
 	{
 		case WORK_MODE : ADC_CMD(ENABLE);	//包括使能ADC中断, 电机控制程序在ADC中断中执行

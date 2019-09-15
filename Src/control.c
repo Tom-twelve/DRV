@@ -132,7 +132,7 @@ void SpeedLoopInit(void)
 		/*速度-电流双环控制，设定速度环PI参数*/
 		SpdLoop.Kp = 1.0f;	
 		SpdLoop.Ki = 0.1f;
-		SpdLoop.ExptMecAngularSpeed_rad = 100.f * 2 * PI;	//期望速度，degree per second
+		SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;	//期望速度，degree per second
 		SpdLoop.Acceleration = 5000.f * 2 * PI;	//期望加速度，degree per quadratic seconds
 	}
 	else if(Driver.ControlMode == POS_SPD_CURR_CTRL_MODE)

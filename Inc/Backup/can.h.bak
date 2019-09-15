@@ -38,21 +38,22 @@ extern CAN_HandleTypeDef hcan1;
 /* USER CODE BEGIN Private defines */
 #define CAN_SDO_CLIENT_STD_ID     (0x280 + CAN_ID_NUM)
 #define CAN_SDO_SERVER_STD_ID     (0x300 + CAN_ID_NUM)
-/* USER CODE END Private defines */
 
-void MX_CAN1_Init(void);
-
-/* USER CODE BEGIN Prototypes */
 typedef union
 {
 	volatile uint32_t  data_uint32[2];
 	volatile int32_t   data_int32[2];
 	volatile float     data_float[2];
 	volatile uint8_t   data_uint8[8];
-} canData_t;
+} CANdata_t;
 
+/* USER CODE END Private defines */
+
+void MX_CAN1_Init(void);
+
+/* USER CODE BEGIN Prototypes */
+void CANSendData(CANdata_t data);
 void CANRespond(void);
-void CANSendData(canData_t data);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

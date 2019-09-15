@@ -44,11 +44,13 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "main.h"
-#include "adc.h"
+#include "can.h"
+#include "identify.h"
 #include "control.h"
 #include "usart.h"
 #include "GateDriver.h"
 #include "identify.h"
+	 
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -77,6 +79,7 @@ void DebugMon_Handler(void);
 void PendSV_Handler(void);
 void SysTick_Handler(void);
 void CAN1_RX0_IRQHandler(void);
+void CAN1_RX1_IRQHandler(void);
 void USART1_IRQHandler(void);
 void DMA2_Stream7_IRQHandler(void);
 /* USER CODE BEGIN EFP */

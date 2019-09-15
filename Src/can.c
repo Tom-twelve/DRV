@@ -84,9 +84,16 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* canHandle)
     PA11     ------> CAN1_RX
     PA12     ------> CAN1_TX 
     */
-    GPIO_InitStruct.Pin = GPIO_PIN_11|GPIO_PIN_12;
+    GPIO_InitStruct.Pin = GPIO_PIN_11;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+    GPIO_InitStruct.Pull = GPIO_PULLUP;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.Alternate = GPIO_AF9_CAN1;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = GPIO_PIN_12;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF9_CAN1;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
@@ -94,6 +101,8 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* canHandle)
     /* CAN1 interrupt Init */
     HAL_NVIC_SetPriority(CAN1_RX0_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(CAN1_RX0_IRQn);
+    HAL_NVIC_SetPriority(CAN1_RX1_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(CAN1_RX1_IRQn);
   /* USER CODE BEGIN CAN1_MspInit 1 */
 
   /* USER CODE END CAN1_MspInit 1 */
@@ -119,6 +128,7 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef* canHandle)
 
     /* CAN1 interrupt Deinit */
     HAL_NVIC_DisableIRQ(CAN1_RX0_IRQn);
+    HAL_NVIC_DisableIRQ(CAN1_RX1_IRQn);
   /* USER CODE BEGIN CAN1_MspDeInit 1 */
 
   /* USER CODE END CAN1_MspDeInit 1 */
@@ -129,71 +139,7 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef* canHandle)
 
 
 
-void CANSendData(CANdata_t data)
-{
-	TxMessage.StdId = CAN_SDO_CLIENT_STD_ID;
-	TxMessage.ExtId = 0u;
-	TxMessage.IDE   = CAN_ID_STD;
-	TxMessage.RTR   = CAN_RTR_DATA;
-	TxMessage.DLC   = 8u;
-	
-	HAL_CAN_AddTxMessage(&hcan1, &TxMessage, (uint8_t *)&data, &mbox);
-	HAL_CAN_ActivateNotification(&hcan1, CAN_IT_TX_MAILBOX_EMPTY);
-}
 
-void CANRespond(void)
-{
-	CANdata_t txData;
-
-	switch (CAN_RecieveStatus)
-	{
-	case 0x40005155: //UQ
-		
-		/*读取Vq*/
-		txData.data_uint32[0] = 0x00005155;
-		txData.data_float[1]  = CoordTrans.VolQ;
-		CANSendData(txData);
-		CAN_RecieveStatus = 0;
-	
-		break;
-
-	case 0x40005856: //VX
-		
-		/*读取速度*/
-#if POSITION_SENSOR_TYPE == ENCODER_TLE5012
-		txData.data_uint32[0] = 0x00005856;
-		txData.data_int32[1]  = (int32_t)((PosSensor.MecAngularSpeed_rad /(2.f * PI) * TLE5012_ABS_MODE_RESOLUTION));
-		CANSendData(txData);
-		CAN_RecieveStatus = 0;
-#endif
-	
-		break;
-
-	case 0x40005149: //IQ
-		
-		/*读取Iq*/
-		txData.data_uint32[0] = 0x00005149;
-		txData.data_float[1] = CoordTrans.CurrQ;
-		CANSendData(txData);
-		CAN_RecieveStatus = 0;
-	
-		break;
-
-	case 0x40005850: //PX
-		
-		/*读取位置*/
-		txData.data_uint32[0] = 0x00005850;
-		txData.data_int32[1]  = (-MainController.RefMecAngle_pulse);
-		CANSendData(txData);
-		CAN_RecieveStatus = 0;
-	
-		break;
-
-	default:
-		
-		break;
-	}
-}
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
@@ -203,7 +149,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 	
 	HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &RxMessage0, (uint8_t *)&receive);
 	
-	StdId   = RxMessage0.StdId;
+	StdId = RxMessage0.StdId;
 
 	if (StdId == CAN_SDO_SERVER_STD_ID)
 	{
@@ -229,22 +175,22 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 			case 0x00004D55://UM
 				
 				/*模式切换, 暂不可用*/
-				if(receive.data_int32[1] == SPD_CURR_CTRL_MODE)
-				{
-					Driver.ControlMode = SPD_CURR_CTRL_MODE;
-				}
-				else if(receive.data_int32[1] == POS_SPD_CURR_CTRL_MODE)
-				{
-					Driver.ControlMode = POS_SPD_CURR_CTRL_MODE;
-					PosLoop.ExptMecAngle_rad = PosSensor.MecAngle_rad + PosSensor.MecAngularSpeed_rad * Regulator.ActualPeriod_s;
-				}
+//				if(receive.data_int32[1] == SPD_CURR_CTRL_MODE)
+//				{
+//					Driver.ControlMode = SPD_CURR_CTRL_MODE;
+//				}
+//				else if(receive.data_int32[1] == POS_SPD_CURR_CTRL_MODE)
+//				{
+//					Driver.ControlMode = POS_SPD_CURR_CTRL_MODE;
+//					PosLoop.ExptMecAngle_rad = PosSensor.MecAngle_rad + PosSensor.MecAngularSpeed_rad * Regulator.ActualPeriod_s;
+//				}
 				
 				break;
 				
 			case 0x0000564A: //JV
 				
 				/*期望速度, 主控方向与驱动器相反*/
-				Saturation((float*)&receive.data_int32[1], MAX_SPD, -MAX_SPD);
+//				Saturation((float*)&receive.data_int32[1], MAX_SPD, -MAX_SPD);
 				MainController.ExptMecAngularSpeed_pulse =  -receive.data_int32[1];
 				SpdLoop.ExptMecAngularSpeed_rad = PULSE_TO_RAD(MainController.ExptMecAngularSpeed_pulse);
 			
@@ -253,9 +199,8 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 			case 0x00004341: //AC
 				
 				/*设置加速度*/
-				Saturation((float*)&receive.data_int32[1], MAX_SPD, -MAX_SPD);
 				MainController.Acceleration_pulse = receive.data_int32[1];
-				SpdLoop.Acceleration =  (float)PULSE_TO_RAD(MainController.Acceleration_pulse);
+				SpdLoop.Acceleration = PULSE_TO_RAD(MainController.Acceleration_pulse);
 				
 				break;
 
@@ -408,8 +353,96 @@ void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan)
 	{
 		PWM_IT_CMD(DISABLE,ENABLE);
 	}
-	
 }
+
+void CANSendData(CANdata_t data)
+{
+	TxMessage.StdId = CAN_SDO_CLIENT_STD_ID;
+	TxMessage.ExtId = 0u;
+	TxMessage.IDE   = CAN_ID_STD;
+	TxMessage.RTR   = CAN_RTR_DATA;
+	TxMessage.DLC   = 8u;
+	
+	HAL_CAN_AddTxMessage(&hcan1, &TxMessage, (uint8_t *)&data, &mbox);
+	HAL_CAN_ActivateNotification(&hcan1, CAN_IT_TX_MAILBOX_EMPTY);
+}
+
+void CANRespond(void)
+{
+	CANdata_t txData;
+
+	switch (CAN_RecieveStatus)
+	{
+		case 0x40005155: //UQ
+			
+			/*读取Vq*/
+			txData.data_uint32[0] = 0x00005155;
+			txData.data_float[1]  = CoordTrans.VolQ;
+			CANSendData(txData);
+			CAN_RecieveStatus = 0;
+		
+			break;
+
+		case 0x40005856: //VX
+			
+			/*读取速度*/
+	#if POSITION_SENSOR_TYPE == ENCODER_TLE5012
+			txData.data_uint32[0] = 0x00005856;
+			txData.data_int32[1]  = (int32_t)((PosSensor.MecAngularSpeed_rad /(2.f * PI) * TLE5012_ABS_MODE_RESOLUTION));
+			CANSendData(txData);
+			CAN_RecieveStatus = 0;
+	#endif
+		
+			break;
+
+		case 0x40005149: //IQ
+			
+			/*读取Iq*/
+			txData.data_uint32[0] = 0x00005149;
+			txData.data_float[1] = CoordTrans.CurrQ;
+			CANSendData(txData);
+			CAN_RecieveStatus = 0;
+		
+			break;
+
+		case 0x40005850: //PX
+			
+			/*读取位置*/
+			txData.data_uint32[0] = 0x00005850;
+			txData.data_int32[1]  = (-MainController.RefMecAngle_pulse);
+			CANSendData(txData);
+			CAN_RecieveStatus = 0;
+		
+			break;
+
+		default:
+			
+			break;
+	}
+}
+
+void CAN_Enable(void)
+{
+	CAN_FilterTypeDef CAN1_FilerConf    = {0};
+	CAN1_FilerConf.FilterIdHigh         = 0X0000;
+	CAN1_FilerConf.FilterIdLow          = 0X0000;
+	CAN1_FilerConf.FilterMaskIdHigh     = 0X0000;           //32 位MASK
+	CAN1_FilerConf.FilterMaskIdLow      = 0X0000;
+	CAN1_FilerConf.FilterFIFOAssignment = CAN_FILTER_FIFO0;
+	CAN1_FilerConf.FilterBank           = 0;
+	CAN1_FilerConf.FilterMode           = CAN_FILTERMODE_IDMASK;
+	CAN1_FilerConf.FilterScale          = CAN_FILTERSCALE_32BIT;
+	CAN1_FilerConf.FilterActivation     = ENABLE;
+	CAN1_FilerConf.SlaveStartFilterBank = 14;
+	HAL_CAN_ConfigFilter(&hcan1, &CAN1_FilerConf); //初始化过滤器
+		
+	HAL_CAN_Start(&hcan1);
+	HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
+	HAL_CAN_ActivateNotification(&hcan1, CAN_IT_LAST_ERROR_CODE);
+	HAL_CAN_ActivateNotification(&hcan1, CAN_IT_BUSOFF);
+	HAL_CAN_ActivateNotification(&hcan1, CAN_IT_ERROR);
+}
+
 /* USER CODE END 1 */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

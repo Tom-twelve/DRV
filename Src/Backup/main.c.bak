@@ -172,6 +172,7 @@ int main(void)
 		case MEASURE_ANGLE_TABLE_MODE : CorrectPosOffset_Encoder(0.7f);	//测定电角度, 设定d轴电压
 		
 						break;
+		
 		case MEASURE_PARAM_MODE : ADC_CMD(ENABLE);
 		
 						break;
@@ -188,11 +189,11 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  
 	  
-//	  SpdLoop.ExptMecAngularSpeed_rad = 30.f * 2.f * PI;
+//	  SpdLoop.ExptMecAngularSpeed_rad = 100.f * 2.f * PI;
 //	  
 //	  LL_mDelay(1000);
 //	  
-//	  SpdLoop.ExptMecAngularSpeed_rad = -30.f * 2.f * PI;
+//	  SpdLoop.ExptMecAngularSpeed_rad = -100.f * 2.f * PI;
 //	  
 //	  LL_mDelay(1000);
 	  

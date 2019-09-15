@@ -242,6 +242,20 @@ void CAN1_RX0_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles CAN1 RX1 interrupt.
+  */
+void CAN1_RX1_IRQHandler(void)
+{
+  /* USER CODE BEGIN CAN1_RX1_IRQn 0 */
+
+  /* USER CODE END CAN1_RX1_IRQn 0 */
+  HAL_CAN_IRQHandler(&hcan1);
+  /* USER CODE BEGIN CAN1_RX1_IRQn 1 */
+
+  /* USER CODE END CAN1_RX1_IRQn 1 */
+}
+
+/**
   * @brief This function handles USART1 global interrupt.
   */
 void USART1_IRQHandler(void)
@@ -270,10 +284,6 @@ void DMA2_Stream7_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
-uint16_t temp1 = 0;
-uint16_t temp2 = 0;
-uint16_t temp3 = 0;
-
 void ADC_IRQHandler(void)
 {
 	GetPhaseCurrent();
@@ -312,8 +322,8 @@ void ADC_IRQHandler(void)
 										/*µçÑ¹¿ØÖÆÆ÷*/
 										VoltageController();
 			
-										UART_Transmit_DMA("%d\t", (int)(PosSensor.EleAngle_degree));
-										UART_Transmit_DMA("%d\r\n",(int)(PosSensor.MecAngle_AbsoluteMode_15bit));
+										UART_Transmit_DMA("%d\t", (int)(Regulator.ActualPeriod_s * 1e6));
+										UART_Transmit_DMA("%d\r\n",(int)(PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s));
 			
 										break;
 			

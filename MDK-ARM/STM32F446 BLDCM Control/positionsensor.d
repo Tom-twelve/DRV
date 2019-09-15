@@ -47,8 +47,8 @@ stm32f446\ bldcm\ control/positionsensor.o: ../Src/PositionSensor.c \
   ../Drivers/STM32F4xx_HAL_Driver/Inc\stm32f4xx_ll_rcc.h \
   ../Drivers/STM32F4xx_HAL_Driver/Inc\stm32f4xx_ll_utils.h \
   ../Drivers/STM32F4xx_HAL_Driver/Inc\stm32f4xx_ll_pwr.h \
-  ../Drivers/STM32F4xx_HAL_Driver/Inc\stm32f4xx_ll_dma.h ../Inc/tim.h \
-  ../Inc/foc.h D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h \
+  ../Drivers/STM32F4xx_HAL_Driver/Inc\stm32f4xx_ll_dma.h ../Inc/foc.h \
+  D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h ../Inc/tim.h \
   D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\math.h \
   ../Drivers/CMSIS/Include\arm_math.h \
   ../Drivers/CMSIS/Include/core_cm4.h \

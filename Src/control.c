@@ -117,9 +117,9 @@ void VoltageControllerInit(void)
 	
 	/*设定功角补偿系数*/
 	
-	VolCtrl.CompRatio = 4.0f;
+	VolCtrl.CompRatio_forward = 4.0f;
 	
-//	VolCtrl.CompRatio = 3.0f;
+	VolCtrl.CompRatio_reverse = 3.0f;
 }
 
  /**
@@ -147,8 +147,8 @@ void SpeedLoopInit(void)
 		/*速度环单环控制，设定速度环PI参数*/
 		SpdLoop.Kp = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS_NUM * 5.5f) * 1.0f;	
 		SpdLoop.Ki = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS_NUM * 25.0f) * 1.0f;
-		SpdLoop.ExptMecAngularSpeed_rad =  100.f * 2 * PI;	//期望速度，rad per second
-		SpdLoop.Acceleration = 5.f * 2 * PI;	//期望加速度，rad per quadratic seconds
+		SpdLoop.ExptMecAngularSpeed_rad =  0.f * 2 * PI;	//期望速度，rad per second
+		SpdLoop.Acceleration = 5000.f * 2 * PI;	//期望加速度，rad per quadratic seconds
 	}
 	else if(Driver.ControlMode == POS_SPD_VOL_CTRL_MODE)
 	{
@@ -345,6 +345,15 @@ void VoltageController(void)
 	
 	/*Vq限幅*/
 	Saturation(&VolCtrl.CtrlVolQ, VolCtrl.BEMF + VolCtrl.VolLimit, VolCtrl.BEMF - VolCtrl.VolLimit);
+	
+	if(SpdLoop.ExptMecAngularSpeed_rad >= 0)
+	{
+		VolCtrl.CompRatio = VolCtrl.CompRatio_forward;
+	}
+	else if(SpdLoop.ExptMecAngularSpeed_rad < 0)
+	{
+		VolCtrl.CompRatio = VolCtrl.CompRatio_reverse;
+	}
 	
 	/*进行逆Park变换, 将转子坐标系下的dq轴电压转换为定子坐标系下的AlphaBeta轴电压*/
 	InverseParkTransform(VolCtrl.CtrlVolD, VolCtrl.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + VolCtrl.CompRatio * PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s);

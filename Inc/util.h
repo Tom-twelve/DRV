@@ -8,41 +8,22 @@
 #include "tim.h"
 #include "adc.h"
 
-#define M_PI			(3.14159265358979323846)
 #define	SQRT3			(1.73205080757f)
 #define ONE_BY_SQRT3    (0.57735026919f)
 #define TWO_BY_SQRT3    (2.0f * 0.57735026919f)
 #define SQRT3_BY_2      (0.86602540378f)
 
-// Squared
-#define SQUARE(x)       ((x) * (x))
-#define MAX(a, b)                               (((a) > (b)) ? (a) : (b))
-#define MIN(a, b)                               (((a) < (b)) ? (a) : (b))
-#define SATURATION(val, boundMax, boundMin)     MIN(MAX((val), (boundMin)), (boundMax))
-// Return the sign of the argument. -1 if negative, 1 if zero or positive.
-#define SIGN(x)     ((x < 0) ? -1 : 1)
-#define UTILS_IS_NAN(x)		((x) != (x))
-#define UTILS_NAN_ZERO(x)	(x = (UTILS_IS_NAN(x) ? 0.0 : x))
+#define SQUARE(x)								((x) * (x))
+#define MAX(a, b)       						(((a) > (b)) ? (a) : (b))
+#define MIN(a, b)       						(((a) < (b)) ? (a) : (b))
+#define NORMALIZED(val) 						((val > 1) ? 1 : (val < 0 ?  0 : val))	//归一化处理
+#define RAD_TO_DEGREE(val)  					((float)val / 2.f / PI * 360.f)
+#define PULSE_TO_RAD(val)						((float)val / TLE5012_ABS_MODE_RESOLUTION * 2.f * PI)
 
-#define Normalized(val) 		((val > 1) ? 1 : (val < 0 ?  0 : val))	//归一化处理
-#define SIGN_DIRECT(val)   		(val >= -1.f ? 1.f : -1.f)
-#define RAD_TO_DEGREE(val)  	((float)val / 2.f / PI * 360.f)
-#define PULSE_TO_RAD(val)		((float)val / TLE5012_ABS_MODE_RESOLUTION * 2.f * PI)
-
-_Bool EvenParityCheck(uint32_t data);
-int utils_truncate_number_abs(float *number, float max);
-void utils_norm_angle_rad(float *angle);
 float utils_map(float x, float in_min, float in_max, float out_min, float out_max);
-#define Avg_NUM     3
-typedef float Avg_filter_t;
-Avg_filter_t UtilAvgFilter(Avg_filter_t valNew,Avg_filter_t arr[], uint32_t *index, Avg_filter_t *pSum);
+uint32_t UtilBiSearchInt(const int sortedIntArr[], int find, uint32_t maxN);
 float util_norm_float(float val, float minBound, float maxBound, float period);
 int util_norm_int(float val, float minBound, float maxBound, float period);
-uint32_t UtilBiSearchInt(const int sortedIntArr[], int find, uint32_t maxN);
-
-float UtilPI_Control(arm_pid_instance_f32 *S, float err);
-float UtilPID_Control(arm_pid_instance_f32 *S, float err);
-float arcsine(float value);
-float sqrt_DSP(float inputValue);
 void Saturation(float *value, float upLimit, float downLimit);
+
 #endif

@@ -1,39 +1,5 @@
 #include "util.h"
 	
-int utils_truncate_number_abs(float *number, float max) {
-	int did_trunc = 0;
-
-	if (*number > max) {
-		*number = max;
-		did_trunc = 1;
-	} else if (*number < -max) {
-		*number = -max;
-		did_trunc = 1;
-	}
-
-	return did_trunc;
-}
-
-/**
- * Make sure that -pi <= angle < pi,
- *
- * TODO: Maybe use fmodf instead?
- *
- * @param angle
- * The angle to normalize in radians.
- * WARNING: Don't use too large angles.
- */
-void utils_norm_angle_rad(float *angle) {
-	// *angle = fmodf(*angle, 2.0*M_PI);
-	while (*angle < -M_PI) {
-		*angle += 2.0 * M_PI;
-	}
-
-	while (*angle >  M_PI) {
-		*angle -= 2.0 * M_PI;
-	}
-}
-
 /* 等比例放大(映射) */
 float utils_map(float x, float in_min, float in_max, float out_min, float out_max) 
 {
@@ -44,51 +10,6 @@ int utils_map_int(int x, int in_min, int in_max, int out_min, int out_max)
 {
 	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
-
-
-Avg_filter_t UtilAvgFilter(Avg_filter_t valNew,Avg_filter_t arr[], uint32_t *index, Avg_filter_t *pSum)
-{
-//	if (*pSum > arr[*index])//无符号整形时的处理
-		*pSum -= arr[*index];
-//	else
-//		*pSum = 0u;
-	*pSum       += valNew;
-	arr[*index] = valNew;
-	(*index)++;
-	*index = ((*index)) < Avg_NUM ? *index : 0u;
-
-	return (*pSum) / Avg_NUM;
-}
-
-
-// Author :dzc
-float util_norm_float(float val, float minBound, float maxBound, float period)
-{
-	while(val < minBound)
-	{
-		val += period;
-	}
-	while(val >= maxBound)
-	{
-		val -= period;
-	}
-	return val;
-}
-
-// Author :oliver
-int util_norm_int(float val, float minBound, float maxBound, float period)
-{
-	while(val < minBound)
-	{
-		val += period;
-	}
-	while(val >= maxBound)
-	{
-		val -= period;
-	}
-	return val;
-}
-
 
 /**
  * @brief 二分查找
@@ -116,26 +37,32 @@ uint32_t UtilBiSearchInt(const int sortedIntArr[], int find, uint32_t maxN)
 	return upper;
 }
 
-/**
- * @brief  Arcsine
- */
-float arcsine(float value)
+// Author :dzc
+float util_norm_float(float val, float minBound, float maxBound, float period)
 {
-	float angle_rad = 0;
-	
-	//利用四阶泰勒级数计算反正弦函数值, 保证速度, 精度只能保证小数点后三位的准确性, 并且value应在(-0.5 ~ 0.5)之间, 超出此范围将不能保证精度
-	angle_rad = value+value*value*value/6 + 3*value*value*value*value*value/40 + 5*value*value*value*value*value*value*value/112;	
-	
-	return angle_rad;
+	while(val < minBound)
+	{
+		val += period;
+	}
+	while(val >= maxBound)
+	{
+		val -= period;
+	}
+	return val;
 }
 
-float sqrt_DSP(float inputValue)
+// Author :oliver
+int util_norm_int(float val, float minBound, float maxBound, float period)
 {
-	float outputValue = 0;
-	
-	arm_sqrt_f32(inputValue, &outputValue);
-	
-	return outputValue;
+	while(val < minBound)
+	{
+		val += period;
+	}
+	while(val >= maxBound)
+	{
+		val -= period;
+	}
+	return val;
 }
 
 void Saturation(float *value, float upLimit, float downLimit)

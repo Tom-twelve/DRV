@@ -45,4 +45,15 @@ stm32f446\ bldcm\ control/stm32f4xx_hal_msp.o: ../Src/stm32f4xx_hal_msp.c \
   ../Drivers/STM32F4xx_HAL_Driver/Inc\stm32f4xx_ll_rcc.h \
   ../Drivers/STM32F4xx_HAL_Driver/Inc\stm32f4xx_ll_utils.h \
   ../Drivers/STM32F4xx_HAL_Driver/Inc\stm32f4xx_ll_pwr.h \
-  ../Drivers/STM32F4xx_HAL_Driver/Inc\stm32f4xx_ll_dma.h
+  ../Drivers/STM32F4xx_HAL_Driver/Inc\stm32f4xx_ll_dma.h ../Inc/foc.h \
+  D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h ../Inc/tim.h \
+  ../Inc/main.h D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\math.h \
+  ../Drivers/CMSIS/Include\arm_math.h \
+  ../Drivers/CMSIS/Include/core_cm4.h \
+  D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h \
+  ../Inc/PositionSensor.h \
+  D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdlib.h ../Inc/gpio.h \
+  ../Inc/spi.h ../Inc/MotorConfig.h ../Inc/AngleTable.h ../Inc/util.h \
+  D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdbool.h ../Inc/adc.h \
+  ../Inc/control.h ../Inc/usart.h \
+  D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdarg.h

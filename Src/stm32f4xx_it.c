@@ -270,10 +270,6 @@ void DMA2_Stream7_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
-uint16_t temp1 = 0;
-uint16_t temp2 = 0;
-uint16_t temp3 = 0;
-
 void ADC_IRQHandler(void)
 {
 	GetPhaseCurrent();

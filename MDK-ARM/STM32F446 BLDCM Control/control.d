@@ -46,9 +46,9 @@ stm32f446\ bldcm\ control/control.o: ../Src/control.c ../Inc\control.h \
   ../Drivers/STM32F4xx_HAL_Driver/Inc\stm32f4xx_ll_rcc.h \
   ../Drivers/STM32F4xx_HAL_Driver/Inc\stm32f4xx_ll_utils.h \
   ../Drivers/STM32F4xx_HAL_Driver/Inc\stm32f4xx_ll_pwr.h \
-  ../Drivers/STM32F4xx_HAL_Driver/Inc\stm32f4xx_ll_dma.h \
-  D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\math.h ../Inc/foc.h \
+  ../Drivers/STM32F4xx_HAL_Driver/Inc\stm32f4xx_ll_dma.h ../Inc/foc.h \
   D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h ../Inc/tim.h \
+  D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\math.h \
   ../Drivers/CMSIS/Include\arm_math.h \
   ../Drivers/CMSIS/Include/core_cm4.h \
   D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h \

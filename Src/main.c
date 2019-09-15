@@ -189,11 +189,11 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  
 	  
-//	  SpdLoop.ExptMecAngularSpeed_rad = 30.f * 2.f * PI;
+//	  SpdLoop.ExptMecAngularSpeed_rad = 100.f * 2.f * PI;
 //	  
 //	  LL_mDelay(1000);
 //	  
-//	  SpdLoop.ExptMecAngularSpeed_rad = -30.f * 2.f * PI;
+//	  SpdLoop.ExptMecAngularSpeed_rad = -100.f * 2.f * PI;
 //	  
 //	  LL_mDelay(1000);
 	  

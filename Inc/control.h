@@ -45,6 +45,8 @@ struct VolCtrl_t
 	float CtrlVolQ;
 	float VolLimit;
 	float CompRatio;
+	float CompRatio_forward;
+	float CompRatio_reverse;
 	float PowerAngleComp_degree;	
 	float PowerAngleComp_rad;
 };
@@ -76,9 +78,11 @@ struct Regulator_t
 
 struct MainController_t
 {
-	int16_t ExptMecAngularSpeed_pulse;	//目标机械角速度, 脉冲
-	int16_t ExptMecAngle_pulse;			//目标位置, 脉冲
-	int RefMecAngle_pulse;			//参考机械角度, 上电时置零, 脉冲
+	int32_t ExptMecAngularSpeed_pulse;	//目标机械角速度, 脉冲
+	int32_t ExptMecAngle_pulse;			//目标位置, 脉冲
+	int32_t RefMecAngle_pulse;			//参考机械角度, 上电时置零, 脉冲
+	uint32_t Acceleration_pulse;		//加速度, 脉冲
+	uint32_t MaxMecAngularSpeed_pulse;	//位置环最大输出速度, 脉冲
 	uint16_t PresentMecAngle_pulse;
 	uint16_t LastMecAngle_pulse;
 };
@@ -92,7 +96,7 @@ struct MainController_t
 
 #define SPD_INTEGRAL_ERR_LIM			(5.0f * 2 * PI)		//(rad/s)
 
-#define CURRENT_CONTROL_KP_D			(INDUCTANCE_D * 1500.f)	//q轴电感 * 电流环带宽
+#define CURRENT_CONTROL_KP_D			(INDUCTANCE_D * 1500.f)	//d轴电感 * 电流环带宽
 #define CURRENT_CONTROL_KI_D			(PHASE_RES * 1500.f)	//相电阻 * 电流环带宽
 
 #define CURRENT_CONTROL_KP_Q			(INDUCTANCE_Q * 1500.f)	//q轴电感 * 电流环带宽

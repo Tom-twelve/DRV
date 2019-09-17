@@ -52,8 +52,8 @@ typedef union
 void MX_CAN1_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-void CANSendData(CANdata_t data);
 void CANRespond(void);
+void CANSendData(CANdata_t data);
 void CAN_Enable(void);
 /* USER CODE END Prototypes */
 

@@ -65,7 +65,7 @@ int util_norm_int(float val, float minBound, float maxBound, float period)
 	return val;
 }
 
-void Saturation(float *value, float upLimit, float downLimit)
+void Saturation_float(float *value, float upLimit, float downLimit)
 {	
 	if(*value >= upLimit)
 	{
@@ -76,4 +76,15 @@ void Saturation(float *value, float upLimit, float downLimit)
 		*value = downLimit;
 	}
 }
-	
+
+void Saturation_int(int *value, int upLimit, int downLimit)
+{	
+	if(*value >= upLimit)
+	{
+		*value	= upLimit;
+	}
+	else if(*value <= downLimit)
+	{
+		*value = downLimit;
+	}
+}

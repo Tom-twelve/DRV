@@ -24,6 +24,7 @@ float utils_map(float x, float in_min, float in_max, float out_min, float out_ma
 uint32_t UtilBiSearchInt(const int sortedIntArr[], int find, uint32_t maxN);
 float util_norm_float(float val, float minBound, float maxBound, float period);
 int util_norm_int(float val, float minBound, float maxBound, float period);
-void Saturation(float *value, float upLimit, float downLimit);
+void Saturation_float(float *value, float upLimit, float downLimit);
+void Saturation_int(int *value, int upLimit, int downLimit);
 
 #endif

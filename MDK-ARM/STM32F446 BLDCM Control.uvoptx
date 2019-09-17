@@ -163,12 +163,32 @@
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>receive.data_uint32[0]</ItemText>
+          <ItemText>Receive.data_uint32[0]</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>receive.data_int32[1]</ItemText>
+          <ItemText>Receive.data_int32[1]</ItemText>
+        </Ww>
+        <Ww>
+          <count>2</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Transmit.data_uint32[0]</ItemText>
+        </Ww>
+        <Ww>
+          <count>3</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Transmit.data_uint32[1],0x10</ItemText>
+        </Ww>
+        <Ww>
+          <count>4</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>SpdLoop.Acceleration</ItemText>
+        </Ww>
+        <Ww>
+          <count>5</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>SpdLoop.Deceleration</ItemText>
         </Ww>
       </WatchWindow1>
       <MemoryWindow1>

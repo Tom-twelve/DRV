@@ -28,10 +28,11 @@
 #define NEGATIVE_SEQUENCE				2
 
 /* Motor Type */
-#define SUNNYSKY_X4125_9_KV350			1
-#define N5055_KV400						2
-#define TMOTOR_MN505_S_KV320			3
-#define SCREW_MOTOR_KV320				4
+#define MAD_XC5500_KV505				1
+#define SUNNYSKY_X4125_9_KV350			2
+#define N5055_KV400						3
+#define TMOTOR_MN505_S_KV320			4
+#define SCREW_MOTOR_KV320				5
 
 /* Position Sensor Type */
 #define ENCODER_TLE5012					1
@@ -61,13 +62,13 @@
 #if ROBOT_ID == 1U		//±àÂëÆ÷
 	#define CAN_ID_NUM			1
 		#if CAN_ID_NUM == 1
-		#define MOTOR_TYPE 				N5055_KV400	
-		#define	PHASE_SEQUENCE			NEGATIVE_SEQUENCE
+		#define MOTOR_TYPE 				MAD_XC5500_KV505	
+		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
 		#define ENCODER_MODE			ENCODER_ABSOLUTE_MODE
-		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8320
-		#define MOSFET_TYPE				IPD053N08N3G_52nC_5mOhm3
-		#define CURRENT_SENSOR			HALL_CURR_SENSOR_ACS781_50A
+		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
+		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
+		#define CURRENT_SENSOR			RES_1mOhm
 		#define GROUP_NUM           	0
 		#elif CAN_ID_NUM == 2
 		#define MOTOR_TYPE 				SUNNYSKY_X4125_9_KV350	
@@ -94,14 +95,22 @@
 
 
 /* Motor Type*/
-#if MOTOR_TYPE == SUNNYSKY_X4125_9_KV350	  
+#if MOTOR_TYPE == MAD_XC5500_KV505	  
 	#define MOTOR_POLE_PAIRS_NUM				7
-	#define	MOTOR_KV							350.f
+	#define	MOTOR_KV							505.f
 	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * ((float)MOTOR_POLE_PAIRS_NUM) * (MOTOR_KV)))
 	#define PHASE_RES							0.0186698157f	//(Ohm)
 	#define INDUCTANCE_D						0.0000065f		//(H)
 	#define INDUCTANCE_Q						0.000012f		//(H)
-	#define MAX_SPD								((uint32_t)(TLE5012_ABS_MODE_RESOLUTION * GENERATRIX_VOL * MOTOR_KV / 60))			
+	#define MAX_SPD								((uint32_t)(TLE5012_ABS_MODE_RESOLUTION * GENERATRIX_VOL * MOTOR_KV / 60))
+#elif	MOTOR_TYPE == SUNNYSKY_X4125_9_KV350
+	#define MOTOR_POLE_PAIRS_NUM				7
+	#define	MOTOR_KV							400.f
+	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * ((float)MOTOR_POLE_PAIRS_NUM) * (MOTOR_KV)))
+	#define PHASE_RES							0.0186698157f	//(Ohm)
+	#define INDUCTANCE_D						0.0000065f		//(H)
+	#define INDUCTANCE_Q						0.000012f		//(H)
+	#define MAX_SPD								((uint32_t)(TLE5012_ABS_MODE_RESOLUTION * GENERATRIX_VOL * MOTOR_KV / 60))	
 #elif	MOTOR_TYPE == N5055_KV400
 	#define MOTOR_POLE_PAIRS_NUM				7
 	#define	MOTOR_KV							400.f

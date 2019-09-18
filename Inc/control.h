@@ -96,7 +96,7 @@ struct MainController_t
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define CURR_EXPT_LIM_Q					25.0f	//(A), 期望Iq限幅
+#define CURR_EXPT_LIM_Q					150.0f	//(A), 期望Iq限幅
 
 #define CURR_INTEGRAL_ERR_LIM_D 		5.0f	//(A), Id控制器积分限幅
 #define CURR_INTEGRAL_ERR_LIM_Q 		5.0f	//(A), Iq控制器积分限幅

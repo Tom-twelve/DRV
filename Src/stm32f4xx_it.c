@@ -304,8 +304,9 @@ void ADC_IRQHandler(void)
 										/*¼ÆËãµç´Å×ª¾Ø*/
 										CalculateEleTorque(CoordTrans.CurrQ, &Driver.EleTorque);
 			
-										UART_Transmit_DMA("%d\t", (int)(Driver.EleTorque * 1e3));
-										UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrQ * 1e3));
+										UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrA * 1e3));
+										UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrB * 1e3));
+										UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrC * 1e3));
 			
 										break;
 			

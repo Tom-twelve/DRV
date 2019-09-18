@@ -130,7 +130,7 @@ void SpeedLoopInit(void)
 		/*速度-电流双环控制*/
 		SpdLoop.Kp = 1.0f;	
 		SpdLoop.Ki = 0.1f;
-		SpdLoop.ExptMecAngularSpeed_rad = 120.f * 2 * PI;	//期望速度，degree per second
+		SpdLoop.ExptMecAngularSpeed_rad = 50.f * 2 * PI;	//期望速度，degree per second
 		SpdLoop.Acceleration = 10.f * 2 * PI;	//期望加速度，degree per quadratic seconds
 		SpdLoop.Deceleration = SpdLoop.Acceleration;
 	}

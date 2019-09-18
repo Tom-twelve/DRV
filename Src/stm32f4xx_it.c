@@ -323,7 +323,7 @@ void ADC_IRQHandler(void)
 										/*µçÑ¹¿ØÖÆÆ÷*/
 										VoltageController();
 			
-										UART_Transmit_DMA("%d\t", (int)(VolCtrl.CtrlVolQ * 1e3));
+										UART_Transmit_DMA("%d\t", (int)(SpdLoop.ExptMecAngularSpeed_rad));
 										UART_Transmit_DMA("%d\r\n",(int)(PosSensor.MecAngularSpeed_rad));
 			
 										break;

@@ -47,10 +47,10 @@ void DriverInit(void)
 	PWM_IT_CMD(ENABLE,ENABLE);
 	
 	/*设定控制模式*/
-	Driver.ControlMode = SPD_VOL_CTRL_MODE;
+	Driver.ControlMode = SPD_CURR_CTRL_MODE;
 	
 	/*采用Id = 0控制, 故设定d轴电流为零*/
-	CurrLoop.ExptCurrD = 1.0f;
+	CurrLoop.ExptCurrD = 0.f;
 	
 	/*对控制周期赋初值, 防止运算时出现分母为0的情况*/
 	Regulator.ActualPeriod_s = DEFAULT_CARRIER_PERIOD_s;
@@ -112,7 +112,7 @@ void CurrentLoopInit(void)
 void VoltageControllerInit(void)
 {
 	/*设定电压限幅*/
-	VolCtrl.VolLimit = 3.25f;
+	VolCtrl.VolLimit = 8.0f;
 	
 	/*设定功角补偿系数*/
 	VolCtrl.CompRatio_forward = 3.8f;
@@ -147,7 +147,7 @@ void SpeedLoopInit(void)
 		/*速度环单环控制*/
 		SpdLoop.Kp = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS_NUM * 5.5f) * 1.0f;	
 		SpdLoop.Ki = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS_NUM * 25.0f) * 1.0f;
-		SpdLoop.ExptMecAngularSpeed_rad =  120.f * 2 * PI;	//期望速度，rad per second
+		SpdLoop.ExptMecAngularSpeed_rad =  0.f * 2 * PI;	//期望速度，rad per second
 		SpdLoop.Acceleration = 5000.f * 2 * PI;	//期望加速度，rad per quadratic seconds
 		SpdLoop.Deceleration = SpdLoop.Acceleration;
 	}
@@ -221,24 +221,19 @@ void ZeroPosInit(void)
    */
 void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCurrQ, float *ctrlVolD, float *ctrlVolQ)
 {
-	float errD = 0;
-	float errQ = 0;
-	static float integralErrD = 0;
-	static float integralErrQ = 0;
-	
-	errD = exptCurrD - realCurrD;
-	errQ = exptCurrQ - realCurrQ;
+	CurrLoop.ErrD = exptCurrD - realCurrD;
+	CurrLoop.ErrQ = exptCurrQ - realCurrQ;
 	
 	/*PI控制器*/
-	*ctrlVolD = CurrLoop.Kp_D * errD + CurrLoop.Ki_D * integralErrD;
-	*ctrlVolQ = CurrLoop.Kp_Q * errQ + CurrLoop.Ki_Q * integralErrQ;
+	*ctrlVolD = CurrLoop.Kp_D * CurrLoop.ErrD + CurrLoop.Ki_D * CurrLoop.IntegralErrD;
+	*ctrlVolQ = CurrLoop.Kp_Q * CurrLoop.ErrQ + CurrLoop.Ki_Q * CurrLoop.IntegralErrQ;
 	
-	integralErrD += errD * Regulator.ActualPeriod_s;
-	integralErrQ += errQ * Regulator.ActualPeriod_s;
+	CurrLoop.IntegralErrD += CurrLoop.ErrD * Regulator.ActualPeriod_s;
+	CurrLoop.IntegralErrQ += CurrLoop.ErrQ * Regulator.ActualPeriod_s;
 	
 	/*积分限幅*/
-	Saturation_float(&integralErrD, CURR_INTEGRAL_ERR_LIM_D, -CURR_INTEGRAL_ERR_LIM_D);
-	Saturation_float(&integralErrQ, CURR_INTEGRAL_ERR_LIM_Q, -CURR_INTEGRAL_ERR_LIM_Q);
+	Saturation_float(&CurrLoop.IntegralErrD, CURR_INTEGRAL_ERR_LIM_D, -CURR_INTEGRAL_ERR_LIM_D);
+	Saturation_float(&CurrLoop.IntegralErrQ, CURR_INTEGRAL_ERR_LIM_Q, -CURR_INTEGRAL_ERR_LIM_Q);
 	
 	/*转速前馈*/ 
 	*ctrlVolD = *ctrlVolD - PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ;
@@ -256,17 +251,14 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
    */
 void SpeedLoop(float exptMecAngularSpeed, float realMecAngularSpeed, float *ctrlCurrQ)
 {
-	float err = 0;
-	static float integralErr = 0;
+	SpdLoop.Err = exptMecAngularSpeed - realMecAngularSpeed;
 	
-	err = exptMecAngularSpeed - realMecAngularSpeed;
+	*ctrlCurrQ = SpdLoop.Kp * SpdLoop.Err + SpdLoop.Ki * SpdLoop.IntegralErr;
 	
-	*ctrlCurrQ = SpdLoop.Kp * err + SpdLoop.Ki * integralErr;
-	
-	integralErr += err * Regulator.ActualPeriod_s;
+	SpdLoop.IntegralErr += SpdLoop.Err * Regulator.ActualPeriod_s;
 	
 	/*积分限幅*/
-	Saturation_float(&integralErr, SPD_INTEGRAL_ERR_LIM, -SPD_INTEGRAL_ERR_LIM);
+	Saturation_float(&SpdLoop.IntegralErr, SPD_INTEGRAL_ERR_LIM, -SPD_INTEGRAL_ERR_LIM);
 
 	if(Driver.ControlMode == SPD_CURR_CTRL_MODE || Driver.ControlMode == POS_SPD_CURR_CTRL_MODE)
 	{
@@ -311,7 +303,7 @@ float VelocitySlopeGenerator(float exptVelocity)
 	velocityStep_Acc = SpdLoop.Acceleration * Regulator.ActualPeriod_s;
 	velocityStep_Dec = SpdLoop.Deceleration * Regulator.ActualPeriod_s;
 	
-	if(exptVelocity >= 0 && velocityProcessVolume >= 0)
+	if(exptVelocity > 0 && velocityProcessVolume >= 0)
 	{
 		if(exptVelocity > (velocityProcessVolume - velocityStep_Acc))
 		{
@@ -326,11 +318,11 @@ float VelocitySlopeGenerator(float exptVelocity)
 			velocityProcessVolume = exptVelocity;
 		}
 	}
-	else if(exptVelocity >= 0 && velocityProcessVolume < 0)
+	else if(exptVelocity > 0 && velocityProcessVolume < 0)
 	{
 		velocityProcessVolume += velocityStep_Dec;
 	}
-	else if(exptVelocity < 0 && velocityProcessVolume >= 0)
+	else if(exptVelocity < 0 && velocityProcessVolume >=  0)
 	{
 		velocityProcessVolume -= velocityStep_Dec;
 	}
@@ -349,7 +341,11 @@ float VelocitySlopeGenerator(float exptVelocity)
 			velocityProcessVolume = exptVelocity;
 		}
 	}
-
+	else if(exptVelocity == 0)
+	{
+		velocityProcessVolume = 0;
+	}
+	
 	return velocityProcessVolume;
 }
 

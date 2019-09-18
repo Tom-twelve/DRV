@@ -32,6 +32,10 @@ struct CurrLoop_t
 	float ExptCurrQ;
 	float CtrlVolD;
 	float CtrlVolQ;
+	float ErrD;
+	float ErrQ;
+	float IntegralErrD;
+	float IntegralErrQ;
 	float Kp_D;
 	float Ki_D;
 	float Kp_Q;
@@ -56,6 +60,8 @@ struct SpdLoop_t
 	float ExptMecAngularSpeed_rad;		//期望机械角速度(rad/s), 弧度制
 	float Acceleration;					//加速度(rad/s2), 弧度制
 	float Deceleration;					//减速度(rad/s2), 弧度制
+	float Err;
+	float IntegralErr;
 	float Kp;
 	float Ki;
 };

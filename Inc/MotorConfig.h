@@ -99,9 +99,9 @@
 	#define MOTOR_POLE_PAIRS_NUM				7
 	#define	MOTOR_KV							505.f
 	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * ((float)MOTOR_POLE_PAIRS_NUM) * (MOTOR_KV)))
-	#define PHASE_RES							0.0186698157f	//(Ohm)
-	#define INDUCTANCE_D						0.0000065f		//(H)
-	#define INDUCTANCE_Q						0.000012f		//(H)
+	#define PHASE_RES							0.020f	//(Ohm)
+	#define INDUCTANCE_D						(10 * (float)1e-6)	//(H)
+	#define INDUCTANCE_Q						(10 * (float)1e-6)	//(H)
 	#define MAX_SPD								((uint32_t)(TLE5012_ABS_MODE_RESOLUTION * GENERATRIX_VOL * MOTOR_KV / 60))
 #elif	MOTOR_TYPE == SUNNYSKY_X4125_9_KV350
 	#define MOTOR_POLE_PAIRS_NUM				7

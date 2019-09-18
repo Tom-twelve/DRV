@@ -56,7 +56,12 @@ void DriverInit(void)
 	Regulator.ActualPeriod_s = DEFAULT_CARRIER_PERIOD_s;
 	
 	/*设置编码器位置偏移量*/
-	PosSensor.PosOffset = 21693;
+	PosSensor.PosOffset = 17003;
+	
+	/*设定功角补偿系数*/
+	Driver.CompRatio_forward = 3.0f;
+	
+	Driver.CompRatio_reverse = 3.0f;
 	
 	switch(Driver.ControlMode)
 	{
@@ -101,9 +106,9 @@ void CurrentLoopInit(void)
 {
 	/*设定电流环PI参数*/
 	CurrLoop.Kp_D = CURRENT_CONTROL_KP_D * 1.0f;												
-	CurrLoop.Ki_D = CURRENT_CONTROL_KI_D * 1.0f;						
+	CurrLoop.Ki_D = CURRENT_CONTROL_KI_D * 0.1f;						
 	CurrLoop.Kp_Q = CURRENT_CONTROL_KP_Q * 1.0f;
-	CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q * 1.0f;
+	CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q * 0.1f;
 }
 
  /**
@@ -113,11 +118,6 @@ void VoltageControllerInit(void)
 {
 	/*设定电压限幅*/
 	VolCtrl.VolLimit = 8.0f;
-	
-	/*设定功角补偿系数*/
-	VolCtrl.CompRatio_forward = 3.8f;
-	
-	VolCtrl.CompRatio_reverse = 3.0f;
 }
 
  /**
@@ -130,14 +130,14 @@ void SpeedLoopInit(void)
 		/*速度-电流双环控制*/
 		SpdLoop.Kp = 1.0f;	
 		SpdLoop.Ki = 0.1f;
-		SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;	//期望速度，degree per second
-		SpdLoop.Acceleration = 5000.f * 2 * PI;	//期望加速度，degree per quadratic seconds
+		SpdLoop.ExptMecAngularSpeed_rad = 120.f * 2 * PI;	//期望速度，degree per second
+		SpdLoop.Acceleration = 10.f * 2 * PI;	//期望加速度，degree per quadratic seconds
 		SpdLoop.Deceleration = SpdLoop.Acceleration;
 	}
 	else if(Driver.ControlMode == POS_SPD_CURR_CTRL_MODE)
 	{
 		/*位置-速度-电流三环控制*/
-		SpdLoop.Kp = 1.5f;	
+		SpdLoop.Kp = 1.0f;	
 		SpdLoop.Ki = 0.1f;
 		SpdLoop.Acceleration = 5000.f * 2 * PI;	//期望加速度，degree per quadratic seconds
 		SpdLoop.Deceleration = SpdLoop.Acceleration;
@@ -147,7 +147,7 @@ void SpeedLoopInit(void)
 		/*速度环单环控制*/
 		SpdLoop.Kp = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS_NUM * 5.5f) * 1.0f;	
 		SpdLoop.Ki = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS_NUM * 25.0f) * 1.0f;
-		SpdLoop.ExptMecAngularSpeed_rad =  0.f * 2 * PI;	//期望速度，rad per second
+		SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;	//期望速度，rad per second
 		SpdLoop.Acceleration = 5000.f * 2 * PI;	//期望加速度，rad per quadratic seconds
 		SpdLoop.Deceleration = SpdLoop.Acceleration;
 	}
@@ -354,14 +354,26 @@ float VelocitySlopeGenerator(float exptVelocity)
    */
 void CurrentController(void)
 {
-	/*进行Park变换, 将三相电流转换为dq轴电流*/
-	ParkTransform(CoordTrans.CurrA, CoordTrans.CurrB, CoordTrans.CurrC, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree);
+	/*进行Clark变换, 将abc坐标系转换为Alpha-Beta坐标系*/
+	ClarkTransform_arm(CoordTrans.CurrA, CoordTrans.CurrB, &CoordTrans.CurrAlpha, &CoordTrans.CurrBeta);
+
+	if(SpdLoop.ExptMecAngularSpeed_rad >= 0)
+	{
+		Driver.CompRatio = Driver.CompRatio_forward;
+	}
+	else if(SpdLoop.ExptMecAngularSpeed_rad < 0)
+	{
+		Driver.CompRatio = Driver.CompRatio_reverse;
+	}
+	
+	/*进行Park变换, 将Alpha-Beta坐标系转换为dq坐标系*/
+	ParkTransform_arm(CoordTrans.CurrAlpha, CoordTrans.CurrBeta, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + Driver.CompRatio * PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s);
 	
 	/*电流环PI控制器*/
 	CurrentLoop(CurrLoop.ExptCurrD, CurrLoop.ExptCurrQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
 	
 	/*进行逆Park变换, 将转子坐标系下的dq轴电压转换为定子坐标系下的AlphaBeta轴电压*/
-	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree);
+	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + Driver.CompRatio * PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s);
 	
 	/*载波周期调节器, 尽可能使载波周期与编码器周期同步*/
 //	PeriodRegulator();
@@ -386,15 +398,15 @@ void VoltageController(void)
 	
 	if(SpdLoop.ExptMecAngularSpeed_rad >= 0)
 	{
-		VolCtrl.CompRatio = VolCtrl.CompRatio_forward;
+		Driver.CompRatio = Driver.CompRatio_forward;
 	}
 	else if(SpdLoop.ExptMecAngularSpeed_rad < 0)
 	{
-		VolCtrl.CompRatio = VolCtrl.CompRatio_reverse;
+		Driver.CompRatio = Driver.CompRatio_reverse;
 	}
 	
 	/*进行逆Park变换, 将转子坐标系下的dq轴电压转换为定子坐标系下的AlphaBeta轴电压*/
-	InverseParkTransform(VolCtrl.CtrlVolD, VolCtrl.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + VolCtrl.CompRatio * PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s);
+	InverseParkTransform(VolCtrl.CtrlVolD, VolCtrl.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + Driver.CompRatio * PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s);
 	
 	/*载波周期调节器, 尽可能使载波周期与编码器周期同步*/
 //	PeriodRegulator();

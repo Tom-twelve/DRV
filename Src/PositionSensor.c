@@ -485,7 +485,7 @@ extern struct MainController_t MainController;
 				{
 					PosSensor.PosOffset = position;
 					
-					UART_Transmit_DMA("Position Offset:	%d \r\nCorrect Finished", (int)PosSensor.PosOffset);SendBuf();
+					UART_Transmit_DMA("Position Offset:	%d\r\nCorrect Finished", (int)PosSensor.PosOffset);SendBuf();
 					
 					break;
 				}

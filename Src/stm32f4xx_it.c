@@ -301,8 +301,11 @@ void ADC_IRQHandler(void)
 										/*电流控制器, 包括Clark变换, Park变换, 电流PI控制器, RevPark变换, SVPWM算法*/
 										CurrentController();
 										
-										UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrD * 1000));
-										UART_Transmit_DMA("%d\r\n",(int)(PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ * 1000));
+										/*计算电磁转矩*/
+										CalculateEleTorque(CoordTrans.CurrQ, &Driver.EleTorque);
+			
+										UART_Transmit_DMA("%d\t", (int)(Driver.EleTorque * 1e3));
+										UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrQ * 1e3));
 			
 										break;
 			

@@ -445,30 +445,14 @@ extern struct MainController_t MainController;
 		
 		PutStr("Correct Begin...\r\n\r\n");SendBuf();
 		
-		InverseParkTransform(volD, 0.f, &volAlpha, &volBeta, 0.f);
-		SpaceVectorModulation(volAlpha, volBeta);
-		LL_mDelay(500);
-		
-		InverseParkTransform(volD, 0.f, &volAlpha, &volBeta, 60.f);
-		SpaceVectorModulation(volAlpha, volBeta);
-		LL_mDelay(500);
-		
-		InverseParkTransform(volD, 0.f, &volAlpha, &volBeta, 120.f);
-		SpaceVectorModulation(volAlpha, volBeta);
-		LL_mDelay(500);
-		
-		InverseParkTransform(volD, 0.f, &volAlpha, &volBeta, -120.f);
-		SpaceVectorModulation(volAlpha, volBeta);
-		LL_mDelay(500);
-		
-		InverseParkTransform(volD, 0.f, &volAlpha, &volBeta, -60.f);
-		SpaceVectorModulation(volAlpha, volBeta);
-		LL_mDelay(500);
-		
-		InverseParkTransform(volD, 0.f, &volAlpha, &volBeta, 0.f);
-		SpaceVectorModulation(volAlpha, volBeta);
-		LL_mDelay(500);
-		
+		/*通过旋转方向判断相序是否正确, 从编码器方向看, 应为顺时针旋转*/
+		for(float eleAngle = 0; eleAngle <= 360; eleAngle += 15)
+		{
+			InverseParkTransform(volD, 0.f, &volAlpha, &volBeta, eleAngle);
+			SpaceVectorModulation(volAlpha, volBeta);
+			LL_mDelay(150);
+		}
+				
 		GetPositionImformation();
 		
 		for(times = 0; times < 200; times++)

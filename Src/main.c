@@ -101,7 +101,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
-	Driver.UnitMode = WORK_MODE;	//设定模式, 正常工作或测定电角度 ( WORK_MODE or MEASURE_ANGLE_TABLE_MODE or MEASURE_PARAM_MODE )
+	Driver.UnitMode = MEASURE_ANGLE_TABLE_MODE;	//设定模式, 正常工作或测定电角度 ( WORK_MODE or MEASURE_ANGLE_TABLE_MODE or MEASURE_PARAM_MODE )
 	
   /* USER CODE END 1 */
   
@@ -172,7 +172,7 @@ int main(void)
 		
 						break;
 		
-		case MEASURE_ANGLE_TABLE_MODE : CorrectPosOffset_Encoder(0.7f);	//测定电角度, 设定d轴电压
+		case MEASURE_ANGLE_TABLE_MODE : CorrectPosOffset_Encoder(0.6f);	//测定电角度, 设定d轴电压
 		
 						break;
 		

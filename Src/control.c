@@ -47,7 +47,7 @@ void DriverInit(void)
 	PWM_IT_CMD(ENABLE,ENABLE);
 	
 	/*设定控制模式*/
-	Driver.ControlMode = SPD_CURR_CTRL_MODE;
+	Driver.ControlMode = SPD_VOL_CTRL_MODE;
 	
 	/*采用Id = 0控制, 故设定d轴电流为零*/
 	CurrLoop.ExptCurrD = 0.f;
@@ -56,12 +56,7 @@ void DriverInit(void)
 	Regulator.ActualPeriod_s = DEFAULT_CARRIER_PERIOD_s;
 	
 	/*设置编码器位置偏移量*/
-	PosSensor.PosOffset = 17003;
-	
-	/*设定功角补偿系数*/
-	Driver.CompRatio_forward = 3.0f;
-	
-	Driver.CompRatio_reverse = 3.0f;
+	PosSensor.PosOffset = 18521;
 	
 	switch(Driver.ControlMode)
 	{
@@ -109,6 +104,11 @@ void CurrentLoopInit(void)
 	CurrLoop.Ki_D = CURRENT_CONTROL_KI_D * 0.1f;						
 	CurrLoop.Kp_Q = CURRENT_CONTROL_KP_Q * 1.0f;
 	CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q * 0.1f;
+	
+	/*设定编码器延迟补偿系数*/
+	Driver.CompRatio_forward = 3.0f;
+	
+	Driver.CompRatio_reverse = 3.0f;
 }
 
  /**
@@ -118,6 +118,11 @@ void VoltageControllerInit(void)
 {
 	/*设定电压限幅*/
 	VolCtrl.VolLimit = 8.0f;
+	
+	/*设定编码器延迟补偿系数*/
+	Driver.CompRatio_forward = 3.8f;
+	
+	Driver.CompRatio_reverse = 3.0f;
 }
 
  /**
@@ -147,7 +152,7 @@ void SpeedLoopInit(void)
 		/*速度环单环控制*/
 		SpdLoop.Kp = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS_NUM * 5.5f) * 1.0f;	
 		SpdLoop.Ki = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS_NUM * 25.0f) * 1.0f;
-		SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;	//期望速度，rad per second
+		SpdLoop.ExptMecAngularSpeed_rad = 10.f * 2 * PI;	//期望速度，rad per second
 		SpdLoop.Acceleration = 5000.f * 2 * PI;	//期望加速度，rad per quadratic seconds
 		SpdLoop.Deceleration = SpdLoop.Acceleration;
 	}

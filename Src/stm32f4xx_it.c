@@ -58,7 +58,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-
+uint16_t Count = PERIOD_MULTIPLE - 1;	//使程序第一次执行中断时, 运行速度环, 位置环
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -293,31 +293,53 @@ void ADC_IRQHandler(void)
 	
 	if(Driver.UnitMode == WORK_MODE)
 	{
+		Count++;
+		
 		switch(Driver.ControlMode)
 		{
-			case SPD_CURR_CTRL_MODE :	/*转速控制器, 包括转速PI控制器*/
-										SpeedController();
-			
+			case SPD_CURR_CTRL_MODE :	
+										if(Count == PERIOD_MULTIPLE)
+										{
+											/*转速控制器, 包括转速PI控制器*/
+											SpeedController();
+											
+											Count = 0;
+										}
+				
 										/*电流控制器, 包括Clark变换, Park变换, 电流PI控制器, RevPark变换, SVPWM算法*/
 										CurrentController();
 										
 										/*计算电磁转矩*/
 										CalculateEleTorque(CoordTrans.CurrQ, &Driver.EleTorque);
 			
+
+										
 										UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrA * 1e3));
 										UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrB * 1e3));
 										UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrC * 1e3));
 			
 										break;
 			
-			case POS_SPD_CURR_CTRL_MODE :	/*位置控制器, 包括位置PD控制器*/
-										PositionController();
-										
-										/*转速控制器, 包括转速PI控制器*/
-										SpeedController();
-			
+			case POS_SPD_CURR_CTRL_MODE :	
+										if(Count == PERIOD_MULTIPLE)
+										{
+											/*位置控制器, 包括位置PD控制器*/
+											PositionController();
+											
+											/*转速控制器, 包括转速PI控制器*/
+											SpeedController();
+											
+											Count = 0;
+										}
+																							
 										/*电流控制器, 包括Clark变换, Park变换, 电流PI控制器, RevPark变换, SVPWM算法*/
 										CurrentController();
+			
+										/*计算电磁转矩*/
+										CalculateEleTorque(CoordTrans.CurrQ, &Driver.EleTorque);
+			
+//										UART_Transmit_DMA("%d\t", (int)(MainController.RefMecAngle_pulse));
+										UART_Transmit_DMA("%d\r\n",(int)(PosSensor.MecAngle_AbsoluteMode_15bit));
 			
 										break;
 			

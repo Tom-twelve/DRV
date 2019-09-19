@@ -36,7 +36,8 @@ extern ADC_HandleTypeDef hadc3;
 
 /* USER CODE BEGIN Private defines */
 
-#define CURR_AMP_GAIN 					5.0f
+#define CURR_AMP_GAIN_RES_1mOhm 		5.0f
+#define CURR_AMP_GAIN_RES_2mOhm 		20.0f
 #define HALL_ACS781_50A_GAIN			0.0264f	// V/A
 #define HALL_ACS781_150A_GAIN			0.0088f	// V/A	
 

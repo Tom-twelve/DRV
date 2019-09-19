@@ -46,52 +46,45 @@ void DriverInit(void)
 	/*使能PWM输出*/
 	PWM_IT_CMD(ENABLE,ENABLE);
 	
-	/*设定控制模式*/
-	Driver.ControlMode = SPD_VOL_CTRL_MODE;
-	
 	/*采用Id = 0控制, 故设定d轴电流为零*/
 	CurrLoop.ExptCurrD = 0.f;
 	
 	/*对控制周期赋初值, 防止运算时出现分母为0的情况*/
 	Regulator.ActualPeriod_s = DEFAULT_CARRIER_PERIOD_s;
 	
-	/*设置编码器位置偏移量*/
-	PosSensor.PosOffset = 18521;
+	#if ROBOT_ID == 1U
+		#if CAN_ID_NUM == 1
+			Driver.ControlMode = SPD_CURR_CTRL_MODE;
+			DriverControlModeInit();
+			PosSensor.PosOffset = 18521;
+			CurrLoop.LimitCurrQ = 10.f;
 	
-	switch(Driver.ControlMode)
-	{
-		case SPD_CURR_CTRL_MODE : 	
-										CurrentLoopInit();
-
-										SpeedLoopInit();
-
-										break;
-		
-		case POS_SPD_CURR_CTRL_MODE :	
-										CurrentLoopInit();
-										
-										SpeedLoopInit();
-										
-										PositionLoopInit();
+			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;	//期望速度，degree per second
+		#elif CAN_ID_NUM == 2
+			Driver.ControlMode = POS_SPD_CURR_CTRL_MODE;
+			DriverControlModeInit();
+			PosSensor.PosOffset = 18521;
+			CurrLoop.LimitCurrQ = 40.f;
+		#elif CAN_ID_NUM == 3
+			Driver.ControlMode = POS_SPD_CURR_CTRL_MODE;
+			DriverControlModeInit();
 			
-										break;
-		
-		case SPD_VOL_CTRL_MODE :		
-										VoltageControllerInit();
-		
-										SpeedLoopInit();
-		
-										break;
-		
-		case POS_SPD_VOL_CTRL_MODE :	
-										VoltageControllerInit();
-		
-										SpeedLoopInit();
-		
-										PositionLoopInit();
+			CurrLoop.LimitCurrQ = 20.f;
+			PosSensor.PosOffset = 12223;
+			MainController.ZeroPosOffset = 15925;
+			PosLoop.MaxMecAngularSpeed_rad = 25.f * 2 * PI;	
 
-										break;
-	}
+			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
+			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
+			PosLoop.Kp = POSITION_CONTROL_KP * 1.0f;
+			PosLoop.Kd = POSITION_CONTROL_KD * 1.0f;
+
+
+		#endif
+	#endif
+	
+	/*设定零位, 若无需固定的零位, 则不调用该函数*/
+	ZeroPosInit();
 }
 
  /**
@@ -100,15 +93,17 @@ void DriverInit(void)
 void CurrentLoopInit(void)
 {
 	/*设定电流环PI参数*/
-	CurrLoop.Kp_D = CURRENT_CONTROL_KP_D * 1.0f;												
-	CurrLoop.Ki_D = CURRENT_CONTROL_KI_D * 0.1f;						
-	CurrLoop.Kp_Q = CURRENT_CONTROL_KP_Q * 1.0f;
-	CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q * 0.1f;
+	CurrLoop.Kp_D = CURRENT_CONTROL_KP_D;												
+	CurrLoop.Ki_D = CURRENT_CONTROL_KI_D;						
+	CurrLoop.Kp_Q = CURRENT_CONTROL_KP_Q;
+	CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q;
 	
 	/*设定编码器延迟补偿系数*/
-	Driver.CompRatio_forward = 3.0f;
+	PosSensor.CompRatio_forward = 3.2f;
+	PosSensor.CompRatio_reverse = 3.0f;
 	
-	Driver.CompRatio_reverse = 3.0f;
+	/*设定最大Iq*/
+	CurrLoop.LimitCurrQ = 40.f;
 }
 
  /**
@@ -120,9 +115,8 @@ void VoltageControllerInit(void)
 	VolCtrl.VolLimit = 8.0f;
 	
 	/*设定编码器延迟补偿系数*/
-	Driver.CompRatio_forward = 3.8f;
-	
-	Driver.CompRatio_reverse = 3.0f;
+	PosSensor.CompRatio_forward = 3.8f;
+	PosSensor.CompRatio_reverse = 3.0f;
 }
 
  /**
@@ -133,17 +127,17 @@ void SpeedLoopInit(void)
 	if(Driver.ControlMode == SPD_CURR_CTRL_MODE)
 	{
 		/*速度-电流双环控制*/
-		SpdLoop.Kp = 1.0f;	
-		SpdLoop.Ki = 0.1f;
-		SpdLoop.ExptMecAngularSpeed_rad = 50.f * 2 * PI;	//期望速度，degree per second
-		SpdLoop.Acceleration = 10.f * 2 * PI;	//期望加速度，degree per quadratic seconds
+		SpdLoop.Kp = SPEED_CONTROL_KP;	
+		SpdLoop.Ki = SPEED_CONTROL_KI;
+		SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;	//期望速度，degree per second
+		SpdLoop.Acceleration = 5000.f * 2 * PI;	//期望加速度，degree per quadratic seconds
 		SpdLoop.Deceleration = SpdLoop.Acceleration;
 	}
 	else if(Driver.ControlMode == POS_SPD_CURR_CTRL_MODE)
 	{
 		/*位置-速度-电流三环控制*/
-		SpdLoop.Kp = 1.0f;	
-		SpdLoop.Ki = 0.1f;
+		SpdLoop.Kp = SPEED_CONTROL_KP;
+		SpdLoop.Ki = SPEED_CONTROL_KI;
 		SpdLoop.Acceleration = 5000.f * 2 * PI;	//期望加速度，degree per quadratic seconds
 		SpdLoop.Deceleration = SpdLoop.Acceleration;
 	}
@@ -182,17 +176,22 @@ void PositionLoopInit(void)
 	MainController.RefMecAngle_pulse = 0;
 	
 	/*设定零位偏移量*/
-	MainController.ZeroPosOffset = 15000;
-	
-	/*设定零位, 若无需固定的零位, 则不调用该函数*/
-	ZeroPosInit();
-	
+	MainController.ZeroPosOffset = 0;
+		
 	if(Driver.ControlMode == POS_SPD_CURR_CTRL_MODE)
 	{
 		/*位置-速度-电流三环控制*/
+		PosLoop.Kp = POSITION_CONTROL_KP;
+		PosLoop.Kd = POSITION_CONTROL_KD;	
+		PosLoop.MaxMecAngularSpeed_rad = 15.f * 2 * PI;	//最大转速
+		MainController.RefMecAngle_pulse = 0;
+		MainController.ExptMecAngle_pulse = 0;
+	}
+	else if(Driver.ControlMode == POS_CURR_CTRL_MODE)
+	{
+		/*位置-电流双环控制*/
 		PosLoop.Kp = 0.0f;
-		PosLoop.Kd = 0.f;	
-		PosLoop.MaxMecAngularSpeed_rad = 15.f * 2 * PI;
+		PosLoop.Kd = 0.f;
 		MainController.RefMecAngle_pulse = 0;
 		MainController.ExptMecAngle_pulse = 0;
 	}
@@ -268,7 +267,7 @@ void SpeedLoop(float exptMecAngularSpeed, float realMecAngularSpeed, float *ctrl
 	if(Driver.ControlMode == SPD_CURR_CTRL_MODE || Driver.ControlMode == POS_SPD_CURR_CTRL_MODE)
 	{
 		/*速度环输出限幅*/
-		Saturation_float(ctrlCurrQ, CURR_EXPT_LIM_Q, -CURR_EXPT_LIM_Q);
+		Saturation_float(ctrlCurrQ, CurrLoop.LimitCurrQ, -CurrLoop.LimitCurrQ);
 	}
 }
 
@@ -364,21 +363,23 @@ void CurrentController(void)
 
 	if(SpdLoop.ExptMecAngularSpeed_rad >= 0)
 	{
-		Driver.CompRatio = Driver.CompRatio_forward;
+		PosSensor.CompRatio = PosSensor.CompRatio_forward;
 	}
 	else if(SpdLoop.ExptMecAngularSpeed_rad < 0)
 	{
-		Driver.CompRatio = Driver.CompRatio_reverse;
+		PosSensor.CompRatio = PosSensor.CompRatio_reverse;
 	}
 	
+	PosSensor.CompAngle = PosSensor.CompRatio * PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s;
+	
 	/*进行Park变换, 将Alpha-Beta坐标系转换为dq坐标系*/
-	ParkTransform_arm(CoordTrans.CurrAlpha, CoordTrans.CurrBeta, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + Driver.CompRatio * PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s);
+	ParkTransform_arm(CoordTrans.CurrAlpha, CoordTrans.CurrBeta, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + PosSensor.CompAngle);
 	
 	/*电流环PI控制器*/
 	CurrentLoop(CurrLoop.ExptCurrD, CurrLoop.ExptCurrQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
 	
 	/*进行逆Park变换, 将转子坐标系下的dq轴电压转换为定子坐标系下的AlphaBeta轴电压*/
-	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + Driver.CompRatio * PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s);
+	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + PosSensor.CompAngle);
 	
 	/*载波周期调节器, 尽可能使载波周期与编码器周期同步*/
 //	PeriodRegulator();
@@ -403,15 +404,15 @@ void VoltageController(void)
 	
 	if(SpdLoop.ExptMecAngularSpeed_rad >= 0)
 	{
-		Driver.CompRatio = Driver.CompRatio_forward;
+		PosSensor.CompRatio = PosSensor.CompRatio_forward;
 	}
 	else if(SpdLoop.ExptMecAngularSpeed_rad < 0)
 	{
-		Driver.CompRatio = Driver.CompRatio_reverse;
+		PosSensor.CompRatio = PosSensor.CompRatio_reverse;
 	}
 	
 	/*进行逆Park变换, 将转子坐标系下的dq轴电压转换为定子坐标系下的AlphaBeta轴电压*/
-	InverseParkTransform(VolCtrl.CtrlVolD, VolCtrl.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + Driver.CompRatio * PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s);
+	InverseParkTransform(VolCtrl.CtrlVolD, VolCtrl.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + PosSensor.CompRatio * PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s);
 	
 	/*载波周期调节器, 尽可能使载波周期与编码器周期同步*/
 //	PeriodRegulator();
@@ -443,6 +444,47 @@ void PositionController(void)
 	PosLoop.ExptMecAngle_rad = PULSE_TO_RAD(MainController.ExptMecAngle_pulse);
 	
 	PositionLoop(PosLoop.ExptMecAngle_rad, PULSE_TO_RAD(MainController.RefMecAngle_pulse), &SpdLoop.ExptMecAngularSpeed_rad);
+}
+
+ /**
+   * @brief  驱动器控制模式初始化
+   */
+void DriverControlModeInit(void)
+{
+	switch(Driver.ControlMode)
+	{
+		case SPD_CURR_CTRL_MODE : 	
+										CurrentLoopInit();
+
+										SpeedLoopInit();
+
+										break;
+		
+		case POS_SPD_CURR_CTRL_MODE :	
+										CurrentLoopInit();
+										
+										SpeedLoopInit();
+										
+										PositionLoopInit();
+			
+										break;
+		
+		case SPD_VOL_CTRL_MODE :		
+										VoltageControllerInit();
+		
+										SpeedLoopInit();
+		
+										break;
+		
+		case POS_SPD_VOL_CTRL_MODE :	
+										VoltageControllerInit();
+		
+										SpeedLoopInit();
+		
+										PositionLoopInit();
+
+										break;
+	}
 }
 
  /**

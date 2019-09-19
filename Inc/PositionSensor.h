@@ -74,6 +74,10 @@
 		float EleAngle_rad;
 		float EleAngularSpeed_rad;
 		float EleAngularSpeed_degree;
+		float CompRatio;
+		float CompRatio_forward;
+		float CompRatio_reverse;
+		float CompAngle;
 		uint16_t PosOffset;
 		uint16_t OriginalMecAngle_14bit;
 		uint16_t FSYNC;

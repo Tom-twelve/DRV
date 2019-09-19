@@ -386,13 +386,13 @@ void GetPhaseCurrent(void)
 	#endif
 	
 	#if CURRENT_SENSOR == RES_1mOhm
-	CoordTrans.CurrA = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseA / 4096.f) / CURR_AMP_GAIN) / 0.001f;
-	CoordTrans.CurrB = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseB / 4096.f) / CURR_AMP_GAIN) / 0.001f;
-	CoordTrans.CurrC = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseC / 4096.f) / CURR_AMP_GAIN) / 0.001f;
+	CoordTrans.CurrA = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseA / 4096.f) / CURR_AMP_GAIN_RES_1mOhm) / 0.001f;
+	CoordTrans.CurrB = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseB / 4096.f) / CURR_AMP_GAIN_RES_1mOhm) / 0.001f;
+	CoordTrans.CurrC = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseC / 4096.f) / CURR_AMP_GAIN_RES_1mOhm) / 0.001f;
 	#elif CURRENT_SENSOR == RES_2mOhm
-	CoordTrans.CurrA = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseA / 4096.f) / CURR_AMP_GAIN) / 0.002f;
-	CoordTrans.CurrB = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseB / 4096.f) / CURR_AMP_GAIN) / 0.002f;
-	CoordTrans.CurrC = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseC / 4096.f) / CURR_AMP_GAIN) / 0.002f;
+	CoordTrans.CurrA = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseA / 4096.f) / CURR_AMP_GAIN_RES_2mOhm) / 0.002f;
+	CoordTrans.CurrB = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseB / 4096.f) / CURR_AMP_GAIN_RES_2mOhm) / 0.002f;
+	CoordTrans.CurrC = ((1.65f - 3.3f * (float)ADC_CurrentConvertedValue_PhaseC / 4096.f) / CURR_AMP_GAIN_RES_2mOhm) / 0.002f;
 	#elif CURRENT_SENSOR == HALL_CURR_SENSOR_ACS781_50A
 	CoordTrans.CurrA = - (3.3f * (float)ADC_CurrentConvertedValue_PhaseA / 4096.f - 1.65f) / HALL_ACS781_50A_GAIN;
 	CoordTrans.CurrB = - (3.3f * (float)ADC_CurrentConvertedValue_PhaseB / 4096.f - 1.65f) / HALL_ACS781_50A_GAIN;

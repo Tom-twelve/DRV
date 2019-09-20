@@ -68,10 +68,10 @@ void DriverInit(void)
 		#elif CAN_ID_NUM == 3
 			Driver.ControlMode = POS_SPD_CURR_CTRL_MODE;
 			DriverControlModeInit();
+			ZeroPosSet(15925);
 			
 			CurrLoop.LimitCurrQ = 20.f;
 			PosSensor.PosOffset = 12223;
-			MainController.ZeroPosOffset = 15925;
 			PosLoop.MaxMecAngularSpeed_rad = 25.f * 2 * PI;	
 
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
@@ -82,9 +82,6 @@ void DriverInit(void)
 
 		#endif
 	#endif
-	
-	/*设定零位, 若无需固定的零位, 则不调用该函数*/
-	ZeroPosInit();
 }
 
  /**
@@ -174,10 +171,7 @@ void PositionLoopInit(void)
 	
 	/*记当前位置为零位*/
 	MainController.RefMecAngle_pulse = 0;
-	
-	/*设定零位偏移量*/
-	MainController.ZeroPosOffset = 0;
-		
+			
 	if(Driver.ControlMode == POS_SPD_CURR_CTRL_MODE)
 	{
 		/*位置-速度-电流三环控制*/
@@ -209,9 +203,9 @@ void PositionLoopInit(void)
  /**
    * @brief  位置控制模式下标定初始位置
    */
-void ZeroPosInit(void)
+void ZeroPosSet(uint16_t posOffset)
 {
-	MainController.RefMecAngle_pulse = PosSensor.MecAngle_AbsoluteMode_15bit - MainController.ZeroPosOffset;
+	MainController.RefMecAngle_pulse = PosSensor.MecAngle_AbsoluteMode_15bit - posOffset;
 }
 
  /**

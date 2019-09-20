@@ -86,7 +86,6 @@ struct MainController_t
 	int32_t ExptMecAngularSpeed_pulse;	//目标机械角速度, 脉冲
 	int32_t ExptMecAngle_pulse;			//目标位置, 脉冲
 	int32_t RefMecAngle_pulse;			//参考机械角度, 上电时置零, 脉冲
-	uint32_t ZeroPosOffset;				//零位偏移量, 脉冲
 	uint32_t Acceleration_pulse;		//加速度, 脉冲
 	uint32_t Deceleration_pulse;		//减速度, 脉冲
 	uint32_t MaxMecAngularSpeed_pulse;	//位置环最大输出速度, 脉冲
@@ -141,7 +140,7 @@ void VoltageControllerInit(void);
 void VoltageController(void);
 void SpeedLoopInit(void);
 void PositionLoopInit(void);
-void ZeroPosInit(void);
+void ZeroPosSet(uint16_t posOffset);
 void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCurrQ, float *ctrlVolD, float *ctrlVolQ);
 void SpeedLoop(float expectedMecAngularSpeed, float realMecAngularSpeed, float *ctrlCurrQ);
 void PositionLoop(float exptMecAngle, float realMecAngle, float *ctrlAngularSpeed);

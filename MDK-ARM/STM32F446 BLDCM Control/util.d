@@ -54,5 +54,6 @@ stm32f446\ bldcm\ control/util.o: ../Src/util.c ../Inc\util.h \
   D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h ../Inc/PositionSensor.h \
   D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdlib.h ../Inc/gpio.h \
   ../Inc/spi.h ../Inc/MotorConfig.h ../Inc/AngleTable.h ../Inc/util.h \
-  ../Inc/control.h ../Inc/usart.h \
-  D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdarg.h ../Inc/adc.h
+  ../Inc/can.h ../Inc/usart.h \
+  D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdarg.h ../Inc/control.h \
+  ../Inc/adc.h

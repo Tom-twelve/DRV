@@ -18,6 +18,7 @@
 #define MIN(a, b)       						(((a) < (b)) ? (a) : (b))
 #define NORMALIZED(val) 						((val > 1) ? 1 : (val < 0 ?  0 : val))	//归一化处理
 #define RAD_TO_DEGREE(val)  					((float)val / 2.f / PI * 360.f)
+#define DEGREE_TO_RAD(val)						((float)val / 360.f * 2.f * PI)
 #define PULSE_TO_RAD(val)						((float)val / (float)TLE5012_ABS_MODE_RESOLUTION * 2.f * PI)
 
 float utils_map(float x, float in_min, float in_max, float out_min, float out_max);

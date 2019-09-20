@@ -64,6 +64,10 @@ uint8_t MeasureResidence(float targetSampleTimes, float currQ, float *residence)
 			}
 			break;
 		case 1:
+			CurrLoop.Kp_D = 0.5;												
+			CurrLoop.Ki_D = 0.1;						
+			CurrLoop.Kp_Q = 0.2;
+			CurrLoop.Ki_Q = 0.1;
 			ParkTransform(CoordTrans.CurrA, CoordTrans.CurrB, CoordTrans.CurrC, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree);
 			CurrentLoop(0.f, currQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
 			InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree);
@@ -260,7 +264,7 @@ void MeasureParameters(void)
 			state++;
 			break;
 		case 1 :
-				flag = MeasureResidence(100.f, 15.f, &residence);
+				flag = MeasureResidence(100.f, 5.f, &residence);
 				if(flag)
 				{
 					flag = 0;
@@ -286,7 +290,7 @@ void MeasureParameters(void)
 			}
 			break;
 		case 4:
-			UART_Transmit_DMA("\r\nphase residence: %d uOhm \t phase inductance: %d uH \r\n",(int)(residence * 1e6),(int)(inductance * 1e6));	
+			UART_Transmit_DMA("\r\nphase residence: %d mOhm \t phase inductance: %d uH \r\n",(int)(residence * 1e3),(int)(inductance * 1e6));	
 			PutStr("\r\nParameters Measure Over \r\n");	
 			SendBuf();
 		

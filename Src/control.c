@@ -56,10 +56,10 @@ void DriverInit(void)
 		#if CAN_ID_NUM == 1
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverControlModeInit();
-			PosSensor.PosOffset = 18521;
-			CurrLoop.LimitCurrQ = 10.f;
-	
-			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;	//期望速度，degree per second
+			PosSensor.PosOffset = 12190;
+			CurrLoop.LimitCurrQ = 20.f;
+
+			SpdLoop.ExptMecAngularSpeed_rad = 30.f * 2 * PI;	//期望速度，degree per second
 		#elif CAN_ID_NUM == 2
 			Driver.ControlMode = POS_SPD_CURR_CTRL_MODE;
 			DriverControlModeInit();
@@ -78,7 +78,16 @@ void DriverInit(void)
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 			PosLoop.Kp = POSITION_CONTROL_KP * 1.0f;
 			PosLoop.Kd = POSITION_CONTROL_KD * 1.0f;
-
+		#elif CAN_ID_NUM == 4
+			Driver.ControlMode = POS_SPD_CURR_CTRL_MODE;
+			DriverControlModeInit();
+			ZeroPosSet(15925);
+			PosSensor.PosOffset = 5392;
+			
+			CurrLoop.LimitCurrQ = 20.f;
+			
+			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
+			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 
 		#endif
 	#endif
@@ -91,9 +100,9 @@ void CurrentLoopInit(void)
 {
 	/*设定电流环PI参数*/
 	CurrLoop.Kp_D = CURRENT_CONTROL_KP_D;												
-	CurrLoop.Ki_D = CURRENT_CONTROL_KI_D;						
+	CurrLoop.Ki_D = CURRENT_CONTROL_KI_D * 0.1f;						
 	CurrLoop.Kp_Q = CURRENT_CONTROL_KP_Q;
-	CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q;
+	CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q * 0.1f;
 	
 	/*设定编码器延迟补偿系数*/
 	PosSensor.CompRatio_forward = 3.2f;
@@ -143,7 +152,7 @@ void SpeedLoopInit(void)
 		/*速度环单环控制*/
 		SpdLoop.Kp = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS_NUM * 5.5f) * 1.0f;	
 		SpdLoop.Ki = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS_NUM * 25.0f) * 1.0f;
-		SpdLoop.ExptMecAngularSpeed_rad = 10.f * 2 * PI;	//期望速度，rad per second
+		SpdLoop.ExptMecAngularSpeed_rad = 20.f * 2 * PI;	//期望速度，rad per second
 		SpdLoop.Acceleration = 5000.f * 2 * PI;	//期望加速度，rad per quadratic seconds
 		SpdLoop.Deceleration = SpdLoop.Acceleration;
 	}
@@ -234,11 +243,11 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 	Saturation_float(&CurrLoop.IntegralErrQ, CURR_INTEGRAL_ERR_LIM_Q, -CURR_INTEGRAL_ERR_LIM_Q);
 	
 	/*转速前馈*/ 
-	*ctrlVolD = *ctrlVolD - PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ;
-	*ctrlVolQ = *ctrlVolQ + CoordTrans.CurrQ * PHASE_RES + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
+//	*ctrlVolD = *ctrlVolD - PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ;
+//	*ctrlVolQ = *ctrlVolQ + CoordTrans.CurrQ * PHASE_RES + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
 	
 	/*电流环d轴电流限幅, 若限幅过宽启动时振动严重*/
-	Saturation_float(ctrlVolD, 1.0f, -1.0f);
+	Saturation_float(ctrlVolD, 0.5f, -0.5f);
 }
 
  /**

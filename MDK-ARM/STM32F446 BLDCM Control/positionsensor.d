@@ -56,4 +56,4 @@ stm32f446\ bldcm\ control/positionsensor.o: ../Src/PositionSensor.c \
   ../Inc/PositionSensor.h ../Inc/control.h ../Inc/MotorConfig.h \
   ../Inc/usart.h D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdarg.h \
   ../Inc/util.h D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdbool.h \
-  ../Inc/adc.h ../Inc/spi.h ../Inc/AngleTable.h
+  ../Inc/adc.h ../Inc/spi.h ../Inc/AngleTable.h ../Inc/can.h

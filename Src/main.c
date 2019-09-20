@@ -199,13 +199,13 @@ int main(void)
 //	  
 //	  LL_mDelay(1000);
 	  
-//	  MainController.ExptMecAngle_pulse = 15000;
-//	  
-//	  LL_mDelay(1000);
-//	  
-//	  MainController.ExptMecAngle_pulse = -15000;
-//	  
-//	  LL_mDelay(1000);
+	  MainController.ExptMecAngle_pulse = 20000;
+	  
+	  LL_mDelay(1000);
+	  
+	  MainController.ExptMecAngle_pulse = -20000;
+	  
+	  LL_mDelay(1000);
 	  
   }
   /* USER CODE END 3 */

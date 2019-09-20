@@ -25,6 +25,7 @@
 #include "AngleTable.h"
 #include "util.h"
 #include "foc.h"
+#include "can.h"
 /* CODE END Includes */
 
 /* Private define ------------------------------------------------------------*/

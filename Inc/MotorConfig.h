@@ -60,7 +60,7 @@
 #define ROBOT_ID		1U
 
 #if ROBOT_ID == 1U		//±àÂëÆ÷
-	#define CAN_ID_NUM			3
+	#define CAN_ID_NUM			4
 		#if CAN_ID_NUM == 1
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
@@ -88,6 +88,15 @@
 		#define MOSFET_TYPE				IPD053N08N3G_52nC_5mOhm3
 		#define CURRENT_SENSOR			RES_2mOhm
 		#define GROUP_NUM          		0
+		#elif CAN_ID_NUM == 4
+		#define MOTOR_TYPE 				TMOTOR_U3_KV700	
+		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
+		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
+		#define ENCODER_MODE			ENCODER_ABSOLUTE_MODE
+		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8320
+		#define MOSFET_TYPE				IPD053N08N3G_52nC_5mOhm3
+		#define CURRENT_SENSOR			HALL_CURR_SENSOR_ACS781_50A
+		#define GROUP_NUM          		0
 		#endif
 #endif
 
@@ -99,15 +108,15 @@
 	#define MOTOR_POLE_PAIRS_NUM				7
 	#define	MOTOR_KV							505.f
 	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * ((float)MOTOR_POLE_PAIRS_NUM) * (MOTOR_KV)))
-	#define PHASE_RES							0.020f	//(Ohm)
-	#define INDUCTANCE_D						(10 * (float)1e-6)	//(H)
-	#define INDUCTANCE_Q						(10 * (float)1e-6)	//(H)
+	#define PHASE_RES							(20.f * (float)1e-3)	//(Ohm)
+	#define INDUCTANCE_D						(10.f * (float)1e-6)	//(H)
+	#define INDUCTANCE_Q						(10.f * (float)1e-6)	//(H)
 	#define MAX_SPD								((uint32_t)(TLE5012_ABS_MODE_RESOLUTION * GENERATRIX_VOL * MOTOR_KV / 60))
 #elif	MOTOR_TYPE == N5055_KV400
 	#define MOTOR_POLE_PAIRS_NUM				7
 	#define	MOTOR_KV							400.f
 	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * ((float)MOTOR_POLE_PAIRS_NUM) * (MOTOR_KV)))
-	#define PHASE_RES							(50.f * (float)1e-6)	//(Ohm)
+	#define PHASE_RES							(50.f * (float)1e-3)	//(Ohm)
 	#define INDUCTANCE_D						(55.f * (float)1e-6)	//(H)
 	#define INDUCTANCE_Q						(55.f * (float)1e-6)	//(H)
 	#define MAX_SPD								((uint32_t)(TLE5012_ABS_MODE_RESOLUTION * GENERATRIX_VOL * MOTOR_KV / 60))
@@ -115,9 +124,9 @@
 	#define MOTOR_POLE_PAIRS_NUM				7
 	#define	MOTOR_KV							700.f
 	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * ((float)MOTOR_POLE_PAIRS_NUM) * (MOTOR_KV)))
-	#define PHASE_RES							(50.f * (float)1e-6)	//(Ohm)
-	#define INDUCTANCE_D						(55.f * (float)1e-6)	//(H)
-	#define INDUCTANCE_Q						(55.f * (float)1e-6)	//(H)
+	#define PHASE_RES							(85.f * (float)1e-3)	//(Ohm)
+	#define INDUCTANCE_D						(22.f * (float)1e-6)	//(H)
+	#define INDUCTANCE_Q						(22.f * (float)1e-6)	//(H)
 	#define MAX_SPD								((uint32_t)(TLE5012_ABS_MODE_RESOLUTION * GENERATRIX_VOL * MOTOR_KV / 60))
 #elif	MOTOR_TYPE == TMOTOR_P80_KV100
 	#define MOTOR_POLE_PAIRS_NUM				21

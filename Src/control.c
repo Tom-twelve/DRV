@@ -45,11 +45,8 @@ void DriverInit(void)
 {
 	/*使能PWM输出*/
 	PWM_IT_CMD(ENABLE,ENABLE);
-	
-	/*采用Id = 0控制, 故设定d轴电流为零*/
-	CurrLoop.ExptCurrD = 0.f;
-	
-	/*对控制周期赋初值, 防止运算时出现分母为0的情况*/
+		
+	/*控制周期*/
 	Regulator.ActualPeriod_s = DEFAULT_CARRIER_PERIOD_s;
 	
 	#if ROBOT_ID == 1U
@@ -79,16 +76,15 @@ void DriverInit(void)
 			PosLoop.Kp = POSITION_CONTROL_KP * 1.0f;
 			PosLoop.Kd = POSITION_CONTROL_KD * 1.0f;
 		#elif CAN_ID_NUM == 4
-			Driver.ControlMode = POS_SPD_CURR_CTRL_MODE;
+			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverControlModeInit();
-			ZeroPosSet(15925);
+			ZeroPosSet(15000);
 			PosSensor.PosOffset = 5392;
-			
 			CurrLoop.LimitCurrQ = 20.f;
 			
-			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
-			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
-
+			SpdLoop.ExptMecAngularSpeed_rad = 100.f * 2.f * PI; 
+			
+			
 		#endif
 	#endif
 }
@@ -100,16 +96,16 @@ void CurrentLoopInit(void)
 {
 	/*设定电流环PI参数*/
 	CurrLoop.Kp_D = CURRENT_CONTROL_KP_D;												
-	CurrLoop.Ki_D = CURRENT_CONTROL_KI_D * 0.1f;						
+	CurrLoop.Ki_D = CURRENT_CONTROL_KI_D * 0.0025f;						
 	CurrLoop.Kp_Q = CURRENT_CONTROL_KP_Q;
-	CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q * 0.1f;
+	CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q * 0.0025f;
 	
 	/*设定编码器延迟补偿系数*/
 	PosSensor.CompRatio_forward = 3.2f;
 	PosSensor.CompRatio_reverse = 3.0f;
 	
 	/*设定最大Iq*/
-	CurrLoop.LimitCurrQ = 40.f;
+	CurrLoop.LimitCurrQ = 20.f;
 }
 
  /**
@@ -187,7 +183,6 @@ void PositionLoopInit(void)
 		PosLoop.Kp = POSITION_CONTROL_KP;
 		PosLoop.Kd = POSITION_CONTROL_KD;	
 		PosLoop.MaxMecAngularSpeed_rad = 15.f * 2 * PI;	//最大转速
-		MainController.RefMecAngle_pulse = 0;
 		MainController.ExptMecAngle_pulse = 0;
 	}
 	else if(Driver.ControlMode == POS_CURR_CTRL_MODE)
@@ -195,7 +190,6 @@ void PositionLoopInit(void)
 		/*位置-电流双环控制*/
 		PosLoop.Kp = 0.0f;
 		PosLoop.Kd = 0.f;
-		MainController.RefMecAngle_pulse = 0;
 		MainController.ExptMecAngle_pulse = 0;
 	}
 	else if(Driver.ControlMode == POS_SPD_VOL_CTRL_MODE)
@@ -204,7 +198,6 @@ void PositionLoopInit(void)
 		PosLoop.Kp = 80.5f * 1.0f;
 		PosLoop.Kd = 8.5f * 0.1f;	
 		PosLoop.MaxMecAngularSpeed_rad = 15.f * 2 * PI;
-		
 		MainController.ExptMecAngle_pulse = 0;
 	}	
 }
@@ -243,11 +236,11 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 	Saturation_float(&CurrLoop.IntegralErrQ, CURR_INTEGRAL_ERR_LIM_Q, -CURR_INTEGRAL_ERR_LIM_Q);
 	
 	/*转速前馈*/ 
-//	*ctrlVolD = *ctrlVolD - PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ;
-//	*ctrlVolQ = *ctrlVolQ + CoordTrans.CurrQ * PHASE_RES + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
+	*ctrlVolD = *ctrlVolD - PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ;
+	*ctrlVolQ = *ctrlVolQ + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
 	
 	/*电流环d轴电流限幅, 若限幅过宽启动时振动严重*/
-	Saturation_float(ctrlVolD, 0.5f, -0.5f);
+	Saturation_float(ctrlVolD, 1.0f, -1.0f);
 }
 
  /**
@@ -295,6 +288,233 @@ void PositionLoop(float exptMecAngle, float realMecAngle, float *ctrlAngularSpee
 	lastErr = err;
 	
 	Saturation_float(ctrlAngularSpeed, PosLoop.MaxMecAngularSpeed_rad, -PosLoop.MaxMecAngularSpeed_rad);
+}
+
+ /**
+   * @brief  速度-电流控制器
+   */
+void SpdCurrController(void)
+{	
+	static uint16_t Count = PERIOD_MULTIPLE - 1;	//使程序第一次执行中断时, 运行速度环, 位置环
+	
+	Count++;
+	
+	/*采用Id = 0控制, 故设定d轴电流为零*/
+	CurrLoop.ExptCurrD = 0.f;
+	
+	/*位置环与速度环的周期是电流环周期的十倍*/
+	if(Count == PERIOD_MULTIPLE)
+	{
+		SpeedLoop(VelocitySlopeGenerator(SpdLoop.ExptMecAngularSpeed_rad), PosSensor.MecAngularSpeed_rad, &CurrLoop.ExptCurrQ);
+		
+		Count = 0;
+	}
+	
+	/*进行Clark变换, 将abc坐标系转换为Alpha-Beta坐标系*/
+	ClarkTransform_arm(CoordTrans.CurrA, CoordTrans.CurrB, &CoordTrans.CurrAlpha, &CoordTrans.CurrBeta);
+
+	/*正反转编码器延迟补偿系数不同*/
+	if(SpdLoop.ExptMecAngularSpeed_rad >= 0)
+	{
+		PosSensor.CompRatio = PosSensor.CompRatio_forward;
+	}
+	else if(SpdLoop.ExptMecAngularSpeed_rad < 0)
+	{
+		PosSensor.CompRatio = PosSensor.CompRatio_reverse;
+	}
+	
+	PosSensor.CompAngle = PosSensor.CompRatio * PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s;
+	
+	/*进行Park变换, 将Alpha-Beta坐标系转换为dq坐标系*/
+	ParkTransform_arm(CoordTrans.CurrAlpha, CoordTrans.CurrBeta, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + PosSensor.CompAngle);
+	
+	/*电流环PI控制器*/
+	CurrentLoop(CurrLoop.ExptCurrD, CurrLoop.ExptCurrQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
+	
+	/*进行逆Park变换, 将转子坐标系下的dq轴电压转换为定子坐标系下的AlphaBeta轴电压*/
+	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + PosSensor.CompAngle);
+	
+	/*利用SVPWM算法调制电压矢量*/
+	SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
+}
+
+ /**
+   * @brief  位置-速度-电流控制器
+   */
+void PosSpdCurrController(void)
+{	
+	static uint16_t Count = PERIOD_MULTIPLE - 1;	//使程序第一次执行中断时, 运行速度环, 位置环
+	
+	Count++;
+	
+	/*采用Id = 0控制, 故设定d轴电流为零*/
+	CurrLoop.ExptCurrD = 0.f;
+	
+	/*位置环与速度环的周期是电流环周期的十倍*/
+	if(Count == PERIOD_MULTIPLE)
+	{
+		PosLoop.ExptMecAngle_rad = PULSE_TO_RAD(MainController.ExptMecAngle_pulse);
+	
+		PositionLoop(PosLoop.ExptMecAngle_rad, PULSE_TO_RAD(MainController.RefMecAngle_pulse), &SpdLoop.ExptMecAngularSpeed_rad);
+		
+		SpeedLoop(VelocitySlopeGenerator(SpdLoop.ExptMecAngularSpeed_rad), PosSensor.MecAngularSpeed_rad, &CurrLoop.ExptCurrQ);
+		
+		Count = 0;
+	}
+	
+	/*进行Clark变换, 将abc坐标系转换为Alpha-Beta坐标系*/
+	ClarkTransform_arm(CoordTrans.CurrA, CoordTrans.CurrB, &CoordTrans.CurrAlpha, &CoordTrans.CurrBeta);
+
+	/*正反转编码器延迟补偿系数不同*/
+	if(SpdLoop.ExptMecAngularSpeed_rad >= 0)
+	{
+		PosSensor.CompRatio = PosSensor.CompRatio_forward;
+	}
+	else if(SpdLoop.ExptMecAngularSpeed_rad < 0)
+	{
+		PosSensor.CompRatio = PosSensor.CompRatio_reverse;
+	}
+	
+	PosSensor.CompAngle = PosSensor.CompRatio * PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s;
+	
+	/*进行Park变换, 将Alpha-Beta坐标系转换为dq坐标系*/
+	ParkTransform_arm(CoordTrans.CurrAlpha, CoordTrans.CurrBeta, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + PosSensor.CompAngle);
+	
+	/*电流环PI控制器*/
+	CurrentLoop(CurrLoop.ExptCurrD, CurrLoop.ExptCurrQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
+	
+	/*进行逆Park变换, 将转子坐标系下的dq轴电压转换为定子坐标系下的AlphaBeta轴电压*/
+	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + PosSensor.CompAngle);
+	
+	/*利用SVPWM算法调制电压矢量*/
+	SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
+}
+
+ /**
+   * @brief  位置-电流控制器
+   */
+void PosCurrController(void)
+{	
+	static uint16_t Count = PERIOD_MULTIPLE - 1;	//使程序第一次执行中断时, 运行速度环, 位置环
+	
+	Count++;
+	
+	/*采用Id = 0控制, 故设定d轴电流为零*/
+	CurrLoop.ExptCurrD = 0.f;
+	
+	/*位置环与速度环的周期是电流环周期的十倍*/
+	if(Count == PERIOD_MULTIPLE)
+	{
+		PosLoop.ExptMecAngle_rad = PULSE_TO_RAD(MainController.ExptMecAngle_pulse);
+	
+		PositionLoop(PosLoop.ExptMecAngle_rad, PULSE_TO_RAD(MainController.RefMecAngle_pulse), &CurrLoop.ExptCurrQ);
+		
+		Count = 0;
+	}
+	
+	/*进行Clark变换, 将abc坐标系转换为Alpha-Beta坐标系*/
+	ClarkTransform_arm(CoordTrans.CurrA, CoordTrans.CurrB, &CoordTrans.CurrAlpha, &CoordTrans.CurrBeta);
+
+	/*正反转编码器延迟补偿系数不同*/
+	if(SpdLoop.ExptMecAngularSpeed_rad >= 0)
+	{
+		PosSensor.CompRatio = PosSensor.CompRatio_forward;
+	}
+	else if(SpdLoop.ExptMecAngularSpeed_rad < 0)
+	{
+		PosSensor.CompRatio = PosSensor.CompRatio_reverse;
+	}
+	
+	/*计算补偿角度*/
+	PosSensor.CompAngle = PosSensor.CompRatio * PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s;
+	
+	/*进行Park变换, 将Alpha-Beta坐标系转换为dq坐标系*/
+	ParkTransform_arm(CoordTrans.CurrAlpha, CoordTrans.CurrBeta, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + PosSensor.CompAngle);
+	
+	/*电流环PI控制器*/
+	CurrentLoop(CurrLoop.ExptCurrD, CurrLoop.ExptCurrQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
+	
+	/*进行逆Park变换, 将转子坐标系下的dq轴电压转换为定子坐标系下的AlphaBeta轴电压*/
+	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + PosSensor.CompAngle);
+	
+	/*利用SVPWM算法调制电压矢量*/
+	SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
+}
+
+
+
+ /**
+   * @brief  速度-电压控制器
+   */
+void SpdVolController(void)
+{  
+	/*采用Id = 0控制, 设Vd = 0时, Id近似为零*/
+	VolCtrl.CtrlVolD = 0.f;
+	
+	SpeedLoop(VelocitySlopeGenerator(SpdLoop.ExptMecAngularSpeed_rad), PosSensor.MecAngularSpeed_rad, &CurrLoop.ExptCurrQ);
+	
+	/*计算q轴反电动势*/
+	VolCtrl.BEMF = ROTATOR_FLUX_LINKAGE * PosSensor.EleAngularSpeed_rad;
+	
+	/*Vq限幅*/
+	Saturation_float(&VolCtrl.CtrlVolQ, VolCtrl.BEMF + VolCtrl.VolLimit, VolCtrl.BEMF - VolCtrl.VolLimit);
+	
+	if(SpdLoop.ExptMecAngularSpeed_rad >= 0)
+	{
+		PosSensor.CompRatio = PosSensor.CompRatio_forward;
+	}
+	else if(SpdLoop.ExptMecAngularSpeed_rad < 0)
+	{
+		PosSensor.CompRatio = PosSensor.CompRatio_reverse;
+	}
+	
+	/*计算补偿角度*/
+	PosSensor.CompAngle = PosSensor.CompRatio * PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s;
+	
+	/*进行逆Park变换, 将转子坐标系下的dq轴电压转换为定子坐标系下的AlphaBeta轴电压*/
+	InverseParkTransform(VolCtrl.CtrlVolD, VolCtrl.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + PosSensor.CompAngle);
+	
+	/*利用SVPWM算法调制电压矢量*/
+	SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
+}
+
+ /**
+   * @brief  位置-速度-电压控制器
+   */
+void PosSpdVolController(void)
+{  
+	/*采用Id = 0控制, 设Vd = 0时, Id近似为零*/
+	VolCtrl.CtrlVolD = 0.f;
+	
+	PosLoop.ExptMecAngle_rad = PULSE_TO_RAD(MainController.ExptMecAngle_pulse);
+	
+	PositionLoop(PosLoop.ExptMecAngle_rad, PULSE_TO_RAD(MainController.RefMecAngle_pulse), &SpdLoop.ExptMecAngularSpeed_rad);
+		
+	SpeedLoop(VelocitySlopeGenerator(SpdLoop.ExptMecAngularSpeed_rad), PosSensor.MecAngularSpeed_rad, &CurrLoop.ExptCurrQ);
+	
+	/*计算q轴反电动势*/
+	VolCtrl.BEMF = ROTATOR_FLUX_LINKAGE * PosSensor.EleAngularSpeed_rad;
+	
+	/*Vq限幅*/
+	Saturation_float(&VolCtrl.CtrlVolQ, VolCtrl.BEMF + VolCtrl.VolLimit, VolCtrl.BEMF - VolCtrl.VolLimit);
+	
+	if(SpdLoop.ExptMecAngularSpeed_rad >= 0)
+	{
+		PosSensor.CompRatio = PosSensor.CompRatio_forward;
+	}
+	else if(SpdLoop.ExptMecAngularSpeed_rad < 0)
+	{
+		PosSensor.CompRatio = PosSensor.CompRatio_reverse;
+	}
+	
+	/*计算补偿角度*/
+	PosSensor.CompAngle = PosSensor.CompRatio * PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s;
+	
+	/*进行逆Park变换, 将转子坐标系下的dq轴电压转换为定子坐标系下的AlphaBeta轴电压*/
+	InverseParkTransform(VolCtrl.CtrlVolD, VolCtrl.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + PosSensor.CompAngle);
+	
+	/*利用SVPWM算法调制电压矢量*/
+	SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
 }
 
  /**
@@ -354,99 +574,6 @@ float VelocitySlopeGenerator(float exptVelocity)
 	}
 	
 	return velocityProcessVolume;
-}
-
- /**
-   * @brief  电流控制器
-   */
-void CurrentController(void)
-{
-	/*进行Clark变换, 将abc坐标系转换为Alpha-Beta坐标系*/
-	ClarkTransform_arm(CoordTrans.CurrA, CoordTrans.CurrB, &CoordTrans.CurrAlpha, &CoordTrans.CurrBeta);
-
-	if(SpdLoop.ExptMecAngularSpeed_rad >= 0)
-	{
-		PosSensor.CompRatio = PosSensor.CompRatio_forward;
-	}
-	else if(SpdLoop.ExptMecAngularSpeed_rad < 0)
-	{
-		PosSensor.CompRatio = PosSensor.CompRatio_reverse;
-	}
-	
-	PosSensor.CompAngle = PosSensor.CompRatio * PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s;
-	
-	/*进行Park变换, 将Alpha-Beta坐标系转换为dq坐标系*/
-	ParkTransform_arm(CoordTrans.CurrAlpha, CoordTrans.CurrBeta, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + PosSensor.CompAngle);
-	
-	/*电流环PI控制器*/
-	CurrentLoop(CurrLoop.ExptCurrD, CurrLoop.ExptCurrQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
-	
-	/*进行逆Park变换, 将转子坐标系下的dq轴电压转换为定子坐标系下的AlphaBeta轴电压*/
-	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + PosSensor.CompAngle);
-	
-	/*载波周期调节器, 尽可能使载波周期与编码器周期同步*/
-//	PeriodRegulator();
-	
-	/*利用SVPWM算法调制电压矢量*/
-	SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
-}
-
- /**
-   * @brief  电压控制器
-   */
-void VoltageController(void)
-{  
-	/*采用Id = 0控制, 设Vd = 0时, Id近似为零*/
-	VolCtrl.CtrlVolD = 0.f;
-	
-	/*计算q轴反电动势*/
-	VolCtrl.BEMF = ROTATOR_FLUX_LINKAGE * PosSensor.EleAngularSpeed_rad;
-	
-	/*Vq限幅*/
-	Saturation_float(&VolCtrl.CtrlVolQ, VolCtrl.BEMF + VolCtrl.VolLimit, VolCtrl.BEMF - VolCtrl.VolLimit);
-	
-	if(SpdLoop.ExptMecAngularSpeed_rad >= 0)
-	{
-		PosSensor.CompRatio = PosSensor.CompRatio_forward;
-	}
-	else if(SpdLoop.ExptMecAngularSpeed_rad < 0)
-	{
-		PosSensor.CompRatio = PosSensor.CompRatio_reverse;
-	}
-	
-	/*进行逆Park变换, 将转子坐标系下的dq轴电压转换为定子坐标系下的AlphaBeta轴电压*/
-	InverseParkTransform(VolCtrl.CtrlVolD, VolCtrl.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + PosSensor.CompRatio * PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s);
-	
-	/*载波周期调节器, 尽可能使载波周期与编码器周期同步*/
-//	PeriodRegulator();
-	
-	/*利用SVPWM算法调制电压矢量*/
-	SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
-}
-
- /**
-   * @brief  转速控制器
-   */
-void SpeedController(void)
-{	
-	if(Driver.ControlMode == SPD_CURR_CTRL_MODE || Driver.ControlMode == POS_SPD_CURR_CTRL_MODE)
-	{
-		SpeedLoop(VelocitySlopeGenerator(SpdLoop.ExptMecAngularSpeed_rad), PosSensor.MecAngularSpeed_rad, &CurrLoop.ExptCurrQ);
-	}
-	else if(Driver.ControlMode == SPD_VOL_CTRL_MODE || Driver.ControlMode == POS_SPD_VOL_CTRL_MODE)
-	{
-		SpeedLoop(VelocitySlopeGenerator(SpdLoop.ExptMecAngularSpeed_rad), PosSensor.MecAngularSpeed_rad, &VolCtrl.CtrlVolQ);
-	}
-}
-
- /**
-   * @brief  位置控制器
-   */
-void PositionController(void)
-{
-	PosLoop.ExptMecAngle_rad = PULSE_TO_RAD(MainController.ExptMecAngle_pulse);
-	
-	PositionLoop(PosLoop.ExptMecAngle_rad, PULSE_TO_RAD(MainController.RefMecAngle_pulse), &SpdLoop.ExptMecAngularSpeed_rad);
 }
 
  /**

@@ -201,11 +201,11 @@ int main(void)
 	  
 	  MainController.ExptMecAngle_pulse = 20000;
 	  
-	  LL_mDelay(1000);
+	  LL_mDelay(500);
 	  
 	  MainController.ExptMecAngle_pulse = -20000;
 	  
-	  LL_mDelay(1000);
+	  LL_mDelay(500);
 	  
   }
   /* USER CODE END 3 */

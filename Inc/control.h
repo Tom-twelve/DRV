@@ -144,10 +144,12 @@ void ZeroPosSet(uint16_t posOffset);
 void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCurrQ, float *ctrlVolD, float *ctrlVolQ);
 void SpeedLoop(float expectedMecAngularSpeed, float realMecAngularSpeed, float *ctrlCurrQ);
 void PositionLoop(float exptMecAngle, float realMecAngle, float *ctrlAngularSpeed);
+void SpdCurrController(void);
+void PosSpdCurrController(void);
+void PosCurrController(void);
+void SpdVolController(void);
+void PosSpdVolController(void);
 float VelocitySlopeGenerator(float exptVelocity);
-void CurrentController(void);
-void SpeedController(void);
-void PositionController(void);
 void DriverControlModeInit(void);
 void PeriodRegulator(void);
 /* USER CODE END PFP */

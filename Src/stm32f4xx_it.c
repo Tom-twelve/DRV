@@ -58,7 +58,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-uint16_t Count = PERIOD_MULTIPLE - 1;	//使程序第一次执行中断时, 运行速度环, 位置环
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -292,46 +292,34 @@ void ADC_IRQHandler(void)
 	GetPositionImformation();
 	
 	if(Driver.UnitMode == WORK_MODE)
-	{
-		Count++;
-		
+	{		
 		switch(Driver.ControlMode)
 		{
-			case SPD_CURR_CTRL_MODE :	
-										if(Count == PERIOD_MULTIPLE)
-										{
-											/*转速控制器, 包括转速PI控制器*/
-											SpeedController();
-											
-											Count = 0;
-										}
-				
-										/*电流控制器, 包括Clark变换, Park变换, 电流PI控制器, RevPark变换, SVPWM算法*/
-										CurrentController();
-										
+			case SPD_CURR_CTRL_MODE :	/*速度-电流控制器*/
+										SpdCurrController();
+			
 										/*计算电磁转矩*/
 										CalculateEleTorque(CoordTrans.CurrQ, &Driver.EleTorque);
 										
-										UART_Transmit_DMA("%d\t", (int)(PosSensor.MecAngularSpeed_rad));
+										UART_Transmit_DMA("%d\t", (int)(CurrLoop.ExptCurrQ * 1e3));
 										UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrQ * 1e3));
 			
 										break;
 			
-			case POS_SPD_CURR_CTRL_MODE :	
-										if(Count == PERIOD_MULTIPLE)
-										{
-											/*位置控制器, 包括位置PD控制器*/
-											PositionController();
-											
-											/*转速控制器, 包括转速PI控制器*/
-											SpeedController();
-											
-											Count = 0;
-										}
-																							
-										/*电流控制器, 包括Clark变换, Park变换, 电流PI控制器, RevPark变换, SVPWM算法*/
-										CurrentController();
+			case POS_SPD_CURR_CTRL_MODE :/*位置-速度-电流控制器*/
+										PosSpdCurrController();
+		
+										/*计算电磁转矩*/
+										CalculateEleTorque(CoordTrans.CurrQ, &Driver.EleTorque);
 			
+										UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrQ * 1e3));
+										UART_Transmit_DMA("%d\r\n",(int)(PosSensor.MecAngle_AbsoluteMode_15bit));
+			
+										break;
+			
+			case POS_CURR_CTRL_MODE :	/*位置-电流控制器*/
+										PosCurrController();
+		
 										/*计算电磁转矩*/
 										CalculateEleTorque(CoordTrans.CurrQ, &Driver.EleTorque);
 			
@@ -341,25 +329,16 @@ void ADC_IRQHandler(void)
 										break;
 			
 			case SPD_VOL_CTRL_MODE :	/*转速控制器*/
-										SpeedController();
-										
-										/*电压控制器*/
-										VoltageController();
-			
+										SpdVolController();
+												
 										UART_Transmit_DMA("%d\t", (int)(PosSensor.EleAngularSpeed_rad));
 										UART_Transmit_DMA("%d\r\n",(int)(PosSensor.EleAngle_rad));
 			
 										break;
 			
-			case POS_SPD_VOL_CTRL_MODE :	/*位置控制器*/
-										PositionController();
-				
-										/*转速控制器*/
-										SpeedController();
-										
-										/*电压控制器*/
-										VoltageController();
-			
+			case POS_SPD_VOL_CTRL_MODE :/*位置-转速-电压控制器*/
+										PosSpdVolController();
+
 										UART_Transmit_DMA("%d\t", (int)(MainController.ExptMecAngle_pulse));
 										UART_Transmit_DMA("%d\r\n",(int)(MainController.RefMecAngle_pulse));
 			

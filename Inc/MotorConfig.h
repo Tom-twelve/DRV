@@ -36,6 +36,7 @@
 
 /* Position Sensor Type */
 #define ENCODER_TLE5012					1
+#define HALL_SENSOR_DRV5053				2
 
 /* Encoder Mode */
 #define ENCODER_ABSOLUTE_MODE			1
@@ -48,6 +49,7 @@
 /* MOSFET Type */
 #define CDS18535_63nC_1mOhm6			1
 #define IPD053N08N3G_52nC_5mOhm3		2
+#define CSD88584Q5DC_52nC_5mOhm3		3
 
 /* Current Sensor */
 #define HALL_CURR_SENSOR_ACS781_50A		1
@@ -60,7 +62,7 @@
 #define ROBOT_ID		1U
 
 #if ROBOT_ID == 1U		//±àÂëÆ÷
-	#define CAN_ID_NUM			4
+	#define CAN_ID_NUM			7
 		#if CAN_ID_NUM == 1
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
@@ -96,6 +98,15 @@
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8320
 		#define MOSFET_TYPE				IPD053N08N3G_52nC_5mOhm3
 		#define CURRENT_SENSOR			HALL_CURR_SENSOR_ACS781_50A
+		#define GROUP_NUM          		0
+		#elif CAN_ID_NUM == 7
+		#define MOTOR_TYPE 				TMOTOR_U3_KV700	
+		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
+		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
+		#define ENCODER_MODE			ENCODER_ABSOLUTE_MODE
+		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
+		#define MOSFET_TYPE				IPD053N08N3G_52nC_5mOhm3
+		#define CURRENT_SENSOR			RES_2mOhm
 		#define GROUP_NUM          		0
 		#endif
 #endif

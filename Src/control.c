@@ -85,11 +85,11 @@ void DriverInit(void)
 		#elif CAN_ID_NUM == 7	//2019省赛3号车分球转盘
 			Driver.ControlMode = POS_SPD_CURR_CTRL_MODE;
 			DriverControlModeInit();
-			ZeroPosSet(15925);
+			ZeroPosSet(28000 + 32768);
 			
-			CurrLoop.LimitCurrQ = 20.f;
-			PosSensor.PosOffset = 12223;
-			PosLoop.MaxMecAngularSpeed_rad = 25.f * 2 * PI;	
+			CurrLoop.LimitCurrQ = 40.f;
+			PosSensor.PosOffset = 994;
+			PosLoop.MaxMecAngularSpeed_rad = 50.f * 2 * PI;	
 
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
@@ -159,7 +159,7 @@ void SpeedLoopInit(void)
 		/*速度环单环控制*/
 		SpdLoop.Kp = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS_NUM * 5.5f) * 1.0f;	
 		SpdLoop.Ki = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS_NUM * 25.0f) * 1.0f;
-		SpdLoop.ExptMecAngularSpeed_rad = 20.f * 2 * PI;	//期望速度，rad per second
+		SpdLoop.ExptMecAngularSpeed_rad = 10.f * 2 * PI;	//期望速度，rad per second
 		SpdLoop.Acceleration = 5000.f * 2 * PI;	//期望加速度，rad per quadratic seconds
 		SpdLoop.Deceleration = SpdLoop.Acceleration;
 	}
@@ -462,7 +462,7 @@ void SpdVolController(void)
 	/*采用Id = 0控制, 设Vd = 0时, Id近似为零*/
 	VolCtrl.CtrlVolD = 0.f;
 	
-	SpeedLoop(VelocitySlopeGenerator(SpdLoop.ExptMecAngularSpeed_rad), PosSensor.MecAngularSpeed_rad, &CurrLoop.ExptCurrQ);
+	SpeedLoop(VelocitySlopeGenerator(SpdLoop.ExptMecAngularSpeed_rad), PosSensor.MecAngularSpeed_rad, &VolCtrl.CtrlVolQ);
 	
 	/*计算q轴反电动势*/
 	VolCtrl.BEMF = ROTATOR_FLUX_LINKAGE * PosSensor.EleAngularSpeed_rad;
@@ -501,7 +501,7 @@ void PosSpdVolController(void)
 	
 	PositionLoop(PosLoop.ExptMecAngle_rad, PULSE_TO_RAD(MainController.RefMecAngle_pulse), &SpdLoop.ExptMecAngularSpeed_rad);
 		
-	SpeedLoop(VelocitySlopeGenerator(SpdLoop.ExptMecAngularSpeed_rad), PosSensor.MecAngularSpeed_rad, &CurrLoop.ExptCurrQ);
+	SpeedLoop(VelocitySlopeGenerator(SpdLoop.ExptMecAngularSpeed_rad), PosSensor.MecAngularSpeed_rad, &VolCtrl.CtrlVolQ);
 	
 	/*计算q轴反电动势*/
 	VolCtrl.BEMF = ROTATOR_FLUX_LINKAGE * PosSensor.EleAngularSpeed_rad;

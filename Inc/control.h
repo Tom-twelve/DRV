@@ -114,7 +114,7 @@ struct MainController_t
 #define SPEED_CONTROL_KP				1.0f
 #define SPEED_CONTROL_KI				1.0f
 
-#define POSITION_CONTROL_KP				30.0f
+#define POSITION_CONTROL_KP				60.0f
 #define POSITION_CONTROL_KD				0.1f
 
 #define PERIOD_REGULATOR_KP 			(0.3 * 0.00596f)

@@ -312,7 +312,7 @@ void ADC_IRQHandler(void)
 										/*¼ÆËãµç´Å×ª¾Ø*/
 										CalculateEleTorque(CoordTrans.CurrQ, &Driver.EleTorque);
 			
-										UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrQ * 1e3));
+										UART_Transmit_DMA("%d\t", (int)(MainController.RefMecAngle_pulse));
 										UART_Transmit_DMA("%d\r\n",(int)(PosSensor.MecAngle_AbsoluteMode_15bit));
 			
 										break;

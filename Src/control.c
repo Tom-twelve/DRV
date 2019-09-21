@@ -87,7 +87,7 @@ void DriverInit(void)
 			DriverControlModeInit();
 			ZeroPosSet(28000 + 32768);
 			
-			CurrLoop.LimitCurrQ = 40.f;
+			CurrLoop.LimitCurrQ = 30.f;
 			PosSensor.PosOffset = 994;
 			PosLoop.MaxMecAngularSpeed_rad = 50.f * 2 * PI;	
 

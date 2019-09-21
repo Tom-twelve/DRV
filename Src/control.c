@@ -62,7 +62,7 @@ void DriverInit(void)
 			DriverControlModeInit();
 			PosSensor.PosOffset = 18521;
 			CurrLoop.LimitCurrQ = 40.f;
-		#elif CAN_ID_NUM == 3
+		#elif CAN_ID_NUM == 3	//2019省赛2号车炮台航向
 			Driver.ControlMode = POS_SPD_CURR_CTRL_MODE;
 			DriverControlModeInit();
 			ZeroPosSet(15925);
@@ -76,14 +76,25 @@ void DriverInit(void)
 			PosLoop.Kp = POSITION_CONTROL_KP * 1.0f;
 			PosLoop.Kd = POSITION_CONTROL_KD * 1.0f;
 		#elif CAN_ID_NUM == 4
-			Driver.ControlMode = SPD_CURR_CTRL_MODE;
+			Driver.ControlMode = POS_CURR_CTRL_MODE;
 			DriverControlModeInit();
 			ZeroPosSet(15000);
 			PosSensor.PosOffset = 5392;
 			CurrLoop.LimitCurrQ = 20.f;
 			
-			SpdLoop.ExptMecAngularSpeed_rad = 100.f * 2.f * PI; 
+		#elif CAN_ID_NUM == 7	//2019省赛3号车分球转盘
+			Driver.ControlMode = POS_SPD_CURR_CTRL_MODE;
+			DriverControlModeInit();
+			ZeroPosSet(15925);
 			
+			CurrLoop.LimitCurrQ = 20.f;
+			PosSensor.PosOffset = 12223;
+			PosLoop.MaxMecAngularSpeed_rad = 25.f * 2 * PI;	
+
+			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
+			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
+			PosLoop.Kp = POSITION_CONTROL_KP * 1.0f;
+			PosLoop.Kd = POSITION_CONTROL_KD * 1.0f;
 			
 		#endif
 	#endif
@@ -188,8 +199,8 @@ void PositionLoopInit(void)
 	else if(Driver.ControlMode == POS_CURR_CTRL_MODE)
 	{
 		/*位置-电流双环控制*/
-		PosLoop.Kp = 0.0f;
-		PosLoop.Kd = 0.f;
+		PosLoop.Kp = 5.0f;
+		PosLoop.Kd = 0.001f;
 		MainController.ExptMecAngle_pulse = 0;
 	}
 	else if(Driver.ControlMode == POS_SPD_VOL_CTRL_MODE)
@@ -212,12 +223,12 @@ void ZeroPosSet(uint16_t posOffset)
 
  /**
    * @brief  电流环
-   * @param[in]  expectedCurrD     		期望Id
-   * @param[in]  expectedCurrQ      	期望Iq
-   * @param[in]  realCurrD     			实际Id
-   * @param[in]  realCurrQ      		实际Iq
-   * @param[out] controlVoltageD 		Vd输出
-   * @param[out] controlVoltageQ 		Vq输出
+   * @param[in]  exptCurrD     		期望Id
+   * @param[in]  exptCurrQ      	期望Iq
+   * @param[in]  realCurrD     		实际Id
+   * @param[in]  realCurrQ      	实际Iq
+   * @param[out] ctrlVolD 			Vd输出
+   * @param[out] ctrlVolQ 			Vq输出
    */
 void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCurrQ, float *ctrlVolD, float *ctrlVolQ)
 {
@@ -245,9 +256,9 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 
  /**
    * @brief  速度环
-   * @param[in]  expectedMecAngularSpeed     		期望机械角速度
-   * @param[in]  realMecAngularSpeed      			实际机械角速度
-   * @param[out] controlCurrentQ 					Iq输出
+   * @param[in]  exptMecAngularSpeed     	期望机械角速度
+   * @param[in]  realMecAngularSpeed      	实际机械角速度
+   * @param[out] ctrlCurrQ 					Iq输出
    */
 void SpeedLoop(float exptMecAngularSpeed, float realMecAngularSpeed, float *ctrlCurrQ)
 {
@@ -259,35 +270,23 @@ void SpeedLoop(float exptMecAngularSpeed, float realMecAngularSpeed, float *ctrl
 	
 	/*积分限幅*/
 	Saturation_float(&SpdLoop.IntegralErr, SPD_INTEGRAL_ERR_LIM, -SPD_INTEGRAL_ERR_LIM);
-
-	if(Driver.ControlMode == SPD_CURR_CTRL_MODE || Driver.ControlMode == POS_SPD_CURR_CTRL_MODE)
-	{
-		/*速度环输出限幅*/
-		Saturation_float(ctrlCurrQ, CurrLoop.LimitCurrQ, -CurrLoop.LimitCurrQ);
-	}
 }
 
  /**
    * @brief  位置环
-   * @param[in]  expectedMecAngle     		期望机械角度
+   * @param[in]  exptMecAngle     		期望机械角度
    * @param[in]  realMecAngle      		实际机械角度
-   * @param[out] controlAngularSpeed 		角速度输出
+   * @param[out] ctrlAngularSpeed 		角速度输出
    */
 void PositionLoop(float exptMecAngle, float realMecAngle, float *ctrlAngularSpeed)
 {
-	float err = 0;
-	static float lastErr = 0;
-	static float diffErr = 0;
+	PosLoop.Err = exptMecAngle - realMecAngle;
 		
-	err = exptMecAngle - realMecAngle;
+	PosLoop.DiffErr = (PosLoop.Err - PosLoop.LastErr) / Regulator.ActualPeriod_s;
 	
-	diffErr = (err - lastErr) / Regulator.ActualPeriod_s;
-	
-	*ctrlAngularSpeed = PosLoop.Kp * err + PosLoop.Kd * diffErr;
-	
-	lastErr = err;
-	
-	Saturation_float(ctrlAngularSpeed, PosLoop.MaxMecAngularSpeed_rad, -PosLoop.MaxMecAngularSpeed_rad);
+	*ctrlAngularSpeed = PosLoop.Kp * PosLoop.Err + PosLoop.Kd * PosLoop.DiffErr;
+		
+	PosLoop.LastErr = PosLoop.Err;
 }
 
  /**
@@ -306,6 +305,9 @@ void SpdCurrController(void)
 	if(Count == PERIOD_MULTIPLE)
 	{
 		SpeedLoop(VelocitySlopeGenerator(SpdLoop.ExptMecAngularSpeed_rad), PosSensor.MecAngularSpeed_rad, &CurrLoop.ExptCurrQ);
+		
+		/*速度环输出限幅*/
+		Saturation_float(&CurrLoop.ExptCurrQ, CurrLoop.LimitCurrQ, -CurrLoop.LimitCurrQ);
 		
 		Count = 0;
 	}
@@ -357,7 +359,13 @@ void PosSpdCurrController(void)
 	
 		PositionLoop(PosLoop.ExptMecAngle_rad, PULSE_TO_RAD(MainController.RefMecAngle_pulse), &SpdLoop.ExptMecAngularSpeed_rad);
 		
+		/*位置环输出限幅*/
+		Saturation_float(&SpdLoop.ExptMecAngularSpeed_rad, PosLoop.MaxMecAngularSpeed_rad, -PosLoop.MaxMecAngularSpeed_rad);
+		
 		SpeedLoop(VelocitySlopeGenerator(SpdLoop.ExptMecAngularSpeed_rad), PosSensor.MecAngularSpeed_rad, &CurrLoop.ExptCurrQ);
+		
+		/*速度环输出限幅*/
+		Saturation_float(&CurrLoop.ExptCurrQ, CurrLoop.LimitCurrQ, -CurrLoop.LimitCurrQ);
 		
 		Count = 0;
 	}
@@ -408,6 +416,9 @@ void PosCurrController(void)
 		PosLoop.ExptMecAngle_rad = PULSE_TO_RAD(MainController.ExptMecAngle_pulse);
 	
 		PositionLoop(PosLoop.ExptMecAngle_rad, PULSE_TO_RAD(MainController.RefMecAngle_pulse), &CurrLoop.ExptCurrQ);
+		
+		/*位置环输出限幅*/
+		Saturation_float(&CurrLoop.ExptCurrQ, CurrLoop.LimitCurrQ, -CurrLoop.LimitCurrQ);
 		
 		Count = 0;
 	}
@@ -594,6 +605,12 @@ void DriverControlModeInit(void)
 										CurrentLoopInit();
 										
 										SpeedLoopInit();
+										
+										PositionLoopInit();
+			
+										break;
+		case POS_CURR_CTRL_MODE :	
+										CurrentLoopInit();
 										
 										PositionLoopInit();
 			

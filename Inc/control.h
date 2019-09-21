@@ -68,6 +68,9 @@ struct PosLoop_t
 {
 	float ExptMecAngle_rad;			//目标角度, 弧度制
 	float MaxMecAngularSpeed_rad; 	//位置环最大输出速度, 弧度制
+	float Err;
+	float LastErr;
+	float DiffErr;
 	float Kp;
 	float Kd;
 };

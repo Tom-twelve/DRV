@@ -23,6 +23,10 @@
 /* USER CODE BEGIN PD */
 
 /****************************************Type Define Begin****************************************/
+/*Robot ID*/
+#define PASS_ROBOT						1U
+#define TRY_ROBOT						2U
+
 /* Phase Sequence */
 #define POSITIVE_SEQUENCE				1
 #define NEGATIVE_SEQUENCE				2
@@ -59,10 +63,10 @@
 
 /****************************************Type Define End****************************************/
 
-#define ROBOT_ID		1U
+#define ROBOT_ID		PASS_ROBOT
 
-#if ROBOT_ID == 1U		//±àÂëÆ÷
-	#define CAN_ID_NUM			7
+#if ROBOT_ID == PASS_ROBOT
+	#define CAN_ID_NUM			1
 		#if CAN_ID_NUM == 1
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
@@ -73,44 +77,109 @@
 		#define CURRENT_SENSOR			RES_1mOhm
 		#define GROUP_NUM           	0
 		#elif CAN_ID_NUM == 2
-		#define MOTOR_TYPE 				N5055_KV400	
-		#define	PHASE_SEQUENCE			NEGATIVE_SEQUENCE		
+		#define MOTOR_TYPE 				MAD_XC5500_KV505	
+		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
 		#define ENCODER_MODE			ENCODER_ABSOLUTE_MODE
-		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8320
-		#define MOSFET_TYPE				IPD053N08N3G_52nC_5mOhm3
-		#define CURRENT_SENSOR			HALL_CURR_SENSOR_ACS781_50A
-		#define GROUP_NUM          		0
+		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
+		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
+		#define CURRENT_SENSOR			RES_1mOhm
+		#define GROUP_NUM           	0
 		#elif CAN_ID_NUM == 3
-		#define MOTOR_TYPE 				TMOTOR_U3_KV700	
-		#define	PHASE_SEQUENCE			NEGATIVE_SEQUENCE
+		#define MOTOR_TYPE 				MAD_XC5500_KV505	
+		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
 		#define ENCODER_MODE			ENCODER_ABSOLUTE_MODE
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
-		#define MOSFET_TYPE				IPD053N08N3G_52nC_5mOhm3
-		#define CURRENT_SENSOR			RES_2mOhm
-		#define GROUP_NUM          		0
+		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
+		#define CURRENT_SENSOR			RES_1mOhm
+		#define GROUP_NUM           	0
 		#elif CAN_ID_NUM == 4
-		#define MOTOR_TYPE 				TMOTOR_U3_KV700	
-		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
-		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
-		#define ENCODER_MODE			ENCODER_ABSOLUTE_MODE
-		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8320
-		#define MOSFET_TYPE				IPD053N08N3G_52nC_5mOhm3
-		#define CURRENT_SENSOR			HALL_CURR_SENSOR_ACS781_50A
-		#define GROUP_NUM          		0
-		#elif CAN_ID_NUM == 7
-		#define MOTOR_TYPE 				TMOTOR_U3_KV700	
+		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
 		#define ENCODER_MODE			ENCODER_ABSOLUTE_MODE
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
-		#define MOSFET_TYPE				IPD053N08N3G_52nC_5mOhm3
-		#define CURRENT_SENSOR			RES_2mOhm
-		#define GROUP_NUM          		0
+		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
+		#define CURRENT_SENSOR			RES_1mOhm
+		#define GROUP_NUM           	0
+		#elif CAN_ID_NUM == 5
+		#define MOTOR_TYPE 				MAD_XC5500_KV505	
+		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
+		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
+		#define ENCODER_MODE			ENCODER_ABSOLUTE_MODE
+		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
+		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
+		#define CURRENT_SENSOR			RES_1mOhm
+		#define GROUP_NUM           	0
+		#elif CAN_ID_NUM == 6
+		#define MOTOR_TYPE 				MAD_XC5500_KV505	
+		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
+		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
+		#define ENCODER_MODE			ENCODER_ABSOLUTE_MODE
+		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
+		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
+		#define CURRENT_SENSOR			RES_1mOhm
+		#define GROUP_NUM           	0
+		#endif
+#elif ROBOT_ID == TRY_ROBOT
+	#define CAN_ID_NUM			2
+		#if CAN_ID_NUM == 1
+		#define MOTOR_TYPE 				MAD_XC5500_KV505	
+		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
+		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
+		#define ENCODER_MODE			ENCODER_ABSOLUTE_MODE
+		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
+		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
+		#define CURRENT_SENSOR			RES_1mOhm
+		#define GROUP_NUM           	0
+		#elif CAN_ID_NUM == 2
+		#define MOTOR_TYPE 				MAD_XC5500_KV505	
+		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
+		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
+		#define ENCODER_MODE			ENCODER_ABSOLUTE_MODE
+		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
+		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
+		#define CURRENT_SENSOR			RES_1mOhm
+		#define GROUP_NUM           	0
+		#elif CAN_ID_NUM == 3
+		#define MOTOR_TYPE 				MAD_XC5500_KV505	
+		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
+		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
+		#define ENCODER_MODE			ENCODER_ABSOLUTE_MODE
+		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
+		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
+		#define CURRENT_SENSOR			RES_1mOhm
+		#define GROUP_NUM           	0
+		#elif CAN_ID_NUM == 4
+		#define MOTOR_TYPE 				MAD_XC5500_KV505	
+		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
+		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
+		#define ENCODER_MODE			ENCODER_ABSOLUTE_MODE
+		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
+		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
+		#define CURRENT_SENSOR			RES_1mOhm
+		#define GROUP_NUM           	0
+		#elif CAN_ID_NUM == 5
+		#define MOTOR_TYPE 				MAD_XC5500_KV505	
+		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
+		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
+		#define ENCODER_MODE			ENCODER_ABSOLUTE_MODE
+		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
+		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
+		#define CURRENT_SENSOR			RES_1mOhm
+		#define GROUP_NUM           	0
+		#elif CAN_ID_NUM == 6
+		#define MOTOR_TYPE 				MAD_XC5500_KV505	
+		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
+		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
+		#define ENCODER_MODE			ENCODER_ABSOLUTE_MODE
+		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
+		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
+		#define CURRENT_SENSOR			RES_1mOhm
+		#define GROUP_NUM           	0
 		#endif
 #endif
-
 
 
 
@@ -119,7 +188,7 @@
 	#define MOTOR_POLE_PAIRS_NUM				7
 	#define	MOTOR_KV							505.f
 	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * ((float)MOTOR_POLE_PAIRS_NUM) * (MOTOR_KV)))
-	#define PHASE_RES							(20.f * (float)1e-3)	//(Ohm)
+	#define PHASE_RES							(25.f * (float)1e-3)	//(Ohm)
 	#define INDUCTANCE_D						(10.f * (float)1e-6)	//(H)
 	#define INDUCTANCE_Q						(10.f * (float)1e-6)	//(H)
 	#define MAX_SPD								((uint32_t)(TLE5012_ABS_MODE_RESOLUTION * GENERATRIX_VOL * MOTOR_KV / 60))

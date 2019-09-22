@@ -26,8 +26,8 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #if	GATE_DRIVER_TYPE == GATE_DRIVER_DRV8323
-	#define DRV8323_ReadCommandMessageNumber	7
-	#define DRV8323_WriteCommandMessageNumber	5
+	#define DRV8323_ReadCommandMessageNumber		7
+	#define DRV8323_WriteCommandMessageNumber		5
 
 	#define DRV8323_Enable							LL_GPIO_SetOutputPin(GateDriver_Enable_GPIO_Port, GateDriver_Enable_Pin)
 	#define DRV8323_Disable							LL_GPIO_ResetOutputPin(GateDriver_Enable_GPIO_Port, GateDriver_Enable_Pin)

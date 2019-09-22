@@ -58,7 +58,7 @@ void MX_CAN1_Init(void)
   hcan1.Init.TimeTriggeredMode = DISABLE;
   hcan1.Init.AutoBusOff = ENABLE;
   hcan1.Init.AutoWakeUp = DISABLE;
-  hcan1.Init.AutoRetransmission = DISABLE;
+  hcan1.Init.AutoRetransmission = ENABLE;
   hcan1.Init.ReceiveFifoLocked = DISABLE;
   hcan1.Init.TransmitFifoPriority = DISABLE;
   if (HAL_CAN_Init(&hcan1) != HAL_OK)
@@ -320,7 +320,7 @@ void CANRespond(void)
 			
 			/*∂¡»°Vq*/
 			Transmit.data_uint32[0] = 0x00005155;
-			Transmit.data_float[1]  = CoordTrans.VolQ;
+			Transmit.data_int32[1]  = CoordTrans.VolQ * 1e3;
 		
 			CANSendData(Transmit);
 			CAN_RecieveStatus = 0;
@@ -344,7 +344,7 @@ void CANRespond(void)
 			
 			/*∂¡»°Iq*/
 			Transmit.data_uint32[0] = 0x00005149;
-			Transmit.data_float[1] = CoordTrans.CurrQ;
+			Transmit.data_int32[1] = CoordTrans.CurrQ * 1e3;
 		
 			CANSendData(Transmit);
 			CAN_RecieveStatus = 0;

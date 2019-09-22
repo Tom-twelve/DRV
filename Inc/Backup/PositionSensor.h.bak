@@ -25,6 +25,7 @@
 #include "AngleTable.h"
 #include "util.h"
 #include "foc.h"
+#include "can.h"
 /* CODE END Includes */
 
 /* Private define ------------------------------------------------------------*/
@@ -74,6 +75,10 @@
 		float EleAngle_rad;
 		float EleAngularSpeed_rad;
 		float EleAngularSpeed_degree;
+		float CompRatio;
+		float CompRatio_forward;
+		float CompRatio_reverse;
+		float CompAngle;
 		uint16_t PosOffset;
 		uint16_t OriginalMecAngle_14bit;
 		uint16_t FSYNC;
@@ -103,6 +108,7 @@
 	void EncoderLostDetection(void);
 	uint16_t TLE5012_ReadRegister(uint16_t command, uint16_t *safetyWord);
 	void EncoderIncrementalModeEnable(void);
+	void MeasureEleAngle_Encoder(float volD);
 	void CorrectPosOffset_Encoder(float volD);
 #else
 #error "Position Sensor Type Invalid"

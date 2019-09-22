@@ -162,14 +162,17 @@ int main(void)
 	
 	/*使能PWM, 设定参数*/
 	DriverInit();
-	
+			
+	/*使能CAN总线*/
+	CAN_Enable();
+		
 	switch(Driver.UnitMode)
 	{
 		case WORK_MODE : ADC_CMD(ENABLE);	//包括使能ADC中断, 电机控制程序在ADC中断中执行
 		
 						break;
 		
-		case MEASURE_ANGLE_TABLE_MODE : CorrectPosOffset_Encoder(0.7f);	//测定电角度, 设定d轴电压
+		case MEASURE_ANGLE_TABLE_MODE : CorrectPosOffset_Encoder(0.6f);	//测定电角度, 设定d轴电压
 		
 						break;
 		
@@ -188,7 +191,6 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	  
-	  
 //	  SpdLoop.ExptMecAngularSpeed_rad = 100.f * 2.f * PI;
 //	  
 //	  LL_mDelay(1000);
@@ -197,13 +199,14 @@ int main(void)
 //	  
 //	  LL_mDelay(1000);
 	  
-//	  MainController.ExptMecAngle_pulse = 10000;
+//	  MainController.ExptMecAngle_pulse = 20000;
 //	  
 //	  LL_mDelay(1000);
 //	  
-//	  MainController.ExptMecAngle_pulse = -10000;
-//	  
+//	  MainController.ExptMecAngle_pulse = 0;
+
 //	  LL_mDelay(1000);
+	  
   }
   /* USER CODE END 3 */
 }

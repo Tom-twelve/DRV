@@ -44,11 +44,13 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "main.h"
-#include "adc.h"
+#include "can.h"
+#include "identify.h"
 #include "control.h"
 #include "usart.h"
 #include "GateDriver.h"
 #include "identify.h"
+	 
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

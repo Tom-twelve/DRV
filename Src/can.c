@@ -34,6 +34,7 @@ CAN_RxHeaderTypeDef RxMessage0 = { 0 };
 static uint32_t mbox;
 
 extern struct Driver_t Driver;
+extern struct CurrLoop_t CurrLoop;
 extern struct SpdLoop_t SpdLoop;
 extern struct PosLoop_t PosLoop;
 extern struct CoordTrans_t CoordTrans;
@@ -320,7 +321,7 @@ void CANRespond(void)
 			
 			/*∂¡»°Vq*/
 			Transmit.data_uint32[0] = 0x00005155;
-			Transmit.data_int32[1]  = CoordTrans.VolQ * 1e3;
+			Transmit.data_int32[1]  = CurrLoop.CtrlVolQ * 1e3;
 		
 			CANSendData(Transmit);
 			CAN_RecieveStatus = 0;
@@ -344,7 +345,7 @@ void CANRespond(void)
 			
 			/*∂¡»°Iq*/
 			Transmit.data_uint32[0] = 0x00005149;
-			Transmit.data_int32[1] = CoordTrans.CurrQ * 1e3;
+			Transmit.data_int32[1]  = CoordTrans.CurrQ * 1e3;
 		
 			CANSendData(Transmit);
 			CAN_RecieveStatus = 0;

@@ -111,8 +111,8 @@ struct MainController_t
 #define CURRENT_CONTROL_KP_Q			(INDUCTANCE_Q * 1500.f)	//q轴电感 * 电流环带宽
 #define CURRENT_CONTROL_KI_Q			(PHASE_RES * 1500.f)	//相电阻 * 电流环带宽
 
-#define SPEED_CONTROL_KP				1.0f
-#define SPEED_CONTROL_KI				1.0f
+#define SPEED_CONTROL_KP				1.75f
+#define SPEED_CONTROL_KI				1.5f
 
 #define POSITION_CONTROL_KP				60.0f
 #define POSITION_CONTROL_KD				0.1f

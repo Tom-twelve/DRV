@@ -58,8 +58,8 @@ void DriverInit(void)
 
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 	
-			SpdLoop.Kp = SPEED_CONTROL_KP * 1.5f;	
-			SpdLoop.Ki = SPEED_CONTROL_KI * 1.5f;
+			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
+			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 2
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverControlModeInit();
@@ -68,8 +68,8 @@ void DriverInit(void)
 
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 	
-			SpdLoop.Kp = SPEED_CONTROL_KP * 1.5f;	
-			SpdLoop.Ki = SPEED_CONTROL_KI * 1.5f;
+			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
+			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 3
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverControlModeInit();
@@ -78,8 +78,8 @@ void DriverInit(void)
 
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 	
-			SpdLoop.Kp = SPEED_CONTROL_KP * 1.5f;	
-			SpdLoop.Ki = SPEED_CONTROL_KI * 1.5f;
+			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
+			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 4
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverControlModeInit();
@@ -88,8 +88,8 @@ void DriverInit(void)
 
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 	
-			SpdLoop.Kp = SPEED_CONTROL_KP * 1.5f;	
-			SpdLoop.Ki = SPEED_CONTROL_KI * 1.5f;
+			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
+			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 5
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverControlModeInit();
@@ -98,8 +98,8 @@ void DriverInit(void)
 
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 	
-			SpdLoop.Kp = SPEED_CONTROL_KP * 1.5f;	
-			SpdLoop.Ki = SPEED_CONTROL_KI * 1.5f;
+			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
+			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 6
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverControlModeInit();
@@ -108,8 +108,8 @@ void DriverInit(void)
 
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 	
-			SpdLoop.Kp = SPEED_CONTROL_KP * 1.5f;	
-			SpdLoop.Ki = SPEED_CONTROL_KI * 1.5f;
+			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
+			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#endif
 	#endif
 	#if ROBOT_ID == TRY_ROBOT
@@ -185,12 +185,12 @@ void CurrentLoopInit(void)
 	/*设定电流环PI参数*/
 	CurrLoop.Kp_D = CURRENT_CONTROL_KP_D;												
 	CurrLoop.Ki_D = CURRENT_CONTROL_KI_D * 0.0025f;						
-	CurrLoop.Kp_Q = CURRENT_CONTROL_KP_Q;
+	CurrLoop.Kp_Q = CURRENT_CONTROL_KP_Q * 2.0f;
 	CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q * 0.0025f;
 	
 	/*设定编码器延迟补偿系数*/
 	PosSensor.CompRatio_forward = 3.2f;
-	PosSensor.CompRatio_reverse = 3.0f;
+	PosSensor.CompRatio_reverse = 3.2f;
 	
 	/*设定最大Iq*/
 	CurrLoop.LimitCurrQ = 20.f;
@@ -393,11 +393,11 @@ void SpdCurrController(void)
 	ClarkTransform_arm(CoordTrans.CurrA, CoordTrans.CurrB, &CoordTrans.CurrAlpha, &CoordTrans.CurrBeta);
 
 	/*正反转编码器延迟补偿系数不同*/
-	if(SpdLoop.ExptMecAngularSpeed_rad >= 0)
+	if(PosSensor.EleAngularSpeed_degree >= 0)
 	{
 		PosSensor.CompRatio = PosSensor.CompRatio_forward;
 	}
-	else if(SpdLoop.ExptMecAngularSpeed_rad < 0)
+	else if(PosSensor.EleAngularSpeed_degree < 0)
 	{
 		PosSensor.CompRatio = PosSensor.CompRatio_reverse;
 	}
@@ -451,11 +451,11 @@ void PosSpdCurrController(void)
 	ClarkTransform_arm(CoordTrans.CurrA, CoordTrans.CurrB, &CoordTrans.CurrAlpha, &CoordTrans.CurrBeta);
 
 	/*正反转编码器延迟补偿系数不同*/
-	if(SpdLoop.ExptMecAngularSpeed_rad >= 0)
+	if(PosSensor.EleAngularSpeed_degree >= 0)
 	{
 		PosSensor.CompRatio = PosSensor.CompRatio_forward;
 	}
-	else if(SpdLoop.ExptMecAngularSpeed_rad < 0)
+	else if(PosSensor.EleAngularSpeed_degree < 0)
 	{
 		PosSensor.CompRatio = PosSensor.CompRatio_reverse;
 	}
@@ -504,11 +504,11 @@ void PosCurrController(void)
 	ClarkTransform_arm(CoordTrans.CurrA, CoordTrans.CurrB, &CoordTrans.CurrAlpha, &CoordTrans.CurrBeta);
 
 	/*正反转编码器延迟补偿系数不同*/
-	if(SpdLoop.ExptMecAngularSpeed_rad >= 0)
+	if(PosSensor.EleAngularSpeed_degree >= 0)
 	{
 		PosSensor.CompRatio = PosSensor.CompRatio_forward;
 	}
-	else if(SpdLoop.ExptMecAngularSpeed_rad < 0)
+	else if(PosSensor.EleAngularSpeed_degree < 0)
 	{
 		PosSensor.CompRatio = PosSensor.CompRatio_reverse;
 	}
@@ -547,11 +547,11 @@ void SpdVolController(void)
 	/*Vq限幅*/
 	Saturation_float(&VolCtrl.CtrlVolQ, VolCtrl.BEMF + VolCtrl.VolLimit, VolCtrl.BEMF - VolCtrl.VolLimit);
 	
-	if(SpdLoop.ExptMecAngularSpeed_rad >= 0)
+	if(PosSensor.EleAngularSpeed_degree >= 0)
 	{
 		PosSensor.CompRatio = PosSensor.CompRatio_forward;
 	}
-	else if(SpdLoop.ExptMecAngularSpeed_rad < 0)
+	else if(PosSensor.EleAngularSpeed_degree < 0)
 	{
 		PosSensor.CompRatio = PosSensor.CompRatio_reverse;
 	}
@@ -586,11 +586,11 @@ void PosSpdVolController(void)
 	/*Vq限幅*/
 	Saturation_float(&VolCtrl.CtrlVolQ, VolCtrl.BEMF + VolCtrl.VolLimit, VolCtrl.BEMF - VolCtrl.VolLimit);
 	
-	if(SpdLoop.ExptMecAngularSpeed_rad >= 0)
+	if(PosSensor.EleAngularSpeed_degree >= 0)
 	{
 		PosSensor.CompRatio = PosSensor.CompRatio_forward;
 	}
-	else if(SpdLoop.ExptMecAngularSpeed_rad < 0)
+	else if(PosSensor.EleAngularSpeed_degree < 0)
 	{
 		PosSensor.CompRatio = PosSensor.CompRatio_reverse;
 	}

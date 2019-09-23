@@ -289,6 +289,8 @@ void ADC_IRQHandler(void)
 {
 	GetPhaseCurrent();
 	
+	GetPositionImformation();
+	
 	if(Driver.UnitMode == WORK_MODE)
 	{		
 		switch(Driver.ControlMode)
@@ -299,7 +301,7 @@ void ADC_IRQHandler(void)
 										/*¼ÆËãµç´Å×ª¾Ø*/
 										CalculateEleTorque(CoordTrans.CurrQ, &Driver.EleTorque);
 										
-										UART_Transmit_DMA("%d\t", (int)(SpdLoop.ExptMecAngularSpeed_rad));
+										UART_Transmit_DMA("%d\t", (int)(SpdLoop.Err));
 										UART_Transmit_DMA("%d\r\n",(int)(Driver.EleTorque * 1e3));
 			
 										break;

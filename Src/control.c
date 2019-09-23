@@ -184,9 +184,9 @@ void CurrentLoopInit(void)
 {
 	/*设定电流环PI参数*/
 	CurrLoop.Kp_D = CURRENT_CONTROL_KP_D;												
-	CurrLoop.Ki_D = CURRENT_CONTROL_KI_D * 0.0025f;						
-	CurrLoop.Kp_Q = CURRENT_CONTROL_KP_Q * 2.0f;
-	CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q * 0.0025f;
+	CurrLoop.Ki_D = CURRENT_CONTROL_KI_D * 0.01f;						
+	CurrLoop.Kp_Q = CURRENT_CONTROL_KP_Q * 2.5f;
+	CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q * 0.01f;
 	
 	/*设定编码器延迟补偿系数*/
 	PosSensor.CompRatio_forward = 3.2f;
@@ -329,6 +329,7 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 	
 	/*电流环d轴电流限幅, 若限幅过宽启动时振动严重*/
 	Saturation_float(ctrlVolD, 1.0f, -1.0f);
+	Saturation_float(ctrlVolQ, GENERATRIX_VOL / SQRT3, -GENERATRIX_VOL / SQRT3);
 }
 
  /**
@@ -382,7 +383,7 @@ void SpdCurrController(void)
 	if(Count == PERIOD_MULTIPLE)
 	{
 		/*更新速度及位置信息*/
-		GetPositionImformation();
+		GetSpeedImformation();
 		
 		SpeedLoop(VelocitySlopeGenerator(SpdLoop.ExptMecAngularSpeed_rad), PosSensor.MecAngularSpeed_rad, &CurrLoop.ExptCurrQ);
 		
@@ -436,7 +437,7 @@ void PosSpdCurrController(void)
 	if(Count == PERIOD_MULTIPLE)
 	{
 		/*更新速度及位置信息*/
-		GetPositionImformation();
+		GetSpeedImformation();
 		
 		PosLoop.ExptMecAngle_rad = PULSE_TO_RAD(MainController.ExptMecAngle_pulse);
 	
@@ -497,7 +498,7 @@ void PosCurrController(void)
 	if(Count == PERIOD_MULTIPLE)
 	{
 		/*更新速度及位置信息*/
-		GetPositionImformation();
+		GetSpeedImformation();
 		
 		PosLoop.ExptMecAngle_rad = PULSE_TO_RAD(MainController.ExptMecAngle_pulse);
 	
@@ -549,7 +550,7 @@ void SpdVolController(void)
 	VolCtrl.CtrlVolD = 0.f;
 	
 	/*更新速度及位置信息*/
-	GetPositionImformation();
+	GetSpeedImformation();
 	
 	SpeedLoop(VelocitySlopeGenerator(SpdLoop.ExptMecAngularSpeed_rad), PosSensor.MecAngularSpeed_rad, &VolCtrl.CtrlVolQ);
 	
@@ -587,7 +588,7 @@ void PosSpdVolController(void)
 	VolCtrl.CtrlVolD = 0.f;
 	
 	/*更新速度及位置信息*/
-	GetPositionImformation();
+	GetSpeedImformation();
 	
 	PosLoop.ExptMecAngle_rad = PULSE_TO_RAD(MainController.ExptMecAngle_pulse);
 	

@@ -97,6 +97,7 @@
 
 #if POSITION_SENSOR_TYPE == ENCODER_TLE5012
 	void GetPositionImformation(void);
+	void GetSpeedImformation(void);
 	void GetMecAngle(void);
 	void GetRefMecAngle(void);
 	void GetMecAngularSpeed(void);

@@ -58,13 +58,17 @@ extern struct MainController_t MainController;
 		#endif
 		GetMecAngle(); //计算机械角度
 		GetRefMecAngle(); //计算参考机械角度（主控用）
-		GetMecAngularSpeed(); //计算机械角速度
 		GetEleAngle(); //计算电角度
-		GetEleAngularSpeed();  //计算电角速度
 		TLE5012_ReadFSYNC();	//读取FSYNC值
 		EncoderLostDetection();		//编码器异常检测
 	}
 
+	void GetSpeedImformation(void)
+	{
+		GetMecAngularSpeed(); //计算机械角速度
+		GetEleAngularSpeed();  //计算电角速度
+	}
+	
 	void GetMecAngle_AbsoluteMode_15bit(void)
 	{
 		PosSensor.MecAngle_AbsoluteMode_15bit = (TLE5012_ReadRegister(TLE5012_Command_ReadCurrentValue_AngleValue, &PosSensor.SafetyWord)) & 0x7FFF;

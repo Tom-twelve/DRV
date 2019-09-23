@@ -381,6 +381,9 @@ void SpdCurrController(void)
 	/*位置环与速度环的周期是电流环周期的十倍*/
 	if(Count == PERIOD_MULTIPLE)
 	{
+		/*更新速度及位置信息*/
+		GetPositionImformation();
+		
 		SpeedLoop(VelocitySlopeGenerator(SpdLoop.ExptMecAngularSpeed_rad), PosSensor.MecAngularSpeed_rad, &CurrLoop.ExptCurrQ);
 		
 		/*速度环输出限幅*/
@@ -432,6 +435,9 @@ void PosSpdCurrController(void)
 	/*位置环与速度环的周期是电流环周期的十倍*/
 	if(Count == PERIOD_MULTIPLE)
 	{
+		/*更新速度及位置信息*/
+		GetPositionImformation();
+		
 		PosLoop.ExptMecAngle_rad = PULSE_TO_RAD(MainController.ExptMecAngle_pulse);
 	
 		PositionLoop(PosLoop.ExptMecAngle_rad, PULSE_TO_RAD(MainController.RefMecAngle_pulse), &SpdLoop.ExptMecAngularSpeed_rad);
@@ -490,6 +496,9 @@ void PosCurrController(void)
 	/*位置环与速度环的周期是电流环周期的十倍*/
 	if(Count == PERIOD_MULTIPLE)
 	{
+		/*更新速度及位置信息*/
+		GetPositionImformation();
+		
 		PosLoop.ExptMecAngle_rad = PULSE_TO_RAD(MainController.ExptMecAngle_pulse);
 	
 		PositionLoop(PosLoop.ExptMecAngle_rad, PULSE_TO_RAD(MainController.RefMecAngle_pulse), &CurrLoop.ExptCurrQ);
@@ -539,6 +548,9 @@ void SpdVolController(void)
 	/*采用Id = 0控制, 设Vd = 0时, Id近似为零*/
 	VolCtrl.CtrlVolD = 0.f;
 	
+	/*更新速度及位置信息*/
+	GetPositionImformation();
+	
 	SpeedLoop(VelocitySlopeGenerator(SpdLoop.ExptMecAngularSpeed_rad), PosSensor.MecAngularSpeed_rad, &VolCtrl.CtrlVolQ);
 	
 	/*计算q轴反电动势*/
@@ -573,6 +585,9 @@ void PosSpdVolController(void)
 {  
 	/*采用Id = 0控制, 设Vd = 0时, Id近似为零*/
 	VolCtrl.CtrlVolD = 0.f;
+	
+	/*更新速度及位置信息*/
+	GetPositionImformation();
 	
 	PosLoop.ExptMecAngle_rad = PULSE_TO_RAD(MainController.ExptMecAngle_pulse);
 	

@@ -289,8 +289,6 @@ void ADC_IRQHandler(void)
 {
 	GetPhaseCurrent();
 	
-	GetPositionImformation();
-	
 	if(Driver.UnitMode == WORK_MODE)
 	{		
 		switch(Driver.ControlMode)

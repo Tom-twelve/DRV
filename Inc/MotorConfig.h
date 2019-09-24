@@ -66,7 +66,7 @@
 #define ROBOT_ID		PASS_ROBOT
 
 #if ROBOT_ID == PASS_ROBOT
-	#define CAN_ID_NUM			3
+	#define CAN_ID_NUM			1
 		#if CAN_ID_NUM == 1
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE

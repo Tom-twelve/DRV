@@ -324,12 +324,12 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 	Saturation_float(&CurrLoop.IntegralErrQ, CURR_INTEGRAL_ERR_LIM_Q, -CURR_INTEGRAL_ERR_LIM_Q);
 	
 	/*转速前馈*/ 
-	*ctrlVolD = *ctrlVolD - PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ;
+	*ctrlVolD = -PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ;
 	*ctrlVolQ = *ctrlVolQ + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
 	
-	/*电流环d轴电流限幅, 若限幅过宽启动时振动严重*/
-	Saturation_float(ctrlVolD, 1.0f, -1.0f);
-	Saturation_float(ctrlVolQ, GENERATRIX_VOL / SQRT3, -GENERATRIX_VOL / SQRT3);
+	/*电流环d轴电流限幅*/
+	Saturation_float(ctrlVolD, 7.0f, -7.0f);
+	Saturation_float(ctrlVolQ, sqrt(SQUARE(GENERATRIX_VOL) / 3.f - SQUARE(CurrLoop.CtrlVolD)), -sqrt(SQUARE(GENERATRIX_VOL) / 3.f - SQUARE(CurrLoop.CtrlVolD)));
 }
 
  /**

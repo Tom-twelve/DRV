@@ -53,7 +53,7 @@ void DriverInit(void)
 		#if CAN_ID_NUM == 1
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverControlModeInit();
-			PosSensor.PosOffset = 4759;
+			PosSensor.PosOffset = 23504;
 			CurrLoop.LimitCurrQ = 200.f;
 
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
@@ -184,7 +184,7 @@ void CurrentLoopInit(void)
 {
 	/*设定电流环PI参数*/
 	CurrLoop.Kp_D = CURRENT_CONTROL_KP_D;												
-	CurrLoop.Ki_D = CURRENT_CONTROL_KI_D * 0.01f;						
+	CurrLoop.Ki_D = CURRENT_CONTROL_KI_D;						
 	CurrLoop.Kp_Q = CURRENT_CONTROL_KP_Q * 2.5f;
 	CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q;
 	
@@ -312,24 +312,20 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 	CurrLoop.ErrD = exptCurrD - realCurrD;
 	CurrLoop.ErrQ = exptCurrQ - realCurrQ;
 	
-	/*PI控制器*/
-	*ctrlVolD = CurrLoop.Kp_D * CurrLoop.ErrD + CurrLoop.Ki_D * CurrLoop.IntegralErrD;
-	*ctrlVolQ = CurrLoop.Kp_Q * CurrLoop.ErrQ + CurrLoop.Ki_Q * CurrLoop.IntegralErrQ;
-	
 	CurrLoop.IntegralErrD += CurrLoop.ErrD * Regulator.ActualPeriod_s;
 	CurrLoop.IntegralErrQ += CurrLoop.ErrQ * Regulator.ActualPeriod_s;
 	
+	/*PI控制器*/
+	*ctrlVolD = CurrLoop.Kp_D * CurrLoop.ErrD + CurrLoop.Ki_D * CurrLoop.IntegralErrD - PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ;
+	*ctrlVolQ = CurrLoop.Kp_Q * CurrLoop.ErrQ + CurrLoop.Ki_Q * CurrLoop.IntegralErrQ + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
+
 	/*积分限幅*/
 	Saturation_float(&CurrLoop.IntegralErrD, CURR_INTEGRAL_ERR_LIM_D, -CURR_INTEGRAL_ERR_LIM_D);
 	Saturation_float(&CurrLoop.IntegralErrQ, CURR_INTEGRAL_ERR_LIM_Q, -CURR_INTEGRAL_ERR_LIM_Q);
 	
-	/*转速前馈*/ 
-	*ctrlVolD = -PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ;
-	*ctrlVolQ = *ctrlVolQ + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
-	
 	/*电流环d轴电流限幅*/
-	Saturation_float(ctrlVolD, 7.0f, -7.0f);
-	Saturation_float(ctrlVolQ, sqrt(SQUARE(GENERATRIX_VOL) / 3.f - SQUARE(CurrLoop.CtrlVolD)), -sqrt(SQUARE(GENERATRIX_VOL) / 3.f - SQUARE(CurrLoop.CtrlVolD)));
+	Saturation_float(ctrlVolD, 10.f, -10.f);
+	Saturation_float(ctrlVolQ, sqrt(SQUARE(GENERATRIX_VOL) / 3.f - SQUARE(*ctrlVolD)), -sqrt(SQUARE(GENERATRIX_VOL) / 3.f - SQUARE(*ctrlVolD)));
 }
 
  /**
@@ -382,8 +378,8 @@ void SpdCurrController(void)
 	/*位置环与速度环的周期是电流环周期的十倍*/
 	if(Count == PERIOD_MULTIPLE)
 	{
-		/*更新速度及位置信息*/
-		GetSpeedImformation();
+		/*更新机械速度及位置信息*/
+		GetMecImformation();
 		
 		SpeedLoop(VelocitySlopeGenerator(SpdLoop.ExptMecAngularSpeed_rad), PosSensor.MecAngularSpeed_rad, &CurrLoop.ExptCurrQ);
 		
@@ -436,8 +432,8 @@ void PosSpdCurrController(void)
 	/*位置环与速度环的周期是电流环周期的十倍*/
 	if(Count == PERIOD_MULTIPLE)
 	{
-		/*更新速度及位置信息*/
-		GetSpeedImformation();
+		/*更新机械速度及位置信息*/
+		GetMecImformation();
 		
 		PosLoop.ExptMecAngle_rad = PULSE_TO_RAD(MainController.ExptMecAngle_pulse);
 	
@@ -497,8 +493,8 @@ void PosCurrController(void)
 	/*位置环与速度环的周期是电流环周期的十倍*/
 	if(Count == PERIOD_MULTIPLE)
 	{
-		/*更新速度及位置信息*/
-		GetSpeedImformation();
+		/*更新机械速度及位置信息*/
+		GetMecImformation();
 		
 		PosLoop.ExptMecAngle_rad = PULSE_TO_RAD(MainController.ExptMecAngle_pulse);
 	
@@ -549,8 +545,8 @@ void SpdVolController(void)
 	/*采用Id = 0控制, 设Vd = 0时, Id近似为零*/
 	VolCtrl.CtrlVolD = 0.f;
 	
-	/*更新速度及位置信息*/
-	GetSpeedImformation();
+	/*更新机械速度及位置信息*/
+	GetMecImformation();
 	
 	SpeedLoop(VelocitySlopeGenerator(SpdLoop.ExptMecAngularSpeed_rad), PosSensor.MecAngularSpeed_rad, &VolCtrl.CtrlVolQ);
 	
@@ -587,8 +583,8 @@ void PosSpdVolController(void)
 	/*采用Id = 0控制, 设Vd = 0时, Id近似为零*/
 	VolCtrl.CtrlVolD = 0.f;
 	
-	/*更新速度及位置信息*/
-	GetSpeedImformation();
+	/*更新机械速度及位置信息*/
+	GetMecImformation();
 	
 	PosLoop.ExptMecAngle_rad = PULSE_TO_RAD(MainController.ExptMecAngle_pulse);
 	

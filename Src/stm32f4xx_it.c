@@ -289,7 +289,7 @@ void ADC_IRQHandler(void)
 {
 	GetPhaseCurrent();
 	
-	GetPositionImformation();
+	GetEleImformation();
 	
 	if(Driver.UnitMode == WORK_MODE)
 	{		

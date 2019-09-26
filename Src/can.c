@@ -232,21 +232,34 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 				MainController.ExptMecAngle_pulse = MainController.RefMecAngle_pulse + Receive.data_int32[1];
 			
 				break;
-				
-			case 0x40005155: //UQ
-				
-				/*读取Vq*/
-				CAN_RecieveStatus = 0x40005155;
-			
-				break;
 
+			case 0x40004449: //ID
+				
+				/*读取Id*/
+				CAN_RecieveStatus = 0x40004449;
+				
+				break;
 			case 0x40005149: //IQ
 				
 				/*读取Iq*/
 				CAN_RecieveStatus = 0x40005149;
 				
 				break;
+			
+			case 0x40004455: //UD
+				
+				/*读取Vq*/
+				CAN_RecieveStatus = 0x40004455;
+			
+				break;
 
+			case 0x40005155: //UQ
+				
+				/*读取Vq*/
+				CAN_RecieveStatus = 0x40005155;
+			
+				break;
+						
 			case 0x40005856: //VX
 				
 				/*读取速度*/
@@ -270,13 +283,27 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 	{
 		switch (Receive.data_uint32[0])
 		{
+			case 0x40004455: //UD
+				
+				/*读取Vd*/
+				CAN_RecieveStatus = 0x40004455;
+			
+				break;
+						
 			case 0x40005155: //UQ
 				
 				/*读取Vq*/
 				CAN_RecieveStatus = 0x40005155;
 			
 				break;
-
+			
+			case 0x40004449: //ID
+				
+				/*读取Id*/
+				CAN_RecieveStatus = 0x40004449;
+				
+				break;
+			
 			case 0x40005149: //IQ
 				
 				/*读取Iq*/
@@ -317,6 +344,17 @@ void CANRespond(void)
 {
 	switch (CAN_RecieveStatus)
 	{
+		case 0x40004455: //UD
+			
+			/*读取Vd*/
+			Transmit.data_uint32[0] = 0x00004455;
+			Transmit.data_int32[1]  = CurrLoop.CtrlVolD * 1e3;
+		
+			CANSendData(Transmit);
+			CAN_RecieveStatus = 0;
+		
+			break;
+				
 		case 0x40005155: //UQ
 			
 			/*读取Vq*/
@@ -328,6 +366,28 @@ void CANRespond(void)
 		
 			break;
 
+		case 0x40004449: //ID
+			
+			/*读取Id*/
+			Transmit.data_uint32[0] = 0x00004449;
+			Transmit.data_int32[1]  = CoordTrans.CurrD * 1e3;
+		
+			CANSendData(Transmit);
+			CAN_RecieveStatus = 0;
+		
+			break;
+				
+		case 0x40005149: //IQ
+			
+			/*读取Iq*/
+			Transmit.data_uint32[0] = 0x00005149;
+			Transmit.data_int32[1]  = CoordTrans.CurrQ * 1e3;
+		
+			CANSendData(Transmit);
+			CAN_RecieveStatus = 0;
+		
+			break;
+				
 		case 0x40005856: //VX
 			
 			/*读取速度*/
@@ -338,17 +398,6 @@ void CANRespond(void)
 			CANSendData(Transmit);
 			CAN_RecieveStatus = 0;
 	#endif
-		
-			break;
-
-		case 0x40005149: //IQ
-			
-			/*读取Iq*/
-			Transmit.data_uint32[0] = 0x00005149;
-			Transmit.data_int32[1]  = CoordTrans.CurrQ * 1e3;
-		
-			CANSendData(Transmit);
-			CAN_RecieveStatus = 0;
 		
 			break;
 

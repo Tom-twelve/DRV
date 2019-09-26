@@ -43,7 +43,7 @@ extern struct MainController_t MainController;
 /* USER CODE BEGIN */
 
 #if	POSITION_SENSOR_TYPE == ENCODER_TLE5012
-	void GetPositionImformation(void)
+	void GetEleImformation(void)
 	{
 		#if	ENCODER_MODE == ENCODER_ABSOLUTE_MODE
 		
@@ -56,17 +56,16 @@ extern struct MainController_t MainController;
 		#else
 		#error "Encoder Mode Invalid"
 		#endif
-		GetMecAngle(); //计算机械角度
-		GetRefMecAngle(); //计算参考机械角度（主控用）
 		GetEleAngle(); //计算电角度
-		TLE5012_ReadFSYNC();	//读取FSYNC值
+		GetEleAngularSpeed();  //计算电角速度
 		EncoderLostDetection();		//编码器异常检测
 	}
 
-	void GetSpeedImformation(void)
+	void GetMecImformation(void)
 	{
+		GetMecAngle(); //计算机械角度
 		GetMecAngularSpeed(); //计算机械角速度
-		GetEleAngularSpeed();  //计算电角速度
+		GetRefMecAngle(); //计算参考机械角度（主控用）
 	}
 	
 	void GetMecAngle_AbsoluteMode_15bit(void)
@@ -242,6 +241,8 @@ extern struct MainController_t MainController;
 		CANdata_t errorCode;
 		static uint8_t count = 0;
 		
+		TLE5012_ReadFSYNC();
+		
 		PosSensor.SafetyWord >>= 12;
 		
 		/*通过TLE5012的SafetyWord判断编码器是否异常*/
@@ -328,7 +329,7 @@ extern struct MainController_t MainController;
 			GetMecAngle_AbsoluteMode_15bit();
 			UART_Transmit_DMA("EleAngle	%d\tMecPosition %d\r\n", (int)eleAngle, (int)PosSensor.MecAngle_AbsoluteMode_15bit);SendBuf();
 			
-			LL_mDelay(150);
+			LL_mDelay(100);
 		}
 		
 		InverseParkTransform(volD, 0.f, &volAlpha, &volBeta, 0);

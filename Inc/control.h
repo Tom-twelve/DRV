@@ -100,7 +100,7 @@ struct MainController_t
 /* USER CODE BEGIN PD */
 #define PERIOD_MULTIPLE					10	//(速度环, 位置环周期 / 电流环周期)
 
-#define CURR_INTEGRAL_ERR_LIM_D 		(5.0f)	//(A), Id积分限幅
+#define CURR_INTEGRAL_ERR_LIM_D 		(1.0f / CurrLoop.Ki_D)	//(A), Id积分限幅
 #define CURR_INTEGRAL_ERR_LIM_Q 		(0.015 * CurrLoop.LimitCurrQ * PHASE_RES / CurrLoop.Ki_Q)	//(A), Iq积分限幅
 
 #define SPD_INTEGRAL_ERR_LIM			(3.0 * 2.f * PI)		//(rad/s)

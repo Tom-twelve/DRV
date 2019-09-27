@@ -43,11 +43,18 @@ extern struct Driver_t Driver;
 
 void DriverInit(void)
 {
+	/*控制周期, 务必在所有运算开始之前赋值*/
+	Regulator.ActualPeriod_s = DEFAULT_CARRIER_PERIOD_s;
+	
+	/*更新位置及速度, 防止上电位置跳动*/
+	GetEleImformation();
+	
+	GetMecImformation();
+	
+	RefAngleInit();
+	
 	/*使能PWM输出*/
 	PWM_IT_CMD(ENABLE,ENABLE);
-		
-	/*控制周期*/
-	Regulator.ActualPeriod_s = DEFAULT_CARRIER_PERIOD_s;
 	
 	#if ROBOT_ID == PASS_ROBOT
 		#if CAN_ID_NUM == 1
@@ -220,7 +227,7 @@ void SpeedLoopInit(void)
 		SpdLoop.Kp = SPEED_CONTROL_KP;	
 		SpdLoop.Ki = SPEED_CONTROL_KI;
 		SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;	//期望速度，degree per second
-		SpdLoop.Acceleration = 5000.f * 2 * PI;	//期望加速度，degree per quadratic seconds
+		SpdLoop.Acceleration = 3000.f * 2 * PI;	//期望加速度，degree per quadratic seconds
 		SpdLoop.Deceleration = SpdLoop.Acceleration;
 	}
 	else if(Driver.ControlMode == POS_SPD_CURR_CTRL_MODE)
@@ -228,7 +235,7 @@ void SpeedLoopInit(void)
 		/*位置-速度-电流三环控制*/
 		SpdLoop.Kp = SPEED_CONTROL_KP;
 		SpdLoop.Ki = SPEED_CONTROL_KI;
-		SpdLoop.Acceleration = 5000.f * 2 * PI;	//期望加速度，degree per quadratic seconds
+		SpdLoop.Acceleration = 3000.f * 2 * PI;	//期望加速度，degree per quadratic seconds
 		SpdLoop.Deceleration = SpdLoop.Acceleration;
 	}
 	else if(Driver.ControlMode == SPD_VOL_CTRL_MODE)
@@ -237,7 +244,7 @@ void SpeedLoopInit(void)
 		SpdLoop.Kp = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS_NUM * 5.5f) * 1.0f;	
 		SpdLoop.Ki = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS_NUM * 25.0f) * 1.0f;
 		SpdLoop.ExptMecAngularSpeed_rad = 10.f * 2 * PI;	//期望速度，rad per second
-		SpdLoop.Acceleration = 5000.f * 2 * PI;	//期望加速度，rad per quadratic seconds
+		SpdLoop.Acceleration = 3000.f * 2 * PI;	//期望加速度，rad per quadratic seconds
 		SpdLoop.Deceleration = SpdLoop.Acceleration;
 	}
 	else if(Driver.ControlMode == POS_SPD_VOL_CTRL_MODE)
@@ -245,7 +252,7 @@ void SpeedLoopInit(void)
 		/*位置-速度双环控制*/
 		SpdLoop.Kp = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS_NUM * 5.5f) * 1.0f;	
 		SpdLoop.Ki = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS_NUM * 25.0f) * 0.0f;
-		SpdLoop.Acceleration = 5000.f * 2 * PI;	//期望加速度，degree per quadratic seconds
+		SpdLoop.Acceleration = 3000.f * 2 * PI;	//期望加速度，degree per quadratic seconds
 		SpdLoop.Deceleration = SpdLoop.Acceleration;
 	}
 }
@@ -254,17 +261,7 @@ void SpeedLoopInit(void)
    * @brief  位置环参数初始化
    */
 void PositionLoopInit(void)
-{			
-	/*读取当前机械角度, 对相关变量赋值防止位置控制模式下参考角度出错*/
-	GetMecAngle_AbsoluteMode_15bit();
-	
-	MainController.PresentMecAngle_pulse = PosSensor.MecAngle_AbsoluteMode_15bit;
-	
-	MainController.LastMecAngle_pulse = PosSensor.MecAngle_AbsoluteMode_15bit;
-	
-	/*记当前位置为零位*/
-	MainController.RefMecAngle_pulse = 0;
-			
+{					
 	if(Driver.ControlMode == POS_SPD_CURR_CTRL_MODE)
 	{
 		/*位置-速度-电流三环控制*/
@@ -293,6 +290,19 @@ void PositionLoopInit(void)
  /**
    * @brief  位置控制模式下标定初始位置
    */
+void RefAngleInit(void)
+{
+	MainController.PresentMecAngle_pulse = PosSensor.MecAngle_AbsoluteMode_15bit;
+	
+	MainController.LastMecAngle_pulse = PosSensor.MecAngle_AbsoluteMode_15bit;
+	
+	/*记当前位置为零位*/
+	MainController.RefMecAngle_pulse = 0;
+}
+
+ /**
+   * @brief  位置控制模式下标定初始位置
+   */
 void ZeroPosSet(uint16_t posOffset)
 {
 	MainController.RefMecAngle_pulse = PosSensor.MecAngle_AbsoluteMode_15bit - posOffset;
@@ -315,8 +325,8 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 	CurrLoop.IntegralErrD += CurrLoop.ErrD * Regulator.ActualPeriod_s;
 	CurrLoop.IntegralErrQ += CurrLoop.ErrQ * Regulator.ActualPeriod_s;
 	
-	/*PI控制器*/
-	*ctrlVolD = CurrLoop.Kp_D * CurrLoop.ErrD + CurrLoop.Ki_D * CurrLoop.IntegralErrD - PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ;
+	/*改进型电流控制器*/
+	*ctrlVolD = CurrLoop.Ki_D * CurrLoop.IntegralErrD - PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ;
 	*ctrlVolQ = CurrLoop.Kp_Q * CurrLoop.ErrQ + CurrLoop.Ki_Q * CurrLoop.IntegralErrQ + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
 
 	/*积分限幅*/
@@ -340,7 +350,7 @@ void SpeedLoop(float exptMecAngularSpeed, float realMecAngularSpeed, float *ctrl
 	
 	*ctrlCurrQ = SpdLoop.Kp * SpdLoop.Err + SpdLoop.Ki * SpdLoop.IntegralErr;
 	
-	SpdLoop.IntegralErr += SpdLoop.Err * Regulator.ActualPeriod_s;
+	SpdLoop.IntegralErr += SpdLoop.Err * OUTER_LOOP_PERIOD;
 	
 	/*积分限幅*/
 	Saturation_float(&SpdLoop.IntegralErr, SPD_INTEGRAL_ERR_LIM, -SPD_INTEGRAL_ERR_LIM);
@@ -356,7 +366,7 @@ void PositionLoop(float exptMecAngle, float realMecAngle, float *ctrlAngularSpee
 {
 	PosLoop.Err = exptMecAngle - realMecAngle;
 		
-	PosLoop.DiffErr = (PosLoop.Err - PosLoop.LastErr) / Regulator.ActualPeriod_s;
+	PosLoop.DiffErr = (PosLoop.Err - PosLoop.LastErr) / OUTER_LOOP_PERIOD;
 	
 	*ctrlAngularSpeed = PosLoop.Kp * PosLoop.Err + PosLoop.Kd * PosLoop.DiffErr;
 		
@@ -535,8 +545,6 @@ void PosCurrController(void)
 	SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
 }
 
-
-
  /**
    * @brief  速度-电压控制器
    */
@@ -627,8 +635,8 @@ float VelocitySlopeGenerator(float exptVelocity)
 	static float velocityStep_Acc = 0;
 	static float velocityStep_Dec = 0;
 	
-	velocityStep_Acc = SpdLoop.Acceleration * Regulator.ActualPeriod_s;
-	velocityStep_Dec = SpdLoop.Deceleration * Regulator.ActualPeriod_s;
+	velocityStep_Acc = SpdLoop.Acceleration * OUTER_LOOP_PERIOD;
+	velocityStep_Dec = SpdLoop.Deceleration * OUTER_LOOP_PERIOD;
 	
 	if(exptVelocity > 0 && velocityProcessVolume >= 0)
 	{
@@ -680,7 +688,7 @@ float VelocitySlopeGenerator(float exptVelocity)
    * @brief  驱动器控制模式初始化
    */
 void DriverControlModeInit(void)
-{
+{		
 	switch(Driver.ControlMode)
 	{
 		case SPD_CURR_CTRL_MODE : 	

@@ -26,6 +26,7 @@
 #endif
 
 uint32_t StdId;
+uint32_t ExtId;
 volatile CANdata_t Receive;
 volatile CANdata_t Transmit;
 uint32_t CAN_RecieveStatus = 0u;
@@ -148,9 +149,140 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 	HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &RxMessage0, (uint8_t *)&Receive);
 	
 	StdId = RxMessage0.StdId;
-
+	ExtId = RxMessage0.ExtId;
+	
 	if (StdId == CAN_SDO_SERVER_STD_ID)
 	{
+		/*ACTION驱动器指令*/
+//		switch(ExtId)
+//		{
+//			case 0x00004F4D: //MO
+//				
+//				if (Receive.data_uint32[1] == 0x00000001)
+//				{
+//					/*使能*/
+//					SpdLoop.ExptMecAngularSpeed_rad = 0.f;
+//					PWM_IT_CMD(ENABLE,ENABLE);
+//				}
+//				else
+//				{
+//					/*失能*/
+//					SpdLoop.ExptMecAngularSpeed_rad = 0.0f;
+//					PWM_IT_CMD(DISABLE,ENABLE);
+//				}
+//				
+//				break;
+//				
+//			case 0x00004D55://UM
+//				
+//				/*模式切换, 暂不可用*/
+////				if(receive.data_int32[1] == SPD_CURR_CTRL_MODE)
+////				{
+////					Driver.ControlMode = SPD_CURR_CTRL_MODE;
+////				}
+////				else if(receive.data_int32[1] == POS_SPD_CURR_CTRL_MODE)
+////				{
+////					Driver.ControlMode = POS_SPD_CURR_CTRL_MODE;
+////					PosLoop.ExptMecAngle_rad = PosSensor.MecAngle_rad + PosSensor.MecAngularSpeed_rad * Regulator.ActualPeriod_s;
+////				}
+//				
+//				break;
+//				
+//			case 0x0000564A: //JV
+//				
+//				/*期望速度, 主控方向与驱动器相反*/
+//				Saturation_int((int*)&Receive.data_int32[1], MAX_SPD, -MAX_SPD);
+//				MainController.ExptMecAngularSpeed_pulse =  Receive.data_int32[1];
+//				SpdLoop.ExptMecAngularSpeed_rad = PULSE_TO_RAD(MainController.ExptMecAngularSpeed_pulse);
+//			
+//				break;
+
+//			case 0x00004341: //AC
+//				
+//				/*设置加速度*/
+//				MainController.Acceleration_pulse = Receive.data_int32[1];
+//				SpdLoop.Acceleration = PULSE_TO_RAD(MainController.Acceleration_pulse);
+//				
+//				break;
+
+//			case 0x00004344: //DC
+
+//				/*设置减速度*/
+//				MainController.Deceleration_pulse = Receive.data_int32[1];
+//				SpdLoop.Deceleration = PULSE_TO_RAD(MainController.Deceleration_pulse);
+
+//				break;
+//					
+//			case 0x00005053: //SP
+//				
+//				/*设置位置环最大输出速度*/
+//				Saturation_int((int*)&Receive.data_int32[1], MAX_SPD, -MAX_SPD);
+//				MainController.MaxMecAngularSpeed_pulse = Receive.data_int32[1];
+//				PosLoop.MaxMecAngularSpeed_rad = PULSE_TO_RAD(MainController.MaxMecAngularSpeed_pulse);
+//				
+//				break;
+
+//			case 0x00004150: //PA
+//			
+//				/*期望位置, 绝对位置模式*/
+//				MainController.ExptMecAngle_pulse = Receive.data_int32[1];
+//			
+//				break;
+
+//			case 0x00005250: //PR
+//				
+//				/*期望位置, 相对位置模式*/
+//				MainController.ExptMecAngle_pulse = MainController.RefMecAngle_pulse + Receive.data_int32[1];
+//			
+//				break;
+
+//			case 0x40004449: //ID
+//				
+//				/*读取Id*/
+//				CAN_RecieveStatus = 0x40004449;
+//				
+//				break;
+//			case 0x40005149: //IQ
+//				
+//				/*读取Iq*/
+//				CAN_RecieveStatus = 0x40005149;
+//				
+//				break;
+//			
+//			case 0x40004455: //UD
+//				
+//				/*读取Vq*/
+//				CAN_RecieveStatus = 0x40004455;
+//			
+//				break;
+
+//			case 0x40005155: //UQ
+//				
+//				/*读取Vq*/
+//				CAN_RecieveStatus = 0x40005155;
+//			
+//				break;
+//						
+//			case 0x40005856: //VX
+//				
+//				/*读取速度*/
+//				CAN_RecieveStatus = 0x40005856;
+//			
+//				break;
+
+//			case 0x40005850: //PX
+//				
+//				/*读取位置*/
+//				CAN_RecieveStatus = 0x40005850;
+//		
+//				break; 
+//			
+//			default:
+//				
+//				break;
+//		}
+		
+		/*ELMO驱动器指令*/
 		switch (Receive.data_uint32[0])
 		{
 			case 0x00004F4D: //MO
@@ -187,7 +319,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 				
 			case 0x0000564A: //JV
 				
-				/*期望速度, 主控方向与驱动器相反*/
+				/*期望速度*/
 				Saturation_int((int*)&Receive.data_int32[1], MAX_SPD, -MAX_SPD);
 				MainController.ExptMecAngularSpeed_pulse =  Receive.data_int32[1];
 				SpdLoop.ExptMecAngularSpeed_rad = PULSE_TO_RAD(MainController.ExptMecAngularSpeed_pulse);
@@ -461,6 +593,18 @@ void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan)
 	{
 		PWM_IT_CMD(DISABLE,ENABLE);
 	}
+}
+
+void CANSendData_Test(CANdata_t data, uint32_t extId)
+{
+	TxMessage.StdId = CAN_SDO_CLIENT_STD_ID;
+	TxMessage.ExtId = extId;
+	TxMessage.IDE   = CAN_ID_STD;
+	TxMessage.RTR   = CAN_RTR_DATA;
+	TxMessage.DLC   = 8u;
+	
+	HAL_CAN_AddTxMessage(&hcan1, &TxMessage, (uint8_t *)&data, &mbox);
+	HAL_CAN_ActivateNotification(&hcan1, CAN_IT_TX_MAILBOX_EMPTY);
 }
 
 void CANSendData(CANdata_t data)

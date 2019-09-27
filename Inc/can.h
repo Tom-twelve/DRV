@@ -53,6 +53,7 @@ void MX_CAN1_Init(void);
 
 /* USER CODE BEGIN Prototypes */
 void CANRespond(void);
+void CANSendData_Test(CANdata_t data, uint32_t extId);
 void CANSendData(CANdata_t data);
 void CAN_Enable(void);
 /* USER CODE END Prototypes */

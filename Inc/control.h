@@ -99,8 +99,9 @@ struct MainController_t
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define PERIOD_MULTIPLE					10	//(速度环, 位置环周期 / 电流环周期)
+#define OUTER_LOOP_PERIOD				(Regulator.ActualPeriod_s * PERIOD_MULTIPLE)	//外环控制周期
 
-#define CURR_INTEGRAL_ERR_LIM_D 		(1.0f / CurrLoop.Ki_D)	//(A), Id积分限幅
+#define CURR_INTEGRAL_ERR_LIM_D 		(2.0f / CurrLoop.Ki_D)	//(A), Id积分限幅
 #define CURR_INTEGRAL_ERR_LIM_Q 		(0.015 * CurrLoop.LimitCurrQ * PHASE_RES / CurrLoop.Ki_Q)	//(A), Iq积分限幅
 
 #define SPD_INTEGRAL_ERR_LIM			(3.0 * 2.f * PI)		//(rad/s)
@@ -143,6 +144,7 @@ void VoltageControllerInit(void);
 void VoltageController(void);
 void SpeedLoopInit(void);
 void PositionLoopInit(void);
+void RefAngleInit(void);
 void ZeroPosSet(uint16_t posOffset);
 void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCurrQ, float *ctrlVolD, float *ctrlVolQ);
 void SpeedLoop(float expectedMecAngularSpeed, float realMecAngularSpeed, float *ctrlCurrQ);

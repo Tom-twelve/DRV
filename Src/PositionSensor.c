@@ -143,14 +143,17 @@ extern struct MainController_t MainController;
 		
 		lastMecAngle = presentMecAngle;
 		
-		if(angleDifference > PI)
+		while(angleDifference > PI || angleDifference < -PI)
 		{
-			angleDifference -= 2.f * PI;
-		}
-		
-		else if(angleDifference < -PI)
-		{
-			angleDifference += 2.f * PI;
+			if(angleDifference > PI)
+			{
+				angleDifference -= 2.f * PI;
+			}
+			
+			else if(angleDifference < -PI)
+			{
+				angleDifference += 2.f * PI;
+			}
 		}
 		
 		old = array[pos];
@@ -214,7 +217,6 @@ extern struct MainController_t MainController;
 				angleDifference += 2.f * PI;
 			}
 		}
-
 		
 		old = array[pos];
 		
@@ -297,6 +299,24 @@ extern struct MainController_t MainController;
 		return data;
 	}
 	
+	void PosSensor_Init(void)
+	{
+		/*控制周期, 务必在所有运算开始之前赋值*/
+		Regulator.ActualPeriod_s = DEFAULT_CARRIER_PERIOD_s;
+		
+		for(uint16_t times = 0; times <= 50; times++)
+		{
+			/*更新位置及速度, 防止上电位置跳动, 由于有均值滤波器, 故需重复执行多次以使速度变量接近零*/
+			GetEleImformation();
+		
+			GetMecImformation();
+			
+			LL_mDelay(1);
+		}
+
+		RefAngleInit();
+	}
+	
 	void EncoderIncrementalModeEnable(void)
 	{
 		/*启动TIM2增量式编码器模式*/
@@ -364,7 +384,7 @@ extern struct MainController_t MainController;
 		
 		while(1)
 		{
-			HAL_Delay(1);
+			LL_mDelay(1);
 		}
 	}
 	

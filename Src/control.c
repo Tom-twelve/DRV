@@ -43,16 +43,6 @@ extern struct Driver_t Driver;
 
 void DriverInit(void)
 {
-	/*控制周期, 务必在所有运算开始之前赋值*/
-	Regulator.ActualPeriod_s = DEFAULT_CARRIER_PERIOD_s;
-	
-	/*更新位置及速度, 防止上电位置跳动*/
-	GetEleImformation();
-	
-	GetMecImformation();
-	
-	RefAngleInit();
-	
 	/*使能PWM输出*/
 	PWM_IT_CMD(ENABLE,ENABLE);
 	
@@ -61,9 +51,9 @@ void DriverInit(void)
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverControlModeInit();
 			PosSensor.PosOffset = 23504;
-			CurrLoop.LimitCurrQ = 200.f;
+			CurrLoop.LimitCurrQ = 50.f;
 
-			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
+			SpdLoop.ExptMecAngularSpeed_rad = 50.f * 2 * PI;
 	
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
@@ -191,9 +181,9 @@ void CurrentLoopInit(void)
 {
 	/*设定电流环PI参数*/
 	CurrLoop.Kp_D = CURRENT_CONTROL_KP_D;												
-	CurrLoop.Ki_D = CURRENT_CONTROL_KI_D;						
+	CurrLoop.Ki_D = CURRENT_CONTROL_KI_D * 0.1;						
 	CurrLoop.Kp_Q = CURRENT_CONTROL_KP_Q * 2.5f;
-	CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q;
+	CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q * 0.1;
 	
 	/*设定编码器延迟补偿系数*/
 	PosSensor.CompRatio_forward = 3.2f;
@@ -325,13 +315,13 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 	CurrLoop.IntegralErrD += CurrLoop.ErrD * Regulator.ActualPeriod_s;
 	CurrLoop.IntegralErrQ += CurrLoop.ErrQ * Regulator.ActualPeriod_s;
 	
-	/*改进型电流控制器*/
-	*ctrlVolD = CurrLoop.Ki_D * CurrLoop.IntegralErrD - PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ;
-	*ctrlVolQ = CurrLoop.Kp_Q * CurrLoop.ErrQ + CurrLoop.Ki_Q * CurrLoop.IntegralErrQ + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
-
 	/*积分限幅*/
 	Saturation_float(&CurrLoop.IntegralErrD, CURR_INTEGRAL_ERR_LIM_D, -CURR_INTEGRAL_ERR_LIM_D);
 	Saturation_float(&CurrLoop.IntegralErrQ, CURR_INTEGRAL_ERR_LIM_Q, -CURR_INTEGRAL_ERR_LIM_Q);
+	
+	/*改进型电流控制器*/
+	*ctrlVolD = CurrLoop.Ki_D * CurrLoop.IntegralErrD - PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ;
+	*ctrlVolQ = CurrLoop.Kp_Q * CurrLoop.ErrQ + CurrLoop.Ki_Q * CurrLoop.IntegralErrQ + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
 	
 	/*电流环d轴电流限幅*/
 	Saturation_float(ctrlVolD, 10.f, -10.f);

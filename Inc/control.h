@@ -102,9 +102,9 @@ struct MainController_t
 #define OUTER_LOOP_PERIOD				(Regulator.ActualPeriod_s * PERIOD_MULTIPLE)	//外环控制周期
 
 #define CURR_INTEGRAL_ERR_LIM_D 		(2.0f / CurrLoop.Ki_D)	//(A), Id积分限幅
-#define CURR_INTEGRAL_ERR_LIM_Q 		(0.015 * CurrLoop.LimitCurrQ * PHASE_RES / CurrLoop.Ki_Q)	//(A), Iq积分限幅
+#define CURR_INTEGRAL_ERR_LIM_Q 		(0.1 * CurrLoop.LimitCurrQ * PHASE_RES)	//(A), Iq积分限幅
 
-#define SPD_INTEGRAL_ERR_LIM			(3.0 * 2.f * PI)		//(rad/s)
+#define SPD_INTEGRAL_ERR_LIM			(5.0 * 2.f * PI)		//(rad/s)
 
 #define CURRENT_CONTROL_KP_D			(INDUCTANCE_D * 1500.f)	//d轴电感 * 电流环带宽
 #define CURRENT_CONTROL_KI_D			(PHASE_RES * 1500.f)	//相电阻 * 电流环带宽
@@ -112,7 +112,7 @@ struct MainController_t
 #define CURRENT_CONTROL_KP_Q			(INDUCTANCE_Q * 1500.f)	//q轴电感 * 电流环带宽
 #define CURRENT_CONTROL_KI_Q			(PHASE_RES * 1500.f)	//相电阻 * 电流环带宽
 
-#define SPEED_CONTROL_KP				1.75f
+#define SPEED_CONTROL_KP				3.0f
 #define SPEED_CONTROL_KI				1.0f
 
 #define POSITION_CONTROL_KP				60.0f

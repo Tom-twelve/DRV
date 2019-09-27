@@ -160,6 +160,9 @@ int main(void)
 	
 	LL_mDelay(100);
 	
+	/*防止上电抖动*/
+	PosSensor_Init();
+
 	/*使能PWM, 设定参数*/
 	DriverInit();
 			
@@ -191,7 +194,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	  
-//	  SpdLoop.ExptMecAngularSpeed_rad = 100.f * 2.f * PI;
+//	  SpdLoop.ExptMecAngularSpeed_rad = 10.f * 2.f * PI;
 //	  
 //	  LL_mDelay(1000);
 //	  

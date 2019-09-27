@@ -51,9 +51,9 @@ void DriverInit(void)
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverControlModeInit();
 			PosSensor.PosOffset = 23504;
-			CurrLoop.LimitCurrQ = 50.f;
+			CurrLoop.LimitCurrQ = 200.f;
 
-			SpdLoop.ExptMecAngularSpeed_rad = 50.f * 2 * PI;
+			SpdLoop.ExptMecAngularSpeed_rad = 120.f * 2 * PI;
 	
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
@@ -181,9 +181,9 @@ void CurrentLoopInit(void)
 {
 	/*设定电流环PI参数*/
 	CurrLoop.Kp_D = CURRENT_CONTROL_KP_D;												
-	CurrLoop.Ki_D = CURRENT_CONTROL_KI_D * 0.1;						
-	CurrLoop.Kp_Q = CURRENT_CONTROL_KP_Q * 2.5f;
-	CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q * 0.1;
+	CurrLoop.Ki_D = CURRENT_CONTROL_KI_D;						
+	CurrLoop.Kp_Q = CURRENT_CONTROL_KP_Q;
+	CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q;
 	
 	/*设定编码器延迟补偿系数*/
 	PosSensor.CompRatio_forward = 3.2f;

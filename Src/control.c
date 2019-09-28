@@ -173,11 +173,18 @@ void DriverInit(void)
 		#elif CAN_ID_NUM == 7
 			Driver.ControlMode = POS_SPD_CURR_CTRL_MODE;
 			DriverControlModeInit();
-			PosSensor.PosOffset = 12190;
+			ZeroPosSet(5540);
+			PosSensor.PosOffset = 14132;
 			CurrLoop.LimitCurrQ = 200.f;
+			PosLoop.MaxMecAngularSpeed_rad = 60.f * 2 * PI;	//最大转速
+			
+			CurrLoop.Kp_D = CURRENT_CONTROL_KP_D;												
+			CurrLoop.Ki_D = CURRENT_CONTROL_KI_D;						
+			CurrLoop.Kp_Q = CURRENT_CONTROL_KP_Q;
+			CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q;
 	
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
-			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
+			SpdLoop.Ki = SPEED_CONTROL_KI * 0.0f;
 		#endif
 	#endif
 }

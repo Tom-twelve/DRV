@@ -185,9 +185,9 @@
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
 		#define ENCODER_MODE			ENCODER_ABSOLUTE_MODE
-		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
-		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
-		#define CURRENT_SENSOR			RES_1mOhm
+		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8320
+		#define MOSFET_TYPE				IPD053N08N3G_52nC_5mOhm3
+		#define CURRENT_SENSOR			HALL_CURR_SENSOR_ACS781_150A
 		#define GROUP_NUM           	1
 		#endif
 #endif
@@ -223,9 +223,9 @@
 	#define MOTOR_POLE_PAIRS_NUM				21
 	#define	MOTOR_KV							100.f
 	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * (float)MOTOR_POLE_PAIRS_NUM * MOTOR_KV))
-	#define PHASE_RES							0.0f		//(Ohm)
-	#define INDUCTANCE_D						0.0000f	//(H)
-	#define INDUCTANCE_Q						0.0000f	//(H)
+	#define PHASE_RES							(20.f * (float)1e-3)	//(Ohm)
+	#define INDUCTANCE_D						(24.f * (float)1e-6)	//(H)
+	#define INDUCTANCE_Q						(24.f * (float)1e-6)	//(H)
 	#define MAX_SPD								((uint32_t)(TLE5012_ABS_MODE_RESOLUTION * GENERATRIX_VOL * MOTOR_KV / 60))	
 #elif	MOTOR_TYPE == TMOTOR_MN505_S_KV320
 	#define MOTOR_POLE_PAIRS_NUM				14

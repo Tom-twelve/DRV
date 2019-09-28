@@ -146,9 +146,9 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 	
 	CAN.StdID = RxMessage0.StdId;
 	
-	CAN.Identifier = CAN.Receive.data_uint32[0] & 0xFF;
+	CAN.Identifier = CAN.Receive.data_uint32[0] & 0xFFFF;
 	
-	CAN.ReceiveData = (CAN.Receive.data_uint32[0] >> 2) & (CAN.Receive.data_uint32[1] << 2);
+	CAN.ReceiveData = ((CAN.Receive.data_uint32[0] >> 16) | (CAN.Receive.data_uint32[1] << 16)) & 0xFFFFFFFF;
 	
 	/*ACTIONÇý¶¯Æ÷Ö¸Áî*/
 	if (CAN.StdID == DRIVER_SERVER_CAN_ID)

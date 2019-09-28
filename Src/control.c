@@ -170,6 +170,14 @@ void DriverInit(void)
 	
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
+		#elif CAN_ID_NUM == 7
+			Driver.ControlMode = POS_SPD_CURR_CTRL_MODE;
+			DriverControlModeInit();
+			PosSensor.PosOffset = 12190;
+			CurrLoop.LimitCurrQ = 200.f;
+	
+			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
+			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#endif
 	#endif
 }

@@ -33,10 +33,12 @@
 
 /* Motor Type */
 #define MAD_XC5500_KV505				1
-#define SUNNYSKY_X4125_9_KV350			2
-#define N5055_KV400						3
-#define TMOTOR_MN505_S_KV320			4
-#define SCREW_MOTOR_KV320				5
+#define N5055_KV400						2
+#define TMOTOR_U3_KV700					3
+#define TMOTOR_P80_KV100				4	
+#define TMOTOR_MN505_S_KV320			5	
+#define SUNNYSKY_X4125_9_KV350			6
+#define SCREW_MOTOR_KV320				7
 
 /* Position Sensor Type */
 #define ENCODER_TLE5012					1
@@ -63,7 +65,7 @@
 
 /****************************************Type Define End****************************************/
 
-#define ROBOT_ID		PASS_ROBOT
+#define ROBOT_ID		TRY_ROBOT
 
 #if ROBOT_ID == PASS_ROBOT
 	#define CAN_ID_NUM			1
@@ -123,7 +125,7 @@
 		#define GROUP_NUM           	0
 		#endif
 #elif ROBOT_ID == TRY_ROBOT
-	#define CAN_ID_NUM			2
+	#define CAN_ID_NUM			7
 		#if CAN_ID_NUM == 1
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
@@ -171,6 +173,15 @@
 		#define GROUP_NUM           	0
 		#elif CAN_ID_NUM == 6
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
+		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
+		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
+		#define ENCODER_MODE			ENCODER_ABSOLUTE_MODE
+		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
+		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
+		#define CURRENT_SENSOR			RES_1mOhm
+		#define GROUP_NUM           	0
+		#elif CAN_ID_NUM == 7
+		#define MOTOR_TYPE 				TMOTOR_P80_KV100	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
 		#define ENCODER_MODE			ENCODER_ABSOLUTE_MODE

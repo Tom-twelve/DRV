@@ -123,6 +123,7 @@ struct MainController_t
 #define PERIOD_REGULATOR_KD 			(0.005952380952381) // 参数待调（这个初值是通过简单的计算一下，假设偏差的差分出现了1的变动，改变多少周期粗略的估计的，并非使用KD = Kd / dt)
 #define PERIOD_REGULATOR_LIM			5	//载波周期调节器限幅值	
 
+/*控制模式, 需与driver.c同步*/
 #define SPD_CURR_CTRL_MODE 				1
 #define POS_SPD_CURR_CTRL_MODE 			2
 #define POS_CURR_CTRL_MODE 				3

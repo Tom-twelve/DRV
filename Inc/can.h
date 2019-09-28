@@ -36,25 +36,43 @@
 extern CAN_HandleTypeDef hcan1;
 
 /* USER CODE BEGIN Private defines */
-#define CAN_SDO_CLIENT_STD_ID     (0x280 + CAN_ID_NUM)
-#define CAN_SDO_SERVER_STD_ID     (0x300 + CAN_ID_NUM)
+
+#define DRIVER_CLIENT_BASE_ID		0x280
+#define DRIVER_SERVER_BASE_ID		0x300
+
+#define DRIVER_CLIENT_CAN_ID		(DRIVER_CLIENT_BASE_ID + CAN_ID_NUM)
+#define DRIVER_SERVER_CAN_ID		(DRIVER_SERVER_BASE_ID + CAN_ID_NUM)
+#define DRIVER_BROADCAST_ID			(DRIVER_SERVER_BASE_ID + 0x40 + GROUP_NUM)
 
 typedef union
 {
 	volatile uint32_t  data_uint32[2];
 	volatile int32_t   data_int32[2];
-	volatile float     data_float[2];
 	volatile uint8_t   data_uint8[8];
-} CANdata_t;
+} CAN_Data_t;
+
+struct CAN_t
+{
+	uint32_t StdID;
+	uint32_t MailBox;
+	uint16_t Identifier;
+	uint32_t ReceiveData;
+	int32_t RecieveStatus;
+	int32_t TransmitData;
+	volatile CAN_Data_t Receive;
+	volatile CAN_Data_t Transmit;
+};
 
 /* USER CODE END Private defines */
 
 void MX_CAN1_Init(void);
 
 /* USER CODE BEGIN Prototypes */
+void CANRespond_Test(void);
 void CANRespond(void);
-void CANSendData_Test(CANdata_t data, uint32_t extId);
-void CANSendData(CANdata_t data);
+void CANSendData_Test(CAN_Data_t data, uint32_t identifier);
+void CAN_Transmit_Test(CAN_Data_t data, uint8_t length);
+void CAN_Transmit(CAN_Data_t data);
 void CAN_Enable(void);
 /* USER CODE END Prototypes */
 

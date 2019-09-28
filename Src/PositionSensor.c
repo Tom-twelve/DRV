@@ -240,7 +240,7 @@ extern struct MainController_t MainController;
 	
 	void EncoderLostDetection(void)
 	{
-		CANdata_t errorCode;
+		CAN_Data_t errorCode;
 		static uint8_t count = 0;
 		
 		TLE5012_ReadFSYNC();
@@ -262,7 +262,7 @@ extern struct MainController_t MainController;
 				
 				while(1)
 				{
-					CANSendData(errorCode);
+					CAN_Transmit(errorCode);
 				
 					PutNum((uint16_t)PosSensor.SafetyWord,'\t');	
 					PutStr("ENCODER LOST\r\n");	

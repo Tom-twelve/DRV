@@ -334,9 +334,9 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 	Saturation_float(&CurrLoop.IntegralErrD, CURR_INTEGRAL_ERR_LIM_D, -CURR_INTEGRAL_ERR_LIM_D);
 	Saturation_float(&CurrLoop.IntegralErrQ, CURR_INTEGRAL_ERR_LIM_Q, -CURR_INTEGRAL_ERR_LIM_Q);
 	
-	/*改进型电流控制器*/
-	*ctrlVolD = CurrLoop.Ki_D * CurrLoop.IntegralErrD - PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ;
-	*ctrlVolQ = CurrLoop.Kp_Q * CurrLoop.ErrQ + CurrLoop.Ki_Q * CurrLoop.IntegralErrQ + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
+	/*基于电机模型的改进型电流控制器, 采用P调节+电机模型补偿*/
+	*ctrlVolD = CurrLoop.Kp_D * CurrLoop.ErrD - PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ;
+	*ctrlVolQ = CurrLoop.Kp_Q * CurrLoop.ErrQ + exptCurrQ * PHASE_RES + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
 	
 	/*电流环d轴电流限幅*/
 	Saturation_float(ctrlVolD, 10.f, -10.f);

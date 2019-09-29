@@ -68,11 +68,8 @@ struct CAN_t
 void MX_CAN1_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-void CANRespond_Test(void);
-void CANRespond(void);
-void CANSendData_Test(CAN_Data_t data, uint32_t identifier);
-void CAN_Transmit_Test(CAN_Data_t data, uint8_t length);
-void CAN_Transmit(CAN_Data_t data);
+void CAN_Respond(void);
+void CAN_Transmit(CAN_Data_t data, uint8_t length);
 void CAN_Enable(void);
 /* USER CODE END Prototypes */
 

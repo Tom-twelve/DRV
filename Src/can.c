@@ -332,191 +332,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 		}
 	}
 	
-	/*ELMO驱动器指令*/
-//	if (CAN.StdID == DRIVER_SERVER_CAN_ID)
-//	{
-//		switch (CAN.Receive.data_uint32[0])
-//		{
-//			case 0x00004F4D: //MO
-//				
-//				if (CAN.Receive.data_uint32[1] == 0x00000001)
-//				{
-//					/*使能*/
-//					SpdLoop.ExptMecAngularSpeed_rad = 0.f;
-//					PWM_IT_CMD(ENABLE,ENABLE);
-//				}
-//				else
-//				{
-//					/*失能*/
-//					SpdLoop.ExptMecAngularSpeed_rad = 0.0f;
-//					PWM_IT_CMD(DISABLE,ENABLE);
-//				}
-//				
-//				break;
-//				
-//			case 0x00004D55://UM
-//				
-//				/*模式切换, 暂不可用*/
-////				if(receive.data_int32[1] == SPD_CURR_CTRL_MODE)
-////				{
-////					Driver.ControlMode = SPD_CURR_CTRL_MODE;
-////				}
-////				else if(receive.data_int32[1] == POS_SPD_CURR_CTRL_MODE)
-////				{
-////					Driver.ControlMode = POS_SPD_CURR_CTRL_MODE;
-////					PosLoop.ExptMecAngle_rad = PosSensor.MecAngle_rad + PosSensor.MecAngularSpeed_rad * Regulator.ActualPeriod_s;
-////				}
-//				
-//				break;
-//				
-//			case 0x0000564A: //JV
-//				
-//				/*期望速度*/
-//				Saturation_int((int*)&CAN.Receive.data_int32[1], MAX_SPD, -MAX_SPD);
-//				MainController.ExptMecAngularSpeed_pulse =  CAN.Receive.data_int32[1];
-//				SpdLoop.ExptMecAngularSpeed_rad = PULSE_TO_RAD(MainController.ExptMecAngularSpeed_pulse);
-//			
-//				break;
-
-//			case 0x00004341: //AC
-//				
-//				/*设置加速度*/
-//				MainController.Acceleration_pulse = CAN.Receive.data_int32[1];
-//				SpdLoop.Acceleration = PULSE_TO_RAD(MainController.Acceleration_pulse);
-//				
-//				break;
-
-//			case 0x00004344: //DC
-
-//				/*设置减速度*/
-//				MainController.Deceleration_pulse = CAN.Receive.data_int32[1];
-//				SpdLoop.Deceleration = PULSE_TO_RAD(MainController.Deceleration_pulse);
-
-//				break;
-//					
-//			case 0x00005053: //SP
-//				
-//				/*设置位置环最大输出速度*/
-//				Saturation_int((int*)&CAN.Receive.data_int32[1], MAX_SPD, -MAX_SPD);
-//				MainController.MaxMecAngularSpeed_pulse = CAN.Receive.data_int32[1];
-//				PosLoop.MaxMecAngularSpeed_rad = PULSE_TO_RAD(MainController.MaxMecAngularSpeed_pulse);
-//				
-//				break;
-
-//			case 0x00004150: //PA
-//			
-//				/*期望位置, 绝对位置模式*/
-//				MainController.ExptMecAngle_pulse = CAN.Receive.data_int32[1];
-//			
-//				break;
-
-//			case 0x00005250: //PR
-//				
-//				/*期望位置, 相对位置模式*/
-//				MainController.ExptMecAngle_pulse = MainController.RefMecAngle_pulse + CAN.Receive.data_int32[1];
-//			
-//				break;
-
-//			case 0x40004449: //ID
-//				
-//				/*读取Id*/
-//				CAN.RecieveStatus = 0x40004449;
-//				
-//				break;
-//			case 0x40005149: //IQ
-//				
-//				/*读取Iq*/
-//				CAN.RecieveStatus = 0x40005149;
-//				
-//				break;
-//			
-//			case 0x40004455: //UD
-//				
-//				/*读取Vq*/
-//				CAN.RecieveStatus = 0x40004455;
-//			
-//				break;
-
-//			case 0x40005155: //UQ
-//				
-//				/*读取Vq*/
-//				CAN.RecieveStatus = 0x40005155;
-//			
-//				break;
-//						
-//			case 0x40005856: //VX
-//				
-//				/*读取速度*/
-//				CAN.RecieveStatus = 0x40005856;
-//			
-//				break;
-
-//			case 0x40005850: //PX
-//				
-//				/*读取位置*/
-//				CAN.RecieveStatus = 0x40005850;
-//		
-//				break; 
-//			
-//			default:
-//				
-//				break;
-//		}
-//	}
-//	else if (CAN.StdID == DRIVER_BROADCAST_ID)
-//	{
-//		switch (CAN.Receive.data_uint32[0])
-//		{
-//			case 0x40004455: //UD
-//				
-//				/*读取Vd*/
-//				CAN.RecieveStatus = 0x40004455;
-//			
-//				break;
-//						
-//			case 0x40005155: //UQ
-//				
-//				/*读取Vq*/
-//				CAN.RecieveStatus = 0x40005155;
-//			
-//				break;
-//			
-//			case 0x40004449: //ID
-//				
-//				/*读取Id*/
-//				CAN.RecieveStatus = 0x40004449;
-//				
-//				break;
-//			
-//			case 0x40005149: //IQ
-//				
-//				/*读取Iq*/
-//				CAN.RecieveStatus = 0x40005149;
-//				
-//				break;
-
-//			case 0x40005856: //VX
-//				
-//				/*读取速度*/
-//				CAN.RecieveStatus = 0x40005856;
-//			
-//				break;
-
-//			case 0x40005850: //PX
-//				
-//				/*读取位置*/
-//				CAN.RecieveStatus = 0x40005850;
-//		
-//				break; 
-//			
-//			default:
-//				
-//				break;
-//		}
-//	}
-	
-	CANRespond_Test();
-//	CANRespond();
+	CAN_Respond();
 	
 	/*检测RX FIFO剩余的信息数量*/
 	if(HAL_CAN_GetRxFifoFillLevel(&hcan1, CAN_RX_FIFO0))
@@ -525,7 +341,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 	}
 }
 
-void CANRespond_Test(void)
+void CAN_Respond(void)
 {
 	switch (CAN.RecieveStatus)
 	{
@@ -537,12 +353,12 @@ void CANRespond_Test(void)
 			/*发送当前速度*/
 			CAN.Transmit.data_uint8[0] = (CAN.Identifier>>0)&0xff;
 			CAN.Transmit.data_uint8[1] = (CAN.Identifier>>8)&0xff;
-			CAN.Transmit.data_uint8[2]  = (CAN.TransmitData>>0)&0xff;
-			CAN.Transmit.data_uint8[3]  = (CAN.TransmitData>>8)&0xff;
-			CAN.Transmit.data_uint8[4]  = (CAN.TransmitData>>16)&0xff;
-			CAN.Transmit.data_uint8[5]  = (CAN.TransmitData>>24)&0xff;
+			CAN.Transmit.data_uint8[2] = (CAN.TransmitData>>0)&0xff;
+			CAN.Transmit.data_uint8[3] = (CAN.TransmitData>>8)&0xff;
+			CAN.Transmit.data_uint8[4] = (CAN.TransmitData>>16)&0xff;
+			CAN.Transmit.data_uint8[5] = (CAN.TransmitData>>24)&0xff;
 		
-			CAN_Transmit_Test(CAN.Transmit, 6);
+			CAN_Transmit(CAN.Transmit, 6);
 		
 			CAN.RecieveStatus = 0;
 		
@@ -556,12 +372,12 @@ void CANRespond_Test(void)
 			/*发送当前位置*/
 			CAN.Transmit.data_uint8[0] = (CAN.Identifier>>0)&0xff;
 			CAN.Transmit.data_uint8[1] = (CAN.Identifier>>8)&0xff;
-			CAN.Transmit.data_uint8[2]  = (CAN.TransmitData>>0)&0xff;
-			CAN.Transmit.data_uint8[3]  = (CAN.TransmitData>>8)&0xff;
-			CAN.Transmit.data_uint8[4]  = (CAN.TransmitData>>16)&0xff;
-			CAN.Transmit.data_uint8[5]  = (CAN.TransmitData>>24)&0xff;
+			CAN.Transmit.data_uint8[2] = (CAN.TransmitData>>0)&0xff;
+			CAN.Transmit.data_uint8[3] = (CAN.TransmitData>>8)&0xff;
+			CAN.Transmit.data_uint8[4] = (CAN.TransmitData>>16)&0xff;
+			CAN.Transmit.data_uint8[5] = (CAN.TransmitData>>24)&0xff;
 		
-			CAN_Transmit_Test(CAN.Transmit, 6);
+			CAN_Transmit(CAN.Transmit, 6);
 		
 			CAN.RecieveStatus = 0;
 		
@@ -575,12 +391,12 @@ void CANRespond_Test(void)
 			/*发送当前电磁转矩*/	
 			CAN.Transmit.data_uint8[0] = (CAN.Identifier>>0)&0xff;
 			CAN.Transmit.data_uint8[1] = (CAN.Identifier>>8)&0xff;
-			CAN.Transmit.data_uint8[2]  = (CAN.TransmitData>>0)&0xff;
-			CAN.Transmit.data_uint8[3]  = (CAN.TransmitData>>8)&0xff;
-			CAN.Transmit.data_uint8[4]  = (CAN.TransmitData>>16)&0xff;
-			CAN.Transmit.data_uint8[5]  = (CAN.TransmitData>>24)&0xff;
+			CAN.Transmit.data_uint8[2] = (CAN.TransmitData>>0)&0xff;
+			CAN.Transmit.data_uint8[3] = (CAN.TransmitData>>8)&0xff;
+			CAN.Transmit.data_uint8[4] = (CAN.TransmitData>>16)&0xff;
+			CAN.Transmit.data_uint8[5] = (CAN.TransmitData>>24)&0xff;
 		
-			CAN_Transmit_Test(CAN.Transmit, 6);
+			CAN_Transmit(CAN.Transmit, 6);
 		
 			CAN.RecieveStatus = 0;
 		
@@ -594,12 +410,12 @@ void CANRespond_Test(void)
 			/*发送当前Vd*/	
 			CAN.Transmit.data_uint8[0] = (CAN.Identifier>>0)&0xff;
 			CAN.Transmit.data_uint8[1] = (CAN.Identifier>>8)&0xff;
-			CAN.Transmit.data_uint8[2]  = (CAN.TransmitData>>0)&0xff;
-			CAN.Transmit.data_uint8[3]  = (CAN.TransmitData>>8)&0xff;
-			CAN.Transmit.data_uint8[4]  = (CAN.TransmitData>>16)&0xff;
-			CAN.Transmit.data_uint8[5]  = (CAN.TransmitData>>24)&0xff;
+			CAN.Transmit.data_uint8[2] = (CAN.TransmitData>>0)&0xff;
+			CAN.Transmit.data_uint8[3] = (CAN.TransmitData>>8)&0xff;
+			CAN.Transmit.data_uint8[4] = (CAN.TransmitData>>16)&0xff;
+			CAN.Transmit.data_uint8[5] = (CAN.TransmitData>>24)&0xff;
 		
-			CAN_Transmit_Test(CAN.Transmit, 6);
+			CAN_Transmit(CAN.Transmit, 6);
 		
 			CAN.RecieveStatus = 0;
 		
@@ -613,12 +429,12 @@ void CANRespond_Test(void)
 			/*发送当前Vq*/	
 			CAN.Transmit.data_uint8[0] = (CAN.Identifier>>0)&0xff;
 			CAN.Transmit.data_uint8[1] = (CAN.Identifier>>8)&0xff;
-			CAN.Transmit.data_uint8[2]  = (CAN.TransmitData>>0)&0xff;
-			CAN.Transmit.data_uint8[3]  = (CAN.TransmitData>>8)&0xff;
-			CAN.Transmit.data_uint8[4]  = (CAN.TransmitData>>16)&0xff;
-			CAN.Transmit.data_uint8[5]  = (CAN.TransmitData>>24)&0xff;
+			CAN.Transmit.data_uint8[2] = (CAN.TransmitData>>0)&0xff;
+			CAN.Transmit.data_uint8[3] = (CAN.TransmitData>>8)&0xff;
+			CAN.Transmit.data_uint8[4] = (CAN.TransmitData>>16)&0xff;
+			CAN.Transmit.data_uint8[5] = (CAN.TransmitData>>24)&0xff;
 		
-			CAN_Transmit_Test(CAN.Transmit, 6);
+			CAN_Transmit(CAN.Transmit, 6);
 		
 			CAN.RecieveStatus = 0;
 		
@@ -632,12 +448,12 @@ void CANRespond_Test(void)
 			/*发送当前Id*/	
 			CAN.Transmit.data_uint8[0] = (CAN.Identifier>>0)&0xff;
 			CAN.Transmit.data_uint8[1] = (CAN.Identifier>>8)&0xff;
-			CAN.Transmit.data_uint8[2]  = (CAN.TransmitData>>0)&0xff;
-			CAN.Transmit.data_uint8[3]  = (CAN.TransmitData>>8)&0xff;
-			CAN.Transmit.data_uint8[4]  = (CAN.TransmitData>>16)&0xff;
-			CAN.Transmit.data_uint8[5]  = (CAN.TransmitData>>24)&0xff;
+			CAN.Transmit.data_uint8[2] = (CAN.TransmitData>>0)&0xff;
+			CAN.Transmit.data_uint8[3] = (CAN.TransmitData>>8)&0xff;
+			CAN.Transmit.data_uint8[4] = (CAN.TransmitData>>16)&0xff;
+			CAN.Transmit.data_uint8[5] = (CAN.TransmitData>>24)&0xff;
 		
-			CAN_Transmit_Test(CAN.Transmit, 6);
+			CAN_Transmit(CAN.Transmit, 6);
 		
 			CAN.RecieveStatus = 0;
 		
@@ -651,95 +467,17 @@ void CANRespond_Test(void)
 			/*发送当前Iq*/		
 			CAN.Transmit.data_uint8[0] = (CAN.Identifier>>0)&0xff;
 			CAN.Transmit.data_uint8[1] = (CAN.Identifier>>8)&0xff;
-			CAN.Transmit.data_uint8[2]  = (CAN.TransmitData>>0)&0xff;
-			CAN.Transmit.data_uint8[3]  = (CAN.TransmitData>>8)&0xff;
-			CAN.Transmit.data_uint8[4]  = (CAN.TransmitData>>16)&0xff;
-			CAN.Transmit.data_uint8[5]  = (CAN.TransmitData>>24)&0xff;
+			CAN.Transmit.data_uint8[2] = (CAN.TransmitData>>0)&0xff;
+			CAN.Transmit.data_uint8[3] = (CAN.TransmitData>>8)&0xff;
+			CAN.Transmit.data_uint8[4] = (CAN.TransmitData>>16)&0xff;
+			CAN.Transmit.data_uint8[5] = (CAN.TransmitData>>24)&0xff;
 		
-			CAN_Transmit_Test(CAN.Transmit, 6);
+			CAN_Transmit(CAN.Transmit, 6);
 		
 			CAN.RecieveStatus = 0;
 		
 			break;
 				
-		default:
-			
-			break;
-	}
-}
-
-void CANRespond(void)
-{
-	switch (CAN.RecieveStatus)
-	{
-		case 0x40004455: //UD
-			
-			/*读取Vd*/
-			CAN.Transmit.data_uint32[0] = 0x00004455;
-			CAN.Transmit.data_int32[1]  = CurrLoop.CtrlVolD * 1e3;
-		
-			CAN_Transmit(CAN.Transmit);
-			CAN.RecieveStatus = 0;
-		
-			break;
-				
-		case 0x40005155: //UQ
-			
-			/*读取Vq*/
-			CAN.Transmit.data_uint32[0] = 0x00005155;
-			CAN.Transmit.data_int32[1]  = CurrLoop.CtrlVolQ * 1e3;
-		
-			CAN_Transmit(CAN.Transmit);
-			CAN.RecieveStatus = 0;
-		
-			break;
-
-		case 0x40004449: //ID
-			
-			/*读取Id*/
-			CAN.Transmit.data_uint32[0] = 0x00004449;
-			CAN.Transmit.data_int32[1]  = CoordTrans.CurrD * 1e3;
-		
-			CAN_Transmit(CAN.Transmit);
-			CAN.RecieveStatus = 0;
-		
-			break;
-				
-		case 0x40005149: //IQ
-			
-			/*读取Iq*/
-			CAN.Transmit.data_uint32[0] = 0x00005149;
-			CAN.Transmit.data_int32[1]  = CoordTrans.CurrQ * 1e3;
-		
-			CAN_Transmit(CAN.Transmit);
-			CAN.RecieveStatus = 0;
-		
-			break;
-				
-		case 0x40005856: //VX
-			
-			/*读取速度*/
-	#if POSITION_SENSOR_TYPE == ENCODER_TLE5012
-			CAN.Transmit.data_uint32[0] = 0x00005856;
-			CAN.Transmit.data_int32[1]  = (int32_t)((PosSensor.MecAngularSpeed_rad /(2.f * PI) * TLE5012_ABS_MODE_RESOLUTION));
-		
-			CAN_Transmit(CAN.Transmit);
-			CAN.RecieveStatus = 0;
-	#endif
-		
-			break;
-
-		case 0x40005850: //PX
-			
-			/*读取位置*/
-			CAN.Transmit.data_uint32[0] = 0x00005850;
-			CAN.Transmit.data_int32[1]  = MainController.RefMecAngle_pulse;
-		
-			CAN_Transmit(CAN.Transmit);
-			CAN.RecieveStatus = 0;
-		
-			break;
-
 		default:
 			
 			break;
@@ -748,29 +486,35 @@ void CANRespond(void)
 
 void HAL_CAN_TxMailbox0CompleteCallback(CAN_HandleTypeDef *hcan)
 {
-	CANRespond();
+	CAN_Respond();
 }
 
 void HAL_CAN_TxMailbox1CompleteCallback(CAN_HandleTypeDef *hcan)
 {
-	CANRespond();
+	CAN_Respond();
 }
 
 void HAL_CAN_TxMailbox2CompleteCallback(CAN_HandleTypeDef *hcan)
 {
-	CANRespond();
+	CAN_Respond();
 }
 
 void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan)
 {
 	static uint16_t errTimes = 0;
 	
-	CAN_Data_t txData;
 	PutStr("CAN Error Code:");
 	PutNum(hcan->ErrorCode, '\n');SendBuf();
 	
-	txData.data_uint32[0] = 0x00111111;
-	txData.data_uint32[1] = hcan->ErrorCode;
+	CAN.Identifier = 0x5245;	//ER
+	CAN.TransmitData = hcan->ErrorCode;
+	
+	CAN.Transmit.data_uint8[0] = (CAN.Identifier>>0)&0xff;
+	CAN.Transmit.data_uint8[1] = (CAN.Identifier>>8)&0xff;
+	CAN.Transmit.data_uint8[2] = (CAN.TransmitData>>0)&0xff;
+	CAN.Transmit.data_uint8[3] = (CAN.TransmitData>>8)&0xff;
+	CAN.Transmit.data_uint8[4] = (CAN.TransmitData>>16)&0xff;
+	CAN.Transmit.data_uint8[5] = (CAN.TransmitData>>24)&0xff;
 
 	if(errTimes++ <= 100)
 	{
@@ -783,7 +527,7 @@ void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan)
 		
 		HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
 		
-		CAN_Transmit(txData);
+		CAN_Transmit(CAN.Transmit, 6);
 	}
 	else
 	{
@@ -791,7 +535,7 @@ void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan)
 	}
 }
 
-void CAN_Transmit_Test(CAN_Data_t data, uint8_t length)
+void CAN_Transmit(CAN_Data_t data, uint8_t length)
 {
 	TxMessage.StdId = DRIVER_CLIENT_CAN_ID;
 	TxMessage.ExtId = 0u;
@@ -803,24 +547,13 @@ void CAN_Transmit_Test(CAN_Data_t data, uint8_t length)
 	HAL_CAN_ActivateNotification(&hcan1, CAN_IT_TX_MAILBOX_EMPTY);
 }
 
-void CAN_Transmit(CAN_Data_t data)
-{
-	TxMessage.StdId = DRIVER_CLIENT_CAN_ID;
-	TxMessage.ExtId = 0u;
-	TxMessage.IDE   = CAN_ID_STD;
-	TxMessage.RTR   = CAN_RTR_DATA;
-	TxMessage.DLC   = 8u;
-	
-	HAL_CAN_AddTxMessage(&hcan1, &TxMessage, (uint8_t *)&data, &CAN.MailBox);
-	HAL_CAN_ActivateNotification(&hcan1, CAN_IT_TX_MAILBOX_EMPTY);
-}
-
 void CAN_Enable(void)
 {
+	/*配置过滤器*/
 	CAN_FilterTypeDef CAN1_FilerConf    = {0};
 	CAN1_FilerConf.FilterIdHigh         = 0X0000;
 	CAN1_FilerConf.FilterIdLow          = 0X0000;
-	CAN1_FilerConf.FilterMaskIdHigh     = 0X0000;           //32 位MASK
+	CAN1_FilerConf.FilterMaskIdHigh     = 0X0000;
 	CAN1_FilerConf.FilterMaskIdLow      = 0X0000;
 	CAN1_FilerConf.FilterFIFOAssignment = CAN_FILTER_FIFO0;
 	CAN1_FilerConf.FilterBank           = 0;
@@ -828,7 +561,7 @@ void CAN_Enable(void)
 	CAN1_FilerConf.FilterScale          = CAN_FILTERSCALE_32BIT;
 	CAN1_FilerConf.FilterActivation     = ENABLE;
 	CAN1_FilerConf.SlaveStartFilterBank = 14;
-	HAL_CAN_ConfigFilter(&hcan1, &CAN1_FilerConf); //初始化过滤器
+	HAL_CAN_ConfigFilter(&hcan1, &CAN1_FilerConf);
 		
 	HAL_CAN_Start(&hcan1);
 	HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);

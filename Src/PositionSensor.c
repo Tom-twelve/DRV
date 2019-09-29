@@ -32,8 +32,7 @@ extern struct MainController_t MainController;
 /* CODE BEGIN PV */
 #if	POSITION_SENSOR_TYPE == ENCODER_TLE5012
 	struct PosSensor_t PosSensor;
-	extern const short int EleAngleRef[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS_NUM + 2];
-	extern const int MecAngleRef[DIVIDE_NUM * (uint8_t)MOTOR_POLE_PAIRS_NUM + 2];
+	extern struct CAN_t CAN;
 #else
 #error "Position Sensor Type Invalid"
 #endif
@@ -240,7 +239,6 @@ extern struct MainController_t MainController;
 	
 	void EncoderLostDetection(void)
 	{
-		CAN_Data_t errorCode;
 		static uint8_t count = 0;
 		
 		TLE5012_ReadFSYNC();
@@ -256,16 +254,21 @@ extern struct MainController_t MainController;
 			{
 				PWM_IT_CMD(DISABLE,ENABLE);
 				
-				/*通过CAN总线向主控发送编码器异常*/
-				errorCode.data_int32[0] = 0xCCCCCCCC;
-				errorCode.data_int32[1] = 0xCCCCCCCC;
+				/*通过CAN总线告知主控编码器异常*/
+				CAN.Identifier = 0x4C45;	//EL
+				CAN.TransmitData = PosSensor.SafetyWord;
+				
+				CAN.Transmit.data_uint8[0] = (CAN.Identifier>>0)&0xff;
+				CAN.Transmit.data_uint8[1] = (CAN.Identifier>>8)&0xff;
+				CAN.Transmit.data_uint8[2] = (CAN.TransmitData>>0)&0xff;
 				
 				while(1)
 				{
-					CAN_Transmit(errorCode);
+					CAN_Transmit(CAN.Transmit, 3);
 				
-					PutNum((uint16_t)PosSensor.SafetyWord,'\t');	
-					PutStr("ENCODER LOST\r\n");	
+					PutStr("ENCODER LOST:");	
+					PutNum((uint16_t)PosSensor.SafetyWord, '\n');
+					
 					SendBuf();
 					
 					LL_mDelay(10);

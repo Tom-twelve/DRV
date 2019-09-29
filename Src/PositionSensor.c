@@ -188,7 +188,7 @@ extern struct MainController_t MainController;
 
 	void GetEleAngularSpeed(void)
 	{
-		const uint16_t FilterOrder = 10;
+		const uint16_t FilterOrder = 6;
 		
 		float angleDifference = 0;
 		float presentEleAngle = 0;
@@ -220,7 +220,7 @@ extern struct MainController_t MainController;
 		
 		old = array[pos];
 		
-		array[pos] = angleDifference / (Regulator.ActualPeriod_s * PERIOD_MULTIPLE);
+		array[pos] = angleDifference / Regulator.ActualPeriod_s;
 			
 		sum = (sum - old) + array[pos];
 			

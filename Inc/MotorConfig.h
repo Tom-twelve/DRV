@@ -202,7 +202,7 @@
 	#define PHASE_RES							(25.f * (float)1e-3)	//(Ohm)
 	#define INDUCTANCE_D						(15.f * (float)1e-6)	//(H)
 	#define INDUCTANCE_Q						(15.f * (float)1e-6)	//(H)
-	#define MAX_SPD								((uint32_t)(TLE5012_ABS_MODE_RESOLUTION * GENERATRIX_VOL * MOTOR_KV / 60))
+	#define MAX_SPD								((uint32_t)(GENERATRIX_VOL * MOTOR_KV / 60.f * 2.f * PI))
 #elif	MOTOR_TYPE == N5055_KV400
 	#define MOTOR_POLE_PAIRS_NUM				7
 	#define	MOTOR_KV							400.f
@@ -210,7 +210,7 @@
 	#define PHASE_RES							(50.f * (float)1e-3)	//(Ohm)
 	#define INDUCTANCE_D						(55.f * (float)1e-6)	//(H)
 	#define INDUCTANCE_Q						(55.f * (float)1e-6)	//(H)
-	#define MAX_SPD								((uint32_t)(TLE5012_ABS_MODE_RESOLUTION * GENERATRIX_VOL * MOTOR_KV / 60))
+	#define MAX_SPD								((uint32_t)(GENERATRIX_VOL * MOTOR_KV / 60.f * 2.f * PI))
 #elif	MOTOR_TYPE == TMOTOR_U3_KV700
 	#define MOTOR_POLE_PAIRS_NUM				7
 	#define	MOTOR_KV							700.f
@@ -218,7 +218,7 @@
 	#define PHASE_RES							(85.f * (float)1e-3)	//(Ohm)
 	#define INDUCTANCE_D						(22.f * (float)1e-6)	//(H)
 	#define INDUCTANCE_Q						(22.f * (float)1e-6)	//(H)
-	#define MAX_SPD								((uint32_t)(TLE5012_ABS_MODE_RESOLUTION * GENERATRIX_VOL * MOTOR_KV / 60))
+	#define MAX_SPD								((uint32_t)(GENERATRIX_VOL * MOTOR_KV / 60.f * 2.f * PI))
 #elif	MOTOR_TYPE == TMOTOR_P80_KV100
 	#define MOTOR_POLE_PAIRS_NUM				21
 	#define	MOTOR_KV							100.f
@@ -226,7 +226,7 @@
 	#define PHASE_RES							(20.f * (float)1e-3)	//(Ohm)
 	#define INDUCTANCE_D						(24.f * (float)1e-6)	//(H)
 	#define INDUCTANCE_Q						(24.f * (float)1e-6)	//(H)
-	#define MAX_SPD								((uint32_t)(TLE5012_ABS_MODE_RESOLUTION * GENERATRIX_VOL * MOTOR_KV / 60))	
+	#define MAX_SPD								((uint32_t)(GENERATRIX_VOL * MOTOR_KV / 60.f * 2.f * PI))
 #elif	MOTOR_TYPE == TMOTOR_MN505_S_KV320
 	#define MOTOR_POLE_PAIRS_NUM				14
 	#define	MOTOR_KV							320.f
@@ -234,7 +234,7 @@
 	#define PHASE_RES							0.019f		//(Ohm) T-MOTOR官方数据
 	#define INDUCTANCE_D						0.000008f	//(H)
 	#define INDUCTANCE_Q						0.000014f	//(H)
-	#define MAX_SPD								((uint32_t)(TLE5012_ABS_MODE_RESOLUTION * GENERATRIX_VOL * MOTOR_KV / 60))	
+	#define MAX_SPD								((uint32_t)(GENERATRIX_VOL * MOTOR_KV / 60.f * 2.f * PI))
 #elif	MOTOR_TYPE == SUNNYSKY_X4125_9_KV350
 	#define MOTOR_POLE_PAIRS_NUM				7
 	#define	MOTOR_KV							400.f
@@ -242,7 +242,7 @@
 	#define PHASE_RES							0.0186698157f	//(Ohm)
 	#define INDUCTANCE_D						0.0000065f		//(H)
 	#define INDUCTANCE_Q						0.000012f		//(H)
-	#define MAX_SPD								((uint32_t)(TLE5012_ABS_MODE_RESOLUTION * GENERATRIX_VOL * MOTOR_KV / 60))	
+	#define MAX_SPD								((uint32_t)(GENERATRIX_VOL * MOTOR_KV / 60.f * 2.f * PI))
 #elif	MOTOR_TYPE == SCREW_MOTOR_KV320	//与TMOTOR_MN505_S_KV320使用同一电枢
 	#define MOTOR_POLE_PAIRS_NUM				14
 	#define	MOTOR_KV							320.f
@@ -250,7 +250,7 @@
 	#define PHASE_RES							0.019f		//(Ohm) T-MOTOR官方数据
 	#define INDUCTANCE_D						0.000008f	//(H)
 	#define INDUCTANCE_Q						0.000014f	//(H)
-	#define MAX_SPD								((uint32_t)(TLE5012_ABS_MODE_RESOLUTION * GENERATRIX_VOL * MOTOR_KV / 60))	
+	#define MAX_SPD								((uint32_t)(GENERATRIX_VOL * MOTOR_KV / 60.f * 2.f * PI))
 #else
 #error "Motor Type Invalid"
 #endif

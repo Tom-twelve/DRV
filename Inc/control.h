@@ -56,6 +56,7 @@ struct VolCtrl_t
 struct SpdLoop_t
 {
 	float ExptMecAngularSpeed_rad;		//期望机械角速度(rad/s), 弧度制
+	float MaxExptMecAngularSpeed_rad;	//最大期望机械角速度(rad/s), 弧度制
 	float Acceleration;					//加速度(rad/s2), 弧度制
 	float Deceleration;					//减速度(rad/s2), 弧度制
 	float Err;
@@ -67,7 +68,8 @@ struct SpdLoop_t
 struct PosLoop_t
 {
 	float ExptMecAngle_rad;			//目标角度, 弧度制
-	float MaxMecAngularSpeed_rad; 	//位置环最大输出速度, 弧度制
+	float MecAngleUpperLimit_rad;	//位置环位置上限(rad), 弧度制
+	float MecAngleLowerLimit_rad;	//位置环位置下限(rad), 弧度制
 	float Err;
 	float LastErr;
 	float DiffErr;
@@ -87,11 +89,14 @@ struct Regulator_t
 struct MainController_t
 {
 	int32_t ExptMecAngularSpeed_pulse;	//目标机械角速度, 脉冲
-	int32_t ExptMecAngle_pulse;			//目标位置, 脉冲
-	int32_t RefMecAngle_pulse;			//参考机械角度, 上电时置零, 脉冲
+	uint32_t MaxMecAngularSpeed_pulse;	//速度环最大期望速度, 脉冲
 	uint32_t Acceleration_pulse;		//加速度, 脉冲
 	uint32_t Deceleration_pulse;		//减速度, 脉冲
-	uint32_t MaxMecAngularSpeed_pulse;	//位置环最大输出速度, 脉冲
+	int32_t ExptMecAngle_pulse;			//目标位置, 脉冲
+	int32_t MecAngleUpperLimit_pulse;	//位置环位置上限, 脉冲
+	int32_t MecAngleLowerLimit_pulse;	//位置环位置下限, 脉冲
+	int32_t RefMecAngle_pulse;			//参考机械角度, 上电时置零, 脉冲
+
 	uint16_t PresentMecAngle_pulse;
 	uint16_t LastMecAngle_pulse;
 };
@@ -122,6 +127,8 @@ struct MainController_t
 #define PERIOD_REGULATOR_KI 			(0.005952380952381 * DEFAULT_CARRIER_PERIOD_s)
 #define PERIOD_REGULATOR_KD 			(0.005952380952381) // 参数待调（这个初值是通过简单的计算一下，假设偏差的差分出现了1的变动，改变多少周期粗略的估计的，并非使用KD = Kd / dt)
 #define PERIOD_REGULATOR_LIM			5	//载波周期调节器限幅值	
+
+#define MC_CTRL_RESOLUTION				4096
 
 /*控制模式, 需与driver.c同步*/
 #define SPD_CURR_CTRL_MODE 				1

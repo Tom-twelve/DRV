@@ -232,6 +232,7 @@ void SpeedLoopInit(void)
 		SpdLoop.Kp = SPEED_CONTROL_KP;	
 		SpdLoop.Ki = SPEED_CONTROL_KI;
 		SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;	//期望速度，degree per second
+		SpdLoop.MaxExptMecAngularSpeed_rad = MAX_SPD;	//最大转速
 		SpdLoop.Acceleration = 3000.f * 2 * PI;	//期望加速度，degree per quadratic seconds
 		SpdLoop.Deceleration = SpdLoop.Acceleration;
 	}
@@ -240,6 +241,7 @@ void SpeedLoopInit(void)
 		/*位置-速度-电流三环控制*/
 		SpdLoop.Kp = SPEED_CONTROL_KP;
 		SpdLoop.Ki = SPEED_CONTROL_KI;
+		SpdLoop.MaxExptMecAngularSpeed_rad = 15.f * 2 * PI;	//最大转速
 		SpdLoop.Acceleration = 3000.f * 2 * PI;	//期望加速度，degree per quadratic seconds
 		SpdLoop.Deceleration = SpdLoop.Acceleration;
 	}
@@ -248,6 +250,7 @@ void SpeedLoopInit(void)
 		/*速度环单环控制*/
 		SpdLoop.Kp = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS_NUM * 5.5f) * 1.0f;	
 		SpdLoop.Ki = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS_NUM * 25.0f) * 1.0f;
+		SpdLoop.MaxExptMecAngularSpeed_rad = MAX_SPD;	//最大期望转速
 		SpdLoop.ExptMecAngularSpeed_rad = 10.f * 2 * PI;	//期望速度，rad per second
 		SpdLoop.Acceleration = 3000.f * 2 * PI;	//期望加速度，rad per quadratic seconds
 		SpdLoop.Deceleration = SpdLoop.Acceleration;
@@ -257,6 +260,7 @@ void SpeedLoopInit(void)
 		/*位置-速度双环控制*/
 		SpdLoop.Kp = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS_NUM * 5.5f) * 1.0f;	
 		SpdLoop.Ki = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS_NUM * 25.0f) * 0.0f;
+		SpdLoop.MaxExptMecAngularSpeed_rad = 15.f * 2 * PI;	//最大转速
 		SpdLoop.Acceleration = 3000.f * 2 * PI;	//期望加速度，degree per quadratic seconds
 		SpdLoop.Deceleration = SpdLoop.Acceleration;
 	}
@@ -272,7 +276,6 @@ void PositionLoopInit(void)
 		/*位置-速度-电流三环控制*/
 		PosLoop.Kp = POSITION_CONTROL_KP;
 		PosLoop.Kd = POSITION_CONTROL_KD;	
-		PosLoop.MaxMecAngularSpeed_rad = 15.f * 2 * PI;	//最大转速
 		MainController.ExptMecAngle_pulse = 0;
 	}
 	else if(Driver.ControlMode == POS_CURR_CTRL_MODE)
@@ -287,7 +290,6 @@ void PositionLoopInit(void)
 		/*位置-速度双环控制*/
 		PosLoop.Kp = 80.5f * 1.0f;
 		PosLoop.Kd = 8.5f * 0.1f;	
-		PosLoop.MaxMecAngularSpeed_rad = 15.f * 2 * PI;
 		MainController.ExptMecAngle_pulse = 0;
 	}	
 }
@@ -351,6 +353,8 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
    */
 void SpeedLoop(float exptMecAngularSpeed, float realMecAngularSpeed, float *ctrlCurrQ)
 {
+	Saturation_float(&exptMecAngularSpeed, SpdLoop.MaxExptMecAngularSpeed_rad, -SpdLoop.MaxExptMecAngularSpeed_rad);
+	
 	SpdLoop.Err = exptMecAngularSpeed - realMecAngularSpeed;
 	
 	*ctrlCurrQ = SpdLoop.Kp * SpdLoop.Err + SpdLoop.Ki * SpdLoop.IntegralErr;
@@ -453,10 +457,7 @@ void PosSpdCurrController(void)
 		PosLoop.ExptMecAngle_rad = PULSE_TO_RAD(MainController.ExptMecAngle_pulse);
 	
 		PositionLoop(PosLoop.ExptMecAngle_rad, PULSE_TO_RAD(MainController.RefMecAngle_pulse), &SpdLoop.ExptMecAngularSpeed_rad);
-		
-		/*位置环输出限幅*/
-		Saturation_float(&SpdLoop.ExptMecAngularSpeed_rad, PosLoop.MaxMecAngularSpeed_rad, -PosLoop.MaxMecAngularSpeed_rad);
-		
+				
 		SpeedLoop(VelocitySlopeGenerator(SpdLoop.ExptMecAngularSpeed_rad), PosSensor.MecAngularSpeed_rad, &CurrLoop.ExptCurrQ);
 		
 		/*速度环输出限幅*/

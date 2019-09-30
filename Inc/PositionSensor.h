@@ -31,30 +31,29 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #if POSITION_SENSOR_TYPE == ENCODER_TLE5012
-	#define SPI_TX_ON           GPIOB->MODER &= 0xFFFFF3FF; GPIOB->MODER |= 0x00000800	// PB5--MOSI复用
-	#define SPI_TX_OFF          GPIOB->MODER &= 0xFFFFF3FF; GPIOB->MODER |= 0x00000000	//PB5--复位(输入模式)
+	#define SPI_TX_ON           		GPIOB->MODER &= 0xFFFFF3FF; GPIOB->MODER |= 0x00000800	// PB5--MOSI复用
+	#define SPI_TX_OFF          		GPIOB->MODER &= 0xFFFFF3FF; GPIOB->MODER |= 0x00000000	//PB5--复位(输入模式)
 
-	#define	TLE5012_UpdateTime_0		0.0000213f	//(s)	
-	#define	TLE5012_UpdateTime_1		0.0000427f	//(s)	
-	#define	TLE5012_UpdateTime_2		0.0000853f	//(s)	
-	#define	TLE5012_UpdateTime_3		0.0001706f	//(s)	
+	#define	TLE5012_UPDATED_TIME_0		0.0000213f	//(s)	
+	#define	TLE5012_UPDATED_TIME_1		0.0000427f	//(s)	
+	#define	TLE5012_UPDATED_TIME_2		0.0000853f	//(s)	
+	#define	TLE5012_UPDATED_TIME_3		0.0001706f	//(s)	
 		
-	#define	TLE5012_SPI1_ChipSelect				LL_GPIO_ResetOutputPin(Encoder_SPI1_NSS_GPIO_Port, Encoder_SPI1_NSS_Pin)
-	#define	TLE5012_SPI1_ChipDiselect			LL_GPIO_SetOutputPin(Encoder_SPI1_NSS_GPIO_Port, Encoder_SPI1_NSS_Pin)
+	#define	TLE5012_SPI1_CHIP_SELECT			LL_GPIO_ResetOutputPin(Encoder_SPI1_NSS_GPIO_Port, Encoder_SPI1_NSS_Pin)
+	#define	TLE5012_SPI1_CHIP_DISELECT			LL_GPIO_SetOutputPin(Encoder_SPI1_NSS_GPIO_Port, Encoder_SPI1_NSS_Pin)
 
-	#define TLE5012_Command_ReadCurrentValue_AngleValue		0x8021	
-	#define TLE5012_Command_ReadUpdatedValue_AngleValue		0x8421	
+	#define TLE5012_COMMAND_READ_CURRENT_VALUE_ANGLE			0x8021	
+	#define TLE5012_COMMAND_READ_UPDATED_VALUE_ANGLE			0x8421	
 
-	#define TLE5012_Command_ReadCurrentValue_AngularSpeed 	0x8031	
-	#define TLE5012_Command_ReadUpdatedValue_AngularSpeed	0x8431
+	#define TLE5012_COMMAND_READ_CURRENT_VALUE_ANGULAR_SPD 		0x8031	
+	#define TLE5012_COMMAND_READ_UPDATED_VALUE_ANGULAR_SPD		0x8431
 		
-	#define TLE5012_Command_ReadCurrentValue_FSYNC			0x8051	
-	#define TLE5012_Command_ReadUpdatedValue_FSYNC			0x8451
+	#define TLE5012_COMMAND_READ_CURRENT_VALUE_FSYNC			0x8051	
+	#define TLE5012_COMMAND_READ_UPDATED_VALUE_FSYNC			0x8451
 	
-	#define TLE5012_ABS_MODE_RESOLUTION						32768
-	#define TLE5012_IncrementalModeResolution				4096
+	#define TLE5012_ABS_MODE_RESOLUTION							32768
+	#define TLE5012_INCREMENTAL_MODE_RESOLUTION					4096
 	
-	#define DIVIDE_NUM  20	//将360度n等分, 每次电角度增量为(360/DIVIDE_NUM)
 #else
 #error "Position Sensor Type Invalid"
 #endif

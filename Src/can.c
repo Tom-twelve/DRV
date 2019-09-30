@@ -551,14 +551,14 @@ void CAN_Enable(void)
 {
 	/*ÅäÖÃ¹ýÂËÆ÷*/
 	CAN_FilterTypeDef CAN1_FilerConf    = {0};
-	CAN1_FilerConf.FilterIdHigh         = 0X0000;
-	CAN1_FilerConf.FilterIdLow          = 0X0000;
-	CAN1_FilerConf.FilterMaskIdHigh     = 0X0000;
-	CAN1_FilerConf.FilterMaskIdLow      = 0X0000;
+	CAN1_FilerConf.FilterIdHigh         = 0x0000;
+	CAN1_FilerConf.FilterIdLow          = (DRIVER_SERVER_CAN_ID << 5) | (CAN_ID_STD << 4) | (CAN_ID_STD << 3);
+	CAN1_FilerConf.FilterMaskIdHigh     = 0x0000;
+	CAN1_FilerConf.FilterMaskIdLow      = 0xFFF8;
 	CAN1_FilerConf.FilterFIFOAssignment = CAN_FILTER_FIFO0;
 	CAN1_FilerConf.FilterBank           = 0;
 	CAN1_FilerConf.FilterMode           = CAN_FILTERMODE_IDMASK;
-	CAN1_FilerConf.FilterScale          = CAN_FILTERSCALE_32BIT;
+	CAN1_FilerConf.FilterScale          = CAN_FILTERSCALE_16BIT;
 	CAN1_FilerConf.FilterActivation     = ENABLE;
 	CAN1_FilerConf.SlaveStartFilterBank = 14;
 	HAL_CAN_ConfigFilter(&hcan1, &CAN1_FilerConf);

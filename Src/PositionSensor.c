@@ -57,7 +57,7 @@ extern struct MainController_t MainController;
 		#endif
 		GetEleAngle(); //计算电角度
 		GetEleAngularSpeed();  //计算电角速度
-		EncoderLostDetection();		//编码器异常检测
+		EncodeErrorDetection();		//编码器异常检测
 	}
 
 	void GetMecImformation(void)
@@ -237,7 +237,7 @@ extern struct MainController_t MainController;
 		PosSensor.FSYNC = (TLE5012_ReadRegister(TLE5012_COMMAND_READ_CURRENT_VALUE_FSYNC, &PosSensor.SafetyWord)) >> 9;
 	}
 	
-	void EncoderLostDetection(void)
+	void EncodeErrorDetection(void)
 	{
 		static uint8_t count = 0;
 		
@@ -255,18 +255,17 @@ extern struct MainController_t MainController;
 				PWM_IT_CMD(DISABLE,ENABLE);
 				
 				/*通过CAN总线告知主控编码器异常*/
-				CAN.Identifier = 0x4C45;	//EL
+				CAN.Identifier = 0xBB;
 				CAN.TransmitData = PosSensor.SafetyWord;
 				
-				CAN.Transmit.data_uint8[0] = (CAN.Identifier>>0)&0xff;
-				CAN.Transmit.data_uint8[1] = (CAN.Identifier>>8)&0xff;
-				CAN.Transmit.data_uint8[2] = (CAN.TransmitData>>0)&0xff;
+				CAN.Transmit.data_uint8[0] = (CAN.Identifier>>0)&0xFF;
+				CAN.Transmit.data_uint8[1] = (CAN.Identifier>>8)&0xFF;
 				
 				while(1)
 				{
-					CAN_Transmit(CAN.Transmit, 3);
+					CAN_Transmit(CAN.Transmit, 2);
 				
-					PutStr("ENCODER LOST:");	
+					PutStr("ENCODER ERROR:");	
 					PutNum((uint16_t)PosSensor.SafetyWord, '\n');
 					
 					SendBuf();

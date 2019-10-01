@@ -105,7 +105,7 @@
 	void GetMecAngle_AbsoluteMode_15bit(void);
 	void GetMecAngle_IncrementalMode_14bit(void);
 	void TLE5012_ReadFSYNC(void);
-	void EncoderLostDetection(void);
+	void EncodeErrorDetection(void);
 	uint16_t TLE5012_ReadRegister(uint16_t command, uint16_t *safetyWord);
 	void EncoderIncrementalModeEnable(void);
 	void PosSensor_Init(void);

@@ -196,7 +196,7 @@ void CurrentLoopInit(void)
 {
 	/*设定电流环PI参数*/
 	CurrLoop.Kp_D = CURRENT_CONTROL_KP_D;												
-	CurrLoop.Ki_D = CURRENT_CONTROL_KI_D;						
+	CurrLoop.Ki_D = CURRENT_CONTROL_KI_D * 0.001;						
 	CurrLoop.Kp_Q = CURRENT_CONTROL_KP_Q;
 	CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q * 0.001;
 	
@@ -336,12 +336,12 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 	Saturation_float(&CurrLoop.IntegralErrD, CURR_INTEGRAL_ERR_LIM_D, -CURR_INTEGRAL_ERR_LIM_D);
 	Saturation_float(&CurrLoop.IntegralErrQ, CURR_INTEGRAL_ERR_LIM_Q, -CURR_INTEGRAL_ERR_LIM_Q);
 	
-	/*基于电机模型的改进型电流控制器, 采用P调节+电机模型补偿*/
-	*ctrlVolD = CurrLoop.Kp_D * CurrLoop.ErrD - PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ;
+	/*基于电机模型的改进型电流控制器, 采用PI调节+电机模型补偿*/
+	*ctrlVolD = CurrLoop.Kp_D * CurrLoop.ErrD + CurrLoop.Ki_D * CurrLoop.IntegralErrD - PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ;
 	*ctrlVolQ = CurrLoop.Kp_Q * CurrLoop.ErrQ + CurrLoop.Ki_Q * CurrLoop.IntegralErrQ + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
 	
 	/*电流环d轴电流限幅*/
-	Saturation_float(ctrlVolD, 10.f, -10.f);
+	Saturation_float(ctrlVolD, GENERATRIX_VOL / SQRT3, -GENERATRIX_VOL / SQRT3);
 	Saturation_float(ctrlVolQ, sqrt(SQUARE(GENERATRIX_VOL) / 3.f - SQUARE(*ctrlVolD)), -sqrt(SQUARE(GENERATRIX_VOL) / 3.f - SQUARE(*ctrlVolD)));
 }
 
@@ -454,9 +454,9 @@ void PosSpdCurrController(void)
 		/*更新机械速度及位置信息*/
 		GetMecImformation();
 		
-		PosLoop.ExptMecAngle_rad = PULSE_TO_RAD(MainController.ExptMecAngle_pulse);
+		PosLoop.ExptMecAngle_rad = DRV_PULSE_TO_RAD(MainController.ExptMecAngle_pulse);
 	
-		PositionLoop(PosLoop.ExptMecAngle_rad, PULSE_TO_RAD(MainController.RefMecAngle_pulse), &SpdLoop.ExptMecAngularSpeed_rad);
+		PositionLoop(PosLoop.ExptMecAngle_rad, DRV_PULSE_TO_RAD(MainController.RefMecAngle_pulse), &SpdLoop.ExptMecAngularSpeed_rad);
 				
 		SpeedLoop(VelocitySlopeGenerator(SpdLoop.ExptMecAngularSpeed_rad), PosSensor.MecAngularSpeed_rad, &CurrLoop.ExptCurrQ);
 		
@@ -512,9 +512,9 @@ void PosCurrController(void)
 		/*更新机械速度及位置信息*/
 		GetMecImformation();
 		
-		PosLoop.ExptMecAngle_rad = PULSE_TO_RAD(MainController.ExptMecAngle_pulse);
+		PosLoop.ExptMecAngle_rad = DRV_PULSE_TO_RAD(MainController.ExptMecAngle_pulse);
 	
-		PositionLoop(PosLoop.ExptMecAngle_rad, PULSE_TO_RAD(MainController.RefMecAngle_pulse), &CurrLoop.ExptCurrQ);
+		PositionLoop(PosLoop.ExptMecAngle_rad, DRV_PULSE_TO_RAD(MainController.RefMecAngle_pulse), &CurrLoop.ExptCurrQ);
 		
 		/*位置环输出限幅*/
 		Saturation_float(&CurrLoop.ExptCurrQ, CurrLoop.LimitCurrQ, -CurrLoop.LimitCurrQ);
@@ -600,9 +600,9 @@ void PosSpdVolController(void)
 	/*更新机械速度及位置信息*/
 	GetMecImformation();
 	
-	PosLoop.ExptMecAngle_rad = PULSE_TO_RAD(MainController.ExptMecAngle_pulse);
+	PosLoop.ExptMecAngle_rad = DRV_PULSE_TO_RAD(MainController.ExptMecAngle_pulse);
 	
-	PositionLoop(PosLoop.ExptMecAngle_rad, PULSE_TO_RAD(MainController.RefMecAngle_pulse), &SpdLoop.ExptMecAngularSpeed_rad);
+	PositionLoop(PosLoop.ExptMecAngle_rad, DRV_PULSE_TO_RAD(MainController.RefMecAngle_pulse), &SpdLoop.ExptMecAngularSpeed_rad);
 		
 	SpeedLoop(VelocitySlopeGenerator(SpdLoop.ExptMecAngularSpeed_rad), PosSensor.MecAngularSpeed_rad, &VolCtrl.CtrlVolQ);
 	

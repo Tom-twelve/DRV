@@ -173,22 +173,22 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 			case 0x02:
 				
 				/*期望速度*/
-				MainController.ExptMecAngularSpeed_pulse =  (int32_t)(CAN.ReceiveData / 4096.f * TLE5012_ABS_MODE_RESOLUTION);
-				SpdLoop.ExptMecAngularSpeed_rad = PULSE_TO_RAD(MainController.ExptMecAngularSpeed_pulse);
+				MainController.ExptMecAngularSpeed_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
+				SpdLoop.ExptMecAngularSpeed_rad = DRV_PULSE_TO_RAD(MainController.ExptMecAngularSpeed_pulse);
 			
 				break;
 			
 			case 0x03:
 			
 				/*期望位置, 绝对位置模式*/
-				MainController.ExptMecAngle_pulse = (int32_t)(CAN.ReceiveData / 4096.f * TLE5012_ABS_MODE_RESOLUTION);
+				MainController.ExptMecAngle_pulse = MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 			
 				break;
 
 			case 0x04:
 				
 				/*期望位置, 相对位置模式*/
-				MainController.ExptMecAngle_pulse = MainController.RefMecAngle_pulse + (int32_t)(CAN.ReceiveData / 4096.f * TLE5012_ABS_MODE_RESOLUTION);
+				MainController.ExptMecAngle_pulse = MainController.RefMecAngle_pulse +  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 			
 				break;
 						
@@ -213,16 +213,16 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 			case 0x06:
 				
 				/*设置加速度*/
-				MainController.Acceleration_pulse = (int32_t)(CAN.ReceiveData / 4096.f * TLE5012_ABS_MODE_RESOLUTION);
-				SpdLoop.Acceleration = PULSE_TO_RAD(MainController.Acceleration_pulse);
+				MainController.Acceleration_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
+				SpdLoop.Acceleration = DRV_PULSE_TO_RAD(MainController.Acceleration_pulse);
 				
 				break;
 
 			case 0x07:
 
 				/*设置减速度*/
-				MainController.Deceleration_pulse = (int32_t)(CAN.ReceiveData / 4096.f * TLE5012_ABS_MODE_RESOLUTION);
-				SpdLoop.Deceleration = PULSE_TO_RAD(MainController.Deceleration_pulse);
+				MainController.Deceleration_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
+				SpdLoop.Deceleration = DRV_PULSE_TO_RAD(MainController.Deceleration_pulse);
 
 				break;
 					
@@ -238,24 +238,24 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 				/*配置速度环最大期望速度*/
 				/*不超过电机的最大转速*/
 				Saturation_int((int32_t*)&CAN.ReceiveData, MAX_SPD, -MAX_SPD);
-				MainController.MaxMecAngularSpeed_pulse = (int32_t)(CAN.ReceiveData / 4096.f * TLE5012_ABS_MODE_RESOLUTION);
-				SpdLoop.MaxExptMecAngularSpeed_rad = PULSE_TO_RAD(MainController.MaxMecAngularSpeed_pulse);
+				MainController.MaxMecAngularSpeed_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
+				SpdLoop.MaxExptMecAngularSpeed_rad = DRV_PULSE_TO_RAD(MainController.MaxMecAngularSpeed_pulse);
 				
 				break;
 			
 			case 0x0A:
 				
 				/*配置位置环位置上限*/
-				MainController.MecAngleUpperLimit_pulse = (int32_t)(CAN.ReceiveData / 4096.f * TLE5012_ABS_MODE_RESOLUTION);
-				PosLoop.MecAngleUpperLimit_rad = (float)PULSE_TO_RAD(MainController.MecAngleUpperLimit_pulse);
+				MainController.MecAngleUpperLimit_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
+				PosLoop.MecAngleUpperLimit_rad = (float)DRV_PULSE_TO_RAD(MainController.MecAngleUpperLimit_pulse);
 			
 				break;
 			
 			case 0x0B:
 				
 				/*配置位置环位置下限*/
-				MainController.MecAngleLowerLimit_pulse = (int32_t)(CAN.ReceiveData / 4096.f * TLE5012_ABS_MODE_RESOLUTION);
-				PosLoop.MecAngleLowerLimit_rad = (float)PULSE_TO_RAD(MainController.MecAngleLowerLimit_pulse);
+				MainController.MecAngleLowerLimit_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
+				PosLoop.MecAngleLowerLimit_rad = (float)DRV_PULSE_TO_RAD(MainController.MecAngleLowerLimit_pulse);
 			
 				break;
 			
@@ -360,7 +360,7 @@ void CAN_Respond(void)
 		case (0x40 + 0x0C):
 			
 			CAN.Identifier = 0x0C;
-			CAN.TransmitData = (int32_t)(PosSensor.MecAngularSpeed_rad / (2.f * PI) * TLE5012_ABS_MODE_RESOLUTION);
+			CAN.TransmitData = RAD_TO_MC_PULSE(PosSensor.MecAngularSpeed_rad);
 		
 			/*发送当前速度*/
 			CAN.Transmit.data_uint8[0] = (CAN.Identifier>>0)&0xFF;
@@ -470,15 +470,13 @@ void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan)
 	PutStr("CAN Error Code:");
 	PutNum(hcan->ErrorCode, '\n');SendBuf();
 	
-	CAN.Identifier = 0x5245;	//ER
+	CAN.Identifier = 0xAA;
 	CAN.TransmitData = hcan->ErrorCode;
 	
-	CAN.Transmit.data_uint8[0] = (CAN.Identifier>>0)&0xff;
-	CAN.Transmit.data_uint8[1] = (CAN.Identifier>>8)&0xff;
-	CAN.Transmit.data_uint8[2] = (CAN.TransmitData>>0)&0xff;
-	CAN.Transmit.data_uint8[3] = (CAN.TransmitData>>8)&0xff;
-	CAN.Transmit.data_uint8[4] = (CAN.TransmitData>>16)&0xff;
-	CAN.Transmit.data_uint8[5] = (CAN.TransmitData>>24)&0xff;
+	CAN.Transmit.data_uint8[0] = (CAN.Identifier>>0)&0xFF;
+	CAN.Transmit.data_uint8[1] = (CAN.Identifier>>0)&0xFF;
+	CAN.Transmit.data_uint8[2] = (CAN.TransmitData>>8)&0xFF;
+	CAN.Transmit.data_uint8[3] = (CAN.TransmitData>>16)&0xFF;
 
 	if(errTimes++ <= 100)
 	{

@@ -18,9 +18,10 @@
 #define NORMALIZED(val) 						((val > 1) ? 1 : (val < 0 ?  0 : val))
 #define RAD_TO_DEGREE(val)  					((float)val / 2.f / PI * 360.f)
 #define DEGREE_TO_RAD(val)						((float)val / 360.f * 2.f * PI)
-#define PULSE_TO_RAD(val)						((float)val / (float)TLE5012_ABS_MODE_RESOLUTION * 2.f * PI)
-#define DRV_PULSE_TO_MC_PULSE(val)				((float)val / (float)TLE5012_ABS_MODE_RESOLUTION * (float)MC_CTRL_RESOLUTION)
-#define MC_PULSE_TO_DRV_PULSE(val)				((float)val / (float)MC_CTRL_RESOLUTION * (float)TLE5012_ABS_MODE_RESOLUTION)
+#define DRV_PULSE_TO_RAD(val)					((float)val / (float)TLE5012_ABS_MODE_RESOLUTION * 2.f * PI)
+#define RAD_TO_MC_PULSE(val)					((int32_t)((float)val / 2.f / PI * (float)MC_CTRL_RESOLUTION))
+#define DRV_PULSE_TO_MC_PULSE(val)				((int32_t)((float)val / (float)TLE5012_ABS_MODE_RESOLUTION * (float)MC_CTRL_RESOLUTION))
+#define MC_PULSE_TO_DRV_PULSE(val)				((int32_t)((float)val / (float)MC_CTRL_RESOLUTION * (float)TLE5012_ABS_MODE_RESOLUTION))
 
 float utils_map(float x, float in_min, float in_max, float out_min, float out_max);
 uint32_t UtilBiSearchInt(const int sortedIntArr[], int find, uint32_t maxN);

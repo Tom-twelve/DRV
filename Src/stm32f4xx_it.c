@@ -80,6 +80,7 @@ extern ADC_HandleTypeDef hadc1;
 extern ADC_HandleTypeDef hadc2;
 extern ADC_HandleTypeDef hadc3;
 
+extern struct CAN_t CAN;
 extern struct PosLoop_t PosLoop;
 extern struct SpdLoop_t SpdLoop;
 extern struct CurrLoop_t CurrLoop;
@@ -302,8 +303,8 @@ void ADC_IRQHandler(void)
 										CalculateEleTorque(CoordTrans.CurrQ, &Driver.EleTorque);
 										
 										UART_Transmit_DMA("%d\t", (int)(PosSensor.MecAngularSpeed_rad));
-										UART_Transmit_DMA("%d\t", (int)(CurrLoop.CtrlVolQ * 1e3));
-										UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrQ * 1e3));
+										UART_Transmit_DMA("%d\t", (int)(CAN.Identifier));
+										UART_Transmit_DMA("%d\r\n",(int)(CAN.ReceiveData));
 			
 										break;
 			

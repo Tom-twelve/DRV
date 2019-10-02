@@ -121,6 +121,16 @@ extern struct MainController_t MainController;
 		}
 		
 		MainController.RefMecAngle_pulse += delta;
+		
+		/*只传输三个字节的数据给主控, 限幅以防止数据溢出*/
+		if(MainController.RefMecAngle_pulse > 1024 * 4096)
+		{
+			MainController.RefMecAngle_pulse = 0;
+		}
+		else if(MainController.RefMecAngle_pulse < -1024 * 4096)
+		{
+			MainController.RefMecAngle_pulse = 0;
+		}
 	}
 	
 	void GetMecAngularSpeed(void)
@@ -257,17 +267,12 @@ extern struct MainController_t MainController;
 				/*通过CAN总线告知主控编码器异常*/
 				CAN.Identifier = 0xBB;
 				CAN.TransmitData = PosSensor.SafetyWord;
-				
-				CAN.Transmit.data_uint8[0] = (CAN.Identifier>>0)&0xFF;
-				CAN.Transmit.data_uint8[1] = (CAN.Identifier>>8)&0xFF;
-				
+
 				while(1)
 				{
-					CAN_Transmit(CAN.Transmit, 2);
+					CAN_Transmit(CAN.Identifier, CAN.TransmitData, 2);
 				
-					PutStr("ENCODER ERROR:");	
-					PutNum((uint16_t)PosSensor.SafetyWord, '\n');
-					
+					UART_Transmit_DMA("ENCODER ERROR: %d\r\n", (uint8_t)PosSensor.SafetyWord);
 					SendBuf();
 					
 					LL_mDelay(10);

@@ -46,21 +46,21 @@ extern CAN_HandleTypeDef hcan1;
 
 typedef union
 {
-	volatile uint32_t  data_uint32[2];
-	volatile int32_t   data_int32[2];
-	volatile uint8_t   data_uint8[8];
+	uint32_t  data_uint32[2];
+	int32_t   data_int32[2];
+	uint8_t   data_uint8[8];
 } CAN_Data_t;
 
 struct CAN_t
 {
 	uint32_t StdID;
 	uint32_t MailBox;
-	uint16_t Identifier;
-	uint32_t ReceiveData;
-	int32_t RecieveStatus;
+	uint8_t Identifier;
+	int32_t ReceiveData;
+	uint32_t RecieveStatus;
 	int32_t TransmitData;
-	volatile CAN_Data_t Receive;
-	volatile CAN_Data_t Transmit;
+	CAN_Data_t Receive;
+	CAN_Data_t Transmit;
 };
 
 /* USER CODE END Private defines */
@@ -69,7 +69,8 @@ void MX_CAN1_Init(void);
 
 /* USER CODE BEGIN Prototypes */
 void CAN_Respond(void);
-void CAN_Transmit(CAN_Data_t data, uint8_t length);
+void CAN_Transmit(uint8_t identifier, int32_t transmitData, uint8_t length);
+void CAN_Receive(uint32_t *stdId, uint8_t *identifier, int32_t *receiveData);
 void CAN_Enable(void);
 /* USER CODE END Prototypes */
 

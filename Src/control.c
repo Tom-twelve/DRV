@@ -53,7 +53,7 @@ void DriverInit(void)
 			PosSensor.PosOffset = 23504;
 			CurrLoop.LimitCurrQ = 200.f;
 
-			SpdLoop.ExptMecAngularSpeed_rad = 100.f * 2 * PI;
+			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 	
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
@@ -277,6 +277,8 @@ void PositionLoopInit(void)
 		PosLoop.Kp = POSITION_CONTROL_KP;
 		PosLoop.Kd = POSITION_CONTROL_KD;	
 		MainController.ExptMecAngle_pulse = 0;
+		PosLoop.MecAngleUpperLimit_rad = 1024 * 2.f * PI;
+		PosLoop.MecAngleLowerLimit_rad = -1024 * 2.f * PI;
 	}
 	else if(Driver.ControlMode == POS_CURR_CTRL_MODE)
 	{
@@ -284,6 +286,8 @@ void PositionLoopInit(void)
 		PosLoop.Kp = 5.0f;
 		PosLoop.Kd = 0.001f;
 		MainController.ExptMecAngle_pulse = 0;
+		PosLoop.MecAngleUpperLimit_rad = 1024 * 2.f * PI;
+		PosLoop.MecAngleLowerLimit_rad = -1024 * 2.f * PI;
 	}
 	else if(Driver.ControlMode == POS_SPD_VOL_CTRL_MODE)
 	{
@@ -291,6 +295,8 @@ void PositionLoopInit(void)
 		PosLoop.Kp = 80.5f * 1.0f;
 		PosLoop.Kd = 8.5f * 0.1f;	
 		MainController.ExptMecAngle_pulse = 0;
+		PosLoop.MecAngleUpperLimit_rad = 1024 * 2.f * PI;
+		PosLoop.MecAngleLowerLimit_rad = -1024 * 2.f * PI;
 	}	
 }
 
@@ -357,12 +363,12 @@ void SpeedLoop(float exptMecAngularSpeed, float realMecAngularSpeed, float *ctrl
 	
 	SpdLoop.Err = exptMecAngularSpeed - realMecAngularSpeed;
 	
-	*ctrlCurrQ = SpdLoop.Kp * SpdLoop.Err + SpdLoop.Ki * SpdLoop.IntegralErr;
-	
 	SpdLoop.IntegralErr += SpdLoop.Err * OUTER_LOOP_PERIOD;
 	
 	/*积分限幅*/
 	Saturation_float(&SpdLoop.IntegralErr, SPD_INTEGRAL_ERR_LIM, -SPD_INTEGRAL_ERR_LIM);
+	
+	*ctrlCurrQ = SpdLoop.Kp * SpdLoop.Err + SpdLoop.Ki * SpdLoop.IntegralErr;
 }
 
  /**
@@ -456,6 +462,9 @@ void PosSpdCurrController(void)
 		
 		PosLoop.ExptMecAngle_rad = DRV_PULSE_TO_RAD(MainController.ExptMecAngle_pulse);
 	
+		/*位置限幅*/
+		Saturation_float(&PosLoop.ExptMecAngle_rad, PosLoop.MecAngleUpperLimit_rad, PosLoop.MecAngleLowerLimit_rad);
+		
 		PositionLoop(PosLoop.ExptMecAngle_rad, DRV_PULSE_TO_RAD(MainController.RefMecAngle_pulse), &SpdLoop.ExptMecAngularSpeed_rad);
 				
 		SpeedLoop(VelocitySlopeGenerator(SpdLoop.ExptMecAngularSpeed_rad), PosSensor.MecAngularSpeed_rad, &CurrLoop.ExptCurrQ);
@@ -514,6 +523,9 @@ void PosCurrController(void)
 		
 		PosLoop.ExptMecAngle_rad = DRV_PULSE_TO_RAD(MainController.ExptMecAngle_pulse);
 	
+		/*位置限幅*/
+		Saturation_float(&PosLoop.ExptMecAngle_rad, PosLoop.MecAngleUpperLimit_rad, PosLoop.MecAngleLowerLimit_rad);
+		
 		PositionLoop(PosLoop.ExptMecAngle_rad, DRV_PULSE_TO_RAD(MainController.RefMecAngle_pulse), &CurrLoop.ExptCurrQ);
 		
 		/*位置环输出限幅*/
@@ -601,6 +613,9 @@ void PosSpdVolController(void)
 	GetMecImformation();
 	
 	PosLoop.ExptMecAngle_rad = DRV_PULSE_TO_RAD(MainController.ExptMecAngle_pulse);
+	
+	/*位置限幅*/
+	Saturation_float(&PosLoop.ExptMecAngle_rad, PosLoop.MecAngleUpperLimit_rad, PosLoop.MecAngleLowerLimit_rad);
 	
 	PositionLoop(PosLoop.ExptMecAngle_rad, DRV_PULSE_TO_RAD(MainController.RefMecAngle_pulse), &SpdLoop.ExptMecAngularSpeed_rad);
 		

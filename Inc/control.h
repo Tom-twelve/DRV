@@ -96,7 +96,6 @@ struct MainController_t
 	int32_t MecAngleUpperLimit_pulse;	//位置环位置上限, 脉冲
 	int32_t MecAngleLowerLimit_pulse;	//位置环位置下限, 脉冲
 	int32_t RefMecAngle_pulse;			//参考机械角度, 上电时置零, 脉冲
-
 	uint16_t PresentMecAngle_pulse;
 	uint16_t LastMecAngle_pulse;
 };

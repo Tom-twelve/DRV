@@ -163,102 +163,67 @@
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>SpdLoop.ExptMecAngularSpeed_rad</ItemText>
+          <ItemText>CAN.Identifier,0x10</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>CurrLoop.ExptCurrQ</ItemText>
+          <ItemText>CAN.ReceiveData,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>2</count>
           <WinNumber>1</WinNumber>
-          <ItemText>SpdLoop.Err</ItemText>
+          <ItemText>CAN.StdID,0x10</ItemText>
         </Ww>
         <Ww>
           <count>3</count>
           <WinNumber>1</WinNumber>
-          <ItemText>PosSensor.MecAngularSpeed_rad</ItemText>
+          <ItemText>CAN.Receive.data_uint8[0]</ItemText>
         </Ww>
         <Ww>
           <count>4</count>
           <WinNumber>1</WinNumber>
-          <ItemText>PosSensor.MecAngle_degree</ItemText>
+          <ItemText>CAN.Receive.data_uint8[1],0x10</ItemText>
         </Ww>
         <Ww>
           <count>5</count>
           <WinNumber>1</WinNumber>
-          <ItemText>PosSensor.MecAngle_rad</ItemText>
+          <ItemText>CAN.Receive.data_uint8[2]</ItemText>
         </Ww>
         <Ww>
           <count>6</count>
           <WinNumber>1</WinNumber>
-          <ItemText>CAN.Identifier,0x10</ItemText>
+          <ItemText>CAN.Receive.data_uint8[3],0x10</ItemText>
         </Ww>
         <Ww>
           <count>7</count>
           <WinNumber>1</WinNumber>
-          <ItemText>CAN.ReceiveData,0x0A</ItemText>
+          <ItemText>CAN.Receive.data_uint8[4]</ItemText>
         </Ww>
         <Ww>
           <count>8</count>
           <WinNumber>1</WinNumber>
-          <ItemText>CAN.StdID,0x10</ItemText>
+          <ItemText>CAN.Receive.data_uint8[5]</ItemText>
         </Ww>
         <Ww>
           <count>9</count>
           <WinNumber>1</WinNumber>
-          <ItemText>PosLoop.MaxMecAngularSpeed_rad</ItemText>
+          <ItemText>CAN.Receive.data_uint8[6]</ItemText>
         </Ww>
         <Ww>
           <count>10</count>
           <WinNumber>1</WinNumber>
-          <ItemText>CAN.Receive.data_uint8[0]</ItemText>
+          <ItemText>CAN.Receive.data_uint8[7]</ItemText>
         </Ww>
         <Ww>
           <count>11</count>
           <WinNumber>1</WinNumber>
-          <ItemText>CAN.Receive.data_uint8[1]</ItemText>
+          <ItemText>CAN.TransmitData,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>12</count>
           <WinNumber>1</WinNumber>
-          <ItemText>CAN.Receive.data_uint8[2]</ItemText>
-        </Ww>
-        <Ww>
-          <count>13</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>CAN.Receive.data_uint8[3]</ItemText>
-        </Ww>
-        <Ww>
-          <count>14</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>CAN.Receive.data_uint8[4]</ItemText>
-        </Ww>
-        <Ww>
-          <count>15</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>CAN.Receive.data_uint8[5]</ItemText>
-        </Ww>
-        <Ww>
-          <count>16</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>CAN.Receive.data_uint8[6]</ItemText>
-        </Ww>
-        <Ww>
-          <count>17</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>CAN.Receive.data_uint8[7]</ItemText>
-        </Ww>
-        <Ww>
-          <count>18</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>CAN.Receive.data_uint32[0]</ItemText>
-        </Ww>
-        <Ww>
-          <count>19</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>CAN.Receive.data_uint32[1]</ItemText>
+          <ItemText>PosSensor.MecAngularSpeed_rad</ItemText>
         </Ww>
       </WatchWindow1>
       <MemoryWindow1>

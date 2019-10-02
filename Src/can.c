@@ -29,7 +29,6 @@ CAN_TxHeaderTypeDef TxMessage = { 0 };
 CAN_RxHeaderTypeDef RxMessage0 = { 0 };
 
 struct CAN_t CAN;
-
 extern struct Driver_t Driver;
 extern struct CurrLoop_t CurrLoop;
 extern struct SpdLoop_t SpdLoop;
@@ -140,13 +139,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {	
 	first_line:
 	
-	HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &RxMessage0, (uint8_t *)&CAN.Receive);
-	
-	CAN.StdID = RxMessage0.StdId;
-	
-	CAN.Identifier = CAN.Receive.data_uint32[0] & 0xFFFF;
-	
-	CAN.ReceiveData = (CAN.Receive.data_uint32[0]>>8) & 0xFFFFFFFF;
+	CAN_Receive(&CAN.StdID, &CAN.Identifier, &CAN.ReceiveData);
 	
 	/*ACTION驱动器指令*/
 	if (CAN.StdID == DRIVER_SERVER_CAN_ID)
@@ -360,15 +353,10 @@ void CAN_Respond(void)
 		case (0x40 + 0x0C):
 			
 			CAN.Identifier = 0x0C;
-			CAN.TransmitData = RAD_TO_MC_PULSE(PosSensor.MecAngularSpeed_rad);
+			CAN.TransmitData = (int32_t)RAD_TO_MC_PULSE(PosSensor.MecAngularSpeed_rad);
 		
 			/*发送当前速度*/
-			CAN.Transmit.data_uint8[0] = (CAN.Identifier>>0)&0xFF;
-			CAN.Transmit.data_uint8[1] = (CAN.Identifier>>0)&0xFF;
-			CAN.Transmit.data_uint8[2] = (CAN.TransmitData>>8)&0xFF;
-			CAN.Transmit.data_uint8[3] = (CAN.TransmitData>>16)&0xFF;
-		
-			CAN_Transmit(CAN.Transmit, 4);
+			CAN_Transmit(CAN.Identifier, CAN.TransmitData, 4);
 		
 			CAN.RecieveStatus = 0;
 		
@@ -377,15 +365,10 @@ void CAN_Respond(void)
 		case (0x40 + 0x0D):
 			
 			CAN.Identifier = 0x0D;
-			CAN.TransmitData = (int32_t)MainController.RefMecAngle_pulse;
+			CAN.TransmitData = (int32_t)DRV_PULSE_TO_MC_PULSE(MainController.RefMecAngle_pulse);
 		
 			/*发送当前位置*/
-			CAN.Transmit.data_uint8[0] = (CAN.Identifier>>0)&0xFF;
-			CAN.Transmit.data_uint8[1] = (CAN.Identifier>>0)&0xFF;
-			CAN.Transmit.data_uint8[2] = (CAN.TransmitData>>8)&0xFF;
-			CAN.Transmit.data_uint8[3] = (CAN.TransmitData>>16)&0xFF;
-		
-			CAN_Transmit(CAN.Transmit, 4);
+			CAN_Transmit(CAN.Identifier, CAN.TransmitData, 4);
 		
 			CAN.RecieveStatus = 0;
 		
@@ -397,12 +380,7 @@ void CAN_Respond(void)
 			CAN.TransmitData = (int32_t)(Driver.EleTorque * 1e3);
 		
 			/*发送当前电磁转矩*/	
-			CAN.Transmit.data_uint8[0] = (CAN.Identifier>>0)&0xFF;
-			CAN.Transmit.data_uint8[1] = (CAN.Identifier>>0)&0xFF;
-			CAN.Transmit.data_uint8[2] = (CAN.TransmitData>>8)&0xFF;
-			CAN.Transmit.data_uint8[3] = (CAN.TransmitData>>16)&0xFF;
-		
-			CAN_Transmit(CAN.Transmit, 4);
+			CAN_Transmit(CAN.Identifier, CAN.TransmitData, 4);
 		
 			CAN.RecieveStatus = 0;
 		
@@ -414,12 +392,7 @@ void CAN_Respond(void)
 			CAN.TransmitData = (int32_t)(CurrLoop.CtrlVolQ * 1e3);
 		
 			/*发送当前Vq*/	
-			CAN.Transmit.data_uint8[0] = (CAN.Identifier>>0)&0xFF;
-			CAN.Transmit.data_uint8[1] = (CAN.Identifier>>0)&0xFF;
-			CAN.Transmit.data_uint8[2] = (CAN.TransmitData>>8)&0xFF;
-			CAN.Transmit.data_uint8[3] = (CAN.TransmitData>>16)&0xFF;
-		
-			CAN_Transmit(CAN.Transmit, 4);
+			CAN_Transmit(CAN.Identifier, CAN.TransmitData, 4);
 		
 			CAN.RecieveStatus = 0;
 		
@@ -431,12 +404,7 @@ void CAN_Respond(void)
 			CAN.TransmitData = (int32_t)(CoordTrans.CurrQ * 1e3);
 		
 			/*发送当前Iq*/		
-			CAN.Transmit.data_uint8[0] = (CAN.Identifier>>0)&0xFF;
-			CAN.Transmit.data_uint8[1] = (CAN.Identifier>>0)&0xFF;
-			CAN.Transmit.data_uint8[2] = (CAN.TransmitData>>8)&0xFF;
-			CAN.Transmit.data_uint8[3] = (CAN.TransmitData>>16)&0xFF;
-		
-			CAN_Transmit(CAN.Transmit, 4);
+			CAN_Transmit(CAN.Identifier, CAN.TransmitData, 4);
 		
 			CAN.RecieveStatus = 0;
 		
@@ -467,16 +435,13 @@ void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan)
 {
 	static uint16_t errTimes = 0;
 	
-	PutStr("CAN Error Code:");
-	PutNum(hcan->ErrorCode, '\n');SendBuf();
+	UART_Transmit_DMA("CAN ERROR: %d\r\n", (uint32_t)hcan->ErrorCode);
+	SendBuf();
 	
 	CAN.Identifier = 0xAA;
 	CAN.TransmitData = hcan->ErrorCode;
 	
-	CAN.Transmit.data_uint8[0] = (CAN.Identifier>>0)&0xFF;
-	CAN.Transmit.data_uint8[1] = (CAN.Identifier>>0)&0xFF;
-	CAN.Transmit.data_uint8[2] = (CAN.TransmitData>>8)&0xFF;
-	CAN.Transmit.data_uint8[3] = (CAN.TransmitData>>16)&0xFF;
+
 
 	if(errTimes++ <= 100)
 	{
@@ -489,7 +454,7 @@ void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan)
 		
 		HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
 		
-		CAN_Transmit(CAN.Transmit, 6);
+		CAN_Transmit(CAN.Identifier, CAN.TransmitData, 4);
 	}
 	else
 	{
@@ -497,16 +462,61 @@ void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan)
 	}
 }
 
-void CAN_Transmit(CAN_Data_t data, uint8_t length)
+void CAN_Transmit(uint8_t identifier, int32_t transmitData, uint8_t length)
 {
+	uint32_t absData = abs(transmitData);
+	
 	TxMessage.StdId = DRIVER_CLIENT_CAN_ID;
 	TxMessage.ExtId = 0u;
 	TxMessage.IDE   = CAN_ID_STD;
 	TxMessage.RTR   = CAN_RTR_DATA;
 	TxMessage.DLC   = length;
 	
-	HAL_CAN_AddTxMessage(&hcan1, &TxMessage, (uint8_t *)&data, &CAN.MailBox);
+	CAN.Transmit.data_uint8[0] = (identifier>>0)&0xFF;
+	
+	if(transmitData >= 0)
+	{
+		for(uint8_t bytes = 1; bytes <= (length - 1); bytes++)
+		{
+			CAN.Transmit.data_uint8[bytes] = (absData>>((bytes - 1) * 8))&0xFF;
+		}	
+	}
+	else if(transmitData < 0)
+	{
+		for(uint8_t bytes = 1; bytes <= (length - 1); bytes++)
+		{
+
+			CAN.Transmit.data_uint8[bytes] = (absData>>((bytes - 1) * 8))&0xFF;
+			if(bytes == (length - 1))
+			{
+				CAN.Transmit.data_uint8[bytes] = ((absData>>((bytes - 1) * 8))&0xFF) | 0x80;
+			}
+		}	
+	}
+	
+	HAL_CAN_AddTxMessage(&hcan1, &TxMessage, (uint8_t *)&CAN.Transmit, &CAN.MailBox);
 	HAL_CAN_ActivateNotification(&hcan1, CAN_IT_TX_MAILBOX_EMPTY);
+}
+
+
+void CAN_Receive(uint32_t *stdId, uint8_t *identifier, int32_t *receiveData)
+{	
+	HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &RxMessage0, (uint8_t *)&CAN.Receive);
+	
+	*stdId = RxMessage0.StdId;
+	
+	*identifier = CAN.Receive.data_uint8[0];
+	
+	if(((CAN.Receive.data_uint8[3]&0x80)>>7) == 0)
+	{
+		/*接受数据为正数时*/
+		*receiveData = (int32_t)((CAN.Receive.data_uint8[3]<<16) | (CAN.Receive.data_uint8[2]<<8) | (CAN.Receive.data_uint8[1]<<0));
+	}
+	else if(((CAN.Receive.data_uint8[3]&0x80)>>7) == 1)
+	{
+		/*接受数据为负数时*/
+		*receiveData = -(int32_t)(((CAN.Receive.data_uint8[3]&0x7F)<<16) | (CAN.Receive.data_uint8[2]<<8) | (CAN.Receive.data_uint8[1]<<0));
+	}
 }
 
 void CAN_Enable(void)

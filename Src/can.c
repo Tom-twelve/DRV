@@ -33,10 +33,11 @@ extern struct Driver_t Driver;
 extern struct CurrLoop_t CurrLoop;
 extern struct SpdLoop_t SpdLoop;
 extern struct PosLoop_t PosLoop;
+extern struct TorqueCtrl_t TorqueCtrl;
+extern struct Regulator_t Regulator;
+extern struct MainCtrl_t MainCtrl;
 extern struct CoordTrans_t CoordTrans;
 extern struct PosSensor_t PosSensor;
-extern struct Regulator_t Regulator;
-extern struct MainController_t MainController;
 
 /* USER CODE END 0 */
 
@@ -147,7 +148,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 	{
 		switch(CAN.Identifier)
 		{
-			case 0x01:
+			case IDENTIFIER_DRIVER_STATE:
 				
 				if (CAN.ReceiveData == 0x00000001)
 				{
@@ -164,29 +165,36 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 				
 				break;
 				
-			case 0x02:
+			case IDENTIFIER_TORQUE_CTRL:
+				
+				/*期望扭矩*/
+				TorqueCtrl.ExptTorque =  (float)CAN.ReceiveData * 1e-3;
+			
+				break;
+				
+			case IDENTIFIER_VEL_CTRL:
 				
 				/*期望速度*/
-				MainController.ExptMecAngularSpeed_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
-				SpdLoop.ExptMecAngularSpeed_rad = DRV_PULSE_TO_RAD(MainController.ExptMecAngularSpeed_pulse);
+				MainCtrl.ExptMecAngularSpeed_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
+				SpdLoop.ExptMecAngularSpeed_rad = DRV_PULSE_TO_RAD(MainCtrl.ExptMecAngularSpeed_pulse);
 			
 				break;
 			
-			case 0x03:
+			case IDENTIFIER_POS_CTRL_ABS:
 			
 				/*期望位置, 绝对位置模式*/
-				MainController.ExptMecAngle_pulse = MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
+				MainCtrl.ExptMecAngle_pulse = MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 			
 				break;
 
-			case 0x04:
+			case IDENTIFIER_POS_CTRL_REL:
 				
 				/*期望位置, 相对位置模式*/
-				MainController.ExptMecAngle_pulse = MainController.RefMecAngle_pulse +  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
+				MainCtrl.ExptMecAngle_pulse = MainCtrl.RefMecAngle_pulse +  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 			
 				break;
 						
-			case 0x05:
+			case IDENTIFIER_SET_CTRL_MODE:
 				
 				/*配置驱动器控制模式*/
 				if(CAN.ReceiveData == SPD_CURR_CTRL_MODE)
@@ -201,90 +209,97 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 				{
 					Driver.ControlMode = POS_SPD_CURR_CTRL_MODE;
 				}
+				else if(CAN.ReceiveData == TORQUE_CTRL_MODE)
+				{
+					Driver.ControlMode = TORQUE_CTRL_MODE;
+				}
+				
+				DriverCtrlModeInit();
 				
 				break;
 
-			case 0x06:
+			case IDENTIFIER_SET_ACC:
 				
 				/*设置加速度*/
-				MainController.Acceleration_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
-				SpdLoop.Acceleration = DRV_PULSE_TO_RAD(MainController.Acceleration_pulse);
+				MainCtrl.Acceleration_pulse = MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
+				SpdLoop.Acceleration = DRV_PULSE_TO_RAD(MainCtrl.Acceleration_pulse);
 				
 				break;
 
-			case 0x07:
+			case IDENTIFIER_SET_DEC:
 
 				/*设置减速度*/
-				MainController.Deceleration_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
-				SpdLoop.Deceleration = DRV_PULSE_TO_RAD(MainController.Deceleration_pulse);
+				MainCtrl.Deceleration_pulse = MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
+				SpdLoop.Deceleration = DRV_PULSE_TO_RAD(MainCtrl.Deceleration_pulse);
 
 				break;
 					
-			case 0x08:
+			case IDENTIFIER_SET_TORQUE_LIMIT:
 				
-				/*配置最大转矩电流*/
-				CurrLoop.LimitCurrQ = (float)CAN.ReceiveData;
+				/*配置最大转矩*/
+				MainCtrl.MaxTorque_Nm = (float)CAN.ReceiveData * 1e-3;
+				CurrLoop.LimitCurrQ = MainCtrl.MaxTorque_Nm / (1.5f * MOTOR_POLE_PAIRS_NUM * ROTATOR_FLUX_LINKAGE);
 			
 				break;
 						
-			case 0x09:
+			case IDENTIFIER_SET_VEL_LIMIT:
 				
 				/*配置速度环最大期望速度*/
 				/*不超过电机的最大转速*/
 				Saturation_int((int32_t*)&CAN.ReceiveData, MAX_SPD, -MAX_SPD);
-				MainController.MaxMecAngularSpeed_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
-				SpdLoop.MaxExptMecAngularSpeed_rad = DRV_PULSE_TO_RAD(MainController.MaxMecAngularSpeed_pulse);
+				MainCtrl.MaxMecAngularSpeed_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
+				SpdLoop.MaxExptMecAngularSpeed_rad = DRV_PULSE_TO_RAD(MainCtrl.MaxMecAngularSpeed_pulse);
 				
 				break;
 			
-			case 0x0A:
+			case IDENTIFIER_SET_POS_LIMIT_UP:
 				
 				/*配置位置环位置上限*/
-				MainController.MecAngleUpperLimit_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
-				PosLoop.MecAngleUpperLimit_rad = (float)DRV_PULSE_TO_RAD(MainController.MecAngleUpperLimit_pulse);
+				MainCtrl.MecAngleUpperLimit_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
+				PosLoop.MecAngleUpperLimit_rad = (float)DRV_PULSE_TO_RAD(MainCtrl.MecAngleUpperLimit_pulse);
 			
 				break;
 			
-			case 0x0B:
+			case IDENTIFIER_SET_POS_LIMIT_LOW:
 				
 				/*配置位置环位置下限*/
-				MainController.MecAngleLowerLimit_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
-				PosLoop.MecAngleLowerLimit_rad = (float)DRV_PULSE_TO_RAD(MainController.MecAngleLowerLimit_pulse);
+				MainCtrl.MecAngleLowerLimit_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
+				PosLoop.MecAngleLowerLimit_rad = (float)DRV_PULSE_TO_RAD(MainCtrl.MecAngleLowerLimit_pulse);
 			
 				break;
 			
-			case (0x40 + 0x0C):
+			case (0x40 + IDENTIFIER_READ_TORQUE):
+				
+				/*读取电磁转矩*/
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_TORQUE);
+				
+				break;
+						
+			case (0x40 + IDENTIFIER_READ_VEL):
 				
 				/*读取速度*/
-				CAN.RecieveStatus = (0x40 + 0x0C);
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_VEL);
 			
 				break;
 
-			case (0x40 + 0x0D):
+			case (0x40 + IDENTIFIER_READ_POS):
 				
 				/*读取位置*/
-				CAN.RecieveStatus = (0x40 + 0x0D);
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_POS);
 		
 				break; 
-			
-			case (0x40 + 0x0E):
-				
-				/*读取电磁转矩*/
-				CAN.RecieveStatus = (0x40 + 0x0E);
-				
-				break;
-			
-			case (0x40 + 0x0F):
+						
+			case (0x40 + IDENTIFIER_READ_VOL_Q):
 				
 				/*读取Vq*/
-				CAN.RecieveStatus = (0x40 + 0x0F);
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_VOL_Q);
 			
 				break;
 			
-			case (0x40 + 0x10):
+			case (0x40 + IDENTIFIER_READ_CURR_Q):
 				
 				/*读取Iq*/
-				CAN.RecieveStatus = (0x40 + 0x10);
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_CURR_Q);
 				
 				break;
 			
@@ -298,7 +313,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 	{
 		switch(CAN.Identifier)
 		{
-			case 0x01:
+			case IDENTIFIER_DRIVER_STATE:
 				
 				if (CAN.ReceiveData == 0x00000001)
 				{
@@ -315,29 +330,36 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 				
 				break;
 				
-			case 0x02:
+			case IDENTIFIER_TORQUE_CTRL:
+				
+				/*期望扭矩*/
+				TorqueCtrl.ExptTorque =  (float)CAN.ReceiveData * 1e-3;
+			
+				break;
+				
+			case IDENTIFIER_VEL_CTRL:
 				
 				/*期望速度*/
-				MainController.ExptMecAngularSpeed_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
-				SpdLoop.ExptMecAngularSpeed_rad = DRV_PULSE_TO_RAD(MainController.ExptMecAngularSpeed_pulse);
+				MainCtrl.ExptMecAngularSpeed_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
+				SpdLoop.ExptMecAngularSpeed_rad = DRV_PULSE_TO_RAD(MainCtrl.ExptMecAngularSpeed_pulse);
 			
 				break;
 			
-			case 0x03:
+			case IDENTIFIER_POS_CTRL_ABS:
 			
 				/*期望位置, 绝对位置模式*/
-				MainController.ExptMecAngle_pulse = MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
+				MainCtrl.ExptMecAngle_pulse = MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 			
 				break;
 
-			case 0x04:
+			case IDENTIFIER_POS_CTRL_REL:
 				
 				/*期望位置, 相对位置模式*/
-				MainController.ExptMecAngle_pulse = MainController.RefMecAngle_pulse +  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
+				MainCtrl.ExptMecAngle_pulse = MainCtrl.RefMecAngle_pulse +  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 			
 				break;
 						
-			case 0x05:
+			case IDENTIFIER_SET_CTRL_MODE:
 				
 				/*配置驱动器控制模式*/
 				if(CAN.ReceiveData == SPD_CURR_CTRL_MODE)
@@ -352,90 +374,95 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 				{
 					Driver.ControlMode = POS_SPD_CURR_CTRL_MODE;
 				}
+				else if(CAN.ReceiveData == TORQUE_CTRL_MODE)
+				{
+					Driver.ControlMode = TORQUE_CTRL_MODE;
+				}
 				
 				break;
 
-			case 0x06:
+			case IDENTIFIER_SET_ACC:
 				
 				/*设置加速度*/
-				MainController.Acceleration_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
-				SpdLoop.Acceleration = DRV_PULSE_TO_RAD(MainController.Acceleration_pulse);
+				MainCtrl.Acceleration_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
+				SpdLoop.Acceleration = DRV_PULSE_TO_RAD(MainCtrl.Acceleration_pulse);
 				
 				break;
 
-			case 0x07:
+			case IDENTIFIER_SET_DEC:
 
 				/*设置减速度*/
-				MainController.Deceleration_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
-				SpdLoop.Deceleration = DRV_PULSE_TO_RAD(MainController.Deceleration_pulse);
+				MainCtrl.Deceleration_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
+				SpdLoop.Deceleration = DRV_PULSE_TO_RAD(MainCtrl.Deceleration_pulse);
 
 				break;
 					
-			case 0x08:
+			case IDENTIFIER_SET_TORQUE_LIMIT:
 				
-				/*配置最大转矩电流*/
-				CurrLoop.LimitCurrQ = (float)CAN.ReceiveData;
+				/*配置最大转矩*/
+				MainCtrl.MaxTorque_Nm = (float)CAN.ReceiveData * 1e-3;
+				CurrLoop.LimitCurrQ = MainCtrl.MaxTorque_Nm / (1.5f * MOTOR_POLE_PAIRS_NUM * ROTATOR_FLUX_LINKAGE);
 			
 				break;
 						
-			case 0x09:
+			case IDENTIFIER_SET_VEL_LIMIT:
 				
 				/*配置速度环最大期望速度*/
 				/*不超过电机的最大转速*/
 				Saturation_int((int32_t*)&CAN.ReceiveData, MAX_SPD, -MAX_SPD);
-				MainController.MaxMecAngularSpeed_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
-				SpdLoop.MaxExptMecAngularSpeed_rad = DRV_PULSE_TO_RAD(MainController.MaxMecAngularSpeed_pulse);
+				MainCtrl.MaxMecAngularSpeed_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
+				SpdLoop.MaxExptMecAngularSpeed_rad = DRV_PULSE_TO_RAD(MainCtrl.MaxMecAngularSpeed_pulse);
 				
 				break;
 			
-			case 0x0A:
+			case IDENTIFIER_SET_POS_LIMIT_UP:
 				
 				/*配置位置环位置上限*/
-				MainController.MecAngleUpperLimit_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
-				PosLoop.MecAngleUpperLimit_rad = (float)DRV_PULSE_TO_RAD(MainController.MecAngleUpperLimit_pulse);
+				MainCtrl.MecAngleUpperLimit_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
+				PosLoop.MecAngleUpperLimit_rad = (float)DRV_PULSE_TO_RAD(MainCtrl.MecAngleUpperLimit_pulse);
 			
 				break;
 			
-			case 0x0B:
+			case IDENTIFIER_SET_POS_LIMIT_LOW:
 				
 				/*配置位置环位置下限*/
-				MainController.MecAngleLowerLimit_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
-				PosLoop.MecAngleLowerLimit_rad = (float)DRV_PULSE_TO_RAD(MainController.MecAngleLowerLimit_pulse);
+				MainCtrl.MecAngleLowerLimit_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
+				PosLoop.MecAngleLowerLimit_rad = (float)DRV_PULSE_TO_RAD(MainCtrl.MecAngleLowerLimit_pulse);
 			
 				break;
 			
-			case (0x40 + 0x0C):
+			case (0x40 + IDENTIFIER_READ_TORQUE):
+				
+				/*读取电磁转矩*/
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_TORQUE);
+				
+				break;
+						
+			case (0x40 + IDENTIFIER_READ_VEL):
 				
 				/*读取速度*/
-				CAN.RecieveStatus = (0x40 + 0x0C);
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_VEL);
 			
 				break;
 
-			case (0x40 + 0x0D):
+			case (0x40 + IDENTIFIER_READ_POS):
 				
 				/*读取位置*/
-				CAN.RecieveStatus = (0x40 + 0x0D);
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_POS);
 		
 				break; 
-			
-			case (0x40 + 0x0E):
-				
-				/*读取电磁转矩*/
-				CAN.RecieveStatus = (0x40 + 0x0E);
-				
-				break;
-			
-			case (0x40 + 0x0F):
+						
+			case (0x40 + IDENTIFIER_READ_VOL_Q):
 				
 				/*读取Vq*/
-				CAN.RecieveStatus = (0x40 + 0x0F);
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_VOL_Q);
 			
 				break;
 			
-			case (0x40 + 0x10):
+			case (0x40 + IDENTIFIER_READ_CURR_Q):
 				
 				/*读取Iq*/
-				CAN.RecieveStatus = (0x40 + 0x10);
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_CURR_Q);
 				
 				break;
 			
@@ -458,9 +485,21 @@ void CAN_Respond(void)
 {
 	switch (CAN.RecieveStatus)
 	{
-		case (0x40 + 0x0C):
+		case (0x40 + IDENTIFIER_READ_TORQUE):
 			
-			CAN.Identifier = 0x0C;
+			CAN.Identifier = IDENTIFIER_READ_TORQUE;
+			CAN.TransmitData = (int32_t)(TorqueCtrl.EleTorque * 1e3);
+		
+			/*发送当前电磁转矩*/	
+			CAN_Transmit(CAN.Identifier, CAN.TransmitData, 4);
+		
+			CAN.RecieveStatus = 0;
+		
+			break;
+				
+		case (0x40 + IDENTIFIER_READ_VEL):
+			
+			CAN.Identifier = IDENTIFIER_READ_VEL;
 			CAN.TransmitData = (int32_t)RAD_TO_MC_PULSE(PosSensor.MecAngularSpeed_rad);
 		
 			/*发送当前速度*/
@@ -470,10 +509,10 @@ void CAN_Respond(void)
 		
 			break;
 
-		case (0x40 + 0x0D):
+		case (0x40 + IDENTIFIER_READ_POS):
 			
-			CAN.Identifier = 0x0D;
-			CAN.TransmitData = (int32_t)DRV_PULSE_TO_MC_PULSE(MainController.RefMecAngle_pulse);
+			CAN.Identifier = IDENTIFIER_READ_POS;
+			CAN.TransmitData = (int32_t)DRV_PULSE_TO_MC_PULSE(MainCtrl.RefMecAngle_pulse);
 		
 			/*发送当前位置*/
 			CAN_Transmit(CAN.Identifier, CAN.TransmitData, 4);
@@ -481,22 +520,10 @@ void CAN_Respond(void)
 			CAN.RecieveStatus = 0;
 		
 			break;
-		
-		case (0x40 + 0x0E):
-			
-			CAN.Identifier = 0x0E;
-			CAN.TransmitData = (int32_t)(Driver.EleTorque * 1e3);
-		
-			/*发送当前电磁转矩*/	
-			CAN_Transmit(CAN.Identifier, CAN.TransmitData, 4);
-		
-			CAN.RecieveStatus = 0;
-		
-			break;
 								
-		case (0x40 + 0x0F):
+		case (0x40 + IDENTIFIER_READ_VOL_Q):
 			
-			CAN.Identifier = 0x0F;
+			CAN.Identifier = IDENTIFIER_READ_VOL_Q;
 			CAN.TransmitData = (int32_t)(CurrLoop.CtrlVolQ * 1e3);
 		
 			/*发送当前Vq*/	
@@ -506,9 +533,9 @@ void CAN_Respond(void)
 		
 			break;
 
-		case (0x40 + 0x10):
+		case (0x40 + IDENTIFIER_READ_CURR_Q):
 			
-			CAN.Identifier = 0x10;
+			CAN.Identifier = IDENTIFIER_READ_CURR_Q;
 			CAN.TransmitData = (int32_t)(CoordTrans.CurrQ * 1e3);
 		
 			/*发送当前Iq*/		
@@ -546,11 +573,6 @@ void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan)
 	UART_Transmit_DMA("CAN ERROR: %d\r\n", (uint32_t)hcan->ErrorCode);
 	SendBuf();
 	
-	CAN.Identifier = 0xAA;
-	CAN.TransmitData = hcan->ErrorCode;
-	
-
-
 	if(errTimes++ <= 100)
 	{
 		errTimes++;
@@ -561,8 +583,6 @@ void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan)
 		__HAL_CAN_CLEAR_FLAG(&hcan1, CAN_FLAG_FOV0);
 		
 		HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
-		
-		CAN_Transmit(CAN.Identifier, CAN.TransmitData, 4);
 	}
 	else
 	{
@@ -631,13 +651,13 @@ void CAN_Enable(void)
 {
 	/*配置过滤器*/
 	CAN_FilterTypeDef CAN1_FilerConf    = {0};
-	CAN1_FilerConf.FilterIdHigh         = (DRIVER_BROADCAST_ID << 5) | (CAN_ID_STD << 4) | (CAN_RTR_DATA << 3);
-	CAN1_FilerConf.FilterIdLow          = (DRIVER_SERVER_CAN_ID << 5) | (CAN_ID_STD << 4) | (CAN_RTR_DATA << 3);
+	CAN1_FilerConf.FilterIdHigh         = 0x0000;//(DRIVER_BROADCAST_ID << 5) | (CAN_ID_STD << 4) | (CAN_RTR_DATA << 3);
+	CAN1_FilerConf.FilterIdLow          = 0x0000;//(DRIVER_SERVER_CAN_ID << 5) | (CAN_ID_STD << 4) | (CAN_RTR_DATA << 3);
 	CAN1_FilerConf.FilterMaskIdHigh     = 0x0000;
 	CAN1_FilerConf.FilterMaskIdLow      = 0x0000;
 	CAN1_FilerConf.FilterFIFOAssignment = CAN_FILTER_FIFO0;
 	CAN1_FilerConf.FilterBank           = 0;
-	CAN1_FilerConf.FilterMode           = CAN_FILTERMODE_IDLIST;
+	CAN1_FilerConf.FilterMode           = CAN_FILTERMODE_IDMASK;//CAN_FILTERMODE_IDLIST;
 	CAN1_FilerConf.FilterScale          = CAN_FILTERSCALE_16BIT;
 	CAN1_FilerConf.FilterActivation     = ENABLE;
 	CAN1_FilerConf.SlaveStartFilterBank = 14;

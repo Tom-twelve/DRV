@@ -79,7 +79,7 @@
 extern uint16_t DRV8323_SPI3_RxDataTemp;
 extern struct Driver_t Driver;
 extern struct  SpdLoop_t SpdLoop;
-extern struct  MainController_t MainController;
+extern struct  MainCtrl_t MainCtrl;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -202,11 +202,11 @@ int main(void)
 //	  
 //	  LL_mDelay(1000);
 	  
-//	  MainController.ExptMecAngle_pulse = 20000;
+//	  MainCtrl.ExptMecAngle_pulse = 20000;
 //	  
 //	  LL_mDelay(1000);
 //	  
-//	  MainController.ExptMecAngle_pulse = 0;
+//	  MainCtrl.ExptMecAngle_pulse = 0;
 
 //	  LL_mDelay(1000);
 	  

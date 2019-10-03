@@ -43,22 +43,12 @@ struct CurrLoop_t
 	float Ki_Q;
 };
 
-struct VolCtrl_t
-{
-	float BEMF;
-	float CtrlVolD;
-	float CtrlVolQ;
-	float VolLimit;
-	float PowerAngleComp_degree;	
-	float PowerAngleComp_rad;
-};
-
 struct SpdLoop_t
 {
 	float ExptMecAngularSpeed_rad;		//期望机械角速度(rad/s), 弧度制
 	float MaxExptMecAngularSpeed_rad;	//最大期望机械角速度(rad/s), 弧度制
-	float Acceleration;					//加速度(rad/s2), 弧度制
-	float Deceleration;					//减速度(rad/s2), 弧度制
+	float Acceleration;		//加速度(rad/s2), 弧度制
+	float Deceleration;		//减速度(rad/s2), 弧度制
 	float Err;
 	float IntegralErr;
 	float Kp;
@@ -67,14 +57,32 @@ struct SpdLoop_t
 
 struct PosLoop_t
 {
-	float ExptMecAngle_rad;			//目标角度, 弧度制
-	float MecAngleUpperLimit_rad;	//位置环位置上限(rad), 弧度制
-	float MecAngleLowerLimit_rad;	//位置环位置下限(rad), 弧度制
+	float ExptMecAngle_rad;	//目标角度, 弧度制
+	float MecAngleUpperLimit_rad;		//位置环位置上限(rad), 弧度制
+	float MecAngleLowerLimit_rad;		//位置环位置下限(rad), 弧度制
+	float RefMecAngle_rad;		//参考机械角度(rad), 上电时置零, 弧度制
 	float Err;
 	float LastErr;
 	float DiffErr;
 	float Kp;
 	float Kd;
+};
+
+struct TorqueCtrl_t
+{
+	float ExptTorque;
+	float EleTorque;
+	float MaxMecSpd;
+};
+
+struct VolCtrl_t
+{
+	float BEMF;
+	float CtrlVolD;
+	float CtrlVolQ;
+	float VolLimit;
+	float PowerAngleComp_degree;	
+	float PowerAngleComp_rad;
 };
 
 struct Regulator_t
@@ -86,16 +94,17 @@ struct Regulator_t
 	int16_t TargetFSYNC;
 };
 
-struct MainController_t
+struct MainCtrl_t
 {
-	int32_t ExptMecAngularSpeed_pulse;	//目标机械角速度, 脉冲
-	uint32_t MaxMecAngularSpeed_pulse;	//速度环最大期望速度, 脉冲
-	uint32_t Acceleration_pulse;		//加速度, 脉冲
-	uint32_t Deceleration_pulse;		//减速度, 脉冲
-	int32_t ExptMecAngle_pulse;			//目标位置, 脉冲
-	int32_t MecAngleUpperLimit_pulse;	//位置环位置上限, 脉冲
-	int32_t MecAngleLowerLimit_pulse;	//位置环位置下限, 脉冲
-	int32_t RefMecAngle_pulse;			//参考机械角度, 上电时置零, 脉冲
+	int32_t ExptMecAngularSpeed_pulse;		//目标机械角速度, 脉冲
+	uint32_t MaxMecAngularSpeed_pulse;		//速度环最大速度, 脉冲
+	uint32_t Acceleration_pulse;	//加速度, 脉冲
+	uint32_t Deceleration_pulse;	//减速度, 脉冲
+	int32_t ExptMecAngle_pulse;				//目标位置, 脉冲
+	int32_t MecAngleUpperLimit_pulse;		//位置环位置上限, 脉冲
+	int32_t MecAngleLowerLimit_pulse;		//位置环位置下限, 脉冲
+	int32_t RefMecAngle_pulse;				//参考机械角度, 上电时置零, 脉冲
+	float MaxTorque_Nm;						//最大扭矩, 牛米
 	uint16_t PresentMecAngle_pulse;
 	uint16_t LastMecAngle_pulse;
 };
@@ -133,8 +142,9 @@ struct MainController_t
 #define SPD_CURR_CTRL_MODE 				1
 #define POS_SPD_CURR_CTRL_MODE 			2
 #define POS_CURR_CTRL_MODE 				3
-#define	SPD_VOL_CTRL_MODE 				4
-#define	POS_SPD_VOL_CTRL_MODE 			5
+#define TORQUE_CTRL_MODE 				4
+#define	SPD_VOL_CTRL_MODE 				5
+#define	POS_SPD_VOL_CTRL_MODE 			6
 
 #define WORK_MODE						1
 #define MEASURE_ANGLE_TABLE_MODE		2
@@ -147,10 +157,10 @@ struct MainController_t
 
 void DriverInit(void);
 void CurrentLoopInit(void);
-void VoltageControllerInit(void);
-void VoltageController(void);
+void VolCtrlInit(void);
 void SpeedLoopInit(void);
 void PositionLoopInit(void);
+void TorqueCtrlInit(void);
 void RefAngleInit(void);
 void ZeroPosSet(uint16_t posOffset);
 void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCurrQ, float *ctrlVolD, float *ctrlVolQ);
@@ -159,10 +169,11 @@ void PositionLoop(float exptMecAngle, float realMecAngle, float *ctrlAngularSpee
 void SpdCurrController(void);
 void PosSpdCurrController(void);
 void PosCurrController(void);
+void TorqueController(void);
 void SpdVolController(void);
 void PosSpdVolController(void);
-float VelocitySlopeGenerator(float exptVelocity);
-void DriverControlModeInit(void);
+float VelSlopeGenerator(float exptVelocity);
+void DriverCtrlModeInit(void);
 void PeriodRegulator(void);
 /* USER CODE END PFP */
 

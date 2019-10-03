@@ -84,11 +84,12 @@ extern struct CAN_t CAN;
 extern struct PosLoop_t PosLoop;
 extern struct SpdLoop_t SpdLoop;
 extern struct CurrLoop_t CurrLoop;
+extern struct TorqueCtrl_t TorqueCtrl;
+extern struct VolCtrl_t VolCtrl;
+extern struct MainCtrl_t MainCtrl;
+extern struct Regulator_t Regulator;
 extern struct CoordTrans_t	CoordTrans;
 extern struct PosSensor_t PosSensor;
-extern struct VolCtrl_t VolCtrl;
-extern struct MainController_t MainController;
-extern struct Regulator_t Regulator;
 extern struct Driver_t Driver;
 
 /* USER CODE END EV */
@@ -120,6 +121,16 @@ void HardFault_Handler(void)
   while (1)
   {
     /* USER CODE BEGIN W1_HardFault_IRQn 0 */
+	  
+	  PutStr("Hard Fault!!\r\n");
+	  SendBuf();
+	  
+	  CAN.Identifier = IDENTIFIER_HARD_FAULT;
+	  CAN.TransmitData = 0x00;
+	  CAN_Transmit(CAN.Identifier, CAN.TransmitData, 1);
+	  
+	  LL_mDelay(1);
+	  
     /* USER CODE END W1_HardFault_IRQn 0 */
   }
 }
@@ -300,11 +311,10 @@ void ADC_IRQHandler(void)
 										SpdCurrController();
 			
 										/*计算电磁转矩*/
-										CalculateEleTorque(CoordTrans.CurrQ, &Driver.EleTorque);
+										CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque);
 										
-										UART_Transmit_DMA("%d\t", (int)(PosSensor.MecAngularSpeed_rad));
-										UART_Transmit_DMA("%d\t", (int)(CAN.Identifier));
-										UART_Transmit_DMA("%d\r\n",(int)(CAN.ReceiveData));
+										UART_Transmit_DMA("%d\t", (int)(SpdLoop.ExptMecAngularSpeed_rad));
+										UART_Transmit_DMA("%d\r\n",(int)(CurrLoop.ExptCurrQ * 1e3));
 			
 										break;
 			
@@ -312,11 +322,11 @@ void ADC_IRQHandler(void)
 										PosSpdCurrController();
 		
 										/*计算电磁转矩*/
-										CalculateEleTorque(CoordTrans.CurrQ, &Driver.EleTorque);
+										CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque);
 			
-										UART_Transmit_DMA("%d\t", (int)(PosSensor.MecAngularSpeed_rad));
-										UART_Transmit_DMA("%d\t", (int)(CurrLoop.ExptCurrQ));
-										UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrQ * 1e3));
+										UART_Transmit_DMA("%d\t", (int)(MainCtrl.ExptMecAngle_pulse));
+										UART_Transmit_DMA("%d\t",(int)(SpdLoop.ExptMecAngularSpeed_rad));
+										UART_Transmit_DMA("%d\r\n",(int)(CurrLoop.ExptCurrQ * 1e3));
 			
 										break;
 			
@@ -324,10 +334,20 @@ void ADC_IRQHandler(void)
 										PosCurrController();
 		
 										/*计算电磁转矩*/
-										CalculateEleTorque(CoordTrans.CurrQ, &Driver.EleTorque);
+										CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque);
 			
 										UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrQ * 1e3));
-										UART_Transmit_DMA("%d\r\n",(int)(MainController.RefMecAngle_pulse));
+										UART_Transmit_DMA("%d\r\n",(int)(MainCtrl.RefMecAngle_pulse));
+			
+										break;
+			case TORQUE_CTRL_MODE :		/*转矩控制器*/
+										TorqueController();
+		
+										/*计算电磁转矩*/
+										CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque);
+			
+										UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrQ * 1e3));
+										UART_Transmit_DMA("%d\r\n",(int)(MainCtrl.RefMecAngle_pulse));
 			
 										break;
 			
@@ -342,8 +362,8 @@ void ADC_IRQHandler(void)
 			case POS_SPD_VOL_CTRL_MODE :/*位置-转速-电压控制器*/
 										PosSpdVolController();
 
-										UART_Transmit_DMA("%d\t", (int)(MainController.ExptMecAngle_pulse));
-										UART_Transmit_DMA("%d\r\n",(int)(MainController.RefMecAngle_pulse));
+										UART_Transmit_DMA("%d\t", (int)(MainCtrl.ExptMecAngle_pulse));
+										UART_Transmit_DMA("%d\r\n",(int)(MainCtrl.RefMecAngle_pulse));
 			
 										break;
 		}

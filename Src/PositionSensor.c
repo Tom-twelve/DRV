@@ -19,7 +19,7 @@
 /* Private typedef -----------------------------------------------------------*/
 /* CODE BEGIN PTD */
 extern struct Regulator_t Regulator;
-extern struct MainController_t MainController;
+extern struct MainCtrl_t MainCtrl;
 /* CODE END PTD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -105,11 +105,11 @@ extern struct MainController_t MainController;
 	{
 		int delta = 0;
 		
-		MainController.PresentMecAngle_pulse = PosSensor.MecAngle_AbsoluteMode_15bit;
+		MainCtrl.PresentMecAngle_pulse = PosSensor.MecAngle_AbsoluteMode_15bit;
 		
-		delta = MainController.PresentMecAngle_pulse - MainController.LastMecAngle_pulse;
+		delta = MainCtrl.PresentMecAngle_pulse - MainCtrl.LastMecAngle_pulse;
 		
-		MainController.LastMecAngle_pulse = MainController.PresentMecAngle_pulse;
+		MainCtrl.LastMecAngle_pulse = MainCtrl.PresentMecAngle_pulse;
 		
 		if(delta < -(TLE5012_ABS_MODE_RESOLUTION / 2))
 		{
@@ -120,16 +120,16 @@ extern struct MainController_t MainController;
 			delta -= TLE5012_ABS_MODE_RESOLUTION;
 		}
 		
-		MainController.RefMecAngle_pulse += delta;
+		MainCtrl.RefMecAngle_pulse += delta;
 		
 		/*只传输三个字节的数据给主控, 限幅以防止数据溢出*/
-		if(MainController.RefMecAngle_pulse > 1024 * 4096)
+		if(MainCtrl.RefMecAngle_pulse > 1024 * 4096)
 		{
-			MainController.RefMecAngle_pulse = 0;
+			MainCtrl.RefMecAngle_pulse = 0;
 		}
-		else if(MainController.RefMecAngle_pulse < -1024 * 4096)
+		else if(MainCtrl.RefMecAngle_pulse < -1024 * 4096)
 		{
-			MainController.RefMecAngle_pulse = 0;
+			MainCtrl.RefMecAngle_pulse = 0;
 		}
 	}
 	
@@ -265,7 +265,7 @@ extern struct MainController_t MainController;
 				PWM_IT_CMD(DISABLE,ENABLE);
 				
 				/*通过CAN总线告知主控编码器异常*/
-				CAN.Identifier = 0xBB;
+				CAN.Identifier = IDENTIFIER_ENCODER_ERROR;
 				CAN.TransmitData = PosSensor.SafetyWord;
 
 				while(1)

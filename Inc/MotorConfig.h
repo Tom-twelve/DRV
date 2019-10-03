@@ -104,7 +104,7 @@
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
 		#define CURRENT_SENSOR			RES_1mOhm
-		#define GROUP_NUM           	1
+		#define GROUP_NUM           	2
 		#elif CAN_ID_NUM == 5
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
@@ -113,7 +113,7 @@
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
 		#define CURRENT_SENSOR			RES_1mOhm
-		#define GROUP_NUM           	1
+		#define GROUP_NUM           	2
 		#elif CAN_ID_NUM == 6
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
@@ -122,7 +122,7 @@
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
 		#define CURRENT_SENSOR			RES_1mOhm
-		#define GROUP_NUM           	1
+		#define GROUP_NUM           	2
 		#endif
 #elif ROBOT_ID == TRY_ROBOT
 	#define CAN_ID_NUM			7
@@ -161,7 +161,7 @@
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
 		#define CURRENT_SENSOR			RES_1mOhm
-		#define GROUP_NUM           	1
+		#define GROUP_NUM           	2
 		#elif CAN_ID_NUM == 5
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
@@ -170,7 +170,7 @@
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
 		#define CURRENT_SENSOR			RES_1mOhm
-		#define GROUP_NUM           	1
+		#define GROUP_NUM           	2
 		#elif CAN_ID_NUM == 6
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
@@ -179,7 +179,7 @@
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
 		#define CURRENT_SENSOR			RES_1mOhm
-		#define GROUP_NUM           	1
+		#define GROUP_NUM           	2
 		#elif CAN_ID_NUM == 7
 		#define MOTOR_TYPE 				TMOTOR_P80_KV100	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
@@ -188,7 +188,7 @@
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8320
 		#define MOSFET_TYPE				IPD053N08N3G_52nC_5mOhm3
 		#define CURRENT_SENSOR			HALL_CURR_SENSOR_ACS781_150A
-		#define GROUP_NUM           	1
+		#define GROUP_NUM           	2
 		#endif
 #endif
 

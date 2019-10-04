@@ -34,8 +34,8 @@
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
 
-uint8_t MeasureResidence(float sampleTimes, float current, float *residence);
-uint8_t MeasureInductance(float sampleTimes, float duty,float *inductance);
+uint8_t MeasureResidence(float sampleTimes, float currQ, float *residence);
+uint8_t MeasureInductance(float sampleTimes, float *inductance);
 void MeasureParameters(void);
 /* USER CODE END PFP */
 

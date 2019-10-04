@@ -69,9 +69,9 @@ uint8_t MeasureResidence(float targetSampleTimes, float currQ, float *residence)
 			break;
 		case 1:
 			CurrLoop.Kp_D = 0.2;												
-			CurrLoop.Ki_D = 0.0;						
+			CurrLoop.Ki_D = 0.001;						
 			CurrLoop.Kp_Q = 0.2;
-			CurrLoop.Ki_Q = 0.0;
+			CurrLoop.Ki_Q = 0.001;
 		
 			ClarkTransform_arm(CoordTrans.CurrA, CoordTrans.CurrB, &CoordTrans.CurrAlpha, &CoordTrans.CurrBeta);
 			ParkTransform_arm(CoordTrans.CurrAlpha, CoordTrans.CurrBeta, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree);

@@ -97,7 +97,7 @@ struct Regulator_t
 struct MainCtrl_t
 {
 	int32_t ExptMecAngularSpeed_pulse;		//目标机械角速度, 脉冲
-	uint32_t MaxMecAngularSpeed_pulse;		//速度环最大速度, 脉冲
+	volatile uint32_t MaxMecAngularSpeed_pulse;		//速度环最大速度, 脉冲
 	uint32_t Acceleration_pulse;	//加速度, 脉冲
 	uint32_t Deceleration_pulse;	//减速度, 脉冲
 	int32_t ExptMecAngle_pulse;				//目标位置, 脉冲

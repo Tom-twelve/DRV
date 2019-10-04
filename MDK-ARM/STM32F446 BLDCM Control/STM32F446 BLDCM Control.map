@@ -9,9 +9,9 @@ Section Cross References
     startup_stm32f446xx.o(RESET) refers (Special) to heapauxi.o(.text) for __use_two_region_memory
     startup_stm32f446xx.o(RESET) refers to startup_stm32f446xx.o(STACK) for __initial_sp
     startup_stm32f446xx.o(RESET) refers to startup_stm32f446xx.o(.text) for Reset_Handler
-    startup_stm32f446xx.o(RESET) refers to lto-llvm-a494a3.o(.text) for NMI_Handler
+    startup_stm32f446xx.o(RESET) refers to lto-llvm-857ff3.o(.text) for NMI_Handler
     startup_stm32f446xx.o(.text) refers (Special) to heapauxi.o(.text) for __use_two_region_memory
-    startup_stm32f446xx.o(.text) refers to lto-llvm-a494a3.o(.text) for SystemInit
+    startup_stm32f446xx.o(.text) refers to lto-llvm-857ff3.o(.text) for SystemInit
     startup_stm32f446xx.o(.text) refers to __main.o(!!!main) for __main
     startup_stm32f446xx.o(.text) refers to startup_stm32f446xx.o(HEAP) for Heap_Mem
     startup_stm32f446xx.o(.text) refers to startup_stm32f446xx.o(STACK) for Stack_Mem
@@ -176,7 +176,7 @@ Section Cross References
     __rtentry2.o(.ARM.Collect$$rtentry$$00000008) refers to boardinit2.o(.text) for _platform_post_stackheap_init
     __rtentry2.o(.ARM.Collect$$rtentry$$0000000A) refers to libinit.o(.ARM.Collect$$libinit$$00000000) for __rt_lib_init
     __rtentry2.o(.ARM.Collect$$rtentry$$0000000B) refers to boardinit3.o(.text) for _platform_post_lib_init
-    __rtentry2.o(.ARM.Collect$$rtentry$$0000000D) refers to lto-llvm-a494a3.o(.text) for main
+    __rtentry2.o(.ARM.Collect$$rtentry$$0000000D) refers to lto-llvm-857ff3.o(.text) for main
     __rtentry2.o(.ARM.Collect$$rtentry$$0000000D) refers to exit.o(.text) for exit
     __rtentry2.o(.ARM.exidx) refers to __rtentry2.o(.ARM.Collect$$rtentry$$00000001) for .ARM.Collect$$rtentry$$00000001
     __rtentry2.o(.ARM.exidx) refers to __rtentry2.o(.ARM.Collect$$rtentry$$00000008) for .ARM.Collect$$rtentry$$00000008
@@ -292,20 +292,20 @@ Section Cross References
     defsig_cppl_inner.o(.text) refers to defsig_general.o(.text) for __default_signal_display
     defsig_segv_inner.o(.text) refers to defsig_general.o(.text) for __default_signal_display
     defsig_other.o(.text) refers to defsig_general.o(.text) for __default_signal_display
-    lto-llvm-a494a3.o(.text) refers to lto-llvm-a494a3.o(.bss) for Driver.2
-    lto-llvm-a494a3.o(.text) refers to lto-llvm-a494a3.o(.data) for SystemCoreClock
-    lto-llvm-a494a3.o(.text) refers to lludivv7m.o(.text) for __aeabi_uldivmod
-    lto-llvm-a494a3.o(.text) refers to lto-llvm-a494a3.o(.rodata.cst8) for APBPrescTable
-    lto-llvm-a494a3.o(.text) refers to lto-llvm-a494a3.o(.rodata) for DRV8323_ReadCommandMessage
-    lto-llvm-a494a3.o(.text) refers to f2d.o(x$fpl$f2d) for __aeabi_f2d
-    lto-llvm-a494a3.o(.text) refers to dmul.o(x$fpl$dmul) for __aeabi_dmul
-    lto-llvm-a494a3.o(.text) refers to dfix.o(x$fpl$dfix) for __aeabi_d2iz
-    lto-llvm-a494a3.o(.text) refers to lto-llvm-a494a3.o(.rodata.str1.1) for .L.str.41
-    lto-llvm-a494a3.o(.text) refers to _sprintf.o(.text) for _sprintf
-    lto-llvm-a494a3.o(.text) refers to sqrt.o(i.__hardfp_sqrt) for __hardfp_sqrt
-    lto-llvm-a494a3.o(.text) refers to d2f.o(x$fpl$d2f) for __aeabi_d2f
-    lto-llvm-a494a3.o(.ARM.exidx) refers to lto-llvm-a494a3.o(.text) for [Anonymous Symbol]
-    lto-llvm-a494a3.o(.data) refers to lto-llvm-a494a3.o(.bss) for [Anonymous Symbol]
+    lto-llvm-857ff3.o(.text) refers to lto-llvm-857ff3.o(.bss) for Driver.2
+    lto-llvm-857ff3.o(.text) refers to lto-llvm-857ff3.o(.data) for SystemCoreClock
+    lto-llvm-857ff3.o(.text) refers to lludivv7m.o(.text) for __aeabi_uldivmod
+    lto-llvm-857ff3.o(.text) refers to lto-llvm-857ff3.o(.rodata.cst8) for APBPrescTable
+    lto-llvm-857ff3.o(.text) refers to lto-llvm-857ff3.o(.rodata) for DRV8323_ReadCommandMessage
+    lto-llvm-857ff3.o(.text) refers to f2d.o(x$fpl$f2d) for __aeabi_f2d
+    lto-llvm-857ff3.o(.text) refers to dmul.o(x$fpl$dmul) for __aeabi_dmul
+    lto-llvm-857ff3.o(.text) refers to dfix.o(x$fpl$dfix) for __aeabi_d2iz
+    lto-llvm-857ff3.o(.text) refers to lto-llvm-857ff3.o(.rodata.str1.1) for .L.str.41
+    lto-llvm-857ff3.o(.text) refers to _sprintf.o(.text) for _sprintf
+    lto-llvm-857ff3.o(.text) refers to sqrt.o(i.__hardfp_sqrt) for __hardfp_sqrt
+    lto-llvm-857ff3.o(.text) refers to d2f.o(x$fpl$d2f) for __aeabi_d2f
+    lto-llvm-857ff3.o(.ARM.exidx) refers to lto-llvm-857ff3.o(.text) for [Anonymous Symbol]
+    lto-llvm-857ff3.o(.data) refers to lto-llvm-857ff3.o(.bss) for [Anonymous Symbol]
     d2f.o(x$fpl$d2f) refers (Special) to usenofp.o(x$fpl$usenofp) for __I$use$fp
     d2f.o(x$fpl$d2f) refers to fretinf.o(x$fpl$fretinf) for __fpl_fretinf
     d2f.o(x$fpl$d2f) refers to dnaninf.o(x$fpl$dnaninf) for __fpl_dnaninf
@@ -333,8 +333,8 @@ Section Cross References
 
 Removing Unused input sections from the image.
 
-    Removing lto-llvm-a494a3.o(.ARM.exidx), (328 bytes).
-    Removing lto-llvm-a494a3.o(.ARM.use_no_argv), (4 bytes).
+    Removing lto-llvm-857ff3.o(.ARM.exidx), (328 bytes).
+    Removing lto-llvm-857ff3.o(.ARM.use_no_argv), (4 bytes).
 
 2 unused section(s) (total 332 bytes) removed from the image.
 
@@ -487,7 +487,7 @@ Image Symbol Table
     ../mathlib/sqrtf.c                       0x00000000   Number         0  sqrtf_x.o ABSOLUTE
     ../mathlib/sqrtf.c                       0x00000000   Number         0  sqrtf.o ABSOLUTE
     dc.s                                     0x00000000   Number         0  dc.o ABSOLUTE
-    ld-temp.o                                0x00000000   Number         0  lto-llvm-a494a3.o ABSOLUTE
+    ld-temp.o                                0x00000000   Number         0  lto-llvm-857ff3.o ABSOLUTE
     startup_stm32f446xx.s                    0x00000000   Number         0  startup_stm32f446xx.o ABSOLUTE
     RESET                                    0x08000000   Section      452  startup_stm32f446xx.o(RESET)
     !!!main                                  0x080001c4   Section        8  __main.o(!!!main)
@@ -596,193 +596,192 @@ Image Symbol Table
     .text                                    0x08000bd4   Section        0  sys_exit.o(.text)
     .text                                    0x08000be0   Section        2  use_no_semi.o(.text)
     .text                                    0x08000be2   Section        0  indicate_semi.o(.text)
-    [Anonymous Symbol]                       0x08000be8   Section        0  lto-llvm-a494a3.o(.text)
-    AHBPrescTable                            0x08001f1c   Number         0  lto-llvm-a494a3.o(.text)
-    DMA_CalcBaseAndBitshift.flagBitshiftOffset 0x08001f2c   Number         0  lto-llvm-a494a3.o(.text)
-    CAN_Respond                              0x08003209   Thumb Code   364  lto-llvm-a494a3.o(.text)
-    SPI_Transmit                             0x08003375   Thumb Code   176  lto-llvm-a494a3.o(.text)
-    SPI_Receive                              0x08003425   Thumb Code   294  lto-llvm-a494a3.o(.text)
-    SendBufWhenFull                          0x0800354d   Thumb Code   182  lto-llvm-a494a3.o(.text)
-    __arm_cp.18_17                           0x08004044   Number         4  lto-llvm-a494a3.o(.text)
-    __arm_cp.18_18                           0x08004048   Number         4  lto-llvm-a494a3.o(.text)
-    __arm_cp.18_19                           0x0800404c   Number         4  lto-llvm-a494a3.o(.text)
-    __arm_cp.18_21                           0x08004054   Number         4  lto-llvm-a494a3.o(.text)
-    __arm_cp.18_38                           0x08004de8   Number         4  lto-llvm-a494a3.o(.text)
-    __arm_cp.18_48                           0x080055c8   Number         4  lto-llvm-a494a3.o(.text)
-    __arm_cp.18_49                           0x080055cc   Number         4  lto-llvm-a494a3.o(.text)
-    __arm_cp.18_50                           0x08005930   Number         4  lto-llvm-a494a3.o(.text)
-    SpaceVectorModulation                    0x0800595d   Thumb Code   412  lto-llvm-a494a3.o(.text)
-    DriverCtrlModeInit                       0x08005af9   Thumb Code  1000  lto-llvm-a494a3.o(.text)
-    CurrentLoop                              0x08005ee1   Thumb Code   528  lto-llvm-a494a3.o(.text)
-    DRV8323_WriteAllRegister                 0x080060f1   Thumb Code   374  lto-llvm-a494a3.o(.text)
-    GetEleImformation                        0x08006269   Thumb Code  1240  lto-llvm-a494a3.o(.text)
-    __arm_cp.23_9                            0x080065c0   Number         4  lto-llvm-a494a3.o(.text)
-    __arm_cp.23_10                           0x080065c4   Number         4  lto-llvm-a494a3.o(.text)
-    __arm_cp.23_11                           0x080065c8   Number         4  lto-llvm-a494a3.o(.text)
-    __arm_cp.23_12                           0x080065cc   Number         4  lto-llvm-a494a3.o(.text)
-    GetMecImformation                        0x08006741   Thumb Code   580  lto-llvm-a494a3.o(.text)
-    LL_GPIO_Init                             0x08006985   Thumb Code   214  lto-llvm-a494a3.o(.text)
-    HAL_ADC_Init                             0x08006a5d   Thumb Code   600  lto-llvm-a494a3.o(.text)
-    HAL_ADC_ConfigChannel                    0x08006cb5   Thumb Code   322  lto-llvm-a494a3.o(.text)
-    HAL_ADCEx_InjectedStart_IT               0x08006df9   Thumb Code   228  lto-llvm-a494a3.o(.text)
-    HAL_ADCEx_InjectedConfigChannel          0x08006edd   Thumb Code   346  lto-llvm-a494a3.o(.text)
-    HAL_CAN_Init                             0x08007039   Thumb Code   560  lto-llvm-a494a3.o(.text)
-    HAL_CAN_AddTxMessage                     0x08007269   Thumb Code   140  lto-llvm-a494a3.o(.text)
-    HAL_CAN_IRQHandler                       0x080072f9   Thumb Code  2556  lto-llvm-a494a3.o(.text)
-    __arm_cp.32_9                            0x080075b8   Number         4  lto-llvm-a494a3.o(.text)
-    __arm_cp.32_10                           0x080075bc   Number         4  lto-llvm-a494a3.o(.text)
-    HAL_SPI_Transmit                         0x08007cf5   Thumb Code   526  lto-llvm-a494a3.o(.text)
-    HAL_UART_Transmit_DMA                    0x08007f05   Thumb Code   258  lto-llvm-a494a3.o(.text)
-    UART_DMATransmitCplt                     0x08008009   Thumb Code    38  lto-llvm-a494a3.o(.text)
-    UART_DMATxHalfCplt                       0x08008031   Thumb Code     2  lto-llvm-a494a3.o(.text)
-    UART_DMAError                            0x08008035   Thumb Code    82  lto-llvm-a494a3.o(.text)
-    UART_DMAAbortOnError                     0x08008089   Thumb Code    10  lto-llvm-a494a3.o(.text)
-    HAL_GPIO_Init                            0x08008095   Thumb Code   422  lto-llvm-a494a3.o(.text)
-    .text                                    0x08008292   Section      238  lludivv7m.o(.text)
-    i.__hardfp_sqrt                          0x08008380   Section        0  sqrt.o(i.__hardfp_sqrt)
-    i._is_digit                              0x080083fa   Section        0  __printf_wp.o(i._is_digit)
-    locale$$code                             0x08008408   Section       44  lc_ctype_c.o(locale$$code)
-    x$fpl$d2f                                0x08008434   Section       98  d2f.o(x$fpl$d2f)
-    $v0                                      0x08008434   Number         0  d2f.o(x$fpl$d2f)
-    x$fpl$dfix                               0x08008498   Section       94  dfix.o(x$fpl$dfix)
-    $v0                                      0x08008498   Number         0  dfix.o(x$fpl$dfix)
-    x$fpl$dmul                               0x080084f8   Section      340  dmul.o(x$fpl$dmul)
-    $v0                                      0x080084f8   Number         0  dmul.o(x$fpl$dmul)
-    x$fpl$dnaninf                            0x0800864c   Section      156  dnaninf.o(x$fpl$dnaninf)
-    $v0                                      0x0800864c   Number         0  dnaninf.o(x$fpl$dnaninf)
-    x$fpl$dretinf                            0x080086e8   Section       12  dretinf.o(x$fpl$dretinf)
-    $v0                                      0x080086e8   Number         0  dretinf.o(x$fpl$dretinf)
-    x$fpl$dsqrt                              0x080086f4   Section      408  dsqrt_umaal.o(x$fpl$dsqrt)
-    $v0                                      0x080086f4   Number         0  dsqrt_umaal.o(x$fpl$dsqrt)
-    x$fpl$f2d                                0x0800888c   Section       86  f2d.o(x$fpl$f2d)
-    $v0                                      0x0800888c   Number         0  f2d.o(x$fpl$f2d)
-    x$fpl$fnaninf                            0x080088e2   Section      140  fnaninf.o(x$fpl$fnaninf)
-    $v0                                      0x080088e2   Number         0  fnaninf.o(x$fpl$fnaninf)
-    x$fpl$fpinit                             0x0800896e   Section       26  fpinit.o(x$fpl$fpinit)
-    $v0                                      0x0800896e   Number         0  fpinit.o(x$fpl$fpinit)
-    x$fpl$fretinf                            0x08008988   Section       10  fretinf.o(x$fpl$fretinf)
-    $v0                                      0x08008988   Number         0  fretinf.o(x$fpl$fretinf)
-    x$fpl$usenofp                            0x08008992   Section        0  usenofp.o(x$fpl$usenofp)
-    .constdata                               0x08008994   Section        8  _printf_wctomb.o(.constdata)
-    initial_mbstate                          0x08008994   Data           8  _printf_wctomb.o(.constdata)
-    .constdata                               0x0800899c   Section       40  _printf_hex_int_ll_ptr.o(.constdata)
-    uc_hextab                                0x0800899c   Data          20  _printf_hex_int_ll_ptr.o(.constdata)
-    lc_hextab                                0x080089b0   Data          20  _printf_hex_int_ll_ptr.o(.constdata)
-    .constdata                               0x080089c4   Section       17  __printf_flags_ss_wp.o(.constdata)
-    maptable                                 0x080089c4   Data          17  __printf_flags_ss_wp.o(.constdata)
-    [Anonymous Symbol]                       0x080089d8   Section        0  lto-llvm-a494a3.o(.rodata)
-    DRV8323_ReadCommandMessage               0x080089d8   Data          14  lto-llvm-a494a3.o(.rodata)
-    DRV8323_WriteCommandMessage              0x080089e6   Data          10  lto-llvm-a494a3.o(.rodata)
-    sinTable_f32                             0x080089f0   Data        2052  lto-llvm-a494a3.o(.rodata)
-    APBPrescTable                            0x080091f4   Data           8  lto-llvm-a494a3.o(.rodata.cst8)
-    [Anonymous Symbol]                       0x080091fc   Section        0  lto-llvm-a494a3.o(.rodata.str1.1)
-    .L.str.1                                 0x080091fc   Data           4  lto-llvm-a494a3.o(.rodata.str1.1)
-    .L.str.41                                0x08009200   Data          15  lto-llvm-a494a3.o(.rodata.str1.1)
-    .L.str.3                                 0x0800920f   Data           5  lto-llvm-a494a3.o(.rodata.str1.1)
-    locale$$data                             0x08009234   Section      272  lc_ctype_c.o(locale$$data)
-    __lcctype_c_name                         0x08009238   Data           2  lc_ctype_c.o(locale$$data)
-    __lcctype_c_start                        0x08009240   Data           0  lc_ctype_c.o(locale$$data)
-    __lcctype_c_end                          0x08009344   Data           0  lc_ctype_c.o(locale$$data)
-    [Anonymous Symbol]                       0x20000000   Section        0  lto-llvm-a494a3.o(.data)
-    pBuf                                     0x20000000   Data           4  lto-llvm-a494a3.o(.data)
-    USART_BuffNow                            0x20000004   Data           4  lto-llvm-a494a3.o(.data)
-    SpdCurrController.Count                  0x20000008   Data           2  lto-llvm-a494a3.o(.data)
-    PosSpdCurrController.Count               0x2000000a   Data           2  lto-llvm-a494a3.o(.data)
-    PosCurrController.Count                  0x2000000c   Data           2  lto-llvm-a494a3.o(.data)
-    SystemCoreClock                          0x20000010   Data           4  lto-llvm-a494a3.o(.data)
+    [Anonymous Symbol]                       0x08000be8   Section        0  lto-llvm-857ff3.o(.text)
+    AHBPrescTable                            0x08001f1c   Number         0  lto-llvm-857ff3.o(.text)
+    DMA_CalcBaseAndBitshift.flagBitshiftOffset 0x08001f2c   Number         0  lto-llvm-857ff3.o(.text)
+    CAN_Respond                              0x08003209   Thumb Code   364  lto-llvm-857ff3.o(.text)
+    SPI_Transmit                             0x08003375   Thumb Code   176  lto-llvm-857ff3.o(.text)
+    SPI_Receive                              0x08003425   Thumb Code   294  lto-llvm-857ff3.o(.text)
+    SendBufWhenFull                          0x0800354d   Thumb Code   182  lto-llvm-857ff3.o(.text)
+    __arm_cp.18_17                           0x0800402c   Number         4  lto-llvm-857ff3.o(.text)
+    __arm_cp.18_18                           0x08004030   Number         4  lto-llvm-857ff3.o(.text)
+    __arm_cp.18_19                           0x08004034   Number         4  lto-llvm-857ff3.o(.text)
+    __arm_cp.18_21                           0x0800403c   Number         4  lto-llvm-857ff3.o(.text)
+    __arm_cp.18_38                           0x08004dd0   Number         4  lto-llvm-857ff3.o(.text)
+    __arm_cp.18_48                           0x080055b0   Number         4  lto-llvm-857ff3.o(.text)
+    __arm_cp.18_49                           0x080055b4   Number         4  lto-llvm-857ff3.o(.text)
+    __arm_cp.18_50                           0x08005918   Number         4  lto-llvm-857ff3.o(.text)
+    SpaceVectorModulation                    0x08005945   Thumb Code   412  lto-llvm-857ff3.o(.text)
+    DriverCtrlModeInit                       0x08005ae1   Thumb Code  1014  lto-llvm-857ff3.o(.text)
+    CurrentLoop                              0x08005ed9   Thumb Code   528  lto-llvm-857ff3.o(.text)
+    DRV8323_WriteAllRegister                 0x080060e9   Thumb Code   374  lto-llvm-857ff3.o(.text)
+    GetEleImformation                        0x08006261   Thumb Code  1240  lto-llvm-857ff3.o(.text)
+    __arm_cp.23_9                            0x080065b8   Number         4  lto-llvm-857ff3.o(.text)
+    __arm_cp.23_10                           0x080065bc   Number         4  lto-llvm-857ff3.o(.text)
+    __arm_cp.23_11                           0x080065c0   Number         4  lto-llvm-857ff3.o(.text)
+    __arm_cp.23_12                           0x080065c4   Number         4  lto-llvm-857ff3.o(.text)
+    GetMecImformation                        0x08006739   Thumb Code   576  lto-llvm-857ff3.o(.text)
+    LL_GPIO_Init                             0x08006979   Thumb Code   214  lto-llvm-857ff3.o(.text)
+    HAL_ADC_Init                             0x08006a51   Thumb Code   600  lto-llvm-857ff3.o(.text)
+    HAL_ADC_ConfigChannel                    0x08006ca9   Thumb Code   322  lto-llvm-857ff3.o(.text)
+    HAL_ADCEx_InjectedStart_IT               0x08006ded   Thumb Code   228  lto-llvm-857ff3.o(.text)
+    HAL_ADCEx_InjectedConfigChannel          0x08006ed1   Thumb Code   346  lto-llvm-857ff3.o(.text)
+    HAL_CAN_Init                             0x0800702d   Thumb Code   560  lto-llvm-857ff3.o(.text)
+    HAL_CAN_AddTxMessage                     0x0800725d   Thumb Code   140  lto-llvm-857ff3.o(.text)
+    HAL_CAN_IRQHandler                       0x080072e9   Thumb Code  2792  lto-llvm-857ff3.o(.text)
+    __arm_cp.32_9                            0x08007470   Number         4  lto-llvm-857ff3.o(.text)
+    __arm_cp.32_10                           0x08007474   Number         4  lto-llvm-857ff3.o(.text)
+    __arm_cp.32_11                           0x08007478   Number         4  lto-llvm-857ff3.o(.text)
+    HAL_SPI_Transmit                         0x08007dd1   Thumb Code   526  lto-llvm-857ff3.o(.text)
+    HAL_UART_Transmit_DMA                    0x08007fe1   Thumb Code   258  lto-llvm-857ff3.o(.text)
+    UART_DMATransmitCplt                     0x080080e5   Thumb Code    38  lto-llvm-857ff3.o(.text)
+    UART_DMATxHalfCplt                       0x0800810d   Thumb Code     2  lto-llvm-857ff3.o(.text)
+    UART_DMAError                            0x08008111   Thumb Code    82  lto-llvm-857ff3.o(.text)
+    UART_DMAAbortOnError                     0x08008165   Thumb Code    10  lto-llvm-857ff3.o(.text)
+    HAL_GPIO_Init                            0x08008171   Thumb Code   422  lto-llvm-857ff3.o(.text)
+    .text                                    0x0800836e   Section      238  lludivv7m.o(.text)
+    i.__hardfp_sqrt                          0x0800845c   Section        0  sqrt.o(i.__hardfp_sqrt)
+    i._is_digit                              0x080084d6   Section        0  __printf_wp.o(i._is_digit)
+    locale$$code                             0x080084e4   Section       44  lc_ctype_c.o(locale$$code)
+    x$fpl$d2f                                0x08008510   Section       98  d2f.o(x$fpl$d2f)
+    $v0                                      0x08008510   Number         0  d2f.o(x$fpl$d2f)
+    x$fpl$dfix                               0x08008574   Section       94  dfix.o(x$fpl$dfix)
+    $v0                                      0x08008574   Number         0  dfix.o(x$fpl$dfix)
+    x$fpl$dmul                               0x080085d4   Section      340  dmul.o(x$fpl$dmul)
+    $v0                                      0x080085d4   Number         0  dmul.o(x$fpl$dmul)
+    x$fpl$dnaninf                            0x08008728   Section      156  dnaninf.o(x$fpl$dnaninf)
+    $v0                                      0x08008728   Number         0  dnaninf.o(x$fpl$dnaninf)
+    x$fpl$dretinf                            0x080087c4   Section       12  dretinf.o(x$fpl$dretinf)
+    $v0                                      0x080087c4   Number         0  dretinf.o(x$fpl$dretinf)
+    x$fpl$dsqrt                              0x080087d0   Section      408  dsqrt_umaal.o(x$fpl$dsqrt)
+    $v0                                      0x080087d0   Number         0  dsqrt_umaal.o(x$fpl$dsqrt)
+    x$fpl$f2d                                0x08008968   Section       86  f2d.o(x$fpl$f2d)
+    $v0                                      0x08008968   Number         0  f2d.o(x$fpl$f2d)
+    x$fpl$fnaninf                            0x080089be   Section      140  fnaninf.o(x$fpl$fnaninf)
+    $v0                                      0x080089be   Number         0  fnaninf.o(x$fpl$fnaninf)
+    x$fpl$fpinit                             0x08008a4a   Section       26  fpinit.o(x$fpl$fpinit)
+    $v0                                      0x08008a4a   Number         0  fpinit.o(x$fpl$fpinit)
+    x$fpl$fretinf                            0x08008a64   Section       10  fretinf.o(x$fpl$fretinf)
+    $v0                                      0x08008a64   Number         0  fretinf.o(x$fpl$fretinf)
+    x$fpl$usenofp                            0x08008a6e   Section        0  usenofp.o(x$fpl$usenofp)
+    .constdata                               0x08008a70   Section        8  _printf_wctomb.o(.constdata)
+    initial_mbstate                          0x08008a70   Data           8  _printf_wctomb.o(.constdata)
+    .constdata                               0x08008a78   Section       40  _printf_hex_int_ll_ptr.o(.constdata)
+    uc_hextab                                0x08008a78   Data          20  _printf_hex_int_ll_ptr.o(.constdata)
+    lc_hextab                                0x08008a8c   Data          20  _printf_hex_int_ll_ptr.o(.constdata)
+    .constdata                               0x08008aa0   Section       17  __printf_flags_ss_wp.o(.constdata)
+    maptable                                 0x08008aa0   Data          17  __printf_flags_ss_wp.o(.constdata)
+    [Anonymous Symbol]                       0x08008ab4   Section        0  lto-llvm-857ff3.o(.rodata)
+    DRV8323_ReadCommandMessage               0x08008ab4   Data          14  lto-llvm-857ff3.o(.rodata)
+    DRV8323_WriteCommandMessage              0x08008ac2   Data          10  lto-llvm-857ff3.o(.rodata)
+    sinTable_f32                             0x08008acc   Data        2052  lto-llvm-857ff3.o(.rodata)
+    APBPrescTable                            0x080092d0   Data           8  lto-llvm-857ff3.o(.rodata.cst8)
+    [Anonymous Symbol]                       0x080092d8   Section        0  lto-llvm-857ff3.o(.rodata.str1.1)
+    .L.str.1                                 0x080092d8   Data           4  lto-llvm-857ff3.o(.rodata.str1.1)
+    .L.str.41                                0x080092dc   Data          15  lto-llvm-857ff3.o(.rodata.str1.1)
+    .L.str.3                                 0x080092eb   Data           5  lto-llvm-857ff3.o(.rodata.str1.1)
+    locale$$data                             0x08009310   Section      272  lc_ctype_c.o(locale$$data)
+    __lcctype_c_name                         0x08009314   Data           2  lc_ctype_c.o(locale$$data)
+    __lcctype_c_start                        0x0800931c   Data           0  lc_ctype_c.o(locale$$data)
+    __lcctype_c_end                          0x08009420   Data           0  lc_ctype_c.o(locale$$data)
+    [Anonymous Symbol]                       0x20000000   Section        0  lto-llvm-857ff3.o(.data)
+    pBuf                                     0x20000000   Data           4  lto-llvm-857ff3.o(.data)
+    USART_BuffNow                            0x20000004   Data           4  lto-llvm-857ff3.o(.data)
+    SpdCurrController.Count                  0x20000008   Data           2  lto-llvm-857ff3.o(.data)
+    PosSpdCurrController.Count               0x2000000a   Data           2  lto-llvm-857ff3.o(.data)
+    PosCurrController.Count                  0x2000000c   Data           2  lto-llvm-857ff3.o(.data)
+    SystemCoreClock                          0x20000010   Data           4  lto-llvm-857ff3.o(.data)
     .bss                                     0x20000018   Section       96  libspace.o(.bss)
-    [Anonymous Symbol]                       0x20000078   Section        0  lto-llvm-a494a3.o(.bss)
-    hadc1                                    0x20000078   Data          72  lto-llvm-a494a3.o(.bss)
-    hadc2                                    0x200000c0   Data          72  lto-llvm-a494a3.o(.bss)
-    hadc3                                    0x20000108   Data          72  lto-llvm-a494a3.o(.bss)
-    hcan1                                    0x20000150   Data          56  lto-llvm-a494a3.o(.bss)
-    CAN                                      0x20000188   Data          40  lto-llvm-a494a3.o(.bss)
-    HAL_CAN_ErrorCallback.__i_divSendTimes   0x200001b0   Data           4  lto-llvm-a494a3.o(.bss)
-    HAL_CAN_ErrorCallback.errTimes           0x200001b4   Data           2  lto-llvm-a494a3.o(.bss)
-    hspi3                                    0x200001b8   Data          92  lto-llvm-a494a3.o(.bss)
-    htim2                                    0x20000214   Data          68  lto-llvm-a494a3.o(.bss)
-    huart1                                   0x20000258   Data          72  lto-llvm-a494a3.o(.bss)
-    hdma_usart1_tx                           0x200002a0   Data         100  lto-llvm-a494a3.o(.bss)
-    USART_BUFF1                              0x20000304   Data        2000  lto-llvm-a494a3.o(.bss)
-    USART_BUFF2                              0x20000ad4   Data        2000  lto-llvm-a494a3.o(.bss)
-    ADC_IRQHandler.__i_divSendTimes          0x200012a4   Data           4  lto-llvm-a494a3.o(.bss)
-    ADC_IRQHandler.__i_divSendTimes.2        0x200012a8   Data           4  lto-llvm-a494a3.o(.bss)
-    ADC_IRQHandler.__i_divSendTimes.4        0x200012ac   Data           4  lto-llvm-a494a3.o(.bss)
-    ADC_IRQHandler.__i_divSendTimes.5        0x200012b0   Data           4  lto-llvm-a494a3.o(.bss)
-    ADC_IRQHandler.__i_divSendTimes.6        0x200012b4   Data           4  lto-llvm-a494a3.o(.bss)
-    ADC_IRQHandler.__i_divSendTimes.7        0x200012b8   Data           4  lto-llvm-a494a3.o(.bss)
-    ADC_IRQHandler.__i_divSendTimes.8        0x200012bc   Data           4  lto-llvm-a494a3.o(.bss)
-    ADC_IRQHandler.__i_divSendTimes.9        0x200012c0   Data           4  lto-llvm-a494a3.o(.bss)
-    ADC_IRQHandler.__i_divSendTimes.10       0x200012c4   Data           4  lto-llvm-a494a3.o(.bss)
-    ADC_IRQHandler.__i_divSendTimes.11       0x200012c8   Data           4  lto-llvm-a494a3.o(.bss)
-    ADC_IRQHandler.__i_divSendTimes.12       0x200012cc   Data           4  lto-llvm-a494a3.o(.bss)
-    ADC_IRQHandler.__i_divSendTimes.13       0x200012d0   Data           4  lto-llvm-a494a3.o(.bss)
-    ADC_IRQHandler.__i_divSendTimes.14       0x200012d4   Data           4  lto-llvm-a494a3.o(.bss)
-    VelSlopeGenerator.velocityProcessVolume  0x200012d8   Data           4  lto-llvm-a494a3.o(.bss)
-    PosSensor                                0x200012dc   Data          56  lto-llvm-a494a3.o(.bss)
-    GetEleAngularSpeed.lastEleAngle          0x20001314   Data           4  lto-llvm-a494a3.o(.bss)
-    GetEleAngularSpeed.pos                   0x20001318   Data           2  lto-llvm-a494a3.o(.bss)
-    GetEleAngularSpeed.array                 0x2000131c   Data          24  lto-llvm-a494a3.o(.bss)
-    GetEleAngularSpeed.sum                   0x20001334   Data           4  lto-llvm-a494a3.o(.bss)
-    EncodeErrorDetection.count               0x20001338   Data           1  lto-llvm-a494a3.o(.bss)
-    EncodeErrorDetection.__i_divSendTimes    0x2000133c   Data           4  lto-llvm-a494a3.o(.bss)
-    GetMecAngularSpeed.lastMecAngle          0x20001340   Data           4  lto-llvm-a494a3.o(.bss)
-    GetMecAngularSpeed.pos                   0x20001344   Data           2  lto-llvm-a494a3.o(.bss)
-    GetMecAngularSpeed.array                 0x20001348   Data          40  lto-llvm-a494a3.o(.bss)
-    GetMecAngularSpeed.sum                   0x20001370   Data           4  lto-llvm-a494a3.o(.bss)
-    uwTick                                   0x20001374   Data           4  lto-llvm-a494a3.o(.bss)
-    Driver.1                                 0x20001378   Data           1  lto-llvm-a494a3.o(.bss)
-    Driver.2                                 0x20001379   Data           1  lto-llvm-a494a3.o(.bss)
-    PosLoop.1                                0x2000137c   Data           4  lto-llvm-a494a3.o(.bss)
-    PosLoop.2                                0x20001380   Data           4  lto-llvm-a494a3.o(.bss)
-    PosLoop.5                                0x20001384   Data           4  lto-llvm-a494a3.o(.bss)
-    PosLoop.7                                0x20001388   Data           4  lto-llvm-a494a3.o(.bss)
-    PosLoop.8                                0x2000138c   Data           4  lto-llvm-a494a3.o(.bss)
-    MainCtrl.4                               0x20001390   Data           4  lto-llvm-a494a3.o(.bss)
-    MainCtrl.7                               0x20001394   Data           4  lto-llvm-a494a3.o(.bss)
-    MainCtrl.10                              0x20001398   Data           2  lto-llvm-a494a3.o(.bss)
-    Regulator.3                              0x2000139c   Data           4  lto-llvm-a494a3.o(.bss)
-    TxMessage.0                              0x200013a0   Data           1  lto-llvm-a494a3.o(.bss)
-    TxMessage.4                              0x200013a4   Data           4  lto-llvm-a494a3.o(.bss)
-    RxMessage0.0                             0x200013a8   Data           4  lto-llvm-a494a3.o(.bss)
-    CoordTrans.0                             0x200013ac   Data           4  lto-llvm-a494a3.o(.bss)
-    CoordTrans.1                             0x200013b0   Data           4  lto-llvm-a494a3.o(.bss)
-    CoordTrans.2                             0x200013b4   Data           4  lto-llvm-a494a3.o(.bss)
-    CoordTrans.3                             0x200013b8   Data           4  lto-llvm-a494a3.o(.bss)
-    CoordTrans.4                             0x200013bc   Data           4  lto-llvm-a494a3.o(.bss)
-    CoordTrans.7                             0x200013c0   Data           4  lto-llvm-a494a3.o(.bss)
-    CoordTrans.8                             0x200013c4   Data           4  lto-llvm-a494a3.o(.bss)
-    CoordTrans.9                             0x200013c8   Data           4  lto-llvm-a494a3.o(.bss)
-    CoordTrans.10                            0x200013cc   Data           4  lto-llvm-a494a3.o(.bss)
-    CurrLoop.0                               0x200013d0   Data           4  lto-llvm-a494a3.o(.bss)
-    CurrLoop.2                               0x200013d4   Data           4  lto-llvm-a494a3.o(.bss)
-    CurrLoop.3                               0x200013d8   Data           4  lto-llvm-a494a3.o(.bss)
-    CurrLoop.4                               0x200013dc   Data           4  lto-llvm-a494a3.o(.bss)
-    CurrLoop.5                               0x200013e0   Data           4  lto-llvm-a494a3.o(.bss)
-    CurrLoop.6                               0x200013e4   Data           4  lto-llvm-a494a3.o(.bss)
-    CurrLoop.7                               0x200013e8   Data           4  lto-llvm-a494a3.o(.bss)
-    CurrLoop.8                               0x200013ec   Data           4  lto-llvm-a494a3.o(.bss)
-    CurrLoop.9                               0x200013f0   Data           4  lto-llvm-a494a3.o(.bss)
-    CurrLoop.10                              0x200013f4   Data           4  lto-llvm-a494a3.o(.bss)
-    CurrLoop.11                              0x200013f8   Data           4  lto-llvm-a494a3.o(.bss)
-    CurrLoop.12                              0x200013fc   Data           4  lto-llvm-a494a3.o(.bss)
-    SpdLoop.0                                0x20001400   Data           4  lto-llvm-a494a3.o(.bss)
-    SpdLoop.1                                0x20001404   Data           4  lto-llvm-a494a3.o(.bss)
-    SpdLoop.2                                0x20001408   Data           4  lto-llvm-a494a3.o(.bss)
-    SpdLoop.3                                0x2000140c   Data           4  lto-llvm-a494a3.o(.bss)
-    SpdLoop.4                                0x20001410   Data           4  lto-llvm-a494a3.o(.bss)
-    SpdLoop.5                                0x20001414   Data           4  lto-llvm-a494a3.o(.bss)
-    SpdLoop.6                                0x20001418   Data           4  lto-llvm-a494a3.o(.bss)
-    SpdLoop.7                                0x2000141c   Data           4  lto-llvm-a494a3.o(.bss)
-    VolCtrl.2                                0x20001420   Data           4  lto-llvm-a494a3.o(.bss)
-    VolCtrl.3                                0x20001424   Data           4  lto-llvm-a494a3.o(.bss)
-    TorqueCtrl.0                             0x20001428   Data           4  lto-llvm-a494a3.o(.bss)
-    TorqueCtrl.1                             0x2000142c   Data           4  lto-llvm-a494a3.o(.bss)
-    HEAP                                     0x20001430   Section      512  startup_stm32f446xx.o(HEAP)
-    Heap_Mem                                 0x20001430   Data         512  startup_stm32f446xx.o(HEAP)
-    STACK                                    0x20001630   Section     1024  startup_stm32f446xx.o(STACK)
-    Stack_Mem                                0x20001630   Data        1024  startup_stm32f446xx.o(STACK)
-    __initial_sp                             0x20001a30   Data           0  startup_stm32f446xx.o(STACK)
+    [Anonymous Symbol]                       0x20000078   Section        0  lto-llvm-857ff3.o(.bss)
+    hadc1                                    0x20000078   Data          72  lto-llvm-857ff3.o(.bss)
+    hadc2                                    0x200000c0   Data          72  lto-llvm-857ff3.o(.bss)
+    hadc3                                    0x20000108   Data          72  lto-llvm-857ff3.o(.bss)
+    hcan1                                    0x20000150   Data          56  lto-llvm-857ff3.o(.bss)
+    CAN                                      0x20000188   Data          40  lto-llvm-857ff3.o(.bss)
+    HAL_CAN_ErrorCallback.__i_divSendTimes   0x200001b0   Data           4  lto-llvm-857ff3.o(.bss)
+    HAL_CAN_ErrorCallback.errTimes           0x200001b4   Data           2  lto-llvm-857ff3.o(.bss)
+    hspi3                                    0x200001b8   Data          92  lto-llvm-857ff3.o(.bss)
+    htim2                                    0x20000214   Data          68  lto-llvm-857ff3.o(.bss)
+    huart1                                   0x20000258   Data          72  lto-llvm-857ff3.o(.bss)
+    hdma_usart1_tx                           0x200002a0   Data         100  lto-llvm-857ff3.o(.bss)
+    USART_BUFF1                              0x20000304   Data        2000  lto-llvm-857ff3.o(.bss)
+    USART_BUFF2                              0x20000ad4   Data        2000  lto-llvm-857ff3.o(.bss)
+    ADC_IRQHandler.__i_divSendTimes          0x200012a4   Data           4  lto-llvm-857ff3.o(.bss)
+    ADC_IRQHandler.__i_divSendTimes.2        0x200012a8   Data           4  lto-llvm-857ff3.o(.bss)
+    ADC_IRQHandler.__i_divSendTimes.4        0x200012ac   Data           4  lto-llvm-857ff3.o(.bss)
+    ADC_IRQHandler.__i_divSendTimes.5        0x200012b0   Data           4  lto-llvm-857ff3.o(.bss)
+    ADC_IRQHandler.__i_divSendTimes.6        0x200012b4   Data           4  lto-llvm-857ff3.o(.bss)
+    ADC_IRQHandler.__i_divSendTimes.7        0x200012b8   Data           4  lto-llvm-857ff3.o(.bss)
+    ADC_IRQHandler.__i_divSendTimes.8        0x200012bc   Data           4  lto-llvm-857ff3.o(.bss)
+    ADC_IRQHandler.__i_divSendTimes.9        0x200012c0   Data           4  lto-llvm-857ff3.o(.bss)
+    ADC_IRQHandler.__i_divSendTimes.10       0x200012c4   Data           4  lto-llvm-857ff3.o(.bss)
+    ADC_IRQHandler.__i_divSendTimes.11       0x200012c8   Data           4  lto-llvm-857ff3.o(.bss)
+    ADC_IRQHandler.__i_divSendTimes.12       0x200012cc   Data           4  lto-llvm-857ff3.o(.bss)
+    ADC_IRQHandler.__i_divSendTimes.13       0x200012d0   Data           4  lto-llvm-857ff3.o(.bss)
+    ADC_IRQHandler.__i_divSendTimes.14       0x200012d4   Data           4  lto-llvm-857ff3.o(.bss)
+    MainCtrl                                 0x200012d8   Data          40  lto-llvm-857ff3.o(.bss)
+    VelSlopeGenerator.velocityProcessVolume  0x20001300   Data           4  lto-llvm-857ff3.o(.bss)
+    PosSensor                                0x20001304   Data          56  lto-llvm-857ff3.o(.bss)
+    GetEleAngularSpeed.lastEleAngle          0x2000133c   Data           4  lto-llvm-857ff3.o(.bss)
+    GetEleAngularSpeed.pos                   0x20001340   Data           2  lto-llvm-857ff3.o(.bss)
+    GetEleAngularSpeed.array                 0x20001344   Data          24  lto-llvm-857ff3.o(.bss)
+    GetEleAngularSpeed.sum                   0x2000135c   Data           4  lto-llvm-857ff3.o(.bss)
+    EncodeErrorDetection.count               0x20001360   Data           1  lto-llvm-857ff3.o(.bss)
+    EncodeErrorDetection.__i_divSendTimes    0x20001364   Data           4  lto-llvm-857ff3.o(.bss)
+    GetMecAngularSpeed.lastMecAngle          0x20001368   Data           4  lto-llvm-857ff3.o(.bss)
+    GetMecAngularSpeed.pos                   0x2000136c   Data           2  lto-llvm-857ff3.o(.bss)
+    GetMecAngularSpeed.array                 0x20001370   Data          40  lto-llvm-857ff3.o(.bss)
+    GetMecAngularSpeed.sum                   0x20001398   Data           4  lto-llvm-857ff3.o(.bss)
+    uwTick                                   0x2000139c   Data           4  lto-llvm-857ff3.o(.bss)
+    Driver.1                                 0x200013a0   Data           1  lto-llvm-857ff3.o(.bss)
+    Driver.2                                 0x200013a1   Data           1  lto-llvm-857ff3.o(.bss)
+    PosLoop.1                                0x200013a4   Data           4  lto-llvm-857ff3.o(.bss)
+    PosLoop.2                                0x200013a8   Data           4  lto-llvm-857ff3.o(.bss)
+    PosLoop.5                                0x200013ac   Data           4  lto-llvm-857ff3.o(.bss)
+    PosLoop.7                                0x200013b0   Data           4  lto-llvm-857ff3.o(.bss)
+    PosLoop.8                                0x200013b4   Data           4  lto-llvm-857ff3.o(.bss)
+    Regulator.3                              0x200013b8   Data           4  lto-llvm-857ff3.o(.bss)
+    TxMessage.0                              0x200013bc   Data           1  lto-llvm-857ff3.o(.bss)
+    TxMessage.4                              0x200013c0   Data           4  lto-llvm-857ff3.o(.bss)
+    RxMessage0.0                             0x200013c4   Data           4  lto-llvm-857ff3.o(.bss)
+    CoordTrans.0                             0x200013c8   Data           4  lto-llvm-857ff3.o(.bss)
+    CoordTrans.1                             0x200013cc   Data           4  lto-llvm-857ff3.o(.bss)
+    CoordTrans.2                             0x200013d0   Data           4  lto-llvm-857ff3.o(.bss)
+    CoordTrans.3                             0x200013d4   Data           4  lto-llvm-857ff3.o(.bss)
+    CoordTrans.4                             0x200013d8   Data           4  lto-llvm-857ff3.o(.bss)
+    CoordTrans.7                             0x200013dc   Data           4  lto-llvm-857ff3.o(.bss)
+    CoordTrans.8                             0x200013e0   Data           4  lto-llvm-857ff3.o(.bss)
+    CoordTrans.9                             0x200013e4   Data           4  lto-llvm-857ff3.o(.bss)
+    CoordTrans.10                            0x200013e8   Data           4  lto-llvm-857ff3.o(.bss)
+    CurrLoop.0                               0x200013ec   Data           4  lto-llvm-857ff3.o(.bss)
+    CurrLoop.2                               0x200013f0   Data           4  lto-llvm-857ff3.o(.bss)
+    CurrLoop.3                               0x200013f4   Data           4  lto-llvm-857ff3.o(.bss)
+    CurrLoop.4                               0x200013f8   Data           4  lto-llvm-857ff3.o(.bss)
+    CurrLoop.5                               0x200013fc   Data           4  lto-llvm-857ff3.o(.bss)
+    CurrLoop.6                               0x20001400   Data           4  lto-llvm-857ff3.o(.bss)
+    CurrLoop.7                               0x20001404   Data           4  lto-llvm-857ff3.o(.bss)
+    CurrLoop.8                               0x20001408   Data           4  lto-llvm-857ff3.o(.bss)
+    CurrLoop.9                               0x2000140c   Data           4  lto-llvm-857ff3.o(.bss)
+    CurrLoop.10                              0x20001410   Data           4  lto-llvm-857ff3.o(.bss)
+    CurrLoop.11                              0x20001414   Data           4  lto-llvm-857ff3.o(.bss)
+    CurrLoop.12                              0x20001418   Data           4  lto-llvm-857ff3.o(.bss)
+    SpdLoop.0                                0x2000141c   Data           4  lto-llvm-857ff3.o(.bss)
+    SpdLoop.1                                0x20001420   Data           4  lto-llvm-857ff3.o(.bss)
+    SpdLoop.2                                0x20001424   Data           4  lto-llvm-857ff3.o(.bss)
+    SpdLoop.3                                0x20001428   Data           4  lto-llvm-857ff3.o(.bss)
+    SpdLoop.4                                0x2000142c   Data           4  lto-llvm-857ff3.o(.bss)
+    SpdLoop.5                                0x20001430   Data           4  lto-llvm-857ff3.o(.bss)
+    SpdLoop.6                                0x20001434   Data           4  lto-llvm-857ff3.o(.bss)
+    SpdLoop.7                                0x20001438   Data           4  lto-llvm-857ff3.o(.bss)
+    VolCtrl.2                                0x2000143c   Data           4  lto-llvm-857ff3.o(.bss)
+    VolCtrl.3                                0x20001440   Data           4  lto-llvm-857ff3.o(.bss)
+    TorqueCtrl.0                             0x20001444   Data           4  lto-llvm-857ff3.o(.bss)
+    TorqueCtrl.1                             0x20001448   Data           4  lto-llvm-857ff3.o(.bss)
+    HEAP                                     0x20001450   Section      512  startup_stm32f446xx.o(HEAP)
+    Heap_Mem                                 0x20001450   Data         512  startup_stm32f446xx.o(HEAP)
+    STACK                                    0x20001650   Section     1024  startup_stm32f446xx.o(STACK)
+    Stack_Mem                                0x20001650   Data        1024  startup_stm32f446xx.o(STACK)
+    __initial_sp                             0x20001a50   Data           0  startup_stm32f446xx.o(STACK)
 
     Global Symbols
 
@@ -1033,47 +1032,47 @@ Image Symbol Table
     __I$use$semihosting                      0x08000be1   Thumb Code     0  use_no_semi.o(.text)
     __use_no_semihosting_swi                 0x08000be1   Thumb Code     2  use_no_semi.o(.text)
     __semihosting_library_function           0x08000be3   Thumb Code     0  indicate_semi.o(.text)
-    main                                     0x08000be9   Thumb Code  9758  lto-llvm-a494a3.o(.text)
-    NMI_Handler                              0x08003605   Thumb Code     2  lto-llvm-a494a3.o(.text)
-    HardFault_Handler                        0x08003609   Thumb Code   396  lto-llvm-a494a3.o(.text)
-    MemManage_Handler                        0x08003795   Thumb Code     2  lto-llvm-a494a3.o(.text)
-    BusFault_Handler                         0x08003799   Thumb Code     2  lto-llvm-a494a3.o(.text)
-    UsageFault_Handler                       0x0800379d   Thumb Code     2  lto-llvm-a494a3.o(.text)
-    SVC_Handler                              0x080037a1   Thumb Code     2  lto-llvm-a494a3.o(.text)
-    DebugMon_Handler                         0x080037a5   Thumb Code     2  lto-llvm-a494a3.o(.text)
-    PendSV_Handler                           0x080037a9   Thumb Code     2  lto-llvm-a494a3.o(.text)
-    SysTick_Handler                          0x080037ad   Thumb Code    16  lto-llvm-a494a3.o(.text)
-    CAN1_RX0_IRQHandler                      0x080037bd   Thumb Code     4  lto-llvm-a494a3.o(.text)
-    CAN1_RX1_IRQHandler                      0x080037c1   Thumb Code     4  lto-llvm-a494a3.o(.text)
-    USART1_IRQHandler                        0x080037c5   Thumb Code   728  lto-llvm-a494a3.o(.text)
-    DMA2_Stream7_IRQHandler                  0x08003a9d   Thumb Code   482  lto-llvm-a494a3.o(.text)
-    ADC_IRQHandler                           0x08003c81   Thumb Code  7388  lto-llvm-a494a3.o(.text)
-    SystemInit                               0x0800823d   Thumb Code    86  lto-llvm-a494a3.o(.text)
-    __aeabi_uldivmod                         0x08008293   Thumb Code     0  lludivv7m.o(.text)
-    _ll_udiv                                 0x08008293   Thumb Code   238  lludivv7m.o(.text)
-    __hardfp_sqrt                            0x08008381   Thumb Code   122  sqrt.o(i.__hardfp_sqrt)
-    _is_digit                                0x080083fb   Thumb Code    14  __printf_wp.o(i._is_digit)
-    _get_lc_ctype                            0x08008409   Thumb Code    44  lc_ctype_c.o(locale$$code)
-    __aeabi_d2f                              0x08008435   Thumb Code     0  d2f.o(x$fpl$d2f)
-    _d2f                                     0x08008435   Thumb Code    98  d2f.o(x$fpl$d2f)
-    __aeabi_d2iz                             0x08008499   Thumb Code     0  dfix.o(x$fpl$dfix)
-    _dfix                                    0x08008499   Thumb Code    94  dfix.o(x$fpl$dfix)
-    __aeabi_dmul                             0x080084f9   Thumb Code     0  dmul.o(x$fpl$dmul)
-    _dmul                                    0x080084f9   Thumb Code   332  dmul.o(x$fpl$dmul)
-    __fpl_dnaninf                            0x0800864d   Thumb Code   156  dnaninf.o(x$fpl$dnaninf)
-    __fpl_dretinf                            0x080086e9   Thumb Code    12  dretinf.o(x$fpl$dretinf)
-    _dsqrt                                   0x080086f5   Thumb Code   404  dsqrt_umaal.o(x$fpl$dsqrt)
-    __aeabi_f2d                              0x0800888d   Thumb Code     0  f2d.o(x$fpl$f2d)
-    _f2d                                     0x0800888d   Thumb Code    86  f2d.o(x$fpl$f2d)
-    __fpl_fnaninf                            0x080088e3   Thumb Code   140  fnaninf.o(x$fpl$fnaninf)
-    _fp_init                                 0x0800896f   Thumb Code    26  fpinit.o(x$fpl$fpinit)
-    __fplib_config_fpu_vfp                   0x08008987   Thumb Code     0  fpinit.o(x$fpl$fpinit)
-    __fplib_config_pureend_doubles           0x08008987   Thumb Code     0  fpinit.o(x$fpl$fpinit)
-    __fpl_fretinf                            0x08008989   Thumb Code    10  fretinf.o(x$fpl$fretinf)
-    __I$use$fp                               0x08008992   Number         0  usenofp.o(x$fpl$usenofp)
-    Region$$Table$$Base                      0x08009214   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x08009234   Number         0  anon$$obj.o(Region$$Table)
-    __ctype                                  0x08009241   Data           0  lc_ctype_c.o(locale$$data)
+    main                                     0x08000be9   Thumb Code  9754  lto-llvm-857ff3.o(.text)
+    NMI_Handler                              0x08003605   Thumb Code     2  lto-llvm-857ff3.o(.text)
+    HardFault_Handler                        0x08003609   Thumb Code   396  lto-llvm-857ff3.o(.text)
+    MemManage_Handler                        0x08003795   Thumb Code     2  lto-llvm-857ff3.o(.text)
+    BusFault_Handler                         0x08003799   Thumb Code     2  lto-llvm-857ff3.o(.text)
+    UsageFault_Handler                       0x0800379d   Thumb Code     2  lto-llvm-857ff3.o(.text)
+    SVC_Handler                              0x080037a1   Thumb Code     2  lto-llvm-857ff3.o(.text)
+    DebugMon_Handler                         0x080037a5   Thumb Code     2  lto-llvm-857ff3.o(.text)
+    PendSV_Handler                           0x080037a9   Thumb Code     2  lto-llvm-857ff3.o(.text)
+    SysTick_Handler                          0x080037ad   Thumb Code    16  lto-llvm-857ff3.o(.text)
+    CAN1_RX0_IRQHandler                      0x080037bd   Thumb Code     4  lto-llvm-857ff3.o(.text)
+    CAN1_RX1_IRQHandler                      0x080037c1   Thumb Code     4  lto-llvm-857ff3.o(.text)
+    USART1_IRQHandler                        0x080037c5   Thumb Code   728  lto-llvm-857ff3.o(.text)
+    DMA2_Stream7_IRQHandler                  0x08003a9d   Thumb Code   482  lto-llvm-857ff3.o(.text)
+    ADC_IRQHandler                           0x08003c81   Thumb Code  7364  lto-llvm-857ff3.o(.text)
+    SystemInit                               0x08008319   Thumb Code    86  lto-llvm-857ff3.o(.text)
+    __aeabi_uldivmod                         0x0800836f   Thumb Code     0  lludivv7m.o(.text)
+    _ll_udiv                                 0x0800836f   Thumb Code   238  lludivv7m.o(.text)
+    __hardfp_sqrt                            0x0800845d   Thumb Code   122  sqrt.o(i.__hardfp_sqrt)
+    _is_digit                                0x080084d7   Thumb Code    14  __printf_wp.o(i._is_digit)
+    _get_lc_ctype                            0x080084e5   Thumb Code    44  lc_ctype_c.o(locale$$code)
+    __aeabi_d2f                              0x08008511   Thumb Code     0  d2f.o(x$fpl$d2f)
+    _d2f                                     0x08008511   Thumb Code    98  d2f.o(x$fpl$d2f)
+    __aeabi_d2iz                             0x08008575   Thumb Code     0  dfix.o(x$fpl$dfix)
+    _dfix                                    0x08008575   Thumb Code    94  dfix.o(x$fpl$dfix)
+    __aeabi_dmul                             0x080085d5   Thumb Code     0  dmul.o(x$fpl$dmul)
+    _dmul                                    0x080085d5   Thumb Code   332  dmul.o(x$fpl$dmul)
+    __fpl_dnaninf                            0x08008729   Thumb Code   156  dnaninf.o(x$fpl$dnaninf)
+    __fpl_dretinf                            0x080087c5   Thumb Code    12  dretinf.o(x$fpl$dretinf)
+    _dsqrt                                   0x080087d1   Thumb Code   404  dsqrt_umaal.o(x$fpl$dsqrt)
+    __aeabi_f2d                              0x08008969   Thumb Code     0  f2d.o(x$fpl$f2d)
+    _f2d                                     0x08008969   Thumb Code    86  f2d.o(x$fpl$f2d)
+    __fpl_fnaninf                            0x080089bf   Thumb Code   140  fnaninf.o(x$fpl$fnaninf)
+    _fp_init                                 0x08008a4b   Thumb Code    26  fpinit.o(x$fpl$fpinit)
+    __fplib_config_fpu_vfp                   0x08008a63   Thumb Code     0  fpinit.o(x$fpl$fpinit)
+    __fplib_config_pureend_doubles           0x08008a63   Thumb Code     0  fpinit.o(x$fpl$fpinit)
+    __fpl_fretinf                            0x08008a65   Thumb Code    10  fretinf.o(x$fpl$fretinf)
+    __I$use$fp                               0x08008a6e   Number         0  usenofp.o(x$fpl$usenofp)
+    Region$$Table$$Base                      0x080092f0   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x08009310   Number         0  anon$$obj.o(Region$$Table)
+    __ctype                                  0x0800931d   Data           0  lc_ctype_c.o(locale$$data)
     __libspace_start                         0x20000018   Data          96  libspace.o(.bss)
     __temporary_stack_top$libspace           0x20000078   Data           0  libspace.o(.bss)
 
@@ -1085,9 +1084,9 @@ Memory Map of the image
 
   Image Entry point : 0x080001c5
 
-  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00009360, Max: 0x00080000, ABSOLUTE)
+  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00009438, Max: 0x00080000, ABSOLUTE)
 
-    Execution Region ER_IROM1 (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x00009344, Max: 0x00080000, ABSOLUTE)
+    Execution Region ER_IROM1 (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x00009420, Max: 0x00080000, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -1200,46 +1199,47 @@ Memory Map of the image
     0x08000be0   0x08000be0   0x00000002   Code   RO          341    .text               c_wu.l(use_no_semi.o)
     0x08000be2   0x08000be2   0x00000000   Code   RO          343    .text               c_wu.l(indicate_semi.o)
     0x08000be2   0x08000be2   0x00000006   PAD
-    0x08000be8   0x08000be8   0x000076aa   Code   RO          398    .text               lto-llvm-a494a3.o
-    0x08008292   0x08008292   0x000000ee   Code   RO          416    .text               c_wu.l(lludivv7m.o)
-    0x08008380   0x08008380   0x0000007a   Code   RO           83    i.__hardfp_sqrt     m_wm.l(sqrt.o)
-    0x080083fa   0x080083fa   0x0000000e   Code   RO          168    i._is_digit         c_wu.l(__printf_wp.o)
-    0x08008408   0x08008408   0x0000002c   Code   RO          266    locale$$code        c_wu.l(lc_ctype_c.o)
-    0x08008434   0x08008434   0x00000062   Code   RO          418    x$fpl$d2f           fz_wm.l(d2f.o)
-    0x08008496   0x08008496   0x00000002   PAD
-    0x08008498   0x08008498   0x0000005e   Code   RO          420    x$fpl$dfix          fz_wm.l(dfix.o)
-    0x080084f6   0x080084f6   0x00000002   PAD
-    0x080084f8   0x080084f8   0x00000154   Code   RO          424    x$fpl$dmul          fz_wm.l(dmul.o)
-    0x0800864c   0x0800864c   0x0000009c   Code   RO          241    x$fpl$dnaninf       fz_wm.l(dnaninf.o)
-    0x080086e8   0x080086e8   0x0000000c   Code   RO          432    x$fpl$dretinf       fz_wm.l(dretinf.o)
-    0x080086f4   0x080086f4   0x00000198   Code   RO          203    x$fpl$dsqrt         fz_wm.l(dsqrt_umaal.o)
-    0x0800888c   0x0800888c   0x00000056   Code   RO          426    x$fpl$f2d           fz_wm.l(f2d.o)
-    0x080088e2   0x080088e2   0x0000008c   Code   RO          434    x$fpl$fnaninf       fz_wm.l(fnaninf.o)
-    0x0800896e   0x0800896e   0x0000001a   Code   RO          324    x$fpl$fpinit        fz_wm.l(fpinit.o)
-    0x08008988   0x08008988   0x0000000a   Code   RO          436    x$fpl$fretinf       fz_wm.l(fretinf.o)
-    0x08008992   0x08008992   0x00000000   Code   RO          205    x$fpl$usenofp       fz_wm.l(usenofp.o)
-    0x08008992   0x08008992   0x00000002   PAD
-    0x08008994   0x08008994   0x00000008   Data   RO          127    .constdata          c_wu.l(_printf_wctomb.o)
-    0x0800899c   0x0800899c   0x00000028   Data   RO          156    .constdata          c_wu.l(_printf_hex_int_ll_ptr.o)
-    0x080089c4   0x080089c4   0x00000011   Data   RO          176    .constdata          c_wu.l(__printf_flags_ss_wp.o)
-    0x080089d5   0x080089d5   0x00000003   PAD
-    0x080089d8   0x080089d8   0x0000081c   Data   RO          404    .rodata             lto-llvm-a494a3.o
-    0x080091f4   0x080091f4   0x00000008   Data   RO          405    .rodata.cst8        lto-llvm-a494a3.o
-    0x080091fc   0x080091fc   0x00000018   Data   RO          403    .rodata.str1.1      lto-llvm-a494a3.o
-    0x08009214   0x08009214   0x00000020   Data   RO          444    Region$$Table       anon$$obj.o
-    0x08009234   0x08009234   0x00000110   Data   RO          265    locale$$data        c_wu.l(lc_ctype_c.o)
+    0x08000be8   0x08000be8   0x00007786   Code   RO          398    .text               lto-llvm-857ff3.o
+    0x0800836e   0x0800836e   0x000000ee   Code   RO          416    .text               c_wu.l(lludivv7m.o)
+    0x0800845c   0x0800845c   0x0000007a   Code   RO           83    i.__hardfp_sqrt     m_wm.l(sqrt.o)
+    0x080084d6   0x080084d6   0x0000000e   Code   RO          168    i._is_digit         c_wu.l(__printf_wp.o)
+    0x080084e4   0x080084e4   0x0000002c   Code   RO          266    locale$$code        c_wu.l(lc_ctype_c.o)
+    0x08008510   0x08008510   0x00000062   Code   RO          418    x$fpl$d2f           fz_wm.l(d2f.o)
+    0x08008572   0x08008572   0x00000002   PAD
+    0x08008574   0x08008574   0x0000005e   Code   RO          420    x$fpl$dfix          fz_wm.l(dfix.o)
+    0x080085d2   0x080085d2   0x00000002   PAD
+    0x080085d4   0x080085d4   0x00000154   Code   RO          424    x$fpl$dmul          fz_wm.l(dmul.o)
+    0x08008728   0x08008728   0x0000009c   Code   RO          241    x$fpl$dnaninf       fz_wm.l(dnaninf.o)
+    0x080087c4   0x080087c4   0x0000000c   Code   RO          432    x$fpl$dretinf       fz_wm.l(dretinf.o)
+    0x080087d0   0x080087d0   0x00000198   Code   RO          203    x$fpl$dsqrt         fz_wm.l(dsqrt_umaal.o)
+    0x08008968   0x08008968   0x00000056   Code   RO          426    x$fpl$f2d           fz_wm.l(f2d.o)
+    0x080089be   0x080089be   0x0000008c   Code   RO          434    x$fpl$fnaninf       fz_wm.l(fnaninf.o)
+    0x08008a4a   0x08008a4a   0x0000001a   Code   RO          324    x$fpl$fpinit        fz_wm.l(fpinit.o)
+    0x08008a64   0x08008a64   0x0000000a   Code   RO          436    x$fpl$fretinf       fz_wm.l(fretinf.o)
+    0x08008a6e   0x08008a6e   0x00000000   Code   RO          205    x$fpl$usenofp       fz_wm.l(usenofp.o)
+    0x08008a6e   0x08008a6e   0x00000002   PAD
+    0x08008a70   0x08008a70   0x00000008   Data   RO          127    .constdata          c_wu.l(_printf_wctomb.o)
+    0x08008a78   0x08008a78   0x00000028   Data   RO          156    .constdata          c_wu.l(_printf_hex_int_ll_ptr.o)
+    0x08008aa0   0x08008aa0   0x00000011   Data   RO          176    .constdata          c_wu.l(__printf_flags_ss_wp.o)
+    0x08008ab1   0x08008ab1   0x00000003   PAD
+    0x08008ab4   0x08008ab4   0x0000081c   Data   RO          404    .rodata             lto-llvm-857ff3.o
+    0x080092d0   0x080092d0   0x00000008   Data   RO          405    .rodata.cst8        lto-llvm-857ff3.o
+    0x080092d8   0x080092d8   0x00000018   Data   RO          403    .rodata.str1.1      lto-llvm-857ff3.o
+    0x080092f0   0x080092f0   0x00000020   Data   RO          444    Region$$Table       anon$$obj.o
+    0x08009310   0x08009310   0x00000110   Data   RO          265    locale$$data        c_wu.l(lc_ctype_c.o)
 
 
-    Execution Region RW_IRAM1 (Exec base: 0x20000000, Load base: 0x08009348, Size: 0x00001a30, Max: 0x00020000, ABSOLUTE)
+    Execution Region RW_IRAM1 (Exec base: 0x20000000, Load base: 0x08009420, Size: 0x00001a50, Max: 0x00020000, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x20000000   0x08009348   0x00000014   Data   RW          402    .data               lto-llvm-a494a3.o
-    0x20000014   0x0800935c   0x00000004   PAD
+    0x20000000   0x08009420   0x00000014   Data   RW          402    .data               lto-llvm-857ff3.o
+    0x20000014   0x08009434   0x00000004   PAD
     0x20000018        -       0x00000060   Zero   RW          244    .bss                c_wu.l(libspace.o)
-    0x20000078        -       0x000013b8   Zero   RW          401    .bss                lto-llvm-a494a3.o
-    0x20001430        -       0x00000200   Zero   RW            2    HEAP                startup_stm32f446xx.o
-    0x20001630        -       0x00000400   Zero   RW            1    STACK               startup_stm32f446xx.o
+    0x20000078        -       0x000013d4   Zero   RW          401    .bss                lto-llvm-857ff3.o
+    0x2000144c   0x08009434   0x00000004   PAD
+    0x20001450        -       0x00000200   Zero   RW            2    HEAP                startup_stm32f446xx.o
+    0x20001650        -       0x00000400   Zero   RW            1    STACK               startup_stm32f446xx.o
 
 
 ==============================================================================
@@ -1249,13 +1249,13 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
-     30378        760       2108         20       5048     173072   lto-llvm-a494a3.o
+     30598        764       2108         20       5076     173223   lto-llvm-857ff3.o
         64         26        452          0       1536        844   startup_stm32f446xx.o
 
     ----------------------------------------------------------------------
-     30442        786       2592         20       6588     173916   Object Totals
+     30662        790       2592         20       6620     174067   Object Totals
          0          0         32          0          0          0   (incl. Generated)
-         0          0          0          0          4          0   (incl. Padding)
+         0          0          0          0          8          0   (incl. Padding)
 
     ----------------------------------------------------------------------
 
@@ -1366,15 +1366,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     34768        982       2932         20       6684     175956   Grand Totals
-     34768        982       2932         20       6684     175956   ELF Image Totals
-     34768        982       2932         20          0          0   ROM Totals
+     34988        986       2932         20       6716     176107   Grand Totals
+     34988        986       2932         20       6716     176107   ELF Image Totals
+     34988        986       2932         20          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                37700 (  36.82kB)
-    Total RW  Size (RW Data + ZI Data)              6704 (   6.55kB)
-    Total ROM Size (Code + RO Data + RW Data)      37720 (  36.84kB)
+    Total RO  Size (Code + RO Data)                37920 (  37.03kB)
+    Total RW  Size (RW Data + ZI Data)              6736 (   6.58kB)
+    Total ROM Size (Code + RO Data + RW Data)      37940 (  37.05kB)
 
 ==============================================================================
 

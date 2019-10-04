@@ -199,10 +199,10 @@
 	#define MOTOR_POLE_PAIRS_NUM				7
 	#define	MOTOR_KV							505.f
 	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * ((float)MOTOR_POLE_PAIRS_NUM) * (MOTOR_KV)))
-	#define PHASE_RES							(25.f * (float)1e-3)	//(Ohm)
+	#define PHASE_RES							(10.f * (float)1e-3)	//(Ohm)
 	#define INDUCTANCE_D						(15.f * (float)1e-6)	//(H)
 	#define INDUCTANCE_Q						(15.f * (float)1e-6)	//(H)
-	#define MAX_SPD								((uint32_t)(GENERATRIX_VOL * MOTOR_KV / 60.f * 2.f * PI))
+	#define MAX_SPD								((float)(GENERATRIX_VOL * MOTOR_KV / 60.f * 2.f * PI))
 #elif	MOTOR_TYPE == N5055_KV400
 	#define MOTOR_POLE_PAIRS_NUM				7
 	#define	MOTOR_KV							400.f

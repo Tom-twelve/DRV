@@ -348,7 +348,7 @@ extern struct MainCtrl_t MainCtrl;
 		for(float eleAngle = 0; eleAngle <= 360; eleAngle += 15)
 		{
 			
-			InverseParkTransform(volD, 0.f, &volAlpha, &volBeta, eleAngle);
+			InverseParkTransform_arm(volD, 0.f, &volAlpha, &volBeta, eleAngle);
 			SpaceVectorModulation(volAlpha, volBeta);
 			
 			LL_mDelay(5);
@@ -359,7 +359,7 @@ extern struct MainCtrl_t MainCtrl;
 			LL_mDelay(100);
 		}
 		
-		InverseParkTransform(volD, 0.f, &volAlpha, &volBeta, 0);
+		InverseParkTransform_arm(volD, 0.f, &volAlpha, &volBeta, 0);
 		SpaceVectorModulation(volAlpha, volBeta);
 		
 		GetMecAngle_AbsoluteMode_15bit();

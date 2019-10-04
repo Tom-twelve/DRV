@@ -50,7 +50,11 @@ uint8_t MeasureResidence(float targetSampleTimes, float currQ, float *residence)
 	static uint16_t sampleTime = 0;
 	static float totalCurr = 0;
 	static float totalVol = 0;
-
+	static float tempVolD = 0;
+	static float tempVolQ = 0;
+	static float tempCurrD = 0;
+	static float tempCurrQ = 0;
+		
 	PosSensor.EleAngle_degree = 0.f;
 	
 	switch(status)
@@ -64,26 +68,38 @@ uint8_t MeasureResidence(float targetSampleTimes, float currQ, float *residence)
 			}
 			break;
 		case 1:
-			CurrLoop.Kp_D = 0.5;												
-			CurrLoop.Ki_D = 0.1;						
+			CurrLoop.Kp_D = 0.2;												
+			CurrLoop.Ki_D = 0.0;						
 			CurrLoop.Kp_Q = 0.2;
-			CurrLoop.Ki_Q = 0.1;
-			ParkTransform(CoordTrans.CurrA, CoordTrans.CurrB, CoordTrans.CurrC, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree);
+			CurrLoop.Ki_Q = 0.0;
+		
+			ClarkTransform_arm(CoordTrans.CurrA, CoordTrans.CurrB, &CoordTrans.CurrAlpha, &CoordTrans.CurrBeta);
+			ParkTransform_arm(CoordTrans.CurrAlpha, CoordTrans.CurrBeta, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree);
 			CurrentLoop(0.f, currQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
-			InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree);
+			InverseParkTransform_arm(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree);
 			SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
 
 			count++;
-			if(count >= 10000)
+			if(count >= 15000)
 			{
-				totalCurr += sqrtf(SQUARE(CoordTrans.CurrD) + SQUARE(CoordTrans.CurrQ));
 				totalVol += sqrtf(SQUARE(CurrLoop.CtrlVolD) + SQUARE(CurrLoop.CtrlVolQ));
+				totalCurr += sqrtf(SQUARE(CoordTrans.CurrD) + SQUARE(CoordTrans.CurrQ));
+				
+				tempVolD += CurrLoop.CtrlVolD;
+				tempVolQ += CurrLoop.CtrlVolQ;
+				
+				tempCurrD += CoordTrans.CurrD;
+				tempCurrQ += CoordTrans.CurrQ;
+				
 				sampleTime++;
 				
 				if(sampleTime >= targetSampleTimes && sendFlag == 0)
 				{
 					sendFlag = 1;
-					*residence = (totalVol / targetSampleTimes) / (totalCurr / targetSampleTimes) * 2.f / 3.f; //定子电阻与相电阻是 1.5:1的关系
+					*residence = (totalVol / targetSampleTimes) / (totalCurr / targetSampleTimes);
+					
+					UART_Transmit_DMA("\r\nVd: %d mV\tVq: %d mV\r\n", (int)((tempVolD / targetSampleTimes) * 1e3), (int)((tempVolQ / targetSampleTimes) * 1e3));
+					UART_Transmit_DMA("\r\nId: %d mA\tIq: %d mA\r\n", (int)((tempCurrD / targetSampleTimes) * 1e3), (int)((tempCurrQ / targetSampleTimes) * 1e3));
 					
 					return 1;
 				}
@@ -95,28 +111,27 @@ uint8_t MeasureResidence(float targetSampleTimes, float currQ, float *residence)
 
   /** 
    * @brief		 Measure phase inductance
-   * @param[in]  targetSampleTimes     	期望采样次数
-   * @param[in]  duty      		    
+   * @param[in]  targetSampleTimes     		期望采样次数    		    
    * @param[out] inductance 				相电感
    */
-uint8_t MeasureInductance(float targetSampleTimes, float duty,float *inductance)
+uint8_t MeasureInductance(float targetSampleTimes, float *inductance)
 {
-	//duty 需要大于0.2
-	
 	const uint8_t sampleOffsetTimes = 0;
-	const uint32_t dutyCnt = duty * TIM8_ARR - 1;
 	static uint8_t inductanceState = 0;
 	static uint8_t sendFlag = 0;
 	static uint16_t sampleTime = 0;
 	static uint32_t count = 0;
 	static float totalCurr = 0;
-
+	static float totalCurrA = 0;
+	static float totalCurrB = 0;
+	static float totalCurrC= 0;
+	
 	count++;
 	
 	if(count >= 50)
 	{		
-		TIM1->ARR = dutyCnt;
-		TIM1->CCR4 = dutyCnt-1;
+		TIM8->CCR4 = TIM8_ARR - 1;
+		
 		if(sampleTime < targetSampleTimes)
 		{
 			switch(inductanceState)
@@ -125,50 +140,55 @@ uint8_t MeasureInductance(float targetSampleTimes, float duty,float *inductance)
 					CCR_PHASE_A = 0;
 					CCR_PHASE_B = 0;
 					CCR_PHASE_C = 0;
+				
 					inductanceState++;
+				
 					break;
-				case 1:
-#if PHASE_SEQUENCE == POSITIVE_SEQUENCE			
+				
+				case 1:		
 					CCR_PHASE_A = 0;
-					CCR_PHASE_B = dutyCnt;
-					CCR_PHASE_C = dutyCnt;
+					CCR_PHASE_B = TIM8_ARR;
+					CCR_PHASE_C = TIM8_ARR;
+				
 					inductanceState++;
-#elif PHASE_SEQUENCE == NEGATIVE_SEQUENCE
-					CCR_PHASE_A = dutyCnt;
-					CCR_PHASE_B = 0;
-					CCR_PHASE_C = 0;
-					inductanceState++;
-#endif
+
 					break;
+				
 				case 2:
 					if(sampleTime >= sampleOffsetTimes)
-#if PHASE_SEQUENCE == POSITIVE_SEQUENCE		
-						totalCurr += CoordTrans.CurrA;
-#elif PHASE_SEQUENCE == NEGATIVE_SEQUENCE
-						totalCurr += -CoordTrans.CurrA;
-#endif					
+					{
+						totalCurrA += CoordTrans.CurrA;
+					}
+			
 					CCR_PHASE_A = 0;
 					CCR_PHASE_B = 0;
 					CCR_PHASE_C = 0;
+					
 					sampleTime++;
 					inductanceState++;
 					
 					break;
+					
 				case 3:
 					inductanceState++;
 				
 					break;
+				
 				case 4:
-					CCR_PHASE_A = dutyCnt;
+					CCR_PHASE_A = TIM8_ARR;
 					CCR_PHASE_B = 0;
-					CCR_PHASE_C = dutyCnt;
+					CCR_PHASE_C = TIM8_ARR;
+				
 					inductanceState++;
+				
 					break;
+				
 				case 5:
 					if(sampleTime >= sampleOffsetTimes)
 					{
-						totalCurr += CoordTrans.CurrB;
+						totalCurrB += CoordTrans.CurrB;
 					}
+					
 					CCR_PHASE_A = 0;
 					CCR_PHASE_B = 0;
 					CCR_PHASE_C = 0;
@@ -177,33 +197,24 @@ uint8_t MeasureInductance(float targetSampleTimes, float duty,float *inductance)
 					inductanceState++;
 					
 					break;
+					
 				case 6:
-					inductanceState = 7;
+					inductanceState++;
 				
 					break;
-				case 7:
-#if PHASE_SEQUENCE == POSITIVE_SEQUENCE		
-					CCR_PHASE_A = 0;
-					CCR_PHASE_B = 0;
-					CCR_PHASE_C = dutyCnt;
-				
-					inductanceState++;		
-#elif PHASE_SEQUENCE == NEGATIVE_SEQUENCE
-					CCR_PHASE_A = dutyCnt;
-					CCR_PHASE_B = dutyCnt;
+				case 7:	
+					CCR_PHASE_A = TIM8_ARR;
+					CCR_PHASE_B = TIM8_ARR;
 					CCR_PHASE_C = 0;
 				
-					inductanceState++;
-#endif				
+					inductanceState++;		
+				
 					break;
+				
 				case 8:
 					if(sampleTime >= sampleOffsetTimes)
 					{
-						#if PHASE_SEQUENCE == POSITIVE_SEQUENCE	
-						totalCurr +=  -CoordTrans.CurrC;
-						#elif	PHASE_SEQUENCE == NEGATIVE_SEQUENCE	
-						totalCurr +=  CoordTrans.CurrC;		
-						#endif
+						totalCurrC +=  CoordTrans.CurrC;
 					}
 					
 					CCR_PHASE_A = 0;
@@ -214,6 +225,7 @@ uint8_t MeasureInductance(float targetSampleTimes, float duty,float *inductance)
 					inductanceState++;	
 					
 					break;
+					
 				case 9:
 					inductanceState = 0;
 					count = 0;
@@ -229,16 +241,17 @@ uint8_t MeasureInductance(float targetSampleTimes, float duty,float *inductance)
 			
 			if(sendFlag == 0)
 			{
-				*inductance = GENERATRIX_VOL * (duty * Regulator.ActualPeriod_s) / (totalCurr / (sampleTime - sampleOffsetTimes))  * 2.f / 3.f;
+				totalCurr = totalCurrA + totalCurrB + totalCurrC;
+				
+				*inductance = GENERATRIX_VOL * Regulator.ActualPeriod_s / (totalCurr / (sampleTime - sampleOffsetTimes))  * 2.f / 3.f;
+				
+				UART_Transmit_DMA("\r\nTotalCurrA: %d mA\r\n", (int)(totalCurrA * 1e3));
+				UART_Transmit_DMA("\r\nTotalCurrB: %d mA\r\n", (int)(totalCurrB * 1e3));
+				UART_Transmit_DMA("\r\nTotalCurrC: %d mA\r\n", (int)(totalCurrC * 1e3));
+				UART_Transmit_DMA("\r\nAvgCurr: %d mA\r\n", (int)((totalCurr / (sampleTime - sampleOffsetTimes)) * 1e3));
 				
 				sendFlag = 1;
-			}
-			else if(sendFlag == 1)
-			{
-				sendFlag = 2;
-			}
-			else if(sendFlag == 2)
-			{
+				
 				return 1;
 			}
 		}
@@ -264,7 +277,7 @@ void MeasureParameters(void)
 			state++;
 			break;
 		case 1 :
-				flag = MeasureResidence(100.f, 5.f, &residence);
+				flag = MeasureResidence(200.f, 10.f, &residence);
 				if(flag)
 				{
 					flag = 0;
@@ -276,13 +289,13 @@ void MeasureParameters(void)
 			break;
 		case 2:
 		  wait++;
-			if(wait > 5000)
+			if(wait > 10000)
 			{
 				state++;
 			}
 			break;
 		case 3:
-			flag = MeasureInductance(200.f ,0.7f, &inductance);
+			flag = MeasureInductance(300.f, &inductance);
 			if(flag)
 			{
 				flag = 0;

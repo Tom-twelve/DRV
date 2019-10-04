@@ -165,45 +165,14 @@ void SpaceVectorModulation(float volAlpha, float volBeta)
 }
 
  /**
-   * @brief Floating-point Park transform
-   * @param[in]  currentPhaseA  		current of phase A
-   * @param[in]  currentPhaseB  		current of phase B
-   * @param[in]  currentPhaseC  		current of phase C
-   * @param[out] currentD     			points to output rotor reference frame d
-   * @param[out] currentQ     			points to output rotor reference frame q
-   * @param[in]  EleAngle				value of Electrical angle
-   */
-void ParkTransform(float currentPhaseA, float currentPhaseB, float currentPhaseC, float *currentD, float *currentQ, float eleAngle)
-{
-	const float Coefficient_ConstantPower = 0.8164965809f;
-	const float Coefficient_ConstantAmplitude = 0.6666666667f;
-	float eleAngleSineValue1 = 0;
-	float eleAngleCosineValue1 = 0;
-	float eleAngleSineValue2 = 0;
-	float eleAngleCosineValue2 = 0;
-	float eleAngleSineValue3 = 0;
-	float eleAngleCosineValue3 = 0;
-	
-	arm_sin_cos_f32((float)eleAngle,  &eleAngleSineValue1,  &eleAngleCosineValue1);
-	
-	arm_sin_cos_f32((float)(eleAngle - 120.f),  &eleAngleSineValue2,  &eleAngleCosineValue2);
-	
-	arm_sin_cos_f32((float)(eleAngle + 120.f),  &eleAngleSineValue3,  &eleAngleCosineValue3);
-	
-	*currentD = Coefficient_ConstantAmplitude * (currentPhaseA * eleAngleSineValue1 + currentPhaseB * eleAngleSineValue2 + currentPhaseC * eleAngleSineValue3);
-	
-	*currentQ = Coefficient_ConstantAmplitude * (currentPhaseA * eleAngleCosineValue1 + currentPhaseB * eleAngleCosineValue2 + currentPhaseC * eleAngleCosineValue3);
-}
-
-   /**
    * @brief  Floating-point Inverse Park transform
    * @param[in]  volD       	input coordinate of rotor reference frame d
    * @param[in]  volQ       	input coordinate of rotor reference frame q
    * @param[out] volAlpha 		output two-phase orthogonal vector axis alpha
    * @param[out] volBeta  		output two-phase orthogonal vector axis beta
-   * @param[in]  EleAngle			value of Ele angle
+   * @param[in]  EleAngle		value of Ele angle
    */
-void InverseParkTransform(float volD, float volQ, float *volAlpha, float *volBeta, float eleAngle)
+void InverseParkTransform_arm(float volD, float volQ, float *volAlpha, float *volBeta, float eleAngle)
 {
 	float eleAngleSineValue = 0;
 	float eleAngleCosineValue = 0;
@@ -213,24 +182,14 @@ void InverseParkTransform(float volD, float volQ, float *volAlpha, float *volBet
 	arm_inv_park_f32((float)volD, (float)volQ, volAlpha, volBeta, (float)eleAngleSineValue, (float)eleAngleCosineValue);
 }
 
-   /**
-   * @brief  Floating-point Clark transform
-   * @param[in]  currentPhaseA      current of phase A
-   * @param[in]  currentPhaseB      current of phase B
-   * @param[in]  currentPhaseC 		current of phase C
-   * @param[out] currentAlpha  		output two-phase orthogonal vector axis alpha
-   * @param[out] currentBeta		output two-phase orthogonal vector axis beta
+ /**
+   * @brief  Floating-point Park transform
+   * @param[in]  volD       	input coordinate of rotor reference frame d
+   * @param[in]  volQ       	input coordinate of rotor reference frame q
+   * @param[out] volAlpha 		output two-phase orthogonal vector axis alpha
+   * @param[out] volBeta  		output two-phase orthogonal vector axis beta
+   * @param[in]  EleAngle		value of Ele angle
    */
-void ClarkTransform(float currentPhaseA, float currentPhaseB, float currentPhaseC, float *currentAlpha, float *currentBeta)
-{
-	const float Coeff_ConstantPower = 0.8164965809f;
-	const float Coeff_ConstantAmplitude = 0.6666666667f;
-	
-	*currentAlpha = Coeff_ConstantAmplitude * ((float)currentPhaseA - 0.5f * (float)currentPhaseB - 0.5f * (float)currentPhaseC);
-	
-	*currentBeta  = 0.5f * SQRT3 * Coeff_ConstantAmplitude * ((float)currentPhaseB - (float)currentPhaseC);
-}
-
 void ParkTransform_arm(float currentAlpha, float currentBeta, float *currentD, float *currentQ, float eleAngle)
 {	
 	float eleAngleSineValue = 0;
@@ -241,12 +200,20 @@ void ParkTransform_arm(float currentAlpha, float currentBeta, float *currentD, f
 	arm_park_f32(currentAlpha, currentBeta, currentD, currentQ, eleAngleSineValue, eleAngleCosineValue);
 }
 
+ /**
+   * @brief  Floating-point Clark transform
+   * @param[in]  volD       	input coordinate of rotor reference frame d
+   * @param[in]  volQ       	input coordinate of rotor reference frame q
+   * @param[out] volAlpha 		output two-phase orthogonal vector axis alpha
+   * @param[out] volBeta  		output two-phase orthogonal vector axis beta
+   * @param[in]  EleAngle		value of Ele angle
+   */
 void ClarkTransform_arm(float currentPhaseA, float currentPhaseB, float *currentAlpha, float *currentBeta)
 {
 	arm_clarke_f32(currentPhaseA, currentPhaseB, currentAlpha, currentBeta);
 }
 
-   /**
+ /**
    * @brief  Calculate electromagnetic torque
    * @param[in]   currentQ      				current of axis q
    * @param[out]  EleTorque      	electromagnetic torque

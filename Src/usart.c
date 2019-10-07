@@ -132,7 +132,7 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 static char  USART_BUFF1[USART_BUF_CAPACITY] = { 0u };
 static char  USART_BUFF2[USART_BUF_CAPACITY] = { 0u };
 static char *USART_BuffNow                   = USART_BUFF1;
-char *pBuf                            = USART_BUFF1;
+char *pBuf                           	 	 = USART_BUFF1;
 
 void SendBuf(void)
 {

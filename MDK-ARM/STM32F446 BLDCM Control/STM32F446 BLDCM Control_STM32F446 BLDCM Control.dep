@@ -63,7 +63,7 @@ I (..\Inc\spi.h)(0x5D877A1B)
 I (..\Inc\MotorConfig.h)(0x5D97098B)
 I (..\Inc\AngleTable.h)(0x5CFBCA25)
 I (..\Inc\can.h)(0x5D97098B)
-I (..\Inc\usart.h)(0x5D877A1B)
+I (..\Inc\usart.h)(0x5D9B5509)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h)(0x5AB0B858)
 I (..\Inc\control.h)(0x5D97098B)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdbool.h)(0x5AB0B858)
@@ -131,7 +131,7 @@ I (..\Inc\AngleTable.h)(0x5CFBCA25)
 I (..\Inc\util.h)(0x5D97098B)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdbool.h)(0x5AB0B858)
 I (..\Inc\can.h)(0x5D97098B)
-I (..\Inc\usart.h)(0x5D877A1B)
+I (..\Inc\usart.h)(0x5D9B5509)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h)(0x5AB0B858)
 I (..\Inc\control.h)(0x5D97098B)
 I (..\Inc\adc.h)(0x5D877A1A)
@@ -201,7 +201,7 @@ I (..\Inc\AngleTable.h)(0x5CFBCA25)
 I (..\Inc\util.h)(0x5D97098B)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdbool.h)(0x5AB0B858)
 I (..\Inc\can.h)(0x5D97098B)
-I (..\Inc\usart.h)(0x5D877A1B)
+I (..\Inc\usart.h)(0x5D9B5509)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h)(0x5AB0B858)
 I (..\Inc\control.h)(0x5D97098B)
 F (../Src/adc.c)(0x5D877A1A)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -flto -funsigned-char-gdwarf-3 -Ofast -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I./RTE/_STM32F446_BLDCM_Control-ID:/Keil_v5/ARM/PACK/ARM/CMSIS/5.4.0/CMSIS/Core/Include-ID:/Keil_v5/ARM/PACK/Keil/STM32F4xx_DFP/2.13.0/Drivers/CMSIS/Device/ST/STM32F4xx/Include-D__UVISION_VERSION="526" -D_RTE_ -DSTM32F446xx -DUSE_FULL_LL_DRIVER -DSTM32F446xx -DARM_MATH_CM4 -D__FPU_PRESENT="1U" -DUSE_HAL_DRIVER -D__ARM_PCS_VFP-o "stm32f446 bldcm control/adc.o" -MD)
@@ -269,7 +269,7 @@ I (..\Inc\AngleTable.h)(0x5CFBCA25)
 I (..\Inc\util.h)(0x5D97098B)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdbool.h)(0x5AB0B858)
 I (..\Inc\can.h)(0x5D97098B)
-I (..\Inc\usart.h)(0x5D877A1B)
+I (..\Inc\usart.h)(0x5D9B5509)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h)(0x5AB0B858)
 I (..\Inc\control.h)(0x5D97098B)
 F (../Src/can.c)(0x5D97098B)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -flto -funsigned-char-gdwarf-3 -Ofast -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I./RTE/_STM32F446_BLDCM_Control-ID:/Keil_v5/ARM/PACK/ARM/CMSIS/5.4.0/CMSIS/Core/Include-ID:/Keil_v5/ARM/PACK/Keil/STM32F4xx_DFP/2.13.0/Drivers/CMSIS/Device/ST/STM32F4xx/Include-D__UVISION_VERSION="526" -D_RTE_ -DSTM32F446xx -DUSE_FULL_LL_DRIVER -DSTM32F446xx -DARM_MATH_CM4 -D__FPU_PRESENT="1U" -DUSE_HAL_DRIVER -D__ARM_PCS_VFP-o "stm32f446 bldcm control/can.o" -MD)
@@ -337,7 +337,7 @@ I (..\Inc\AngleTable.h)(0x5CFBCA25)
 I (..\Inc\util.h)(0x5D97098B)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdbool.h)(0x5AB0B858)
 I (..\Inc\control.h)(0x5D97098B)
-I (..\Inc\usart.h)(0x5D877A1B)
+I (..\Inc\usart.h)(0x5D9B5509)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h)(0x5AB0B858)
 F (../Src/dma.c)(0x5D877A1A)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -flto -funsigned-char-gdwarf-3 -Ofast -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I./RTE/_STM32F446_BLDCM_Control-ID:/Keil_v5/ARM/PACK/ARM/CMSIS/5.4.0/CMSIS/Core/Include-ID:/Keil_v5/ARM/PACK/Keil/STM32F4xx_DFP/2.13.0/Drivers/CMSIS/Device/ST/STM32F4xx/Include-D__UVISION_VERSION="526" -D_RTE_ -DSTM32F446xx -DUSE_FULL_LL_DRIVER -DSTM32F446xx -DARM_MATH_CM4 -D__FPU_PRESENT="1U" -DUSE_HAL_DRIVER -D__ARM_PCS_VFP-o "stm32f446 bldcm control/dma.o" -MD)
 I (..\Inc\dma.h)(0x5D877A1B)
@@ -404,7 +404,7 @@ I (..\Inc\AngleTable.h)(0x5CFBCA25)
 I (..\Inc\util.h)(0x5D97098B)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdbool.h)(0x5AB0B858)
 I (..\Inc\can.h)(0x5D97098B)
-I (..\Inc\usart.h)(0x5D877A1B)
+I (..\Inc\usart.h)(0x5D9B5509)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h)(0x5AB0B858)
 I (..\Inc\control.h)(0x5D97098B)
 F (../Src/spi.c)(0x5D877A1B)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -flto -funsigned-char-gdwarf-3 -Ofast -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I./RTE/_STM32F446_BLDCM_Control-ID:/Keil_v5/ARM/PACK/ARM/CMSIS/5.4.0/CMSIS/Core/Include-ID:/Keil_v5/ARM/PACK/Keil/STM32F4xx_DFP/2.13.0/Drivers/CMSIS/Device/ST/STM32F4xx/Include-D__UVISION_VERSION="526" -D_RTE_ -DSTM32F446xx -DUSE_FULL_LL_DRIVER -DSTM32F446xx -DARM_MATH_CM4 -D__FPU_PRESENT="1U" -DUSE_HAL_DRIVER -D__ARM_PCS_VFP-o "stm32f446 bldcm control/spi.o" -MD)
@@ -471,7 +471,7 @@ I (..\Inc\AngleTable.h)(0x5CFBCA25)
 I (..\Inc\util.h)(0x5D97098B)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdbool.h)(0x5AB0B858)
 I (..\Inc\can.h)(0x5D97098B)
-I (..\Inc\usart.h)(0x5D877A1B)
+I (..\Inc\usart.h)(0x5D9B5509)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h)(0x5AB0B858)
 I (..\Inc\control.h)(0x5D97098B)
 F (../Src/tim.c)(0x5D97098B)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -flto -funsigned-char-gdwarf-3 -Ofast -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I./RTE/_STM32F446_BLDCM_Control-ID:/Keil_v5/ARM/PACK/ARM/CMSIS/5.4.0/CMSIS/Core/Include-ID:/Keil_v5/ARM/PACK/Keil/STM32F4xx_DFP/2.13.0/Drivers/CMSIS/Device/ST/STM32F4xx/Include-D__UVISION_VERSION="526" -D_RTE_ -DSTM32F446xx -DUSE_FULL_LL_DRIVER -DSTM32F446xx -DARM_MATH_CM4 -D__FPU_PRESENT="1U" -DUSE_HAL_DRIVER -D__ARM_PCS_VFP-o "stm32f446 bldcm control/tim.o" -MD)
@@ -538,11 +538,11 @@ I (..\Inc\AngleTable.h)(0x5CFBCA25)
 I (..\Inc\util.h)(0x5D97098B)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdbool.h)(0x5AB0B858)
 I (..\Inc\can.h)(0x5D97098B)
-I (..\Inc\usart.h)(0x5D877A1B)
+I (..\Inc\usart.h)(0x5D9B5509)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h)(0x5AB0B858)
 I (..\Inc\control.h)(0x5D97098B)
-F (../Src/usart.c)(0x5D877A1B)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -flto -funsigned-char-gdwarf-3 -Ofast -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I./RTE/_STM32F446_BLDCM_Control-ID:/Keil_v5/ARM/PACK/ARM/CMSIS/5.4.0/CMSIS/Core/Include-ID:/Keil_v5/ARM/PACK/Keil/STM32F4xx_DFP/2.13.0/Drivers/CMSIS/Device/ST/STM32F4xx/Include-D__UVISION_VERSION="526" -D_RTE_ -DSTM32F446xx -DUSE_FULL_LL_DRIVER -DSTM32F446xx -DARM_MATH_CM4 -D__FPU_PRESENT="1U" -DUSE_HAL_DRIVER -D__ARM_PCS_VFP-o "stm32f446 bldcm control/usart.o" -MD)
-I (..\Inc\usart.h)(0x5D877A1B)
+F (../Src/usart.c)(0x5D9B5428)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -flto -funsigned-char-gdwarf-3 -Ofast -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I./RTE/_STM32F446_BLDCM_Control-ID:/Keil_v5/ARM/PACK/ARM/CMSIS/5.4.0/CMSIS/Core/Include-ID:/Keil_v5/ARM/PACK/Keil/STM32F4xx_DFP/2.13.0/Drivers/CMSIS/Device/ST/STM32F4xx/Include-D__UVISION_VERSION="526" -D_RTE_ -DSTM32F446xx -DUSE_FULL_LL_DRIVER -DSTM32F446xx -DARM_MATH_CM4 -D__FPU_PRESENT="1U" -DUSE_HAL_DRIVER -D__ARM_PCS_VFP-o "stm32f446 bldcm control/usart.o" -MD)
+I (..\Inc\usart.h)(0x5D9B5509)
 I (..\Inc\main.h)(0x5D877A1B)
 I (..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h)(0x5CDB0CCF)
 I (..\Inc\stm32f4xx_hal_conf.h)(0x5D877A1B)
@@ -672,7 +672,7 @@ I (..\Inc\AngleTable.h)(0x5CFBCA25)
 I (..\Inc\util.h)(0x5D97098B)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdbool.h)(0x5AB0B858)
 I (..\Inc\can.h)(0x5D97098B)
-I (..\Inc\usart.h)(0x5D877A1B)
+I (..\Inc\usart.h)(0x5D9B5509)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h)(0x5AB0B858)
 I (..\Inc\control.h)(0x5D97098B)
 I (..\Inc\stm32f4xx_it.h)(0x5D877A1B)
@@ -743,7 +743,7 @@ I (..\Inc\AngleTable.h)(0x5CFBCA25)
 I (..\Inc\util.h)(0x5D97098B)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdbool.h)(0x5AB0B858)
 I (..\Inc\can.h)(0x5D97098B)
-I (..\Inc\usart.h)(0x5D877A1B)
+I (..\Inc\usart.h)(0x5D9B5509)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h)(0x5AB0B858)
 I (..\Inc\control.h)(0x5D97098B)
 F (..\Src\AngleTable.c)(0x5D85B909)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -flto -funsigned-char-gdwarf-3 -Ofast -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I./RTE/_STM32F446_BLDCM_Control-ID:/Keil_v5/ARM/PACK/ARM/CMSIS/5.4.0/CMSIS/Core/Include-ID:/Keil_v5/ARM/PACK/Keil/STM32F4xx_DFP/2.13.0/Drivers/CMSIS/Device/ST/STM32F4xx/Include-D__UVISION_VERSION="526" -D_RTE_ -DSTM32F446xx -DUSE_FULL_LL_DRIVER -DSTM32F446xx -DARM_MATH_CM4 -D__FPU_PRESENT="1U" -DUSE_HAL_DRIVER -D__ARM_PCS_VFP-o "stm32f446 bldcm control/angletable.o" -MD)
@@ -810,7 +810,7 @@ I (..\Inc\spi.h)(0x5D877A1B)
 I (..\Inc\util.h)(0x5D97098B)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdbool.h)(0x5AB0B858)
 I (..\Inc\can.h)(0x5D97098B)
-I (..\Inc\usart.h)(0x5D877A1B)
+I (..\Inc\usart.h)(0x5D9B5509)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h)(0x5AB0B858)
 I (..\Inc\control.h)(0x5D97098B)
 F (..\Src\MotorConfig.c)(0x5D85B8FD)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -flto -funsigned-char-gdwarf-3 -Ofast -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I./RTE/_STM32F446_BLDCM_Control-ID:/Keil_v5/ARM/PACK/ARM/CMSIS/5.4.0/CMSIS/Core/Include-ID:/Keil_v5/ARM/PACK/Keil/STM32F4xx_DFP/2.13.0/Drivers/CMSIS/Device/ST/STM32F4xx/Include-D__UVISION_VERSION="526" -D_RTE_ -DSTM32F446xx -DUSE_FULL_LL_DRIVER -DSTM32F446xx -DARM_MATH_CM4 -D__FPU_PRESENT="1U" -DUSE_HAL_DRIVER -D__ARM_PCS_VFP-o "stm32f446 bldcm control/motorconfig.o" -MD)
@@ -877,7 +877,7 @@ I (..\Inc\AngleTable.h)(0x5CFBCA25)
 I (..\Inc\util.h)(0x5D97098B)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdbool.h)(0x5AB0B858)
 I (..\Inc\can.h)(0x5D97098B)
-I (..\Inc\usart.h)(0x5D877A1B)
+I (..\Inc\usart.h)(0x5D9B5509)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h)(0x5AB0B858)
 I (..\Inc\control.h)(0x5D97098B)
 F (..\Src\foc.c)(0x5D97098B)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -flto -funsigned-char-gdwarf-3 -Ofast -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I./RTE/_STM32F446_BLDCM_Control-ID:/Keil_v5/ARM/PACK/ARM/CMSIS/5.4.0/CMSIS/Core/Include-ID:/Keil_v5/ARM/PACK/Keil/STM32F4xx_DFP/2.13.0/Drivers/CMSIS/Device/ST/STM32F4xx/Include-D__UVISION_VERSION="526" -D_RTE_ -DSTM32F446xx -DUSE_FULL_LL_DRIVER -DSTM32F446xx -DARM_MATH_CM4 -D__FPU_PRESENT="1U" -DUSE_HAL_DRIVER -D__ARM_PCS_VFP-o "stm32f446 bldcm control/foc.o" -MD)
@@ -944,7 +944,7 @@ I (..\Inc\AngleTable.h)(0x5CFBCA25)
 I (..\Inc\util.h)(0x5D97098B)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdbool.h)(0x5AB0B858)
 I (..\Inc\can.h)(0x5D97098B)
-I (..\Inc\usart.h)(0x5D877A1B)
+I (..\Inc\usart.h)(0x5D9B5509)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h)(0x5AB0B858)
 I (..\Inc\control.h)(0x5D97098B)
 F (..\Src\control.c)(0x5D97098B)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -flto -funsigned-char-gdwarf-3 -Ofast -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I./RTE/_STM32F446_BLDCM_Control-ID:/Keil_v5/ARM/PACK/ARM/CMSIS/5.4.0/CMSIS/Core/Include-ID:/Keil_v5/ARM/PACK/Keil/STM32F4xx_DFP/2.13.0/Drivers/CMSIS/Device/ST/STM32F4xx/Include-D__UVISION_VERSION="526" -D_RTE_ -DSTM32F446xx -DUSE_FULL_LL_DRIVER -DSTM32F446xx -DARM_MATH_CM4 -D__FPU_PRESENT="1U" -DUSE_HAL_DRIVER -D__ARM_PCS_VFP-o "stm32f446 bldcm control/control.o" -MD)
@@ -1012,7 +1012,7 @@ I (..\Inc\AngleTable.h)(0x5CFBCA25)
 I (..\Inc\util.h)(0x5D97098B)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdbool.h)(0x5AB0B858)
 I (..\Inc\can.h)(0x5D97098B)
-I (..\Inc\usart.h)(0x5D877A1B)
+I (..\Inc\usart.h)(0x5D9B5509)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h)(0x5AB0B858)
 F (..\Src\observer.c)(0x5D85B8FD)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -flto -funsigned-char-gdwarf-3 -Ofast -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I./RTE/_STM32F446_BLDCM_Control-ID:/Keil_v5/ARM/PACK/ARM/CMSIS/5.4.0/CMSIS/Core/Include-ID:/Keil_v5/ARM/PACK/Keil/STM32F4xx_DFP/2.13.0/Drivers/CMSIS/Device/ST/STM32F4xx/Include-D__UVISION_VERSION="526" -D_RTE_ -DSTM32F446xx -DUSE_FULL_LL_DRIVER -DSTM32F446xx -DARM_MATH_CM4 -D__FPU_PRESENT="1U" -DUSE_HAL_DRIVER -D__ARM_PCS_VFP-o "stm32f446 bldcm control/observer.o" -MD)
 I (..\Inc\observer.h)(0x5D85B8FD)
@@ -1079,7 +1079,7 @@ I (..\Inc\AngleTable.h)(0x5CFBCA25)
 I (..\Inc\util.h)(0x5D97098B)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdbool.h)(0x5AB0B858)
 I (..\Inc\can.h)(0x5D97098B)
-I (..\Inc\usart.h)(0x5D877A1B)
+I (..\Inc\usart.h)(0x5D9B5509)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h)(0x5AB0B858)
 I (..\Inc\control.h)(0x5D97098B)
 F (..\Src\identify.c)(0x5D9709CD)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -flto -funsigned-char-gdwarf-3 -Ofast -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I./RTE/_STM32F446_BLDCM_Control-ID:/Keil_v5/ARM/PACK/ARM/CMSIS/5.4.0/CMSIS/Core/Include-ID:/Keil_v5/ARM/PACK/Keil/STM32F4xx_DFP/2.13.0/Drivers/CMSIS/Device/ST/STM32F4xx/Include-D__UVISION_VERSION="526" -D_RTE_ -DSTM32F446xx -DUSE_FULL_LL_DRIVER -DSTM32F446xx -DARM_MATH_CM4 -D__FPU_PRESENT="1U" -DUSE_HAL_DRIVER -D__ARM_PCS_VFP-o "stm32f446 bldcm control/identify.o" -MD)
@@ -1147,7 +1147,7 @@ I (..\Inc\AngleTable.h)(0x5CFBCA25)
 I (..\Inc\util.h)(0x5D97098B)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdbool.h)(0x5AB0B858)
 I (..\Inc\can.h)(0x5D97098B)
-I (..\Inc\usart.h)(0x5D877A1B)
+I (..\Inc\usart.h)(0x5D9B5509)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h)(0x5AB0B858)
 I (..\Inc\control.h)(0x5D97098B)
 F (..\Src\GateDriver.c)(0x5D97098B)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -flto -funsigned-char-gdwarf-3 -Ofast -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I./RTE/_STM32F446_BLDCM_Control-ID:/Keil_v5/ARM/PACK/ARM/CMSIS/5.4.0/CMSIS/Core/Include-ID:/Keil_v5/ARM/PACK/Keil/STM32F4xx_DFP/2.13.0/Drivers/CMSIS/Device/ST/STM32F4xx/Include-D__UVISION_VERSION="526" -D_RTE_ -DSTM32F446xx -DUSE_FULL_LL_DRIVER -DSTM32F446xx -DARM_MATH_CM4 -D__FPU_PRESENT="1U" -DUSE_HAL_DRIVER -D__ARM_PCS_VFP-o "stm32f446 bldcm control/gatedriver.o" -MD)
@@ -1215,7 +1215,7 @@ I (..\Inc\AngleTable.h)(0x5CFBCA25)
 I (..\Inc\util.h)(0x5D97098B)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdbool.h)(0x5AB0B858)
 I (..\Inc\can.h)(0x5D97098B)
-I (..\Inc\usart.h)(0x5D877A1B)
+I (..\Inc\usart.h)(0x5D9B5509)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h)(0x5AB0B858)
 I (..\Inc\control.h)(0x5D97098B)
 I (..\Inc\adc.h)(0x5D877A1A)
@@ -1279,7 +1279,7 @@ I (..\Drivers\CMSIS\Include\arm_math.h)(0x5CFBCA25)
 I (D:\Keil_v5\ARM\ARMCLANG\include\string.h)(0x5AB0B854)
 I (..\Inc\control.h)(0x5D97098B)
 I (..\Inc\MotorConfig.h)(0x5D97098B)
-I (..\Inc\usart.h)(0x5D877A1B)
+I (..\Inc\usart.h)(0x5D9B5509)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h)(0x5AB0B858)
 I (..\Inc\util.h)(0x5D97098B)
 I (D:\Keil_v5\ARM\ARMCLANG\include\stdbool.h)(0x5AB0B858)

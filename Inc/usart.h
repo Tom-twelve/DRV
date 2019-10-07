@@ -73,9 +73,6 @@ void PutNum(int data, char endSign);
 uint32_t PutStr(const char *str);
 void UART_Enable(void);
 
-void USARTDMASend(USART_TypeDef* USARTx,uint8_t *buffAddr,uint8_t *sendBufAddr,uint16_t *buffPointer);
-void USARTDMAOUT(USART_TypeDef* USARTx,uint8_t *buffAddr,uint16_t *buffPointer ,uint8_t *sendBufAddr,uint16_t bufferSize,const uint8_t *Data, ...);
-void USARTDMASendData(USART_TypeDef* USARTx,uint8_t data,uint8_t *buffAddr,uint16_t *buffPointer ,uint8_t *sendBufAddr,uint16_t bufferSize);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

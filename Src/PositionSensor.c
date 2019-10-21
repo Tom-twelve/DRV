@@ -345,7 +345,7 @@ extern struct MainCtrl_t MainCtrl;
 		PutStr("Correct Begin...\r\n\r\n");SendBuf();
 		
 		/*通过旋转方向判断相序是否正确, 从编码器方向看, 应为顺时针旋转*/
-		for(float eleAngle = 0; eleAngle <= 360; eleAngle += 15)
+		for(float eleAngle = 0; eleAngle <= 3600; eleAngle += 15)
 		{
 			
 			InverseParkTransform_arm(volD, 0.f, &volAlpha, &volBeta, eleAngle);

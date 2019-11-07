@@ -107,7 +107,6 @@
 	void TLE5012_ReadFSYNC(void);
 	void EncodeErrorDetection(void);
 	uint16_t TLE5012_ReadRegister(uint16_t command, uint16_t *safetyWord);
-	void EncoderIncrementalModeEnable(void);
 	void PosSensor_Init(void);
 	void CorrectPosOffset_Encoder(float volD);
 #else

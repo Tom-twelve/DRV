@@ -150,13 +150,6 @@ int main(void)
 	
 	/*初始化栅极驱动器*/
 	GateDriverConfig();
-
-	#if ENCODER_MODE == ENCODER_INCREMENTAL_MODE
-	
-	/*使能增量式*/
-	EncoderIncrementalModeEnable();
-	
-	#endif
 	
 	LL_mDelay(100);
 	

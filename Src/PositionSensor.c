@@ -43,18 +43,8 @@ extern struct MainCtrl_t MainCtrl;
 
 #if	POSITION_SENSOR_TYPE == ENCODER_TLE5012
 	void GetEleImformation(void)
-	{
-		#if	ENCODER_MODE == ENCODER_ABSOLUTE_MODE
-		
+	{		
 		GetMecAngle_AbsoluteMode_15bit();  //绝对式, 读取编码器角度值寄存器
-		
-		#elif ENCODER_MODE == ENCODER_INCREMENTAL_MODE
-		
-		GetMecAngle_IncrementalMode_14bit();  //增量式, TLE5012的12位增量式编码器经过4倍频后精度提高至14位
-		
-		#else
-		#error "Encoder Mode Invalid"
-		#endif
 		GetEleAngle(); //计算电角度
 		GetEleAngularSpeed();  //计算电角速度
 		EncodeErrorDetection();		//编码器异常检测
@@ -83,22 +73,10 @@ extern struct MainCtrl_t MainCtrl;
 	}
 	
 	void GetMecAngle(void)
-	{
-		#if	ENCODER_MODE == ENCODER_ABSOLUTE_MODE
-		
+	{		
 		PosSensor.MecAngle_degree = 360.f * (float)PosSensor.MecAngle_AbsoluteMode_15bit / TLE5012_ABS_MODE_RESOLUTION;
 		
 		PosSensor.MecAngle_rad = (float)PosSensor.MecAngle_degree / 360.f * 2.0f * PI;
-		
-		#elif ENCODER_MODE == ENCODER_INCREMENTAL_MODE
-		
-		PosSensor.MecAngle_degree = 360.f * (float)PosSensor.MecAngle_IncrementalMode_14bit / (TLE5012_INCREMENTAL_MODE_RESOLUTION * 4.f);
-		
-		PosSensor.MecAngle_rad = (float)PosSensor.MecAngle_degree / 360.f * 2.0f * PI;
-		
-		#else
-		#error "Encoder Mode Invalid"
-		#endif
 	}
 	
 	void GetRefMecAngle(void)
@@ -322,15 +300,6 @@ extern struct MainCtrl_t MainCtrl;
 		}
 
 		RefAngleInit();
-	}
-	
-	void EncoderIncrementalModeEnable(void)
-	{
-		/*启动TIM2增量式编码器模式*/
-		HAL_TIM_Encoder_Start(&htim2, TIM_CHANNEL_ALL);
-		
-		/*读取初始机械角度*/
-		PosSensor.OriginalMecAngle_14bit = (uint16_t)(((float)(TLE5012_ReadRegister(TLE5012_COMMAND_READ_CURRENT_VALUE_ANGLE, &PosSensor.SafetyWord) & 0x7FFF) / 32768.f) * 16384.f);
 	}
 	
 	void CorrectPosOffset_Encoder(float volD)

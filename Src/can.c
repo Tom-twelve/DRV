@@ -411,10 +411,11 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 			case IDENTIFIER_SET_VEL_LIMIT:
 				
 				/*配置速度环最大期望速度*/
-				/*不超过电机的最大转速*/
-				Saturation_int((int32_t*)&CAN.ReceiveData, MAX_SPD, -MAX_SPD);
 				MainCtrl.MaxMecAngularSpeed_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 				SpdLoop.MaxExptMecAngularSpeed_rad = DRV_PULSE_TO_RAD(MainCtrl.MaxMecAngularSpeed_pulse);
+			
+				/*不超过电机的最大转速*/
+				Saturation_float(&SpdLoop.MaxExptMecAngularSpeed_rad, MAX_SPD, -MAX_SPD);
 				
 				break;
 			

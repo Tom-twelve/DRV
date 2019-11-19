@@ -112,7 +112,7 @@ void DriverInit(void)
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 12190;
-			CurrLoop.LimitCurrQ = 200.f;
+			CurrLoop.LimitCurrQ = 350.f;
 
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 	
@@ -128,11 +128,36 @@ void DriverInit(void)
 	
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
-			
-			CurrLoop.Kp_D = CURRENT_CONTROL_KP_D;												
-			CurrLoop.Ki_D = CURRENT_CONTROL_KI_D * 0.001;						
-			CurrLoop.Kp_Q = CURRENT_CONTROL_KP_Q;
-			CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q * 0.002;
+		#elif CAN_ID_NUM == 9
+			Driver.ControlMode = SPD_CURR_CTRL_MODE;
+			DriverCtrlModeInit();
+			PosSensor.PosOffset = 26173;
+			CurrLoop.LimitCurrQ = 50.f;
+
+			SpdLoop.ExptMecAngularSpeed_rad = 50.f * 2 * PI;
+	
+			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
+			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
+		#elif CAN_ID_NUM == 10
+			Driver.ControlMode = SPD_CURR_CTRL_MODE;
+			DriverCtrlModeInit();
+			PosSensor.PosOffset = 26173;
+			CurrLoop.LimitCurrQ = 50.f;
+
+			SpdLoop.ExptMecAngularSpeed_rad = 50.f * 2 * PI;
+	
+			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
+			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
+		#elif CAN_ID_NUM == 11
+			Driver.ControlMode = SPD_CURR_CTRL_MODE;
+			DriverCtrlModeInit();
+			PosSensor.PosOffset = 26173;
+			CurrLoop.LimitCurrQ = 50.f;
+
+			SpdLoop.ExptMecAngularSpeed_rad = 50.f * 2 * PI;
+	
+			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
+			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#endif
 	#endif
 	#if ROBOT_ID == TRY_ROBOT
@@ -209,7 +234,7 @@ void CurrentLoopInit(void)
 	CurrLoop.Kp_D = CURRENT_CONTROL_KP_D;												
 	CurrLoop.Ki_D = CURRENT_CONTROL_KI_D * 0.001;						
 	CurrLoop.Kp_Q = CURRENT_CONTROL_KP_Q;
-	CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q * 0.001;
+	CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q * 0.002;
 	
 	/*Éè¶¨±àÂëÆ÷ÑÓ³Ù²¹³¥ÏµÊý*/
 	PosSensor.CompRatio_forward = 3.2f;

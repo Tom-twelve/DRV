@@ -64,7 +64,7 @@
 #define ROBOT_ID		PASS_ROBOT
 
 #if ROBOT_ID == PASS_ROBOT
-	#define CAN_ID_NUM			8
+	#define CAN_ID_NUM			1
 		#if CAN_ID_NUM == 1
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
@@ -114,12 +114,12 @@
 		#define CURRENT_SENSOR			RES_1mOhm
 		#define GROUP_NUM           	2
 		#elif CAN_ID_NUM == 7
-		#define MOTOR_TYPE 				TMOTOR_P80_KV100	
+		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
-		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8320
-		#define MOSFET_TYPE				IPD053N08N3G_52nC_5mOhm3
-		#define CURRENT_SENSOR			HALL_CURR_SENSOR_ACS781_150A
+		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
+		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
+		#define CURRENT_SENSOR			RES_1mOhm
 		#define GROUP_NUM           	2
 		#elif CAN_ID_NUM == 8
 		#define MOTOR_TYPE 				TMOTOR_U3_KV700	
@@ -128,10 +128,34 @@
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
 		#define CURRENT_SENSOR			RES_1mOhm
-		#define GROUP_NUM           	2
+		#define GROUP_NUM           	1
+		#elif CAN_ID_NUM == 9
+		#define MOTOR_TYPE 				TMOTOR_U3_KV700	
+		#define	PHASE_SEQUENCE			NEGATIVE_SEQUENCE
+		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
+		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
+		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
+		#define CURRENT_SENSOR			RES_1mOhm
+		#define GROUP_NUM           	1
+		#elif CAN_ID_NUM == 10
+		#define MOTOR_TYPE 				TMOTOR_U3_KV700	
+		#define	PHASE_SEQUENCE			NEGATIVE_SEQUENCE
+		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
+		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
+		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
+		#define CURRENT_SENSOR			RES_1mOhm
+		#define GROUP_NUM           	1
+		#elif CAN_ID_NUM == 11
+		#define MOTOR_TYPE 				TMOTOR_U3_KV700	
+		#define	PHASE_SEQUENCE			NEGATIVE_SEQUENCE
+		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
+		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
+		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
+		#define CURRENT_SENSOR			RES_1mOhm
+		#define GROUP_NUM           	1
 		#endif
 #elif ROBOT_ID == TRY_ROBOT
-	#define CAN_ID_NUM			7
+	#define CAN_ID_NUM			1
 		#if CAN_ID_NUM == 1
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
@@ -187,15 +211,15 @@
 #if MOTOR_TYPE == MAD_XC5500_KV505	  
 	#define MOTOR_POLE_PAIRS_NUM				7
 	#define	MOTOR_KV							505.f
-	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * ((float)MOTOR_POLE_PAIRS_NUM) * (MOTOR_KV)))
+	#define ROTATOR_FLUX_LINKAGE				(0.001559629)	//手动算出以降低运算量
 	#define PHASE_RES							(10.f * (float)1e-3)	//(Ohm)
 	#define INDUCTANCE_D						(15.f * (float)1e-6)	//(H)
 	#define INDUCTANCE_Q						(15.f * (float)1e-6)	//(H)
-	#define MAX_SPD								((float)(GENERATRIX_VOL * MOTOR_KV / 60.f * 2.f * PI))
+	#define MAX_SPD								(1332.66f)	//rad/s
 #elif	MOTOR_TYPE == N5055_KV400
 	#define MOTOR_POLE_PAIRS_NUM				7
 	#define	MOTOR_KV							400.f
-	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * ((float)MOTOR_POLE_PAIRS_NUM) * (MOTOR_KV)))
+	#define ROTATOR_FLUX_LINKAGE				(5.513288954f / (MOTOR_KV * MOTOR_POLE_PAIRS_NUM))
 	#define PHASE_RES							(50.f * (float)1e-3)	//(Ohm)
 	#define INDUCTANCE_D						(55.f * (float)1e-6)	//(H)
 	#define INDUCTANCE_Q						(55.f * (float)1e-6)	//(H)
@@ -203,7 +227,7 @@
 #elif	MOTOR_TYPE == TMOTOR_U3_KV700
 	#define MOTOR_POLE_PAIRS_NUM				7
 	#define	MOTOR_KV							700.f
-	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * ((float)MOTOR_POLE_PAIRS_NUM) * (MOTOR_KV)))
+	#define ROTATOR_FLUX_LINKAGE				(5.513288954f / (MOTOR_KV * MOTOR_POLE_PAIRS_NUM))
 	#define PHASE_RES							(85.f * (float)1e-3)	//(Ohm)
 	#define INDUCTANCE_D						(22.f * (float)1e-6)	//(H)
 	#define INDUCTANCE_Q						(22.f * (float)1e-6)	//(H)
@@ -211,7 +235,7 @@
 #elif	MOTOR_TYPE == TMOTOR_P80_KV100
 	#define MOTOR_POLE_PAIRS_NUM				21
 	#define	MOTOR_KV							100.f
-	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * (float)MOTOR_POLE_PAIRS_NUM * MOTOR_KV))
+	#define ROTATOR_FLUX_LINKAGE				(5.513288954f / (MOTOR_KV * MOTOR_POLE_PAIRS_NUM))
 	#define PHASE_RES							(20.f * (float)1e-3)	//(Ohm)
 	#define INDUCTANCE_D						(24.f * (float)1e-6)	//(H)
 	#define INDUCTANCE_Q						(24.f * (float)1e-6)	//(H)
@@ -219,7 +243,7 @@
 #elif	MOTOR_TYPE == TMOTOR_MN505_S_KV320
 	#define MOTOR_POLE_PAIRS_NUM				14
 	#define	MOTOR_KV							320.f
-	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * (float)MOTOR_POLE_PAIRS_NUM * MOTOR_KV))
+	#define ROTATOR_FLUX_LINKAGE				(5.513288954f / (MOTOR_KV * MOTOR_POLE_PAIRS_NUM))
 	#define PHASE_RES							0.019f		//(Ohm) T-MOTOR官方数据
 	#define INDUCTANCE_D						0.000008f	//(H)
 	#define INDUCTANCE_Q						0.000014f	//(H)
@@ -227,7 +251,7 @@
 #elif	MOTOR_TYPE == SUNNYSKY_X4125_9_KV350
 	#define MOTOR_POLE_PAIRS_NUM				7
 	#define	MOTOR_KV							400.f
-	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * ((float)MOTOR_POLE_PAIRS_NUM) * (MOTOR_KV)))
+	#define ROTATOR_FLUX_LINKAGE				(5.513288954f / (MOTOR_KV * MOTOR_POLE_PAIRS_NUM))
 	#define PHASE_RES							0.0186698157f	//(Ohm)
 	#define INDUCTANCE_D						0.0000065f		//(H)
 	#define INDUCTANCE_Q						0.000012f		//(H)
@@ -235,7 +259,7 @@
 #elif	MOTOR_TYPE == SCREW_MOTOR_KV320	//与TMOTOR_MN505_S_KV320使用同一电枢
 	#define MOTOR_POLE_PAIRS_NUM				14
 	#define	MOTOR_KV							320.f
-	#define ROTATOR_FLUX_LINKAGE				( ONE_BY_SQRT3 * 60 / (2 * PI * ((float)MOTOR_POLE_PAIRS_NUM) * (MOTOR_KV)))
+	#define ROTATOR_FLUX_LINKAGE				(5.513288954f / (MOTOR_KV * MOTOR_POLE_PAIRS_NUM))
 	#define PHASE_RES							0.019f		//(Ohm) T-MOTOR官方数据
 	#define INDUCTANCE_D						0.000008f	//(H)
 	#define INDUCTANCE_Q						0.000014f	//(H)

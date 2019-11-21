@@ -85,7 +85,6 @@ extern struct PosLoop_t PosLoop;
 extern struct SpdLoop_t SpdLoop;
 extern struct CurrLoop_t CurrLoop;
 extern struct TorqueCtrl_t TorqueCtrl;
-extern struct VolCtrl_t VolCtrl;
 extern struct MainCtrl_t MainCtrl;
 extern struct Regulator_t Regulator;
 extern struct CoordTrans_t	CoordTrans;
@@ -347,22 +346,6 @@ void ADC_IRQHandler(void)
 										CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque);
 			
 										UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrQ * 1e3));
-										UART_Transmit_DMA("%d\r\n",(int)(MainCtrl.RefMecAngle_pulse));
-			
-										break;
-			
-			case SPD_VOL_CTRL_MODE :	/*转速控制器*/
-										SpdVolController();
-												
-										UART_Transmit_DMA("%d\t", (int)(PosSensor.EleAngularSpeed_rad));
-										UART_Transmit_DMA("%d\r\n",(int)(PosSensor.EleAngle_rad));
-			
-										break;
-			
-			case POS_SPD_VOL_CTRL_MODE :/*位置-转速-电压控制器*/
-										PosSpdVolController();
-
-										UART_Transmit_DMA("%d\t", (int)(MainCtrl.ExptMecAngle_pulse));
 										UART_Transmit_DMA("%d\r\n",(int)(MainCtrl.RefMecAngle_pulse));
 			
 										break;

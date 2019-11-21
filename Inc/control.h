@@ -75,16 +75,6 @@ struct TorqueCtrl_t
 	float MaxMecSpd;
 };
 
-struct VolCtrl_t
-{
-	float BEMF;
-	float CtrlVolD;
-	float CtrlVolQ;
-	float VolLimit;
-	float PowerAngleComp_degree;	
-	float PowerAngleComp_rad;
-};
-
 struct Regulator_t
 {
 	float Kp;
@@ -157,7 +147,6 @@ struct MainCtrl_t
 
 void DriverInit(void);
 void CurrentLoopInit(void);
-void VolCtrlInit(void);
 void SpeedLoopInit(void);
 void PositionLoopInit(void);
 void TorqueCtrlInit(void);
@@ -170,8 +159,6 @@ void SpdCurrController(void);
 void PosSpdCurrController(void);
 void PosCurrController(void);
 void TorqueController(void);
-void SpdVolController(void);
-void PosSpdVolController(void);
 float VelSlopeGenerator(float exptVelocity);
 void DriverCtrlModeInit(void);
 void PeriodRegulator(void);

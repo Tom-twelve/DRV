@@ -28,7 +28,6 @@ struct CurrLoop_t CurrLoop;
 struct SpdLoop_t SpdLoop;
 struct PosLoop_t PosLoop;
 struct TorqueCtrl_t TorqueCtrl;
-struct VolCtrl_t VolCtrl;
 struct Regulator_t Regulator;
 struct MainCtrl_t MainCtrl;
 /* CODE END PV */
@@ -245,19 +244,6 @@ void CurrentLoopInit(void)
 }
 
  /**
-   * @brief  电压控制器参数初始化
-   */
-void VolCtrlInit(void)
-{
-	/*设定电压限幅*/
-	VolCtrl.VolLimit = 2.0f;
-	
-	/*设定编码器延迟补偿系数*/
-	PosSensor.CompRatio_forward = 3.8f;
-	PosSensor.CompRatio_reverse = 3.0f;
-}
-
- /**
    * @brief  速度环参数初始化
    */
 void SpeedLoopInit(void)
@@ -277,25 +263,6 @@ void SpeedLoopInit(void)
 		/*位置-速度-电流三环控制*/
 		SpdLoop.Kp = SPEED_CONTROL_KP;
 		SpdLoop.Ki = SPEED_CONTROL_KI;
-		SpdLoop.MaxExptMecAngularSpeed_rad = 15.f * 2 * PI;	//最大转速
-		SpdLoop.Acceleration = 3000.f * 2 * PI;	//期望加速度, rad per quadratic seconds
-		SpdLoop.Deceleration = SpdLoop.Acceleration;
-	}
-	else if(Driver.ControlMode == SPD_VOL_CTRL_MODE)
-	{
-		/*速度环单环控制*/
-		SpdLoop.Kp = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS_NUM * 5.5f) * 1.0f;	
-		SpdLoop.Ki = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS_NUM * 25.0f) * 1.0f;
-		SpdLoop.MaxExptMecAngularSpeed_rad = MAX_SPD;	//最大期望转速
-		SpdLoop.ExptMecAngularSpeed_rad = 10.f * 2 * PI;	//期望速度, rad per second
-		SpdLoop.Acceleration = 3000.f * 2 * PI;	//期望加速度, rad per quadratic seconds
-		SpdLoop.Deceleration = SpdLoop.Acceleration;
-	}
-	else if(Driver.ControlMode == POS_SPD_VOL_CTRL_MODE)
-	{
-		/*位置-速度双环控制*/
-		SpdLoop.Kp = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS_NUM * 5.5f) * 1.0f;	
-		SpdLoop.Ki = (ROTATOR_FLUX_LINKAGE * MOTOR_POLE_PAIRS_NUM * 25.0f) * 0.0f;
 		SpdLoop.MaxExptMecAngularSpeed_rad = 15.f * 2 * PI;	//最大转速
 		SpdLoop.Acceleration = 3000.f * 2 * PI;	//期望加速度, rad per quadratic seconds
 		SpdLoop.Deceleration = SpdLoop.Acceleration;
@@ -325,15 +292,6 @@ void PositionLoopInit(void)
 		PosLoop.MecAngleUpperLimit_rad = 1024 * 2.f * PI;
 		PosLoop.MecAngleLowerLimit_rad = -1024 * 2.f * PI;
 	}
-	else if(Driver.ControlMode == POS_SPD_VOL_CTRL_MODE)
-	{
-		/*位置-速度双环控制*/
-		PosLoop.Kp = 80.5f * 1.0f;
-		PosLoop.Kd = 8.5f * 0.1f;	
-		MainCtrl.ExptMecAngle_pulse = 0;
-		PosLoop.MecAngleUpperLimit_rad = 1024 * 2.f * PI;
-		PosLoop.MecAngleLowerLimit_rad = -1024 * 2.f * PI;
-	}	
 }
 
  /**
@@ -395,7 +353,7 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 	*ctrlVolD = CurrLoop.Kp_D * CurrLoop.ErrD + CurrLoop.Ki_D * CurrLoop.IntegralErrD - PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * CoordTrans.CurrQ;
 	*ctrlVolQ = CurrLoop.Kp_Q * CurrLoop.ErrQ + CurrLoop.Ki_Q * CurrLoop.IntegralErrQ + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
 	
-	/*电流环d轴电流限幅*/
+	/*电压矢量限幅*/
 	Saturation_float(ctrlVolD, GENERATRIX_VOL / SQRT3, -GENERATRIX_VOL / SQRT3);
 	Saturation_float(ctrlVolQ, sqrt(SQUARE(GENERATRIX_VOL) / 3.f - SQUARE(*ctrlVolD)), -sqrt(SQUARE(GENERATRIX_VOL) / 3.f - SQUARE(*ctrlVolD)));
 }
@@ -439,15 +397,6 @@ void PositionLoop(float exptMecAngle, float realMecAngle, float *ctrlAngularSpee
 	*ctrlAngularSpeed = PosLoop.Kp * PosLoop.Err + PosLoop.Kd * PosLoop.DiffErr;
 		
 	PosLoop.LastErr = PosLoop.Err;
-	
-//	if(PosLoop.Err >= 0)
-//	{
-//		*ctrlAngularSpeed = sqrt(SQUARE(PosSensor.MecAngularSpeed_rad) + 2.f * SpdLoop.Acceleration * PosLoop.Err);
-//	}
-//	else if(PosLoop.Err < 0)
-//	{
-//		
-//	}
 }
 
  /**
@@ -655,90 +604,6 @@ void TorqueController(void)
 }
 
  /**
-   * @brief  速度-电压控制器
-   */
-void SpdVolController(void)
-{  
-	/*采用Id = 0控制, 设Vd = 0时, Id近似为零*/
-	VolCtrl.CtrlVolD = 0.f;
-	
-	/*更新机械速度及位置信息*/
-	GetMecImformation();
-	
-	SpeedLoop(VelSlopeGenerator(SpdLoop.ExptMecAngularSpeed_rad), PosSensor.MecAngularSpeed_rad, &VolCtrl.CtrlVolQ);
-	
-	/*计算q轴反电动势*/
-	VolCtrl.BEMF = ROTATOR_FLUX_LINKAGE * PosSensor.EleAngularSpeed_rad;
-	
-	/*Vq限幅*/
-	Saturation_float(&VolCtrl.CtrlVolQ, VolCtrl.BEMF + VolCtrl.VolLimit, VolCtrl.BEMF - VolCtrl.VolLimit);
-	
-	/*正反转编码器延迟补偿系数不同*/
-	if(PosSensor.EleAngularSpeed_degree >= 0)
-	{
-		PosSensor.CompRatio = PosSensor.CompRatio_forward;
-	}
-	else if(PosSensor.EleAngularSpeed_degree < 0)
-	{
-		PosSensor.CompRatio = PosSensor.CompRatio_reverse;
-	}
-	
-	/*计算补偿角度*/
-	PosSensor.CompAngle = PosSensor.CompRatio * PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s;
-	
-	/*进行逆Park变换, 将转子坐标系下的dq轴电压转换为定子坐标系下的AlphaBeta轴电压*/
-	InverseParkTransform_arm(VolCtrl.CtrlVolD, VolCtrl.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + PosSensor.CompAngle);
-	
-	/*利用SVPWM算法调制电压矢量*/
-	SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
-}
-
- /**
-   * @brief  位置-速度-电压控制器
-   */
-void PosSpdVolController(void)
-{  
-	/*采用Id = 0控制, 设Vd = 0时, Id近似为零*/
-	VolCtrl.CtrlVolD = 0.f;
-	
-	/*更新机械速度及位置信息*/
-	GetMecImformation();
-	
-	PosLoop.ExptMecAngle_rad = DRV_PULSE_TO_RAD(MainCtrl.ExptMecAngle_pulse);
-		
-	PosLoop.RefMecAngle_rad = DRV_PULSE_TO_RAD(MainCtrl.RefMecAngle_pulse);
-		
-	PositionLoop(PosLoop.ExptMecAngle_rad, PosLoop.RefMecAngle_rad, &CurrLoop.ExptCurrQ);
-		
-	SpeedLoop(VelSlopeGenerator(SpdLoop.ExptMecAngularSpeed_rad), PosSensor.MecAngularSpeed_rad, &VolCtrl.CtrlVolQ);
-	
-	/*计算q轴反电动势*/
-	VolCtrl.BEMF = ROTATOR_FLUX_LINKAGE * PosSensor.EleAngularSpeed_rad;
-	
-	/*Vq限幅*/
-	Saturation_float(&VolCtrl.CtrlVolQ, VolCtrl.BEMF + VolCtrl.VolLimit, VolCtrl.BEMF - VolCtrl.VolLimit);
-	
-	/*正反转编码器延迟补偿系数不同*/
-	if(PosSensor.EleAngularSpeed_degree >= 0)
-	{
-		PosSensor.CompRatio = PosSensor.CompRatio_forward;
-	}
-	else if(PosSensor.EleAngularSpeed_degree < 0)
-	{
-		PosSensor.CompRatio = PosSensor.CompRatio_reverse;
-	}
-	
-	/*计算补偿角度*/
-	PosSensor.CompAngle = PosSensor.CompRatio * PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s;
-	
-	/*进行逆Park变换, 将转子坐标系下的dq轴电压转换为定子坐标系下的AlphaBeta轴电压*/
-	InverseParkTransform_arm(VolCtrl.CtrlVolD, VolCtrl.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + PosSensor.CompAngle);
-	
-	/*利用SVPWM算法调制电压矢量*/
-	SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
-}
-
- /**
    * @brief  斜坡生成器
    * @param[in]  expectedVelocity      期望角速度
    */
@@ -830,22 +695,6 @@ void DriverCtrlModeInit(void)
 		
 										TorqueCtrlInit();
 		
-										break;
-		
-		case SPD_VOL_CTRL_MODE :		
-										VolCtrlInit();
-		
-										SpeedLoopInit();
-		
-										break;
-		
-		case POS_SPD_VOL_CTRL_MODE :	
-										VolCtrlInit();
-		
-										SpeedLoopInit();
-		
-										PositionLoopInit();
-
 										break;
 	}
 }

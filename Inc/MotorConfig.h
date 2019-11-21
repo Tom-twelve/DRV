@@ -38,7 +38,9 @@
 #define TMOTOR_P80_KV100				4	
 #define TMOTOR_MN505_S_KV320			5	
 #define SUNNYSKY_X4125_9_KV350			6
-#define SCREW_MOTOR_KV320				7
+#define SUNNYSKY_X4125_3_KV210			7
+#define IFLIGHT_T4214_KV660				8
+#define LEOPARD_HOBBY_PH2820_KV780		9
 
 /* Position Sensor Type */
 #define ENCODER_TLE5012					1
@@ -65,7 +67,7 @@
 
 #if ROBOT_ID == PASS_ROBOT
 	#define CAN_ID_NUM			1
-		#if CAN_ID_NUM == 1
+		#if CAN_ID_NUM == 1		//车轮
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
@@ -73,7 +75,7 @@
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
 		#define CURRENT_SENSOR			RES_1mOhm
 		#define GROUP_NUM           	1
-		#elif CAN_ID_NUM == 2
+		#elif CAN_ID_NUM == 2	//车轮
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
@@ -81,7 +83,7 @@
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
 		#define CURRENT_SENSOR			RES_1mOhm
 		#define GROUP_NUM           	1
-		#elif CAN_ID_NUM == 3
+		#elif CAN_ID_NUM == 3	//车轮
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
@@ -89,7 +91,7 @@
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
 		#define CURRENT_SENSOR			RES_1mOhm
 		#define GROUP_NUM           	1
-		#elif CAN_ID_NUM == 4
+		#elif CAN_ID_NUM == 4	//航向
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
@@ -97,7 +99,7 @@
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
 		#define CURRENT_SENSOR			RES_1mOhm
 		#define GROUP_NUM           	2
-		#elif CAN_ID_NUM == 5
+		#elif CAN_ID_NUM == 5	//航向
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
@@ -105,7 +107,7 @@
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
 		#define CURRENT_SENSOR			RES_1mOhm
 		#define GROUP_NUM           	2
-		#elif CAN_ID_NUM == 6
+		#elif CAN_ID_NUM == 6	//航向
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
@@ -113,41 +115,41 @@
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
 		#define CURRENT_SENSOR			RES_1mOhm
 		#define GROUP_NUM           	2
-		#elif CAN_ID_NUM == 7
-		#define MOTOR_TYPE 				MAD_XC5500_KV505	
+		#elif CAN_ID_NUM == 7	//踢球
+		#define MOTOR_TYPE 				IFLIGHT_T4214_KV660	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
 		#define CURRENT_SENSOR			RES_1mOhm
 		#define GROUP_NUM           	2
-		#elif CAN_ID_NUM == 8
-		#define MOTOR_TYPE 				TMOTOR_U3_KV700	
-		#define	PHASE_SEQUENCE			NEGATIVE_SEQUENCE
+		#elif CAN_ID_NUM == 8	//传球
+		#define MOTOR_TYPE 				LEOPARD_HOBBY_PH2820_KV780	
+		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
 		#define CURRENT_SENSOR			RES_1mOhm
 		#define GROUP_NUM           	1
-		#elif CAN_ID_NUM == 9
-		#define MOTOR_TYPE 				TMOTOR_U3_KV700	
-		#define	PHASE_SEQUENCE			NEGATIVE_SEQUENCE
+		#elif CAN_ID_NUM == 9	//传球
+		#define MOTOR_TYPE 				LEOPARD_HOBBY_PH2820_KV780	
+		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
 		#define CURRENT_SENSOR			RES_1mOhm
 		#define GROUP_NUM           	1
-		#elif CAN_ID_NUM == 10
-		#define MOTOR_TYPE 				TMOTOR_U3_KV700	
-		#define	PHASE_SEQUENCE			NEGATIVE_SEQUENCE
+		#elif CAN_ID_NUM == 10	//传球
+		#define MOTOR_TYPE 				LEOPARD_HOBBY_PH2820_KV780	
+		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
 		#define CURRENT_SENSOR			RES_1mOhm
 		#define GROUP_NUM           	1
-		#elif CAN_ID_NUM == 11
-		#define MOTOR_TYPE 				TMOTOR_U3_KV700	
-		#define	PHASE_SEQUENCE			NEGATIVE_SEQUENCE
+		#elif CAN_ID_NUM == 11	//传球
+		#define MOTOR_TYPE 				LEOPARD_HOBBY_PH2820_KV780	
+		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
@@ -156,7 +158,7 @@
 		#endif
 #elif ROBOT_ID == TRY_ROBOT
 	#define CAN_ID_NUM			1
-		#if CAN_ID_NUM == 1
+		#if CAN_ID_NUM == 1		//车轮
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
@@ -164,7 +166,7 @@
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
 		#define CURRENT_SENSOR			RES_1mOhm
 		#define GROUP_NUM           	1
-		#elif CAN_ID_NUM == 2
+		#elif CAN_ID_NUM == 2	//车轮
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
@@ -172,7 +174,7 @@
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
 		#define CURRENT_SENSOR			RES_1mOhm
 		#define GROUP_NUM           	1
-		#elif CAN_ID_NUM == 3
+		#elif CAN_ID_NUM == 3	//车轮
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
@@ -180,7 +182,7 @@
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
 		#define CURRENT_SENSOR			RES_1mOhm
 		#define GROUP_NUM           	1
-		#elif CAN_ID_NUM == 4
+		#elif CAN_ID_NUM == 4	//航向
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
@@ -188,7 +190,7 @@
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
 		#define CURRENT_SENSOR			RES_1mOhm
 		#define GROUP_NUM           	2
-		#elif CAN_ID_NUM == 5
+		#elif CAN_ID_NUM == 5	//航向
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
@@ -196,7 +198,7 @@
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
 		#define CURRENT_SENSOR			RES_1mOhm
 		#define GROUP_NUM           	2
-		#elif CAN_ID_NUM == 6
+		#elif CAN_ID_NUM == 6	//航向
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
@@ -261,6 +263,22 @@
 	#define	MOTOR_KV							210.f
 	#define ROTATOR_FLUX_LINKAGE				(5.513288954f / (MOTOR_KV * MOTOR_POLE_PAIRS_NUM))
 	#define PHASE_RES							(18.2f * (float)1e-3)	//(Ohm)
+	#define INDUCTANCE_D						(15.f * (float)1e-6)	//(H)
+	#define INDUCTANCE_Q						(15.f * (float)1e-6)	//(H)
+	#define MAX_SPD								(GENERATRIX_VOL * MOTOR_KV * 0.10471975)	//rad/s
+#elif	MOTOR_TYPE == IFLIGHT_T4214_KV660	
+	#define MOTOR_POLE_PAIRS_NUM				7
+	#define	MOTOR_KV							660.f
+	#define ROTATOR_FLUX_LINKAGE				(5.513288954f / (MOTOR_KV * MOTOR_POLE_PAIRS_NUM))
+	#define PHASE_RES							(18.2f * (float)1e-3)	//(Ohm)
+	#define INDUCTANCE_D						(15.f * (float)1e-6)	//(H)
+	#define INDUCTANCE_Q						(15.f * (float)1e-6)	//(H)
+	#define MAX_SPD								(GENERATRIX_VOL * MOTOR_KV * 0.10471975)	//rad/s
+#elif	MOTOR_TYPE == LEOPARD_HOBBY_PH2820_KV780	
+	#define MOTOR_POLE_PAIRS_NUM				7
+	#define	MOTOR_KV							780.f
+	#define ROTATOR_FLUX_LINKAGE				(5.513288954f / (MOTOR_KV * MOTOR_POLE_PAIRS_NUM))
+	#define PHASE_RES							(62.f * (float)1e-3)	//(Ohm)
 	#define INDUCTANCE_D						(15.f * (float)1e-6)	//(H)
 	#define INDUCTANCE_Q						(15.f * (float)1e-6)	//(H)
 	#define MAX_SPD								(GENERATRIX_VOL * MOTOR_KV * 0.10471975)	//rad/s

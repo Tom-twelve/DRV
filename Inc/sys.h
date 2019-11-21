@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * File Name          : SPI.h
+  * File Name          : SYS.h
   * Description        : This file provides code for the configuration
-  *                      of the SPI instances.
+  *                      of the SYS instances.
   ******************************************************************************
   * @attention
   *
@@ -17,8 +17,8 @@
   ******************************************************************************
   */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __spi_H
-#define __spi_H
+#ifndef __sys_H
+#define __sys_H
 #ifdef __cplusplus
  extern "C" {
 #endif
@@ -30,25 +30,20 @@
 
 /* USER CODE END Includes */
 
-extern SPI_HandleTypeDef hspi3;
-
 /* USER CODE BEGIN Private defines */
-#define TimeOut 150
+
 /* USER CODE END Private defines */
 
-void MX_SPI1_Init(void);
-void MX_SPI3_Init(void);
+void MX_SYS_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-void SPI_Transmit(SPI_TypeDef *SPIx, uint16_t command, uint16_t timeOut);
-void SPI_Receive(SPI_TypeDef *SPIx, uint16_t* data, uint16_t timeOut);
-void SPI_Enable(void);
+
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus
 }
 #endif
-#endif /*__ spi_H */
+#endif /*__ sys_H */
 
 /**
   * @}

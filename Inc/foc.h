@@ -82,10 +82,10 @@ struct Driver_t
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
 void SpaceVectorModulation(float volAlpha, float volBeta);
-void InverseParkTransform_arm(float volD, float volQ, float *volAlpha, float *volBeta, float eleAngle);
-void ParkTransform_arm(float currentAlpha, float currentBeta, float *currentD, float *currentQ, float eleAngle);
-void ClarkTransform_arm(float currentPhaseA, float currentPhaseB, float *currentAlpha, float *currentBeta);
-void CalculateEleTorque(float actualCurrentQ, float *eleTorque);
+void InverseParkTransform(float volD, float volQ, float *volAlpha, float *volBeta, float eleAngle);
+void ParkTransform(float currAlpha, float currBeta, float *currD, float *currQ, float eleAngle);
+void ClarkeTransform(float currA, float currB, float *currAlpha, float *currBeta);
+void CalculateEleTorque(float realCurrQ, float *eleTorque);
 
 /* USER CODE END PFP */
 

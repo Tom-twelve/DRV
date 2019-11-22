@@ -172,7 +172,7 @@ void SpaceVectorModulation(float volAlpha, float volBeta)
    * @param[out] volBeta  		output two-phase orthogonal vector axis beta
    * @param[in]  EleAngle		value of Ele angle
    */
-void InverseParkTransform_arm(float volD, float volQ, float *volAlpha, float *volBeta, float eleAngle)
+void InverseParkTransform(float volD, float volQ, float *volAlpha, float *volBeta, float eleAngle)
 {
 	float eleAngleSineValue = 0;
 	float eleAngleCosineValue = 0;
@@ -190,37 +190,37 @@ void InverseParkTransform_arm(float volD, float volQ, float *volAlpha, float *vo
    * @param[out] volBeta  		output two-phase orthogonal vector axis beta
    * @param[in]  EleAngle		value of Ele angle
    */
-void ParkTransform_arm(float currentAlpha, float currentBeta, float *currentD, float *currentQ, float eleAngle)
+void ParkTransform(float currAlpha, float currBeta, float *currD, float *currQ, float eleAngle)
 {	
 	float eleAngleSineValue = 0;
 	float eleAngleCosineValue = 0;
 	
 	arm_sin_cos_f32((float)eleAngle,  &eleAngleSineValue,  &eleAngleCosineValue);
 	
-	arm_park_f32(currentAlpha, currentBeta, currentD, currentQ, eleAngleSineValue, eleAngleCosineValue);
+	arm_park_f32(currAlpha, currBeta, currD, currQ, eleAngleSineValue, eleAngleCosineValue);
 }
 
  /**
-   * @brief  Floating-point Clark transform
+   * @brief  Floating-point Clarke transform
    * @param[in]  volD       	input coordinate of rotor reference frame d
    * @param[in]  volQ       	input coordinate of rotor reference frame q
    * @param[out] volAlpha 		output two-phase orthogonal vector axis alpha
    * @param[out] volBeta  		output two-phase orthogonal vector axis beta
    * @param[in]  EleAngle		value of Ele angle
    */
-void ClarkTransform_arm(float currentPhaseA, float currentPhaseB, float *currentAlpha, float *currentBeta)
+void ClarkeTransform(float currA, float currB, float *currAlpha, float *currBeta)
 {
-	arm_clarke_f32(currentPhaseA, currentPhaseB, currentAlpha, currentBeta);
+	arm_clarke_f32(currA, currB, currAlpha, currBeta);
 }
 
  /**
    * @brief  Calculate electromagnetic torque
-   * @param[in]   currentQ      				current of axis q
+   * @param[in]   realCurrQ      	current of axis q
    * @param[out]  EleTorque      	electromagnetic torque
    */
-void CalculateEleTorque(float actualCurrentQ, float *EleTorque)
+void CalculateEleTorque(float realCurrQ, float *EleTorque)
 {
-	*EleTorque = 1.5f * MOTOR_POLE_PAIRS_NUM * actualCurrentQ * ROTATOR_FLUX_LINKAGE;
+	*EleTorque = 1.5f * MOTOR_POLE_PAIRS_NUM * realCurrQ * ROTATOR_FLUX_LINKAGE;
 }
 
 /* USER CODE END */

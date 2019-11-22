@@ -168,7 +168,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 			case IDENTIFIER_TORQUE_CTRL:
 				
 				/*期望扭矩*/
-				TorqueCtrl.ExptTorque =  (float)CAN.ReceiveData * 1e-3;
+				TorqueCtrl.ExptTorque_Nm =  (float)CAN.ReceiveData * 1e-3;
 			
 				break;
 				
@@ -244,13 +244,24 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 						
 			case IDENTIFIER_SET_VEL_LIMIT:
 				
-				/*配置速度环最大期望速度*/
+				/*配置速度环最大期望速度(转矩控制模式下为电机的最大速度, 在位置-电流控制模式下无效)*/
 				MainCtrl.MaxMecAngularSpeed_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
-				SpdLoop.MaxExptMecAngularSpeed_rad = DRV_PULSE_TO_RAD(MainCtrl.MaxMecAngularSpeed_pulse);
 			
-				/*不超过电机的最大转速*/
-				Saturation_float(&SpdLoop.MaxExptMecAngularSpeed_rad, MAX_SPD, -MAX_SPD);
-			
+				if(Driver.ControlMode == SPD_CURR_CTRL_MODE || Driver.ControlMode == POS_SPD_CURR_CTRL_MODE)
+				{
+					SpdLoop.MaxExptMecAngularSpeed_rad = DRV_PULSE_TO_RAD(MainCtrl.MaxMecAngularSpeed_pulse);
+					
+					/*不超过电机的最大转速*/
+					Saturation_float(&SpdLoop.MaxExptMecAngularSpeed_rad, MAX_SPD, -MAX_SPD);
+				}
+				else if(Driver.ControlMode == TORQUE_CTRL_MODE)
+				{
+					TorqueCtrl.MaxMecSpd_rad = DRV_PULSE_TO_RAD(MainCtrl.MaxMecAngularSpeed_pulse);
+					
+					/*不超过电机的最大转速*/
+					Saturation_float(&TorqueCtrl.MaxMecSpd_rad, MAX_SPD, -MAX_SPD);
+				}
+				
 				break;
 			
 			case IDENTIFIER_SET_POS_LIMIT_UP:
@@ -334,7 +345,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 			case IDENTIFIER_TORQUE_CTRL:
 				
 				/*期望扭矩*/
-				TorqueCtrl.ExptTorque =  (float)CAN.ReceiveData * 1e-3;
+				TorqueCtrl.ExptTorque_Nm =  (float)CAN.ReceiveData * 1e-3;
 			
 				break;
 				
@@ -410,12 +421,23 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 						
 			case IDENTIFIER_SET_VEL_LIMIT:
 				
-				/*配置速度环最大期望速度*/
+				/*配置速度环最大期望速度(转矩控制模式下为电机的最大速度, 在位置-电流控制模式下无效)*/
 				MainCtrl.MaxMecAngularSpeed_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
-				SpdLoop.MaxExptMecAngularSpeed_rad = DRV_PULSE_TO_RAD(MainCtrl.MaxMecAngularSpeed_pulse);
 			
-				/*不超过电机的最大转速*/
-				Saturation_float(&SpdLoop.MaxExptMecAngularSpeed_rad, MAX_SPD, -MAX_SPD);
+				if(Driver.ControlMode == SPD_CURR_CTRL_MODE || Driver.ControlMode == POS_SPD_CURR_CTRL_MODE)
+				{
+					SpdLoop.MaxExptMecAngularSpeed_rad = DRV_PULSE_TO_RAD(MainCtrl.MaxMecAngularSpeed_pulse);
+					
+					/*不超过电机的最大转速*/
+					Saturation_float(&SpdLoop.MaxExptMecAngularSpeed_rad, MAX_SPD, -MAX_SPD);
+				}
+				else if(Driver.ControlMode == TORQUE_CTRL_MODE)
+				{
+					TorqueCtrl.MaxMecSpd_rad = DRV_PULSE_TO_RAD(MainCtrl.MaxMecAngularSpeed_pulse);
+					
+					/*不超过电机的最大转速*/
+					Saturation_float(&TorqueCtrl.MaxMecSpd_rad, MAX_SPD, -MAX_SPD);
+				}
 				
 				break;
 			
@@ -492,7 +514,7 @@ void CAN_Respond(void)
 		case (0x40 + IDENTIFIER_READ_TORQUE):
 			
 			CAN.Identifier = IDENTIFIER_READ_TORQUE;
-			CAN.TransmitData = (int32_t)(TorqueCtrl.EleTorque * 1e3);
+			CAN.TransmitData = (int32_t)(TorqueCtrl.EleTorque_Nm * 1e3);
 		
 			/*发送当前电磁转矩*/	
 			CAN_Transmit(CAN.Identifier, CAN.TransmitData, 4);

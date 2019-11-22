@@ -310,7 +310,7 @@ void ADC_IRQHandler(void)
 										SpdCurrController();
 			
 										/*计算电磁转矩*/
-										CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque);
+										CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque_Nm);
 										
 										UART_Transmit_DMA("%d\t", (int)(PosSensor.MecAngularSpeed_rad));
 										UART_Transmit_DMA("%d\r\n",(int)(CurrLoop.ExptCurrQ * 1e3));
@@ -321,7 +321,7 @@ void ADC_IRQHandler(void)
 										PosSpdCurrController();
 		
 										/*计算电磁转矩*/
-										CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque);
+										CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque_Nm);
 			
 										UART_Transmit_DMA("%d\t", (int)(MainCtrl.ExptMecAngle_pulse));
 										UART_Transmit_DMA("%d\t",(int)(SpdLoop.ExptMecAngularSpeed_rad));
@@ -333,7 +333,7 @@ void ADC_IRQHandler(void)
 										PosCurrController();
 		
 										/*计算电磁转矩*/
-										CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque);
+										CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque_Nm);
 			
 										UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrQ * 1e3));
 										UART_Transmit_DMA("%d\r\n",(int)(MainCtrl.RefMecAngle_pulse));
@@ -343,7 +343,7 @@ void ADC_IRQHandler(void)
 										TorqueController();
 		
 										/*计算电磁转矩*/
-										CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque);
+										CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque_Nm);
 			
 										UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrQ * 1e3));
 										UART_Transmit_DMA("%d\r\n",(int)(MainCtrl.RefMecAngle_pulse));

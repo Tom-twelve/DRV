@@ -29,6 +29,8 @@
 struct CurrLoop_t
 {
 	float LimitCurrQ;
+	float LimitVolD;
+	float LimitVolQ;
 	float ExptCurrD;
 	float ExptCurrQ;
 	float CtrlVolD;
@@ -70,9 +72,9 @@ struct PosLoop_t
 
 struct TorqueCtrl_t
 {
-	float ExptTorque;
-	float EleTorque;
-	float MaxMecSpd;
+	float ExptTorque_Nm;
+	float EleTorque_Nm;
+	float MaxMecSpd_rad;
 };
 
 struct Regulator_t
@@ -94,7 +96,7 @@ struct MainCtrl_t
 	int32_t MecAngleUpperLimit_pulse;		//位置环位置上限, 脉冲
 	int32_t MecAngleLowerLimit_pulse;		//位置环位置下限, 脉冲
 	int32_t RefMecAngle_pulse;				//参考机械角度, 上电时置零, 脉冲
-	float MaxTorque_Nm;						//最大扭矩, 牛米
+	float MaxTorque_Nm;						//最大扭矩(Nm)
 	uint16_t PresentMecAngle_pulse;
 	uint16_t LastMecAngle_pulse;
 };
@@ -104,16 +106,14 @@ struct MainCtrl_t
 #define PERIOD_MULTIPLE					10	//(速度环, 位置环周期 / 电流环周期)
 #define OUTER_LOOP_PERIOD				(Regulator.ActualPeriod_s * PERIOD_MULTIPLE)	//外环控制周期
 
-#define CURR_INTEGRAL_ERR_LIM_D 		(1.0f / CurrLoop.Ki_D)	//Id积分限幅
-#define CURR_INTEGRAL_ERR_LIM_Q 		(1.0f / CurrLoop.Ki_Q)	//Iq积分限幅
+#define CURR_INTEGRAL_ERR_LIM_D 		(6.0f / CurrLoop.Ki_D)	//Id积分限幅
+#define CURR_INTEGRAL_ERR_LIM_Q 		(6.0f / CurrLoop.Ki_Q)	//Iq积分限幅
 
 #define SPD_INTEGRAL_ERR_LIM			(5.0 * 2.f * PI)		//(rad/s)
 
-#define CURRENT_CONTROL_KP_D			(INDUCTANCE_D * 1500.f)	//d轴电感 * 电流环带宽
-#define CURRENT_CONTROL_KI_D			(PHASE_RES * 1500.f)	//相电阻 * 电流环带宽
+#define CURRENT_CONTROL_KI_D			(PHASE_RES)	//电流控制器采用简化电机模型+I调节, 不同于传统PI控制器, 故I参数需人工调整
 
-#define CURRENT_CONTROL_KP_Q			(INDUCTANCE_Q * 1500.f)	//q轴电感 * 电流环带宽
-#define CURRENT_CONTROL_KI_Q			(PHASE_RES * 1500.f)	//相电阻 * 电流环带宽
+#define CURRENT_CONTROL_KI_Q			(PHASE_RES)	//电流控制器采用简化电机模型+I调节, 不同于传统PI控制器, 故I参数需人工调整
 
 #define SPEED_CONTROL_KP				1.0f
 #define SPEED_CONTROL_KI				1.0f

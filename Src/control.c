@@ -578,29 +578,31 @@ void TorqueController(void)
 {  
 	static uint16_t Count = PERIOD_MULTIPLE - 1;
 	
+	Count++;
+	
 	/*采用Id = 0控制, 故设定d轴电流为零*/
 	CurrLoop.ExptCurrD = 0.f;
-	
-	/*转速接近转速限幅时, 期望Iq改为速度环的计算结果*/
-	if(PosSensor.MecAngularSpeed_rad < (TorqueCtrl.MaxMecSpd_rad - 5.f * 2.f * PI))
-	{		
-		/*将目标转矩转换为Iq*/
-		CurrLoop.ExptCurrQ = TorqueCtrl.ExptTorque_Nm / (1.5f * MOTOR_POLE_PAIRS_NUM * ROTATOR_FLUX_LINKAGE);
-	}
-	else if(PosSensor.MecAngularSpeed_rad >= (TorqueCtrl.MaxMecSpd_rad - 5.f * 2.f * PI))
-	{
-		Count++;
 		
-		/*速度环的周期是电流环周期的十倍*/
-		if(Count == PERIOD_MULTIPLE)
-		{
-			/*更新机械速度及位置信息*/
-			GetMecImformation();
+	/*速度环的周期是电流环周期的十倍*/
+	if(Count == PERIOD_MULTIPLE)
+	{
+		/*更新机械速度及位置信息*/
+		GetMecImformation();
 					
+		/*转速接近转速限幅时, 期望Iq改为速度环的计算结果*/
+		if(PosSensor.MecAngularSpeed_rad < (TorqueCtrl.MaxMecSpd_rad - 3.f * 2.f * PI))
+		{		
+			/*将目标转矩转换为Iq*/
+			CurrLoop.ExptCurrQ = TorqueCtrl.ExptTorque_Nm / (1.5f * MOTOR_POLE_PAIRS_NUM * ROTATOR_FLUX_LINKAGE);
+		}
+		else if(PosSensor.MecAngularSpeed_rad >= (TorqueCtrl.MaxMecSpd_rad - 3.f * 2.f * PI))
+		{
 			SpeedLoop(TorqueCtrl.MaxMecSpd_rad, PosSensor.MecAngularSpeed_rad, &CurrLoop.ExptCurrQ);
 			
-			Count = 0;
+			Saturation_float(&CurrLoop.ExptCurrQ, TorqueCtrl.ExptTorque_Nm / (1.5f * MOTOR_POLE_PAIRS_NUM * ROTATOR_FLUX_LINKAGE), -TorqueCtrl.ExptTorque_Nm / (1.5f * MOTOR_POLE_PAIRS_NUM * ROTATOR_FLUX_LINKAGE));
 		}
+			
+		Count = 0;
 	}
 
 	/*进行Clark变换, 将abc坐标系转换为Alpha-Beta坐标系*/

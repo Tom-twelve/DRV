@@ -41,6 +41,7 @@
 #define SUNNYSKY_X4125_3_KV210			7
 #define IFLIGHT_T4214_KV660				8
 #define LEOPARD_HOBBY_PH2820_KV780		9
+#define CRAZY_MOTOR_5025_KV200			10
 
 /* Position Sensor Type */
 #define ENCODER_TLE5012					1
@@ -281,6 +282,14 @@
 	#define PHASE_RES							(62.f * (float)1e-3)	//(Ohm)
 	#define INDUCTANCE_D						(15.f * (float)1e-6)	//(H)
 	#define INDUCTANCE_Q						(15.f * (float)1e-6)	//(H)
+	#define MAX_SPD								(GENERATRIX_VOL * MOTOR_KV * 0.10471975)	//rad/s
+#elif	MOTOR_TYPE == CRAZY_MOTOR_5025_KV200	
+	#define MOTOR_POLE_PAIRS_NUM				7
+	#define	MOTOR_KV							200.f
+	#define ROTATOR_FLUX_LINKAGE				(5.513288954f / (MOTOR_KV * MOTOR_POLE_PAIRS_NUM))
+	#define PHASE_RES							(30.f * (float)1e-3)	//(Ohm)
+	#define INDUCTANCE_D						(25.f * (float)1e-6)	//(H)
+	#define INDUCTANCE_Q						(25.f * (float)1e-6)	//(H)
 	#define MAX_SPD								(GENERATRIX_VOL * MOTOR_KV * 0.10471975)	//rad/s
 #else
 #error "Motor Type Invalid"

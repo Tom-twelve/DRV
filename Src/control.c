@@ -252,7 +252,7 @@ void SpeedLoopInit(void)
 		SpdLoop.Kp = SPEED_CONTROL_KP;	
 		SpdLoop.Ki = SPEED_CONTROL_KI;
 		SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;	//期望速度, rad per second
-		SpdLoop.MaxExptMecAngularSpeed_rad = MAX_SPD;	//最大转速
+		SpdLoop.MaxExptMecAngularSpeed_rad = MAX_SPD;	//转速限幅
 		SpdLoop.Acceleration = 3000.f * 2 * PI;	//期望加速度, rad per quadratic seconds
 		SpdLoop.Deceleration = SpdLoop.Acceleration;
 	}
@@ -261,9 +261,16 @@ void SpeedLoopInit(void)
 		/*位置-速度-电流三环控制*/
 		SpdLoop.Kp = SPEED_CONTROL_KP;
 		SpdLoop.Ki = SPEED_CONTROL_KI;
-		SpdLoop.MaxExptMecAngularSpeed_rad = 15.f * 2 * PI;	//最大转速
+		SpdLoop.MaxExptMecAngularSpeed_rad = 15.f * 2 * PI;	//转速限幅
 		SpdLoop.Acceleration = 3000.f * 2 * PI;	//期望加速度, rad per quadratic seconds
 		SpdLoop.Deceleration = SpdLoop.Acceleration;
+	}
+	if(Driver.ControlMode == TORQUE_CTRL_MODE)
+	{
+		/*转矩控制模式下, 在转速接近转速限幅时加入速度环控制*/
+		SpdLoop.Kp = SPEED_CONTROL_KP;	
+		SpdLoop.Ki = SPEED_CONTROL_KI;
+		SpdLoop.MaxExptMecAngularSpeed_rad = TorqueCtrl.MaxMecSpd_rad;	//转速限幅
 	}
 }
 
@@ -297,9 +304,9 @@ void PositionLoopInit(void)
    */
 void TorqueCtrlInit(void)
 {					
-	TorqueCtrl.ExptTorque_Nm = 1.0f;
-	TorqueCtrl.MaxMecSpd_rad = 100.f * 2.f * PI;
-	MainCtrl.MaxTorque_Nm = 2.0f;
+	TorqueCtrl.ExptTorque_Nm = 1.0f;	//期望扭矩
+	TorqueCtrl.MaxMecSpd_rad = 60.f * 2.f * PI;	//转速限幅
+	CurrLoop.LimitCurrQ = 200.f;		//Iq限幅
 }
 
  /**
@@ -367,7 +374,7 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
    */
 void SpeedLoop(float exptMecAngularSpeed, float realMecAngularSpeed, float *ctrlCurrQ)
 {
-	/*最大目标速度限幅*/
+	/*最大期望速度限幅*/
 	Saturation_float(&exptMecAngularSpeed, SpdLoop.MaxExptMecAngularSpeed_rad, -SpdLoop.MaxExptMecAngularSpeed_rad);
 	
 	SpdLoop.Err = exptMecAngularSpeed - realMecAngularSpeed;
@@ -569,15 +576,36 @@ void PosCurrController(void)
    */
 void TorqueController(void)
 {  
-	/*将目标转矩转换为目标Iq*/
-	CurrLoop.ExptCurrQ = TorqueCtrl.ExptTorque_Nm / (1.5f * MOTOR_POLE_PAIRS_NUM * ROTATOR_FLUX_LINKAGE);
+	static uint16_t Count = PERIOD_MULTIPLE - 1;
 	
 	/*采用Id = 0控制, 故设定d轴电流为零*/
 	CurrLoop.ExptCurrD = 0.f;
 	
+	/*转速接近转速限幅时, 期望Iq改为速度环的计算结果*/
+	if(PosSensor.MecAngularSpeed_rad < (TorqueCtrl.MaxMecSpd_rad - 5.f * 2.f * PI))
+	{		
+		/*将目标转矩转换为Iq*/
+		CurrLoop.ExptCurrQ = TorqueCtrl.ExptTorque_Nm / (1.5f * MOTOR_POLE_PAIRS_NUM * ROTATOR_FLUX_LINKAGE);
+	}
+	else if(PosSensor.MecAngularSpeed_rad >= (TorqueCtrl.MaxMecSpd_rad - 5.f * 2.f * PI))
+	{
+		Count++;
+		
+		/*速度环的周期是电流环周期的十倍*/
+		if(Count == PERIOD_MULTIPLE)
+		{
+			/*更新机械速度及位置信息*/
+			GetMecImformation();
+					
+			SpeedLoop(TorqueCtrl.MaxMecSpd_rad, PosSensor.MecAngularSpeed_rad, &CurrLoop.ExptCurrQ);
+			
+			Count = 0;
+		}
+	}
+
 	/*进行Clark变换, 将abc坐标系转换为Alpha-Beta坐标系*/
 	ClarkeTransform(CoordTrans.CurrA, CoordTrans.CurrB, &CoordTrans.CurrAlpha, &CoordTrans.CurrBeta);
-	
+
 	/*正反转编码器延迟补偿系数不同*/
 	if(PosSensor.EleAngularSpeed_degree >= 0)
 	{
@@ -692,9 +720,11 @@ void DriverCtrlModeInit(void)
 			
 										break;
 		case TORQUE_CTRL_MODE :	
-										CurrentLoopInit();
+										TorqueCtrlInit();	//转矩控制器初始化需在执行速度环和电流环初始化之前执行
 		
-										TorqueCtrlInit();
+										CurrentLoopInit();
+										
+										SpeedLoopInit();		
 		
 										break;
 	}

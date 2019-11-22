@@ -111,9 +111,9 @@ struct MainCtrl_t
 
 #define SPD_INTEGRAL_ERR_LIM			(5.0 * 2.f * PI)		//(rad/s)
 
-#define CURRENT_CONTROL_KI_D			(PHASE_RES)	//电流控制器采用简化电机模型+I调节, 不同于传统PI控制器, 故I参数需人工调整
+#define CURRENT_CONTROL_KI_D			(PHASE_RES * 100.f)	//电流控制器采用简化电机模型+I调节, 不同于传统PI控制器, 故I参数需人工调整
 
-#define CURRENT_CONTROL_KI_Q			(PHASE_RES)	//电流控制器采用简化电机模型+I调节, 不同于传统PI控制器, 故I参数需人工调整
+#define CURRENT_CONTROL_KI_Q			(PHASE_RES * 100.f)	//电流控制器采用简化电机模型+I调节, 不同于传统PI控制器, 故I参数需人工调整
 
 #define SPEED_CONTROL_KP				1.0f
 #define SPEED_CONTROL_KI				1.0f

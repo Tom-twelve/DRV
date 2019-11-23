@@ -67,7 +67,7 @@ void MX_TIM8_Init(void)
   LL_TIM_OC_EnablePreload(TIM8, LL_TIM_CHANNEL_CH4);
   TIM_OC_InitStruct.OCState = LL_TIM_OCSTATE_DISABLE;
   TIM_OC_InitStruct.OCNState = LL_TIM_OCSTATE_DISABLE;
-  TIM_OC_InitStruct.CompareValue = ADC_ExternalTrigger_CCR;
+  TIM_OC_InitStruct.CompareValue = ADC_TRIGGER_CCR;
   LL_TIM_OC_Init(TIM8, LL_TIM_CHANNEL_CH4, &TIM_OC_InitStruct);
   LL_TIM_OC_DisableFast(TIM8, LL_TIM_CHANNEL_CH4);
   LL_TIM_SetTriggerOutput(TIM8, LL_TIM_TRGO_RESET);

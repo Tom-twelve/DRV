@@ -77,15 +77,6 @@ struct TorqueCtrl_t
 	float MaxMecSpd_rad;
 };
 
-struct Regulator_t
-{
-	float Kp;
-	float Ki;
-	float Kd;
-	float ActualPeriod_s;
-	int16_t TargetFSYNC;
-};
-
 struct MainCtrl_t
 {
 	int32_t ExptMecAngularSpeed_pulse;		//目标机械角速度, 脉冲
@@ -104,12 +95,12 @@ struct MainCtrl_t
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define PERIOD_MULTIPLE					10	//(速度环, 位置环周期 / 电流环周期)
-#define OUTER_LOOP_PERIOD				(Regulator.ActualPeriod_s * PERIOD_MULTIPLE)	//外环控制周期
+#define OUTER_LOOP_PERIOD				(DEFAULT_CARRIER_PERIOD_s * PERIOD_MULTIPLE)	//外环控制周期
 
 #define CURR_INTEGRAL_ERR_LIM_D 		(6.0f / CurrLoop.Ki_D)	//Id积分限幅
 #define CURR_INTEGRAL_ERR_LIM_Q 		(6.0f / CurrLoop.Ki_Q)	//Iq积分限幅
 
-#define SPD_INTEGRAL_ERR_LIM			(5.0 * 2.f * PI)		//(rad/s)
+#define SPD_INTEGRAL_ERR_LIM			(5.0 * 2.f * PI)
 
 #define CURRENT_CONTROL_KI_D			(PHASE_RES * 100.f)	//电流控制器采用简化电机模型+I调节, 不同于传统PI控制器, 故I参数需人工调整
 
@@ -120,11 +111,6 @@ struct MainCtrl_t
 
 #define POSITION_CONTROL_KP				60.0f
 #define POSITION_CONTROL_KD				0.1f
-
-#define PERIOD_REGULATOR_KP 			(0.3 * 0.00596f)
-#define PERIOD_REGULATOR_KI 			(0.005952380952381 * DEFAULT_CARRIER_PERIOD_s)
-#define PERIOD_REGULATOR_KD 			(0.005952380952381) // 参数待调（这个初值是通过简单的计算一下，假设偏差的差分出现了1的变动，改变多少周期粗略的估计的，并非使用KD = Kd / dt)
-#define PERIOD_REGULATOR_LIM			5	//载波周期调节器限幅值	
 
 #define MC_CTRL_RESOLUTION				4096
 
@@ -161,7 +147,6 @@ void PosCurrController(void);
 void TorqueController(void);
 float VelSlopeGenerator(float exptVelocity);
 void DriverCtrlModeInit(void);
-void PeriodRegulator(void);
 /* USER CODE END PFP */
 
 

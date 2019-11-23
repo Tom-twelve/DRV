@@ -28,7 +28,6 @@ struct CurrLoop_t CurrLoop;
 struct SpdLoop_t SpdLoop;
 struct PosLoop_t PosLoop;
 struct TorqueCtrl_t TorqueCtrl;
-struct Regulator_t Regulator;
 struct MainCtrl_t MainCtrl;
 /* CODE END PV */
 
@@ -52,19 +51,15 @@ void DriverInit(void)
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 23504;
 			CurrLoop.LimitCurrQ = 200.f;
-
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
-	
-			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
+			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 2
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 26339;
 			CurrLoop.LimitCurrQ = 200.f;
-
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
-	
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 3
@@ -72,9 +67,7 @@ void DriverInit(void)
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 21030;
 			CurrLoop.LimitCurrQ = 200.f;
-
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
-	
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 4
@@ -82,9 +75,7 @@ void DriverInit(void)
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 12190;
 			CurrLoop.LimitCurrQ = 200.f;
-
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
-	
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 5
@@ -92,9 +83,7 @@ void DriverInit(void)
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 12190;
 			CurrLoop.LimitCurrQ = 200.f;
-
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
-	
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 6
@@ -102,9 +91,7 @@ void DriverInit(void)
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 12190;
 			CurrLoop.LimitCurrQ = 200.f;
-
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
-	
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 7
@@ -112,9 +99,7 @@ void DriverInit(void)
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 12190;
 			CurrLoop.LimitCurrQ = 350.f;
-
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
-	
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 8
@@ -122,9 +107,7 @@ void DriverInit(void)
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 26173;
 			CurrLoop.LimitCurrQ = 50.f;
-
 			SpdLoop.ExptMecAngularSpeed_rad = 50.f * 2 * PI;
-	
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 9
@@ -132,9 +115,7 @@ void DriverInit(void)
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 26173;
 			CurrLoop.LimitCurrQ = 50.f;
-
 			SpdLoop.ExptMecAngularSpeed_rad = 50.f * 2 * PI;
-	
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 10
@@ -142,9 +123,7 @@ void DriverInit(void)
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 26173;
 			CurrLoop.LimitCurrQ = 50.f;
-
 			SpdLoop.ExptMecAngularSpeed_rad = 50.f * 2 * PI;
-	
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 11
@@ -152,9 +131,7 @@ void DriverInit(void)
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 26173;
 			CurrLoop.LimitCurrQ = 50.f;
-
 			SpdLoop.ExptMecAngularSpeed_rad = 50.f * 2 * PI;
-	
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#endif
@@ -165,9 +142,7 @@ void DriverInit(void)
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 12190;
 			CurrLoop.LimitCurrQ = 200.f;
-
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
-	
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 2
@@ -175,9 +150,7 @@ void DriverInit(void)
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 26339;
 			CurrLoop.LimitCurrQ = 200.f;
-
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;	
-	
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 3
@@ -185,9 +158,7 @@ void DriverInit(void)
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 21030;
 			CurrLoop.LimitCurrQ = 200.f;
-
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
-	
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 4
@@ -195,9 +166,7 @@ void DriverInit(void)
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 12190;
 			CurrLoop.LimitCurrQ = 200.f;
-
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
-	
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 5
@@ -205,9 +174,7 @@ void DriverInit(void)
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 12190;
 			CurrLoop.LimitCurrQ = 200.f;
-
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
-	
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 6
@@ -215,9 +182,7 @@ void DriverInit(void)
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 12190;
 			CurrLoop.LimitCurrQ = 200.f;
-
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
-	
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#endif
@@ -347,8 +312,8 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 	CurrLoop.ErrD = exptCurrD - realCurrD;
 	CurrLoop.ErrQ = exptCurrQ - realCurrQ;
 	
-	CurrLoop.IntegralErrD += CurrLoop.ErrD * Regulator.ActualPeriod_s;
-	CurrLoop.IntegralErrQ += CurrLoop.ErrQ * Regulator.ActualPeriod_s;
+	CurrLoop.IntegralErrD += CurrLoop.ErrD * DEFAULT_CARRIER_PERIOD_s;
+	CurrLoop.IntegralErrQ += CurrLoop.ErrQ * DEFAULT_CARRIER_PERIOD_s;
 	
 	/*积分限幅*/
 	Saturation_float(&CurrLoop.IntegralErrD, CURR_INTEGRAL_ERR_LIM_D, -CURR_INTEGRAL_ERR_LIM_D);
@@ -443,7 +408,7 @@ void SpdCurrController(void)
 		PosSensor.CompRatio = PosSensor.CompRatio_reverse;
 	}
 	
-	PosSensor.CompAngle = PosSensor.CompRatio * PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s;
+	PosSensor.CompAngle = PosSensor.CompRatio * PosSensor.EleAngularSpeed_degree * DEFAULT_CARRIER_PERIOD_s;
 	
 	/*进行Park变换, 将Alpha-Beta坐标系转换为dq坐标系*/
 	ParkTransform(CoordTrans.CurrAlpha, CoordTrans.CurrBeta, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + PosSensor.CompAngle);
@@ -500,7 +465,7 @@ void PosSpdCurrController(void)
 		PosSensor.CompRatio = PosSensor.CompRatio_reverse;
 	}
 	
-	PosSensor.CompAngle = PosSensor.CompRatio * PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s;
+	PosSensor.CompAngle = PosSensor.CompRatio * PosSensor.EleAngularSpeed_degree * DEFAULT_CARRIER_PERIOD_s;
 	
 	/*进行Park变换, 将Alpha-Beta坐标系转换为dq坐标系*/
 	ParkTransform(CoordTrans.CurrAlpha, CoordTrans.CurrBeta, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + PosSensor.CompAngle);
@@ -556,7 +521,7 @@ void PosCurrController(void)
 	}
 	
 	/*计算补偿角度*/
-	PosSensor.CompAngle = PosSensor.CompRatio * PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s;
+	PosSensor.CompAngle = PosSensor.CompRatio * PosSensor.EleAngularSpeed_degree * DEFAULT_CARRIER_PERIOD_s;
 	
 	/*进行Park变换, 将Alpha-Beta坐标系转换为dq坐标系*/
 	ParkTransform(CoordTrans.CurrAlpha, CoordTrans.CurrBeta, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + PosSensor.CompAngle);
@@ -619,7 +584,7 @@ void TorqueController(void)
 	}
 	
 	/*计算补偿角度*/
-	PosSensor.CompAngle = PosSensor.CompRatio * PosSensor.EleAngularSpeed_degree * Regulator.ActualPeriod_s;
+	PosSensor.CompAngle = PosSensor.CompRatio * PosSensor.EleAngularSpeed_degree * DEFAULT_CARRIER_PERIOD_s;
 	
 	/*进行Park变换, 将Alpha-Beta坐标系转换为dq坐标系*/
 	ParkTransform(CoordTrans.CurrAlpha, CoordTrans.CurrBeta, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + PosSensor.CompAngle);
@@ -730,63 +695,6 @@ void DriverCtrlModeInit(void)
 		
 										break;
 	}
-}
-
- /**
-   * @brief  载波周期调节器
-   */
-void PeriodRegulator(void)
-{
-	/*PWM输出的系统周期，注意此变量不是系统实际运行的周期，是一个中间变量，是PID的输出，在幅值上是连续的变量*/
-	/*定时器的周期是不能连续的设定的，只能以1/168000000 = 0.005952380952381us为步长设定。*/
-	int16_t err = 0;
-	static int16_t lastErr = 0;
-	static int16_t preErr = 0;
-	float diffTerm = 0;
-	static float PWMPeriod_PID = DEFAULT_CARRIER_PERIOD_us;
-	register int RegulatedARR; // PID控制器输出的ARR值, register关键字可加速运算
-	
-	/*设定PID参数及目标FSYNC值*/
-	Regulator.Kp = PERIOD_REGULATOR_KP;
-	Regulator.Ki = PERIOD_REGULATOR_KI;
-	Regulator.Kd = PERIOD_REGULATOR_KD;
-	Regulator.TargetFSYNC = 4;
-	
-	err = util_norm_int(Regulator.TargetFSYNC - (int)PosSensor.FSYNC, -16, 16, 32);
-
-	/*增量式PI控制器*/
-	PWMPeriod_PID = Regulator.Kp * (err - lastErr) + Regulator.Ki * err;
-
-	/*由于无论系统周期比磁编码器周期更长还是更短，err大于零和err小于零的可能性都是一样的*/
-	/*只应用PI调节时周期相差比较大时有可能出现正反馈或者不调节的情况，如系统周期比磁编码器周期更长，
-	*但是err小于0的情况, 当误差绝对值增大时，才应用D调节，以期解决上述情况
-	*/
-	if ((err > 0 && err - lastErr > 0) || (err < 0 && err - lastErr < 0))
-	{
-		diffTerm = Regulator.Kd * (err - 2 * lastErr + preErr);
-		
-		PWMPeriod_PID += diffTerm;
-	}
-	
-	lastErr = err;
-	preErr = lastErr;
-	
-	/*PID限幅, 防止系统失控*/
-	if(PWMPeriod_PID > DEFAULT_CARRIER_PERIOD_us + PERIOD_REGULATOR_LIM)
-	{
-		PWMPeriod_PID = DEFAULT_CARRIER_PERIOD_us;
-	}
-	else if(PWMPeriod_PID < DEFAULT_CARRIER_PERIOD_us - PERIOD_REGULATOR_LIM)
-	{
-		PWMPeriod_PID = DEFAULT_CARRIER_PERIOD_us;
-	}
-	
-	/*离散，得到实际的系统周期*/
-	RegulatedARR = PWMPeriod_PID * 90;
-	Regulator.ActualPeriod_s = PWMPeriod_PID * 1e-6;
-	
-	/*改变定时器的ARR寄存器，实际改变周期*/
-	TIM8->ARR = RegulatedARR - 1;
 }
 
 /* USER CODE END */

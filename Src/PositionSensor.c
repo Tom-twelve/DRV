@@ -18,7 +18,6 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* CODE BEGIN PTD */
-extern struct Regulator_t Regulator;
 extern struct MainCtrl_t MainCtrl;
 /* CODE END PTD */
 
@@ -145,7 +144,7 @@ extern struct MainCtrl_t MainCtrl;
 		
 		old = array[pos];
 		
-		array[pos] = angleDifference / (Regulator.ActualPeriod_s * PERIOD_MULTIPLE);
+		array[pos] = angleDifference / (DEFAULT_CARRIER_PERIOD_s * PERIOD_MULTIPLE);
 			
 		sum = (sum - old) + array[pos];
 			
@@ -207,7 +206,7 @@ extern struct MainCtrl_t MainCtrl;
 		
 		old = array[pos];
 		
-		array[pos] = angleDifference / Regulator.ActualPeriod_s;
+		array[pos] = angleDifference / DEFAULT_CARRIER_PERIOD_s;
 			
 		sum = (sum - old) + array[pos];
 			
@@ -285,10 +284,7 @@ extern struct MainCtrl_t MainCtrl;
 	}
 	
 	void PosSensor_Init(void)
-	{
-		/*控制周期, 务必在所有运算开始之前赋值*/
-		Regulator.ActualPeriod_s = DEFAULT_CARRIER_PERIOD_s;
-		
+	{		
 		for(uint16_t times = 0; times <= 50; times++)
 		{
 			/*更新位置及速度, 防止上电位置跳动, 由于有均值滤波器, 故需重复执行多次以使速度变量接近零*/

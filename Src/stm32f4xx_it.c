@@ -86,7 +86,6 @@ extern struct SpdLoop_t SpdLoop;
 extern struct CurrLoop_t CurrLoop;
 extern struct TorqueCtrl_t TorqueCtrl;
 extern struct MainCtrl_t MainCtrl;
-extern struct Regulator_t Regulator;
 extern struct CoordTrans_t	CoordTrans;
 extern struct PosSensor_t PosSensor;
 extern struct Driver_t Driver;
@@ -300,10 +299,10 @@ void ADC_IRQHandler(void)
 {
 	GetPhaseCurrent();
 	
-	GetEleImformation();
-	
 	if(Driver.UnitMode == WORK_MODE)
 	{		
+		GetEleImformation();
+		
 		switch(Driver.ControlMode)
 		{
 			case SPD_CURR_CTRL_MODE :	/*速度-电流控制器*/

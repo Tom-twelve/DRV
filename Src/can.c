@@ -34,7 +34,6 @@ extern struct CurrLoop_t CurrLoop;
 extern struct SpdLoop_t SpdLoop;
 extern struct PosLoop_t PosLoop;
 extern struct TorqueCtrl_t TorqueCtrl;
-extern struct Regulator_t Regulator;
 extern struct MainCtrl_t MainCtrl;
 extern struct CoordTrans_t CoordTrans;
 extern struct PosSensor_t PosSensor;

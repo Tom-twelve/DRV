@@ -96,10 +96,6 @@ void Error_Handler(void);
 #define CurrentSamplingB_GPIO_Port GPIOC
 #define CurrentSamplingA_Pin LL_GPIO_PIN_3
 #define CurrentSamplingA_GPIO_Port GPIOC
-#define IncrementalInterfaceA_Pin LL_GPIO_PIN_0
-#define IncrementalInterfaceA_GPIO_Port GPIOA
-#define IncrementalInterfaceB_Pin LL_GPIO_PIN_1
-#define IncrementalInterfaceB_GPIO_Port GPIOA
 #define GateDriver_CAL_Pin LL_GPIO_PIN_8
 #define GateDriver_CAL_GPIO_Port GPIOA
 #define GateDriver_SPI3_NSS_Pin LL_GPIO_PIN_15

@@ -63,7 +63,7 @@ struct Driver_t
 #define DEFAULT_CARRIER_PERIOD_us			((float)DEFAULT_CARRIER_PERIOD_s * 1e6)	//(us)
 #define MCU_FREQ							180000000.f		//(Hz)
 #define TIM8_ARR 							(int)((MCU_FREQ / DEFAULT_CARRIER_FREQ) / 2.f )
-#define ADC_ExternalTrigger_CCR				(TIM8_ARR - 12)	//通过TIM8_CH4触发ADC, 超前量为ADC采样所需时间
+#define ADC_TRIGGER_CCR						(TIM8_ARR - 12)	//通过TIM8_CH4触发ADC, 超前量为ADC采样所需时间
 
 #if		PHASE_SEQUENCE == POSITIVE_SEQUENCE
 #define CCR_PHASE_A      	 TIM8->CCR3

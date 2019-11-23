@@ -603,59 +603,59 @@ void TorqueController(void)
    * @brief  斜坡生成器
    * @param[in]  expectedVelocity      期望角速度
    */
-float VelSlopeGenerator(float exptVelocity)
+float VelSlopeGenerator(float exptVel)
 {
-	static float velocityProcessVolume = 0.0f;
-	static float velocityStep_Acc = 0;
-	static float velocityStep_Dec = 0;
+	static float velProcessVolume = 0.0f;
+	static float velStep_Acc = 0;
+	static float velStep_Dec = 0;
 	
-	velocityStep_Acc = SpdLoop.Acceleration * OUTER_LOOP_PERIOD;
-	velocityStep_Dec = SpdLoop.Deceleration * OUTER_LOOP_PERIOD;
+	velStep_Acc = SpdLoop.Acceleration * OUTER_LOOP_PERIOD;
+	velStep_Dec = SpdLoop.Deceleration * OUTER_LOOP_PERIOD;
 	
-	if(exptVelocity > 0 && velocityProcessVolume >= 0)
+	if(exptVel > 0 && velProcessVolume >= 0)
 	{
-		if(exptVelocity > (velocityProcessVolume - velocityStep_Acc))
+		if(velProcessVolume < (exptVel - velStep_Acc))
 		{
-			velocityProcessVolume += velocityStep_Acc;
+			velProcessVolume += velStep_Acc;
 		}
-		else if(exptVelocity < (velocityProcessVolume + velocityStep_Dec))
+		else if(velProcessVolume > (exptVel + velStep_Dec))
 		{
-			velocityProcessVolume -= velocityStep_Dec;
+			velProcessVolume -= velStep_Dec;
 		}
 		else
 		{
-			velocityProcessVolume = exptVelocity;
+			velProcessVolume = exptVel;
 		}
 	}
-	else if(exptVelocity > 0 && velocityProcessVolume < 0)
+	else if(exptVel > 0 && velProcessVolume < 0)
 	{
-		velocityProcessVolume += velocityStep_Dec;
+		velProcessVolume += velStep_Dec;
 	}
-	else if(exptVelocity < 0 && velocityProcessVolume >=  0)
+	else if(exptVel < 0 && velProcessVolume >=  0)
 	{
-		velocityProcessVolume -= velocityStep_Dec;
+		velProcessVolume -= velStep_Dec;
 	}
-	else if(exptVelocity < 0 && velocityProcessVolume < 0)
+	else if(exptVel < 0 && velProcessVolume < 0)
 	{
-		if(exptVelocity > (velocityProcessVolume - velocityStep_Dec))
+		if(velProcessVolume > (exptVel + velStep_Acc))
 		{
-			velocityProcessVolume += velocityStep_Dec;
+			velProcessVolume -= velStep_Acc;
 		}
-		else if(exptVelocity < (velocityProcessVolume + velocityStep_Acc))
+		else if(velProcessVolume < (exptVel - velStep_Dec))
 		{
-			velocityProcessVolume -= velocityStep_Acc;
+			velProcessVolume += velStep_Dec;	
 		}
 		else
 		{
-			velocityProcessVolume = exptVelocity;
+			velProcessVolume = exptVel;
 		}
 	}
-	else if(exptVelocity == 0)
+	else if(exptVel == 0)
 	{
-		velocityProcessVolume = 0;
+		velProcessVolume = 0;
 	}
 	
-	return velocityProcessVolume;
+	return velProcessVolume;
 }
 
  /**

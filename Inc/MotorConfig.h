@@ -70,7 +70,7 @@
 	#define CAN_ID_NUM			1
 		#if CAN_ID_NUM == 1		//³µÂÖ
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
-		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
+		#define	PHASE_SEQUENCE			NEGATIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
@@ -215,9 +215,9 @@
 	#define MOTOR_POLE_PAIRS_NUM				7
 	#define	MOTOR_KV							505.f
 	#define ROTATOR_FLUX_LINKAGE				(5.513288954f / (MOTOR_KV * MOTOR_POLE_PAIRS_NUM))
-	#define PHASE_RES							(10.f * (float)1e-3)	//(Ohm)
-	#define INDUCTANCE_D						(15.f * (float)1e-6)	//(H)
-	#define INDUCTANCE_Q						(15.f * (float)1e-6)	//(H)
+	#define PHASE_RES							(21.f * (float)1e-3)	//(Ohm)
+	#define INDUCTANCE_D						(14.f * (float)1e-6)	//(H)
+	#define INDUCTANCE_Q						(14.f * (float)1e-6)	//(H)
 	#define MAX_SPD								(GENERATRIX_VOL * MOTOR_KV * 0.10471975)	//rad/s
 #elif	MOTOR_TYPE == N5055_KV400
 	#define MOTOR_POLE_PAIRS_NUM				7

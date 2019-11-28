@@ -101,7 +101,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
-	Driver.UnitMode = MEASURE_PARAM_MODE;	//设定模式, 正常工作或测定电角度 ( WORK_MODE or MEASURE_ANGLE_TABLE_MODE or MEASURE_PARAM_MODE )
+	Driver.UnitMode = WORK_MODE;	//设定模式, 正常工作或测定电角度 ( WORK_MODE or MEASURE_ANGLE_TABLE_MODE or MEASURE_PARAM_MODE )
 	
   /* USER CODE END 1 */
   

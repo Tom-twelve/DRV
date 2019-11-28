@@ -49,9 +49,9 @@ void DriverInit(void)
 		#if CAN_ID_NUM == 1
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 23504;
+			PosSensor.PosOffset = 16037;
 			CurrLoop.LimitCurrQ = 200.f;
-			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
+			SpdLoop.ExptMecAngularSpeed_rad = 100.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 2
@@ -194,7 +194,8 @@ void DriverInit(void)
    */
 void CurrentLoopInit(void)
 {
-	/*设定电流环PI参数, 电流控制器采用简化电机模型+I调节, 不同于传统PI控制器, 故I参数需人工调整*/										
+	/*设定电流环PI参数, q轴电流控制器采用简化电机模型+I调节, 不同于传统PI控制器, 故I参数需人工调整*/		
+	CurrLoop.Kp_D = CURRENT_CONTROL_KP_D;
 	CurrLoop.Ki_D = CURRENT_CONTROL_KI_D;						
 	CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q;
 	
@@ -320,7 +321,7 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 	Saturation_float(&CurrLoop.IntegralErrQ, CURR_INTEGRAL_ERR_LIM_Q, -CURR_INTEGRAL_ERR_LIM_Q);
 	
 	/*基于电机模型的改进型电流控制器, 采用简化电机模型+I调节*/
-	*ctrlVolD = CurrLoop.Ki_D * CurrLoop.IntegralErrD - PosSensor.EleAngularSpeed_rad * INDUCTANCE_Q * realCurrQ;
+	*ctrlVolD = CurrLoop.Kp_D * CurrLoop.ErrD + CurrLoop.Ki_D * CurrLoop.IntegralErrD;
 	*ctrlVolQ = CurrLoop.Ki_Q * CurrLoop.IntegralErrQ + exptCurrQ * PHASE_RES + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
 	
 	/*电压矢量限幅*/

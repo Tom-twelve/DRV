@@ -46,23 +46,23 @@ void DriverInit(void)
 	PWM_IT_CMD(ENABLE,ENABLE);
 	
 	#if ROBOT_ID == PASS_ROBOT
-		#if CAN_ID_NUM == 1
+		#if CAN_ID_NUM == 1		//车轮
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 16037;
+			PosSensor.PosOffset = 27388;
 			CurrLoop.LimitCurrQ = 200.f;
 			SpdLoop.ExptMecAngularSpeed_rad = 100.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
-		#elif CAN_ID_NUM == 2
+		#elif CAN_ID_NUM == 2	//车轮
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 26339;
+			PosSensor.PosOffset = 3903;
 			CurrLoop.LimitCurrQ = 200.f;
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
-		#elif CAN_ID_NUM == 3
+		#elif CAN_ID_NUM == 3	//车轮
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 21030;
@@ -70,7 +70,7 @@ void DriverInit(void)
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
-		#elif CAN_ID_NUM == 4
+		#elif CAN_ID_NUM == 4	//航向
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 12190;
@@ -78,7 +78,15 @@ void DriverInit(void)
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
-		#elif CAN_ID_NUM == 5
+		#elif CAN_ID_NUM == 5	//航向
+			Driver.ControlMode = SPD_CURR_CTRL_MODE;
+			DriverCtrlModeInit();
+			PosSensor.PosOffset = 4674;
+			CurrLoop.LimitCurrQ = 200.f;
+			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
+			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
+			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
+		#elif CAN_ID_NUM == 6	//航向
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 12190;
@@ -86,15 +94,7 @@ void DriverInit(void)
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
-		#elif CAN_ID_NUM == 6
-			Driver.ControlMode = SPD_CURR_CTRL_MODE;
-			DriverCtrlModeInit();
-			PosSensor.PosOffset = 12190;
-			CurrLoop.LimitCurrQ = 200.f;
-			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
-			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
-			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
-		#elif CAN_ID_NUM == 7
+		#elif CAN_ID_NUM == 7	//击球
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 12190;
@@ -102,7 +102,7 @@ void DriverInit(void)
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
-		#elif CAN_ID_NUM == 8
+		#elif CAN_ID_NUM == 8	//传球
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 26173;
@@ -110,7 +110,7 @@ void DriverInit(void)
 			SpdLoop.ExptMecAngularSpeed_rad = 50.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
-		#elif CAN_ID_NUM == 9
+		#elif CAN_ID_NUM == 9	//传球
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 26173;
@@ -118,7 +118,7 @@ void DriverInit(void)
 			SpdLoop.ExptMecAngularSpeed_rad = 50.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
-		#elif CAN_ID_NUM == 10
+		#elif CAN_ID_NUM == 10	//传球
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 26173;
@@ -126,7 +126,7 @@ void DriverInit(void)
 			SpdLoop.ExptMecAngularSpeed_rad = 50.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
-		#elif CAN_ID_NUM == 11
+		#elif CAN_ID_NUM == 11	//传球
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 26173;

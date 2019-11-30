@@ -89,7 +89,6 @@ uint8_t MeasureResidence(float targetSampleTimes, float volD, float *residence)
 					sendFlag = 1;
 					*residence = (totalVol / targetSampleTimes) / (totalCurr / targetSampleTimes);
 					
-					UART_Transmit_DMA("\r\ntotalVol: %d mV\r\n", (int)((totalVol / targetSampleTimes) * 1e3));
 					UART_Transmit_DMA("\r\nId: %d mA\tIq: %d mA\r\n", (int)((tempCurrD / targetSampleTimes) * 1e3), (int)((tempCurrQ / targetSampleTimes) * 1e3));
 					
 					return 1;

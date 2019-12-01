@@ -299,6 +299,13 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_POS);
 		
 				break; 
+			
+			case (0x40 + IDENTIFIER_READ_ENCODER_POS):
+				
+				/*∂¡»°±‡¬Î∆˜Œª÷√*/
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_ENCODER_POS);
+		
+				break; 
 						
 			case (0x40 + IDENTIFIER_READ_VOL_Q):
 				
@@ -476,6 +483,13 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_POS);
 		
 				break; 
+			
+			case (0x40 + IDENTIFIER_READ_ENCODER_POS):
+				
+				/*∂¡»°±‡¬Î∆˜Œª÷√*/
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_ENCODER_POS);
+		
+				break; 
 						
 			case (0x40 + IDENTIFIER_READ_VOL_Q):
 				
@@ -545,7 +559,19 @@ void CAN_Respond(void)
 			CAN.RecieveStatus = 0;
 		
 			break;
-								
+		
+		case (0x40 + IDENTIFIER_READ_ENCODER_POS):
+			
+			CAN.Identifier = IDENTIFIER_READ_ENCODER_POS;
+			CAN.TransmitData = (int32_t)DRV_PULSE_TO_MC_PULSE(PosSensor.MecAngle_15bit);
+		
+			/*∑¢ÀÕ±‡¬Î∆˜Œª÷√*/
+			CAN_Transmit(CAN.Identifier, CAN.TransmitData, 4);
+		
+			CAN.RecieveStatus = 0;
+		
+			break;
+							
 		case (0x40 + IDENTIFIER_READ_VOL_Q):
 			
 			CAN.Identifier = IDENTIFIER_READ_VOL_Q;

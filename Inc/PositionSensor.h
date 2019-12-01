@@ -65,8 +65,7 @@
 #if POSITION_SENSOR_TYPE == ENCODER_TLE5012
 	struct PosSensor_t
 	{
-		uint16_t MecAngle_AbsoluteMode_15bit;
-		uint16_t MecAngle_IncrementalMode_14bit;
+		uint16_t MecAngle_15bit;
 		float MecAngle_degree;
 		float MecAngle_rad;
 		float MecAngularSpeed_rad;
@@ -103,7 +102,6 @@
 	void GetEleAngle(void);
 	void GetEleAngularSpeed(void);
 	void GetMecAngle_AbsoluteMode_15bit(void);
-	void GetMecAngle_IncrementalMode_14bit(void);
 	void TLE5012_ReadFSYNC(void);
 	void EncodeErrorDetection(void);
 	uint16_t TLE5012_ReadRegister(uint16_t command, uint16_t *safetyWord);

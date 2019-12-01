@@ -58,22 +58,12 @@ extern struct MainCtrl_t MainCtrl;
 	
 	void GetMecAngle_AbsoluteMode_15bit(void)
 	{
-		PosSensor.MecAngle_AbsoluteMode_15bit = (TLE5012_ReadRegister(TLE5012_COMMAND_READ_CURRENT_VALUE_ANGLE, &PosSensor.SafetyWord)) & 0x7FFF;
-	}
-
-	void GetMecAngle_IncrementalMode_14bit(void)
-	{
-		PosSensor.MecAngle_IncrementalMode_14bit = (uint16_t)(PosSensor.OriginalMecAngle_14bit + TIM2->CNT);
-		
-		if(PosSensor.MecAngle_IncrementalMode_14bit >= 16384)
-		{
-			PosSensor.MecAngle_IncrementalMode_14bit -= 16384;
-		}
+		PosSensor.MecAngle_15bit = (TLE5012_ReadRegister(TLE5012_COMMAND_READ_CURRENT_VALUE_ANGLE, &PosSensor.SafetyWord)) & 0x7FFF;
 	}
 	
 	void GetMecAngle(void)
 	{		
-		PosSensor.MecAngle_degree = 360.f * (float)PosSensor.MecAngle_AbsoluteMode_15bit / TLE5012_ABS_MODE_RESOLUTION;
+		PosSensor.MecAngle_degree = 360.f * (float)PosSensor.MecAngle_15bit / TLE5012_ABS_MODE_RESOLUTION;
 		
 		PosSensor.MecAngle_rad = (float)PosSensor.MecAngle_degree / 360.f * 2.0f * PI;
 	}
@@ -82,7 +72,7 @@ extern struct MainCtrl_t MainCtrl;
 	{
 		int delta = 0;
 		
-		MainCtrl.PresentMecAngle_pulse = PosSensor.MecAngle_AbsoluteMode_15bit;
+		MainCtrl.PresentMecAngle_pulse = PosSensor.MecAngle_15bit;
 		
 		delta = MainCtrl.PresentMecAngle_pulse - MainCtrl.LastMecAngle_pulse;
 		
@@ -161,7 +151,7 @@ extern struct MainCtrl_t MainCtrl;
 		
 		#if ENCODER_MODE == ENCODER_ABSOLUTE_MODE
 				
-		PosSensor.EleAngle_degree = ((float)(PosSensor.MecAngle_AbsoluteMode_15bit - PosSensor.PosOffset) / (float)(TLE5012_ABS_MODE_RESOLUTION / MOTOR_POLE_PAIRS_NUM)) * 360.f;
+		PosSensor.EleAngle_degree = ((float)(PosSensor.MecAngle_15bit - PosSensor.PosOffset) / (float)(TLE5012_ABS_MODE_RESOLUTION / MOTOR_POLE_PAIRS_NUM)) * 360.f;
 		
 		PosSensor.EleAngle_rad = DEGREE_TO_RAD(PosSensor.EleAngle_degree);
 		
@@ -319,7 +309,7 @@ extern struct MainCtrl_t MainCtrl;
 			LL_mDelay(5);
 			
 			GetMecAngle_AbsoluteMode_15bit();
-			UART_Transmit_DMA("EleAngle	%d\tMecPosition %d\r\n", (int)eleAngle, (int)PosSensor.MecAngle_AbsoluteMode_15bit);SendBuf();
+			UART_Transmit_DMA("EleAngle	%d\tMecPosition %d\r\n", (int)eleAngle, (int)PosSensor.MecAngle_15bit);SendBuf();
 			
 			LL_mDelay(100);
 		}
@@ -333,7 +323,7 @@ extern struct MainCtrl_t MainCtrl;
 		{
 			lastPosition = position;
 			
-			position = PosSensor.MecAngle_AbsoluteMode_15bit;
+			position = PosSensor.MecAngle_15bit;
 			
 			if((times > 100) && (abs((int16_t)(position - lastPosition))<5))
 			{

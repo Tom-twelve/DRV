@@ -101,7 +101,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
-	Driver.UnitMode = WORK_MODE; 	//Éè¶¨Ä£Ê½, Õý³£¹¤×÷»ò²â¶¨µç½Ç¶È ( WORK_MODE or MEASURE_ANGLE_TABLE_MODE or MEASURE_PARAM_MODE )
+	Driver.UnitMode = WORK_MODE; 	//ï¿½è¶¨Ä£Ê½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½â¶¨ï¿½ï¿½Ç¶ï¿½ ( WORK_MODE or MEASURE_ANGLE_TABLE_MODE or MEASURE_PARAM_MODE )
 	
   /* USER CODE END 1 */
   
@@ -135,39 +135,39 @@ int main(void)
   MX_ADC3_Init();
   /* USER CODE BEGIN 2 */
   
-	/*ÑÓÊ±ÒÔµÈ´ýÄ¸ÏßµçÑ¹Æ½ÎÈ*/
+	/*ï¿½ï¿½Ê±ï¿½ÔµÈ´ï¿½Ä¸ï¿½ßµï¿½Ñ¹Æ½ï¿½ï¿½*/
 	LL_mDelay(500);
 	
-	/*Ê¹ÄÜSPI*/
+	/*Ê¹ï¿½ï¿½SPI*/
 	SPI_Enable();
 	
-	/*Ê¹ÄÜUART*/
+	/*Ê¹ï¿½ï¿½UART*/
 	UART_Enable();
 	
-	/*Ê¹ÄÜ¶¨Ê±Æ÷*/
+	/*Ê¹ï¿½Ü¶ï¿½Ê±ï¿½ï¿½*/
 	TIM_Enable();
 	
-	/*³õÊ¼»¯Õ¤¼«Çý¶¯Æ÷*/
+	/*ï¿½ï¿½Ê¼ï¿½ï¿½Õ¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 	GateDriverConfig();
 	
 	LL_mDelay(100);
 	
-	/*·ÀÖ¹ÉÏµç¶¶¶¯*/
+	/*ï¿½ï¿½Ö¹ï¿½Ïµç¶¶ï¿½ï¿½*/
 	PosSensor_Init();
 
-	/*Ê¹ÄÜPWM, Éè¶¨²ÎÊý*/
+	/*Ê¹ï¿½ï¿½PWM, ï¿½è¶¨ï¿½ï¿½ï¿½ï¿½*/
 	DriverInit();
 			
-	/*Ê¹ÄÜCAN×ÜÏß*/
+	/*Ê¹ï¿½ï¿½CANï¿½ï¿½ï¿½ï¿½*/
 	CAN_Enable();
 		
 	switch(Driver.UnitMode)
 	{
-		case WORK_MODE : ADC_CMD(ENABLE);	//°üÀ¨Ê¹ÄÜADCÖÐ¶Ï, µç»ú¿ØÖÆ³ÌÐòÔÚADCÖÐ¶ÏÖÐÖ´ÐÐ
+		case WORK_MODE : ADC_CMD(ENABLE);	//ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ADCï¿½Ð¶ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ³ï¿½ï¿½ï¿½ï¿½ï¿½ADCï¿½Ð¶ï¿½ï¿½ï¿½Ö´ï¿½ï¿½
 		
 						break;
 		
-		case MEASURE_ANGLE_TABLE_MODE : CorrectPosOffset_Encoder(0.6f);	//²â¶¨µç½Ç¶È, Éè¶¨dÖáµçÑ¹
+		case MEASURE_ANGLE_TABLE_MODE : CorrectPosOffset_Encoder(0.6f);	//ï¿½â¶¨ï¿½ï¿½Ç¶ï¿½, ï¿½è¶¨dï¿½ï¿½ï¿½Ñ¹
 		
 						break;
 		

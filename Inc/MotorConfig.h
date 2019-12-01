@@ -67,7 +67,7 @@
 #define ROBOT_ID		PASS_ROBOT
 
 #if ROBOT_ID == PASS_ROBOT
-	#define CAN_ID_NUM			1
+	#define CAN_ID_NUM			10
 		#if CAN_ID_NUM == 1		//³µÂÖ
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			NEGATIVE_SEQUENCE
@@ -126,7 +126,7 @@
 		#define GROUP_NUM           	2
 		#elif CAN_ID_NUM == 8	//´«Çò
 		#define MOTOR_TYPE 				LEOPARD_HOBBY_PH2820_KV780	
-		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
+		#define	PHASE_SEQUENCE			NEGATIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
@@ -279,11 +279,11 @@
 	#define MOTOR_POLE_PAIRS_NUM				7
 	#define	MOTOR_KV							780.f
 	#define ROTATOR_FLUX_LINKAGE				(5.513288954f / (MOTOR_KV * MOTOR_POLE_PAIRS_NUM))
-	#define PHASE_RES							(62.f * (float)1e-3)	//(Ohm)
-	#define INDUCTANCE_D						(15.f * (float)1e-6)	//(H)
-	#define INDUCTANCE_Q						(15.f * (float)1e-6)	//(H)
+	#define PHASE_RES							(35.f * (float)1e-3)	//(Ohm)
+	#define INDUCTANCE_D						(11.f * (float)1e-6)	//(H)
+	#define INDUCTANCE_Q						(11.f * (float)1e-6)	//(H)
 	#define MAX_SPD								(GENERATRIX_VOL * MOTOR_KV * 0.10471975)	//rad/s
-#elif	MOTOR_TYPE == CRAZY_MOTOR_5025_KV200	
+#elif	MOTOR_TYPE == CRAZY_MOTOR_5025_KV200	g
 	#define MOTOR_POLE_PAIRS_NUM				7
 	#define	MOTOR_KV							200.f
 	#define ROTATOR_FLUX_LINKAGE				(5.513288954f / (MOTOR_KV * MOTOR_POLE_PAIRS_NUM))

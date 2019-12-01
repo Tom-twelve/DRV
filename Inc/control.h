@@ -100,7 +100,7 @@ struct MainCtrl_t
 #define CURR_INTEGRAL_ERR_LIM_D 		(12.0f / CurrLoop.Ki_D)	//Id积分限幅
 #define CURR_INTEGRAL_ERR_LIM_Q 		(6.0f / CurrLoop.Ki_Q)	//Iq积分限幅
 
-#define SPD_INTEGRAL_ERR_LIM			(5.0 * 2.f * PI)
+#define SPD_INTEGRAL_ERR_LIM			(15.0 * 2.f * PI)
 
 #define CURRENT_CONTROL_KP_D			(INDUCTANCE_D * 1500.f)
 #define CURRENT_CONTROL_KI_D			(PHASE_RES * 1500.f)

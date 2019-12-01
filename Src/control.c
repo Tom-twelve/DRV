@@ -42,22 +42,22 @@ extern struct Driver_t Driver;
 
 void DriverInit(void)
 {
-	/*ʹ��PWM���*/
+	/*ʹ��PWM���*/
 	PWM_IT_CMD(ENABLE,ENABLE);
 	
 	#if ROBOT_ID == PASS_ROBOT
 		#if CAN_ID_NUM == 1		//���� 
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 17990;
+			PosSensor.PosOffset = 27380;
 			CurrLoop.LimitCurrQ = 200.f;
-			SpdLoop.ExptMecAngularSpeed_rad =  	0.f * 2 * PI;
+			SpdLoop.ExptMecAngularSpeed_rad =  0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 2	//����
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 3903;
+			PosSensor.PosOffset = 3910;
 			CurrLoop.LimitCurrQ = 200.f;
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
@@ -73,7 +73,7 @@ void DriverInit(void)
 		#elif CAN_ID_NUM == 4	//����
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 9224;
+			PosSensor.PosOffset = 13885;
 			CurrLoop.LimitCurrQ = 200.f;
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
@@ -81,7 +81,7 @@ void DriverInit(void)
 		#elif CAN_ID_NUM == 5	//����
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 18758;
+			PosSensor.PosOffset = 41;
 			CurrLoop.LimitCurrQ = 200.f;
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	

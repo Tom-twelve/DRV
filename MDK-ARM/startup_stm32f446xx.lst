@@ -914,11 +914,11 @@ stm32f446 bldcm control\startup_stm32f446xx.d" -o"stm32f446 bldcm control\start
 ARM Macro Assembler    Page 15 
 
 
-up_stm32f446xx.o" -I.\RTE\_STM32F446_BLDCM_Control -ID:\Keil_v5\ARM\PACK\ARM\CM
-SIS\5.4.0\CMSIS\Core\Include -ID:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.13.0\Dr
-ivers\CMSIS\Device\ST\STM32F4xx\Include --predefine="__UVISION_VERSION SETA 526
-" --predefine="_RTE_ SETA 1" --predefine="STM32F446xx SETA 1" --list=startup_st
-m32f446xx.lst startup_stm32f446xx.s
+up_stm32f446xx.o" -I.\RTE\_STM32F446_BLDCM_Control -IF:\keilv5\ARM\PACK\ARM\CMS
+IS\5.4.0\CMSIS\Core\Include -IF:\keilv5\ARM\PACK\Keil\STM32F4xx_DFP\2.13.0\Driv
+ers\CMSIS\Device\ST\STM32F4xx\Include --predefine="__UVISION_VERSION SETA 527" 
+--predefine="_RTE_ SETA 1" --predefine="STM32F446xx SETA 1" --list=startup_stm3
+2f446xx.lst startup_stm32f446xx.s
 
 
 

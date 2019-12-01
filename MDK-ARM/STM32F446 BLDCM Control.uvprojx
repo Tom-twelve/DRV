@@ -10,8 +10,8 @@
       <TargetName>STM32F446 BLDCM Control</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pArmCC>6100001::V6.10.1::.\ARMCLANG</pArmCC>
-      <pCCUsed>6100001::V6.10.1::.\ARMCLANG</pCCUsed>
+      <pArmCC>6110000::V6.11::.\ARMCLANG</pArmCC>
+      <pCCUsed>6110000::V6.11::.\ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>

@@ -42,11 +42,11 @@ extern struct Driver_t Driver;
 
 void DriverInit(void)
 {
-	/*Ê¹ÄÜPWMÊä³ö*/
+	/*Ê¹ï¿½ï¿½PWMï¿½ï¿½ï¿½*/
 	PWM_IT_CMD(ENABLE,ENABLE);
 	
 	#if ROBOT_ID == PASS_ROBOT
-		#if CAN_ID_NUM == 1		//³µÂÖ 
+		#if CAN_ID_NUM == 1		//ï¿½ï¿½ï¿½ï¿½ 
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 17990;
@@ -54,7 +54,7 @@ void DriverInit(void)
 			SpdLoop.ExptMecAngularSpeed_rad =  	0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
-		#elif CAN_ID_NUM == 2	//³µÂÖ
+		#elif CAN_ID_NUM == 2	//ï¿½ï¿½ï¿½ï¿½
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 3903;
@@ -62,7 +62,7 @@ void DriverInit(void)
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
-		#elif CAN_ID_NUM == 3	//³µÂÖ
+		#elif CAN_ID_NUM == 3	//ï¿½ï¿½ï¿½ï¿½
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 18919;
@@ -70,7 +70,7 @@ void DriverInit(void)
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
-		#elif CAN_ID_NUM == 4	//º½Ïò
+		#elif CAN_ID_NUM == 4	//ï¿½ï¿½ï¿½ï¿½
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 9224;
@@ -78,7 +78,7 @@ void DriverInit(void)
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
-		#elif CAN_ID_NUM == 5	//º½Ïò
+		#elif CAN_ID_NUM == 5	//ï¿½ï¿½ï¿½ï¿½
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 18758;
@@ -86,7 +86,7 @@ void DriverInit(void)
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
-		#elif CAN_ID_NUM == 6	//º½Ïò
+		#elif CAN_ID_NUM == 6	//ï¿½ï¿½ï¿½ï¿½
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 3217;
@@ -94,7 +94,7 @@ void DriverInit(void)
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
-		#elif CAN_ID_NUM == 7	//»÷Çò
+		#elif CAN_ID_NUM == 7	//ï¿½ï¿½ï¿½ï¿½
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 12190;
@@ -102,31 +102,32 @@ void DriverInit(void)
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
-		#elif CAN_ID_NUM == 8	//´«Çò
+		#elif CAN_ID_NUM == 8	//ï¿½ï¿½ï¿½ï¿½
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 26173;
+			PosSensor.PosOffset = 16823;
 			CurrLoop.LimitCurrQ = 50.f;
-			SpdLoop.ExptMecAngularSpeed_rad = 50.f * 2 * PI;
+			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
-		#elif CAN_ID_NUM == 9	//´«Çò
+		#elif CAN_ID_NUM == 9	//ï¿½ï¿½ï¿½ï¿½
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 26173;
-			CurrLoop.LimitCurrQ = 50.f;
-			SpdLoop.ExptMecAngularSpeed_rad = 50.f * 2 * PI;
+			PosSensor.PosOffset = 9019;
+			CurrLoop.LimitCurrQ = 100.f;
+			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
-		#elif CAN_ID_NUM == 10	//´«Çò
+			
+		#elif CAN_ID_NUM == 10	//ï¿½ï¿½ï¿½ï¿½
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 26173;
+			PosSensor.PosOffset = 20207;
 			CurrLoop.LimitCurrQ = 50.f;
-			SpdLoop.ExptMecAngularSpeed_rad = 50.f * 2 * PI;
+			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
-		#elif CAN_ID_NUM == 11	//´«Çò
+		#elif CAN_ID_NUM == 11	//ï¿½ï¿½ï¿½ï¿½
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 26173;
@@ -190,64 +191,64 @@ void DriverInit(void)
 }
 
  /**
-   * @brief  µçÁ÷»·²ÎÊý³õÊ¼»¯
+   * @brief  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
    */
 void CurrentLoopInit(void)
 {
-	/*Éè¶¨µçÁ÷»·PI²ÎÊý, qÖáµçÁ÷¿ØÖÆÆ÷²ÉÓÃ¼ò»¯µç»úÄ£ÐÍ+Iµ÷½Ú, ²»Í¬ÓÚ´«Í³PI¿ØÖÆÆ÷, ¹ÊI²ÎÊýÐèÈË¹¤µ÷Õû*/		
+	/*ï¿½è¶¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½PIï¿½ï¿½ï¿½ï¿½, qï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¼ò»¯µï¿½ï¿½Ä£ï¿½ï¿½+Iï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½Í¬ï¿½Ú´ï¿½Í³PIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë¹ï¿½ï¿½ï¿½ï¿½ï¿½*/		
 	CurrLoop.Kp_D = CURRENT_CONTROL_KP_D;
 	CurrLoop.Ki_D = CURRENT_CONTROL_KI_D;						
 	CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q;
 	
-	/*Éè¶¨±àÂëÆ÷ÑÓ³Ù²¹³¥ÏµÊý*/
+	/*ï¿½è¶¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó³Ù²ï¿½ï¿½ï¿½Ïµï¿½ï¿½*/
 	PosSensor.CompRatio_forward = 3.2f;
 	PosSensor.CompRatio_reverse = 3.2f;
 	
-	/*Éè¶¨×î´óIq*/
+	/*ï¿½è¶¨ï¿½ï¿½ï¿½Iq*/
 	CurrLoop.LimitCurrQ = 20.f;
 }
 
  /**
-   * @brief  ËÙ¶È»·²ÎÊý³õÊ¼»¯
+   * @brief  ï¿½Ù¶È»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
    */
 void SpeedLoopInit(void)
 {
 	if(Driver.ControlMode == SPD_CURR_CTRL_MODE)
 	{
-		/*ËÙ¶È-µçÁ÷Ë«»·¿ØÖÆ*/
+		/*ï¿½Ù¶ï¿½-ï¿½ï¿½ï¿½ï¿½Ë«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 		SpdLoop.Kp = SPEED_CONTROL_KP;	
 		SpdLoop.Ki = SPEED_CONTROL_KI;
-		SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;	//ÆÚÍûËÙ¶È, rad per second
-		SpdLoop.MaxExptMecAngularSpeed_rad = MAX_SPD;	//×ªËÙÏÞ·ù
-		SpdLoop.Acceleration = 3000.f * 2 * PI;	//ÆÚÍû¼ÓËÙ¶È, rad per quadratic seconds
+		SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;	//ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½, rad per second
+		SpdLoop.MaxExptMecAngularSpeed_rad = MAX_SPD;	//×ªï¿½ï¿½ï¿½Þ·ï¿½
+		SpdLoop.Acceleration = 3000.f * 2 * PI;	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½, rad per quadratic seconds
 		SpdLoop.Deceleration = SpdLoop.Acceleration;
 	}
 	else if(Driver.ControlMode == POS_SPD_CURR_CTRL_MODE)
 	{
-		/*Î»ÖÃ-ËÙ¶È-µçÁ÷Èý»·¿ØÖÆ*/
+		/*Î»ï¿½ï¿½-ï¿½Ù¶ï¿½-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 		SpdLoop.Kp = SPEED_CONTROL_KP;
 		SpdLoop.Ki = SPEED_CONTROL_KI;
-		SpdLoop.MaxExptMecAngularSpeed_rad = 15.f * 2 * PI;	//×ªËÙÏÞ·ù
-		SpdLoop.Acceleration = 3000.f * 2 * PI;	//ÆÚÍû¼ÓËÙ¶È, rad per quadratic seconds
+		SpdLoop.MaxExptMecAngularSpeed_rad = 15.f * 2 * PI;	//×ªï¿½ï¿½ï¿½Þ·ï¿½
+		SpdLoop.Acceleration = 3000.f * 2 * PI;	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½, rad per quadratic seconds
 		SpdLoop.Deceleration = SpdLoop.Acceleration;
 	}
 	if(Driver.ControlMode == TORQUE_CTRL_MODE)
 	{
-		/*×ª¾Ø¿ØÖÆÄ£Ê½ÏÂ, ÔÚ×ªËÙ½Ó½ü×ªËÙÏÞ·ùÊ±¼ÓÈëËÙ¶È»·¿ØÖÆ*/
+		/*×ªï¿½Ø¿ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½, ï¿½ï¿½×ªï¿½Ù½Ó½ï¿½×ªï¿½ï¿½ï¿½Þ·ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶È»ï¿½ï¿½ï¿½ï¿½ï¿½*/
 		SpdLoop.Kp = SPEED_CONTROL_KP;	
 		SpdLoop.Ki = SPEED_CONTROL_KI;
-		SpdLoop.MaxExptMecAngularSpeed_rad = TorqueCtrl.MaxMecSpd_rad;	//×ªËÙÏÞ·ù
+		SpdLoop.MaxExptMecAngularSpeed_rad = TorqueCtrl.MaxMecSpd_rad;	//×ªï¿½ï¿½ï¿½Þ·ï¿½
 	}
 }
 
  /**
-   * @brief  Î»ÖÃ»·²ÎÊý³õÊ¼»¯
+   * @brief  Î»ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
    */
 void PositionLoopInit(void)
 {					
 	if(Driver.ControlMode == POS_SPD_CURR_CTRL_MODE)
 	{
-		/*Î»ÖÃ-ËÙ¶È-µçÁ÷Èý»·¿ØÖÆ*/
+		/*Î»ï¿½ï¿½-ï¿½Ù¶ï¿½-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 		PosLoop.Kp = POSITION_CONTROL_KP;
 		PosLoop.Kd = POSITION_CONTROL_KD;	
 		MainCtrl.ExptMecAngle_pulse = 0;
@@ -256,7 +257,7 @@ void PositionLoopInit(void)
 	}
 	else if(Driver.ControlMode == POS_CURR_CTRL_MODE)
 	{
-		/*Î»ÖÃ-µçÁ÷Ë«»·¿ØÖÆ*/
+		/*Î»ï¿½ï¿½-ï¿½ï¿½ï¿½ï¿½Ë«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 		PosLoop.Kp = 5.0f;
 		PosLoop.Kd = 0.001f;
 		MainCtrl.ExptMecAngle_pulse = 0;
@@ -266,48 +267,48 @@ void PositionLoopInit(void)
 }
 
  /**
-   * @brief  ×ª¾Ø¿ØÖÆÆ÷³õÊ¼»¯
+   * @brief  ×ªï¿½Ø¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
    */
 void TorqueCtrlInit(void)
 {					
-	TorqueCtrl.ExptTorque_Nm = 1.0f;	//ÆÚÍûÅ¤¾Ø
-	TorqueCtrl.MaxMecSpd_rad = 60.f * 2.f * PI;	//×ªËÙÏÞ·ù
-	CurrLoop.LimitCurrQ = 200.f;		//IqÏÞ·ù
+	TorqueCtrl.ExptTorque_Nm = 1.0f;	//ï¿½ï¿½ï¿½ï¿½Å¤ï¿½ï¿½
+	TorqueCtrl.MaxMecSpd_rad = 60.f * 2.f * PI;	//×ªï¿½ï¿½ï¿½Þ·ï¿½
+	CurrLoop.LimitCurrQ = 200.f;		//Iqï¿½Þ·ï¿½
 }
 
  /**
-   * @brief  Î»ÖÃ¿ØÖÆÄ£Ê½ÏÂ±ê¶¨³õÊ¼Î»ÖÃ
+   * @brief  Î»ï¿½Ã¿ï¿½ï¿½ï¿½Ä£Ê½ï¿½Â±ê¶¨ï¿½ï¿½Ê¼Î»ï¿½ï¿½
    */
 void RefAngleInit(void)
 {
-	MainCtrl.PresentMecAngle_pulse = PosSensor.MecAngle_AbsoluteMode_15bit;
+	MainCtrl.PresentMecAngle_pulse = PosSensor.MecAngle_15bit;
 	
-	MainCtrl.LastMecAngle_pulse = PosSensor.MecAngle_AbsoluteMode_15bit;
+	MainCtrl.LastMecAngle_pulse = PosSensor.MecAngle_15bit;
 	
-	/*¼Çµ±Ç°Î»ÖÃÎªÁãÎ»*/
+	/*ï¿½Çµï¿½Ç°Î»ï¿½ï¿½Îªï¿½ï¿½Î»*/
 	MainCtrl.RefMecAngle_pulse = 0;
 }
 
  /**
-   * @brief  Î»ÖÃ¿ØÖÆÄ£Ê½ÏÂ±ê¶¨³õÊ¼Î»ÖÃ
+   * @brief  Î»ï¿½Ã¿ï¿½ï¿½ï¿½Ä£Ê½ï¿½Â±ê¶¨ï¿½ï¿½Ê¼Î»ï¿½ï¿½
    */
 void ZeroPosSet(uint16_t posOffset)
 {
-	MainCtrl.RefMecAngle_pulse = PosSensor.MecAngle_AbsoluteMode_15bit - posOffset;
+	MainCtrl.RefMecAngle_pulse = PosSensor.MecAngle_15bit - posOffset;
 }
 
  /**
-   * @brief  µçÁ÷»·
-   * @param[in]  exptCurrD     		ÆÚÍûId
-   * @param[in]  exptCurrQ      	ÆÚÍûIq
-   * @param[in]  realCurrD     		Êµ¼ÊId
-   * @param[in]  realCurrQ      	Êµ¼ÊIq
-   * @param[out] ctrlVolD 			VdÊä³ö
-   * @param[out] ctrlVolQ 			VqÊä³ö
+   * @brief  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+   * @param[in]  exptCurrD     		ï¿½ï¿½ï¿½ï¿½Id
+   * @param[in]  exptCurrQ      	ï¿½ï¿½ï¿½ï¿½Iq
+   * @param[in]  realCurrD     		Êµï¿½ï¿½Id
+   * @param[in]  realCurrQ      	Êµï¿½ï¿½Iq
+   * @param[out] ctrlVolD 			Vdï¿½ï¿½ï¿½
+   * @param[out] ctrlVolQ 			Vqï¿½ï¿½ï¿½
    */
 void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCurrQ, float *ctrlVolD, float *ctrlVolQ)
 {
-	/*IqÊäÈëÏÞ·ù*/
+	/*Iqï¿½ï¿½ï¿½ï¿½ï¿½Þ·ï¿½*/
 	Saturation_float(&exptCurrQ, CurrLoop.LimitCurrQ, -CurrLoop.LimitCurrQ);
 	
 	CurrLoop.ErrD = exptCurrD - realCurrD;
@@ -316,15 +317,15 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 	CurrLoop.IntegralErrD += CurrLoop.ErrD * DEFAULT_CARRIER_PERIOD_s;
 	CurrLoop.IntegralErrQ += CurrLoop.ErrQ * DEFAULT_CARRIER_PERIOD_s;
 	
-	/*»ý·ÖÏÞ·ù*/
+	/*ï¿½ï¿½ï¿½ï¿½ï¿½Þ·ï¿½*/
 	Saturation_float(&CurrLoop.IntegralErrD, CURR_INTEGRAL_ERR_LIM_D, -CURR_INTEGRAL_ERR_LIM_D);
 	Saturation_float(&CurrLoop.IntegralErrQ, CURR_INTEGRAL_ERR_LIM_Q, -CURR_INTEGRAL_ERR_LIM_Q);
 	
-	/*»ùÓÚµç»úÄ£ÐÍµÄ¸Ä½øÐÍµçÁ÷¿ØÖÆÆ÷, ²ÉÓÃ¼ò»¯µç»úÄ£ÐÍ+Iµ÷½Ú*/
+	/*ï¿½ï¿½ï¿½Úµï¿½ï¿½Ä£ï¿½ÍµÄ¸Ä½ï¿½ï¿½Íµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½Ã¼ò»¯µï¿½ï¿½Ä£ï¿½ï¿½+Iï¿½ï¿½ï¿½ï¿½*/
 	*ctrlVolD = CurrLoop.Kp_D * CurrLoop.ErrD + CurrLoop.Ki_D * CurrLoop.IntegralErrD;
 	*ctrlVolQ = CurrLoop.Ki_Q * CurrLoop.IntegralErrQ + exptCurrQ * PHASE_RES + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
 	
-	/*µçÑ¹Ê¸Á¿ÏÞ·ù*/
+	/*ï¿½ï¿½Ñ¹Ê¸ï¿½ï¿½ï¿½Þ·ï¿½*/
 	CurrLoop.LimitVolD = GENERATRIX_VOL / SQRT3;
 	arm_sqrt_f32(SQUARE(GENERATRIX_VOL) / 3.f - SQUARE(*ctrlVolD), &CurrLoop.LimitVolQ);
 	
@@ -333,35 +334,35 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 }
 
  /**
-   * @brief  ËÙ¶È»·
-   * @param[in]  exptMecAngularSpeed     	ÆÚÍû»úÐµ½ÇËÙ¶È
-   * @param[in]  realMecAngularSpeed      	Êµ¼Ê»úÐµ½ÇËÙ¶È
-   * @param[out] ctrlCurrQ 					IqÊä³ö
+   * @brief  ï¿½Ù¶È»ï¿½
+   * @param[in]  exptMecAngularSpeed     	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½Ù¶ï¿½
+   * @param[in]  realMecAngularSpeed      	Êµï¿½Ê»ï¿½Ðµï¿½ï¿½ï¿½Ù¶ï¿½
+   * @param[out] ctrlCurrQ 					Iqï¿½ï¿½ï¿½
    */
 void SpeedLoop(float exptMecAngularSpeed, float realMecAngularSpeed, float *ctrlCurrQ)
 {
-	/*×î´óÆÚÍûËÙ¶ÈÏÞ·ù*/
+	/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½ï¿½Þ·ï¿½*/
 	Saturation_float(&exptMecAngularSpeed, SpdLoop.MaxExptMecAngularSpeed_rad, -SpdLoop.MaxExptMecAngularSpeed_rad);
 	
 	SpdLoop.Err = exptMecAngularSpeed - realMecAngularSpeed;
 	
 	SpdLoop.IntegralErr += SpdLoop.Err * OUTER_LOOP_PERIOD;
 	
-	/*»ý·ÖÏÞ·ù*/
+	/*ï¿½ï¿½ï¿½ï¿½ï¿½Þ·ï¿½*/
 	Saturation_float(&SpdLoop.IntegralErr, SPD_INTEGRAL_ERR_LIM, -SPD_INTEGRAL_ERR_LIM);
 	
 	*ctrlCurrQ = SpdLoop.Kp * SpdLoop.Err + SpdLoop.Ki * SpdLoop.IntegralErr;
 }
 
  /**
-   * @brief  Î»ÖÃ»·
-   * @param[in]  exptMecAngle     		ÆÚÍû»úÐµ½Ç¶È
-   * @param[in]  realMecAngle      		Êµ¼Ê»úÐµ½Ç¶È
-   * @param[out] ctrlAngularSpeed 		½ÇËÙ¶ÈÊä³ö
+   * @brief  Î»ï¿½Ã»ï¿½
+   * @param[in]  exptMecAngle     		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½Ç¶ï¿½
+   * @param[in]  realMecAngle      		Êµï¿½Ê»ï¿½Ðµï¿½Ç¶ï¿½
+   * @param[out] ctrlAngularSpeed 		ï¿½ï¿½ï¿½Ù¶ï¿½ï¿½ï¿½ï¿½
    */
 void PositionLoop(float exptMecAngle, float realMecAngle, float *ctrlAngularSpeed)
 {
-	/*Î»ÖÃÏÞ·ù*/
+	/*Î»ï¿½ï¿½ï¿½Þ·ï¿½*/
 	Saturation_float(&exptMecAngle, PosLoop.MecAngleUpperLimit_rad, PosLoop.MecAngleLowerLimit_rad);
 	
 	PosLoop.Err = exptMecAngle - realMecAngle;
@@ -374,21 +375,21 @@ void PositionLoop(float exptMecAngle, float realMecAngle, float *ctrlAngularSpee
 }
 
  /**
-   * @brief  ËÙ¶È-µçÁ÷¿ØÖÆÆ÷
+   * @brief  ï¿½Ù¶ï¿½-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
    */
 void SpdCurrController(void)
 {	
-	static uint16_t Count = PERIOD_MULTIPLE - 1;	//Ê¹³ÌÐòµÚÒ»´ÎÖ´ÐÐÖÐ¶ÏÊ±, ÔËÐÐËÙ¶È»·, Î»ÖÃ»·
+	static uint16_t Count = PERIOD_MULTIPLE - 1;	//Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ö´ï¿½ï¿½ï¿½Ð¶ï¿½Ê±, ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶È»ï¿½, Î»ï¿½Ã»ï¿½
 	
 	Count++;
 	
-	/*²ÉÓÃId = 0¿ØÖÆ, ¹ÊÉè¶¨dÖáµçÁ÷ÎªÁã*/
+	/*ï¿½ï¿½ï¿½ï¿½Id = 0ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½è¶¨dï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½*/
 	CurrLoop.ExptCurrD = 0.f;
 	
-	/*Î»ÖÃ»·ÓëËÙ¶È»·µÄÖÜÆÚÊÇµçÁ÷»·ÖÜÆÚµÄÊ®±¶*/
+	/*Î»ï¿½Ã»ï¿½ï¿½ï¿½ï¿½Ù¶È»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Çµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½Ê®ï¿½ï¿½*/
 	if(Count == PERIOD_MULTIPLE)
 	{
-		/*¸üÐÂ»úÐµËÙ¶È¼°Î»ÖÃÐÅÏ¢*/
+		/*ï¿½ï¿½ï¿½Â»ï¿½Ðµï¿½Ù¶È¼ï¿½Î»ï¿½ï¿½ï¿½ï¿½Ï¢*/
 		GetMecImformation();
 		
 		SpeedLoop(VelSlopeGenerator(SpdLoop.ExptMecAngularSpeed_rad), PosSensor.MecAngularSpeed_rad, &CurrLoop.ExptCurrQ);
@@ -396,10 +397,10 @@ void SpdCurrController(void)
 		Count = 0;
 	}
 	
-	/*½øÐÐClark±ä»», ½«abc×ø±êÏµ×ª»»ÎªAlpha-Beta×ø±êÏµ*/
+	/*ï¿½ï¿½ï¿½ï¿½Clarkï¿½ä»», ï¿½ï¿½abcï¿½ï¿½ï¿½ï¿½Ïµ×ªï¿½ï¿½ÎªAlpha-Betaï¿½ï¿½ï¿½ï¿½Ïµ*/
 	ClarkeTransform(CoordTrans.CurrA, CoordTrans.CurrB, &CoordTrans.CurrAlpha, &CoordTrans.CurrBeta);
 
-	/*Õý·´×ª±àÂëÆ÷ÑÓ³Ù²¹³¥ÏµÊý²»Í¬*/
+	/*ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó³Ù²ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½Í¬*/
 	if(PosSensor.EleAngularSpeed_degree >= 0)
 	{
 		PosSensor.CompRatio = PosSensor.CompRatio_forward;
@@ -411,35 +412,35 @@ void SpdCurrController(void)
 	
 	PosSensor.CompAngle = PosSensor.CompRatio * PosSensor.EleAngularSpeed_degree * DEFAULT_CARRIER_PERIOD_s;
 	
-	/*½øÐÐPark±ä»», ½«Alpha-Beta×ø±êÏµ×ª»»Îªdq×ø±êÏµ*/
+	/*ï¿½ï¿½ï¿½ï¿½Parkï¿½ä»», ï¿½ï¿½Alpha-Betaï¿½ï¿½ï¿½ï¿½Ïµ×ªï¿½ï¿½Îªdqï¿½ï¿½ï¿½ï¿½Ïµ*/
 	ParkTransform(CoordTrans.CurrAlpha, CoordTrans.CurrBeta, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + PosSensor.CompAngle);
 	
-	/*µçÁ÷»·PI¿ØÖÆÆ÷*/
+	/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½PIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 	CurrentLoop(CurrLoop.ExptCurrD, CurrLoop.ExptCurrQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
 	
-	/*½øÐÐÄæPark±ä»», ½«×ª×Ó×ø±êÏµÏÂµÄdqÖáµçÑ¹×ª»»Îª¶¨×Ó×ø±êÏµÏÂµÄAlphaBetaÖáµçÑ¹*/
+	/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Parkï¿½ä»», ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½Âµï¿½dqï¿½ï¿½ï¿½Ñ¹×ªï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½Âµï¿½AlphaBetaï¿½ï¿½ï¿½Ñ¹*/
 	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + PosSensor.CompAngle);
 	
-	/*ÀûÓÃSVPWMËã·¨µ÷ÖÆµçÑ¹Ê¸Á¿*/
+	/*ï¿½ï¿½ï¿½ï¿½SVPWMï¿½ã·¨ï¿½ï¿½ï¿½Æµï¿½Ñ¹Ê¸ï¿½ï¿½*/
 	SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
 }
 
  /**
-   * @brief  Î»ÖÃ-ËÙ¶È-µçÁ÷¿ØÖÆÆ÷
+   * @brief  Î»ï¿½ï¿½-ï¿½Ù¶ï¿½-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
    */
 void PosSpdCurrController(void)
 {	
-	static uint16_t Count = PERIOD_MULTIPLE - 1;	//Ê¹³ÌÐòµÚÒ»´ÎÖ´ÐÐÖÐ¶ÏÊ±, ÔËÐÐËÙ¶È»·, Î»ÖÃ»·
+	static uint16_t Count = PERIOD_MULTIPLE - 1;	//Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ö´ï¿½ï¿½ï¿½Ð¶ï¿½Ê±, ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶È»ï¿½, Î»ï¿½Ã»ï¿½
 	
 	Count++;
 	
-	/*²ÉÓÃId = 0¿ØÖÆ, ¹ÊÉè¶¨dÖáµçÁ÷ÎªÁã*/
+	/*ï¿½ï¿½ï¿½ï¿½Id = 0ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½è¶¨dï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½*/
 	CurrLoop.ExptCurrD = 0.f;
 	
-	/*Î»ÖÃ»·ÓëËÙ¶È»·µÄÖÜÆÚÊÇµçÁ÷»·ÖÜÆÚµÄÊ®±¶*/
+	/*Î»ï¿½Ã»ï¿½ï¿½ï¿½ï¿½Ù¶È»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Çµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½Ê®ï¿½ï¿½*/
 	if(Count == PERIOD_MULTIPLE)
 	{
-		/*¸üÐÂ»úÐµËÙ¶È¼°Î»ÖÃÐÅÏ¢*/
+		/*ï¿½ï¿½ï¿½Â»ï¿½Ðµï¿½Ù¶È¼ï¿½Î»ï¿½ï¿½ï¿½ï¿½Ï¢*/
 		GetMecImformation();
 		
 		PosLoop.ExptMecAngle_rad = DRV_PULSE_TO_RAD(MainCtrl.ExptMecAngle_pulse);
@@ -453,10 +454,10 @@ void PosSpdCurrController(void)
 		Count = 0;
 	}
 	
-	/*½øÐÐClark±ä»», ½«abc×ø±êÏµ×ª»»ÎªAlpha-Beta×ø±êÏµ*/
+	/*ï¿½ï¿½ï¿½ï¿½Clarkï¿½ä»», ï¿½ï¿½abcï¿½ï¿½ï¿½ï¿½Ïµ×ªï¿½ï¿½ÎªAlpha-Betaï¿½ï¿½ï¿½ï¿½Ïµ*/
 	ClarkeTransform(CoordTrans.CurrA, CoordTrans.CurrB, &CoordTrans.CurrAlpha, &CoordTrans.CurrBeta);
 
-	/*Õý·´×ª±àÂëÆ÷ÑÓ³Ù²¹³¥ÏµÊý²»Í¬*/
+	/*ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó³Ù²ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½Í¬*/
 	if(PosSensor.EleAngularSpeed_degree >= 0)
 	{
 		PosSensor.CompRatio = PosSensor.CompRatio_forward;
@@ -468,35 +469,35 @@ void PosSpdCurrController(void)
 	
 	PosSensor.CompAngle = PosSensor.CompRatio * PosSensor.EleAngularSpeed_degree * DEFAULT_CARRIER_PERIOD_s;
 	
-	/*½øÐÐPark±ä»», ½«Alpha-Beta×ø±êÏµ×ª»»Îªdq×ø±êÏµ*/
+	/*ï¿½ï¿½ï¿½ï¿½Parkï¿½ä»», ï¿½ï¿½Alpha-Betaï¿½ï¿½ï¿½ï¿½Ïµ×ªï¿½ï¿½Îªdqï¿½ï¿½ï¿½ï¿½Ïµ*/
 	ParkTransform(CoordTrans.CurrAlpha, CoordTrans.CurrBeta, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + PosSensor.CompAngle);
 	
-	/*µçÁ÷»·PI¿ØÖÆÆ÷*/
+	/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½PIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 	CurrentLoop(CurrLoop.ExptCurrD, CurrLoop.ExptCurrQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
 	
-	/*½øÐÐÄæPark±ä»», ½«×ª×Ó×ø±êÏµÏÂµÄdqÖáµçÑ¹×ª»»Îª¶¨×Ó×ø±êÏµÏÂµÄAlphaBetaÖáµçÑ¹*/
+	/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Parkï¿½ä»», ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½Âµï¿½dqï¿½ï¿½ï¿½Ñ¹×ªï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½Âµï¿½AlphaBetaï¿½ï¿½ï¿½Ñ¹*/
 	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + PosSensor.CompAngle);
 	
-	/*ÀûÓÃSVPWMËã·¨µ÷ÖÆµçÑ¹Ê¸Á¿*/
+	/*ï¿½ï¿½ï¿½ï¿½SVPWMï¿½ã·¨ï¿½ï¿½ï¿½Æµï¿½Ñ¹Ê¸ï¿½ï¿½*/
 	SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
 }
 
  /**
-   * @brief  Î»ÖÃ-µçÁ÷¿ØÖÆÆ÷
+   * @brief  Î»ï¿½ï¿½-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
    */
 void PosCurrController(void)
 {	
-	static uint16_t Count = PERIOD_MULTIPLE - 1;	//Ê¹³ÌÐòµÚÒ»´ÎÖ´ÐÐÖÐ¶ÏÊ±, ÔËÐÐËÙ¶È»·, Î»ÖÃ»·
+	static uint16_t Count = PERIOD_MULTIPLE - 1;	//Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ö´ï¿½ï¿½ï¿½Ð¶ï¿½Ê±, ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶È»ï¿½, Î»ï¿½Ã»ï¿½
 	
 	Count++;
 	
-	/*²ÉÓÃId = 0¿ØÖÆ, ¹ÊÉè¶¨dÖáµçÁ÷ÎªÁã*/
+	/*ï¿½ï¿½ï¿½ï¿½Id = 0ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½è¶¨dï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½*/
 	CurrLoop.ExptCurrD = 0.f;
 	
-	/*Î»ÖÃ»·ÓëËÙ¶È»·µÄÖÜÆÚÊÇµçÁ÷»·ÖÜÆÚµÄÊ®±¶*/
+	/*Î»ï¿½Ã»ï¿½ï¿½ï¿½ï¿½Ù¶È»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Çµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½Ê®ï¿½ï¿½*/
 	if(Count == PERIOD_MULTIPLE)
 	{
-		/*¸üÐÂ»úÐµËÙ¶È¼°Î»ÖÃÐÅÏ¢*/
+		/*ï¿½ï¿½ï¿½Â»ï¿½Ðµï¿½Ù¶È¼ï¿½Î»ï¿½ï¿½ï¿½ï¿½Ï¢*/
 		GetMecImformation();
 		
 		PosLoop.ExptMecAngle_rad = DRV_PULSE_TO_RAD(MainCtrl.ExptMecAngle_pulse);
@@ -508,10 +509,10 @@ void PosCurrController(void)
 		Count = 0;
 	}
 	
-	/*½øÐÐClark±ä»», ½«abc×ø±êÏµ×ª»»ÎªAlpha-Beta×ø±êÏµ*/
+	/*ï¿½ï¿½ï¿½ï¿½Clarkï¿½ä»», ï¿½ï¿½abcï¿½ï¿½ï¿½ï¿½Ïµ×ªï¿½ï¿½ÎªAlpha-Betaï¿½ï¿½ï¿½ï¿½Ïµ*/
 	ClarkeTransform(CoordTrans.CurrA, CoordTrans.CurrB, &CoordTrans.CurrAlpha, &CoordTrans.CurrBeta);
 
-	/*Õý·´×ª±àÂëÆ÷ÑÓ³Ù²¹³¥ÏµÊý²»Í¬*/
+	/*ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó³Ù²ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½Í¬*/
 	if(PosSensor.EleAngularSpeed_degree >= 0)
 	{
 		PosSensor.CompRatio = PosSensor.CompRatio_forward;
@@ -521,24 +522,24 @@ void PosCurrController(void)
 		PosSensor.CompRatio = PosSensor.CompRatio_reverse;
 	}
 	
-	/*¼ÆËã²¹³¥½Ç¶È*/
+	/*ï¿½ï¿½ï¿½ã²¹ï¿½ï¿½ï¿½Ç¶ï¿½*/
 	PosSensor.CompAngle = PosSensor.CompRatio * PosSensor.EleAngularSpeed_degree * DEFAULT_CARRIER_PERIOD_s;
 	
-	/*½øÐÐPark±ä»», ½«Alpha-Beta×ø±êÏµ×ª»»Îªdq×ø±êÏµ*/
+	/*ï¿½ï¿½ï¿½ï¿½Parkï¿½ä»», ï¿½ï¿½Alpha-Betaï¿½ï¿½ï¿½ï¿½Ïµ×ªï¿½ï¿½Îªdqï¿½ï¿½ï¿½ï¿½Ïµ*/
 	ParkTransform(CoordTrans.CurrAlpha, CoordTrans.CurrBeta, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + PosSensor.CompAngle);
 	
-	/*µçÁ÷»·PI¿ØÖÆÆ÷*/
+	/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½PIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 	CurrentLoop(CurrLoop.ExptCurrD, CurrLoop.ExptCurrQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
 	
-	/*½øÐÐÄæPark±ä»», ½«×ª×Ó×ø±êÏµÏÂµÄdqÖáµçÑ¹×ª»»Îª¶¨×Ó×ø±êÏµÏÂµÄAlphaBetaÖáµçÑ¹*/
+	/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Parkï¿½ä»», ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½Âµï¿½dqï¿½ï¿½ï¿½Ñ¹×ªï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½Âµï¿½AlphaBetaï¿½ï¿½ï¿½Ñ¹*/
 	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + PosSensor.CompAngle);
 	
-	/*ÀûÓÃSVPWMËã·¨µ÷ÖÆµçÑ¹Ê¸Á¿*/
+	/*ï¿½ï¿½ï¿½ï¿½SVPWMï¿½ã·¨ï¿½ï¿½ï¿½Æµï¿½Ñ¹Ê¸ï¿½ï¿½*/
 	SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
 }
 
  /**
-   * @brief  ×ª¾Ø¿ØÖÆÆ÷
+   * @brief  ×ªï¿½Ø¿ï¿½ï¿½ï¿½ï¿½ï¿½
    */
 void TorqueController(void)
 {  
@@ -546,19 +547,19 @@ void TorqueController(void)
 	
 	Count++;
 	
-	/*²ÉÓÃId = 0¿ØÖÆ, ¹ÊÉè¶¨dÖáµçÁ÷ÎªÁã*/
+	/*ï¿½ï¿½ï¿½ï¿½Id = 0ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½è¶¨dï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½*/
 	CurrLoop.ExptCurrD = 0.f;
 		
-	/*ËÙ¶È»·µÄÖÜÆÚÊÇµçÁ÷»·ÖÜÆÚµÄÊ®±¶*/
+	/*ï¿½Ù¶È»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Çµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½Ê®ï¿½ï¿½*/
 	if(Count == PERIOD_MULTIPLE)
 	{
-		/*¸üÐÂ»úÐµËÙ¶È¼°Î»ÖÃÐÅÏ¢*/
+		/*ï¿½ï¿½ï¿½Â»ï¿½Ðµï¿½Ù¶È¼ï¿½Î»ï¿½ï¿½ï¿½ï¿½Ï¢*/
 		GetMecImformation();
 					
-		/*×ªËÙ½Ó½ü×ªËÙÏÞ·ùÊ±, ÆÚÍûIq¸ÄÎªËÙ¶È»·µÄ¼ÆËã½á¹û*/
+		/*×ªï¿½Ù½Ó½ï¿½×ªï¿½ï¿½ï¿½Þ·ï¿½Ê±, ï¿½ï¿½ï¿½ï¿½Iqï¿½ï¿½Îªï¿½Ù¶È»ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½*/
 		if(PosSensor.MecAngularSpeed_rad < (TorqueCtrl.MaxMecSpd_rad - 3.f * 2.f * PI))
 		{		
-			/*½«Ä¿±ê×ª¾Ø×ª»»ÎªIq*/
+			/*ï¿½ï¿½Ä¿ï¿½ï¿½×ªï¿½ï¿½×ªï¿½ï¿½ÎªIq*/
 			CurrLoop.ExptCurrQ = TorqueCtrl.ExptTorque_Nm / (1.5f * MOTOR_POLE_PAIRS_NUM * ROTATOR_FLUX_LINKAGE);
 		}
 		else if(PosSensor.MecAngularSpeed_rad >= (TorqueCtrl.MaxMecSpd_rad - 3.f * 2.f * PI))
@@ -571,10 +572,10 @@ void TorqueController(void)
 		Count = 0;
 	}
 
-	/*½øÐÐClark±ä»», ½«abc×ø±êÏµ×ª»»ÎªAlpha-Beta×ø±êÏµ*/
+	/*ï¿½ï¿½ï¿½ï¿½Clarkï¿½ä»», ï¿½ï¿½abcï¿½ï¿½ï¿½ï¿½Ïµ×ªï¿½ï¿½ÎªAlpha-Betaï¿½ï¿½ï¿½ï¿½Ïµ*/
 	ClarkeTransform(CoordTrans.CurrA, CoordTrans.CurrB, &CoordTrans.CurrAlpha, &CoordTrans.CurrBeta);
 
-	/*Õý·´×ª±àÂëÆ÷ÑÓ³Ù²¹³¥ÏµÊý²»Í¬*/
+	/*ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó³Ù²ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½Í¬*/
 	if(PosSensor.EleAngularSpeed_degree >= 0)
 	{
 		PosSensor.CompRatio = PosSensor.CompRatio_forward;
@@ -584,25 +585,25 @@ void TorqueController(void)
 		PosSensor.CompRatio = PosSensor.CompRatio_reverse;
 	}
 	
-	/*¼ÆËã²¹³¥½Ç¶È*/
+	/*ï¿½ï¿½ï¿½ã²¹ï¿½ï¿½ï¿½Ç¶ï¿½*/
 	PosSensor.CompAngle = PosSensor.CompRatio * PosSensor.EleAngularSpeed_degree * DEFAULT_CARRIER_PERIOD_s;
 	
-	/*½øÐÐPark±ä»», ½«Alpha-Beta×ø±êÏµ×ª»»Îªdq×ø±êÏµ*/
+	/*ï¿½ï¿½ï¿½ï¿½Parkï¿½ä»», ï¿½ï¿½Alpha-Betaï¿½ï¿½ï¿½ï¿½Ïµ×ªï¿½ï¿½Îªdqï¿½ï¿½ï¿½ï¿½Ïµ*/
 	ParkTransform(CoordTrans.CurrAlpha, CoordTrans.CurrBeta, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + PosSensor.CompAngle);
 	
-	/*µçÁ÷»·PI¿ØÖÆÆ÷*/
+	/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½PIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 	CurrentLoop(CurrLoop.ExptCurrD, CurrLoop.ExptCurrQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
 	
-	/*½øÐÐÄæPark±ä»», ½«×ª×Ó×ø±êÏµÏÂµÄdqÖáµçÑ¹×ª»»Îª¶¨×Ó×ø±êÏµÏÂµÄAlphaBetaÖáµçÑ¹*/
+	/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Parkï¿½ä»», ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½Âµï¿½dqï¿½ï¿½ï¿½Ñ¹×ªï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½Âµï¿½AlphaBetaï¿½ï¿½ï¿½Ñ¹*/
 	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + PosSensor.CompAngle);
 	
-	/*ÀûÓÃSVPWMËã·¨µ÷ÖÆµçÑ¹Ê¸Á¿*/
+	/*ï¿½ï¿½ï¿½ï¿½SVPWMï¿½ã·¨ï¿½ï¿½ï¿½Æµï¿½Ñ¹Ê¸ï¿½ï¿½*/
 	SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
 }
 
  /**
-   * @brief  Ð±ÆÂÉú³ÉÆ÷
-   * @param[in]  expectedVelocity      ÆÚÍû½ÇËÙ¶È
+   * @brief  Ð±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+   * @param[in]  expectedVelocity      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½
    */
 float VelSlopeGenerator(float exptVel)
 {
@@ -660,7 +661,7 @@ float VelSlopeGenerator(float exptVel)
 }
 
  /**
-   * @brief  Çý¶¯Æ÷¿ØÖÆÄ£Ê½³õÊ¼»¯
+   * @brief  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½Ê¼ï¿½ï¿½
    */
 void DriverCtrlModeInit(void)
 {		
@@ -688,7 +689,7 @@ void DriverCtrlModeInit(void)
 			
 										break;
 		case TORQUE_CTRL_MODE :	
-										TorqueCtrlInit();	//×ª¾Ø¿ØÖÆÆ÷³õÊ¼»¯ÐèÔÚÖ´ÐÐËÙ¶È»·ºÍµçÁ÷»·³õÊ¼»¯Ö®Ç°Ö´ÐÐ
+										TorqueCtrlInit();	//×ªï¿½Ø¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½Ù¶È»ï¿½ï¿½Íµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½Ö®Ç°Ö´ï¿½ï¿½
 		
 										CurrentLoopInit();
 										

@@ -280,9 +280,9 @@ void TorqueCtrlInit(void)
    */
 void RefAngleInit(void)
 {
-	MainCtrl.PresentMecAngle_pulse = PosSensor.MecAngle_AbsoluteMode_15bit;
+	MainCtrl.PresentMecAngle_pulse = PosSensor.MecAngle_15bit;
 	
-	MainCtrl.LastMecAngle_pulse = PosSensor.MecAngle_AbsoluteMode_15bit;
+	MainCtrl.LastMecAngle_pulse = PosSensor.MecAngle_15bit;
 	
 	/*记当前位置为零位*/
 	MainCtrl.RefMecAngle_pulse = 0;
@@ -293,7 +293,7 @@ void RefAngleInit(void)
    */
 void ZeroPosSet(uint16_t posOffset)
 {
-	MainCtrl.RefMecAngle_pulse = PosSensor.MecAngle_AbsoluteMode_15bit - posOffset;
+	MainCtrl.RefMecAngle_pulse = PosSensor.MecAngle_15bit - posOffset;
 }
 
  /**

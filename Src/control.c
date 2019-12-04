@@ -49,7 +49,7 @@ void DriverInit(void)
 		#if CAN_ID_NUM == 1		//���� 
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 3869;
+			PosSensor.PosOffset = 22716;
 			CurrLoop.LimitCurrQ = 200.f;
 			SpdLoop.ExptMecAngularSpeed_rad =  0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;

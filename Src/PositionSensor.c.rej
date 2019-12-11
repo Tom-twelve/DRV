@@ -1,0 +1,14 @@
+diff a/Src/PositionSensor.c b/Src/PositionSensor.c	(rejected hunks)
+@@ -298,9 +298,10 @@
+ 		uint16_t times = 0;
+ 		
+ 		PutStr("Correct Begin...\r\n\r\n");SendBuf();
+-		
++		int round = 0;
++		int mecAngle = 0,mecAngleLast = 0;
+ 		/*ͨ����ת�����ж������Ƿ���ȷ, �ӱ���������, ӦΪ˳ʱ����ת*/
+-		for(float eleAngle = 0; eleAngle <= 360; eleAngle += 15)
++		for(float eleAngle = 0; eleAngle <= 360*7; eleAngle += 5)
+ 		{
+ 			
+ 			InverseParkTransform(volD, 0.f, &volAlpha, &volBeta, eleAngle);

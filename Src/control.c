@@ -105,9 +105,9 @@ void DriverInit(void)
 		#elif CAN_ID_NUM == 8	//����
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 20559;
+			PosSensor.PosOffset = 31848;
 			CurrLoop.LimitCurrQ = 50.f;
-			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
+			SpdLoop.ExptMecAngularSpeed_rad = 80.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 9	//����
@@ -341,7 +341,7 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
    */
 void SpeedLoop(float exptMecAngularSpeed, float realMecAngularSpeed, float *ctrlCurrQ)
 {
-	/*��������ٶ��޷�*/
+	/*��������ٶ��޷�*/
 	Saturation_float(&exptMecAngularSpeed, SpdLoop.MaxExptMecAngularSpeed_rad, -SpdLoop.MaxExptMecAngularSpeed_rad);
 	
 	SpdLoop.Err = exptMecAngularSpeed - realMecAngularSpeed;

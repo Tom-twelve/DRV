@@ -105,7 +105,7 @@ struct MainCtrl_t
 #define CURRENT_CONTROL_KP_D			(INDUCTANCE_D * 1500.f)
 #define CURRENT_CONTROL_KI_D			(PHASE_RES * 1500.f)
 
-#define CURRENT_CONTROL_KI_Q			(PHASE_RES * 100.f)	//q轴电流控制器采用简化电机模型+I调节, 不同于传统PI控制器, 故I参数需人工调整
+#define CURRENT_CONTROL_KI_Q			(PHASE_RES * 1000.f)	//q轴电流控制器采用简化电机模型+I调节, 不同于传统PI控制器, 故I参数需人工调整
 
 #define SPEED_CONTROL_KP				1.0f
 #define SPEED_CONTROL_KI				1.0f

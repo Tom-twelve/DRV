@@ -295,10 +295,12 @@ void DMA2_Stream7_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
+
 void ADC_IRQHandler(void)
 {
 	GetPhaseCurrent();
-	
+	static int iii = 0;
+	iii++;
 	if(Driver.UnitMode == WORK_MODE)
 	{		
 		GetEleImformation();
@@ -310,11 +312,8 @@ void ADC_IRQHandler(void)
 			
 										/*计算电磁转矩*/
 										CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque_Nm);
-										
-										UART_Transmit_DMA("%d\t", (int)(PosSensor.MecAngularSpeed_rad));
-										UART_Transmit_DMA("%d\t",(int)(TorqueCtrl.EleTorque_Nm * 1e3));
-										UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrQ * 1e3));
-			
+										iii++;
+
 										break;
 			
 			case POS_SPD_CURR_CTRL_MODE :/*位置-速度-电流控制器*/
@@ -323,10 +322,13 @@ void ADC_IRQHandler(void)
 										/*计算电磁转矩*/
 										CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque_Nm);
 			
-										UART_Transmit_DMA("%d\t", (int)(MainCtrl.ExptMecAngle_pulse));
-										UART_Transmit_DMA("%d\t",(int)(SpdLoop.ExptMecAngularSpeed_rad));
+			                            if(iii>10)
+			                              {
+//										UART_Transmit_DMA("%d\t", (int)(MainCtrl.ExptMecAngle_pulse));
+										UART_Transmit_DMA("%d\t",(int)(PosSensor.MecAngle_15bit));
 										UART_Transmit_DMA("%d\r\n",(int)(CurrLoop.ExptCurrQ * 1e3));
-			
+		                                 iii=0;
+										  }
 										break;
 			
 			case POS_CURR_CTRL_MODE :	/*位置-电流控制器*/

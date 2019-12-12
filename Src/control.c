@@ -36,24 +36,26 @@ struct MainCtrl_t MainCtrl;
 extern struct CoordTrans_t CoordTrans;
 extern struct PosSensor_t PosSensor;
 extern struct Driver_t Driver;
+
+
 /* USER CODE END EV */
 
 /* USER CODE BEGIN */
 
 void DriverInit(void)
-{
-	/*ʹ��PWM���*/
-	PWM_IT_CMD(ENABLE,ENABLE);
-	
+{	
 	#if ROBOT_ID == PASS_ROBOT
-		#if CAN_ID_NUM == 1		//����
+		#if CAN_ID_NUM == 1//����
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 27379;
-			CurrLoop.LimitCurrQ = 200.f;
-			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
+			PosSensor.PosOffset = 32238;
+			CurrLoop.LimitCurrQ = 5.f;
+			SpdLoop.ExptMecAngularSpeed_rad = 20.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
+			PosLoop.Kp = 80.0f;
+			PosLoop.Kd = 0.3f;
+//			MainCtrl.ExptMecAngle_pulse = 1.2 * 32768;
 		#elif CAN_ID_NUM == 2	//����
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
@@ -118,7 +120,6 @@ void DriverInit(void)
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
-			
 		#elif CAN_ID_NUM == 10	//����
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
@@ -130,12 +131,12 @@ void DriverInit(void)
 		#elif CAN_ID_NUM == 11	//����
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 26173;
-			CurrLoop.LimitCurrQ = 50.f;
-			SpdLoop.ExptMecAngularSpeed_rad = 50.f * 2 * PI;
-			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
-			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
-		#endif
+			PosSensor.PosOffset = 11362;
+			CurrLoop.LimitCurrQ = 90.f;
+			SpdLoop.ExptMecAngularSpeed_rad = 120.f * 2 * PI;
+			SpdLoop.Kp = SPEED_CONTROL_KP * 0.2f;	
+			SpdLoop.Ki = SPEED_CONTROL_KI * 0.2f;
+		#endif		    
 	#endif
 	#if ROBOT_ID == TRY_ROBOT
 		#if CAN_ID_NUM == 1
@@ -188,6 +189,10 @@ void DriverInit(void)
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#endif
 	#endif
+	
+	PosSensor_Init();
+	
+	PWM_IT_CMD(ENABLE,ENABLE);
 }
 
  /**
@@ -306,9 +311,11 @@ void ZeroPosSet(uint16_t posOffset)
    * @param[out] ctrlVolD 			Vd���
    * @param[out] ctrlVolQ 			Vq���
    */
+extern float lastESpeed;
 void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCurrQ, float *ctrlVolD, float *ctrlVolQ)
 {
 	/*Iq�����޷�*/
+	static int iii = 0;
 	Saturation_float(&exptCurrQ, CurrLoop.LimitCurrQ, -CurrLoop.LimitCurrQ);
 	
 	CurrLoop.ErrD = exptCurrD - realCurrD;
@@ -331,6 +338,17 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 	
 	Saturation_float(ctrlVolD, CurrLoop.LimitVolD, -CurrLoop.LimitVolD);
 	Saturation_float(ctrlVolQ, CurrLoop.LimitVolQ, -CurrLoop.LimitVolQ);
+	iii++;
+	if(iii>10)
+	{
+	//											UART_Transmit_DMA("%d\t", (int)(CurrC));
+		UART_Transmit_DMA("%d\t",(int)(exptCurrQ*1e3));
+		UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrQ * 1e3));
+		iii = 0;
+	}
+	
+//	UART_Transmit_DMA("%d\t%d\r\n", (int)(lastESpeed*1e2),(int)(PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE*1e2));
+	
 }
 
  /**
@@ -341,7 +359,7 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
    */
 void SpeedLoop(float exptMecAngularSpeed, float realMecAngularSpeed, float *ctrlCurrQ)
 {
-	/*��������ٶ��޷�*/
+
 	Saturation_float(&exptMecAngularSpeed, SpdLoop.MaxExptMecAngularSpeed_rad, -SpdLoop.MaxExptMecAngularSpeed_rad);
 	
 	SpdLoop.Err = exptMecAngularSpeed - realMecAngularSpeed;

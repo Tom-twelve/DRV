@@ -101,7 +101,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
-	Driver.UnitMode = WORK_MODE; 	//�趨ģʽ, ����������ⶨ��Ƕ� ( WORK_MODE or MEASURE_ANGLE_TABLE_MODE or MEASURE_PARAM_MODE )
+	Driver.UnitMode = WORK_MODE; 	//( WORK_MODE or MEASURE_ANGLE_TABLE_MODE or MEASURE_PARAM_MODE )
 	
   /* USER CODE END 1 */
   
@@ -136,7 +136,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   
 	/*��ʱ�Եȴ�ĸ�ߵ�ѹƽ��*/
-	LL_mDelay(500);
+	LL_mDelay(1000);
 	
 	/*ʹ��SPI*/
 	SPI_Enable();
@@ -151,13 +151,10 @@ int main(void)
 	GateDriverConfig();
 	
 	LL_mDelay(100);
-	
-	/*��ֹ�ϵ綶��*/
-	PosSensor_Init();
 
 	/*ʹ��PWM, �趨����*/
 	DriverInit();
-			
+	
 	/*ʹ��CAN����*/
 	CAN_Enable();
 		

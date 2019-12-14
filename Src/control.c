@@ -186,6 +186,9 @@ void DriverInit(void)
 		#endif
 	#endif
 	
+	/*读取编码器, 计算速度, 防止上电电机跳动*/
+	PosSensor_Init();
+	
 	PWM_IT_CMD(ENABLE,ENABLE);
 }
 

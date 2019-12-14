@@ -135,30 +135,22 @@ int main(void)
   MX_ADC3_Init();
   /* USER CODE BEGIN 2 */
   
-	/*��ʱ�Եȴ�ĸ�ߵ�ѹƽ��*/
 	LL_mDelay(500);
 	
-	/*ʹ��SPI*/
 	SPI_Enable();
 	
-	/*ʹ��UART*/
 	UART_Enable();
 	
-	/*ʹ�ܶ�ʱ��*/
 	TIM_Enable();
 	
-	/*��ʼ��դ��������*/
 	GateDriverConfig();
 	
 	LL_mDelay(100);
-	
-	/*��ֹ�ϵ綶��*/
-	PosSensor_Init();
 
-	/*ʹ��PWM, �趨����*/
 	DriverInit();
-			
-	/*ʹ��CAN����*/
+		
+	LL_mDelay(100);
+
 	CAN_Enable();
 		
 	switch(Driver.UnitMode)

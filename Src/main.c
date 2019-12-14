@@ -101,7 +101,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
-	Driver.UnitMode = WORK_MODE;	//�趨ģʽ, ����������ⶨ��Ƕ� ( WORK_MODE or MEASURE_ANGLE_TABLE_MODE or MEASURE_PARAM_MODE )
+	Driver.UnitMode = WORK_MODE;	//工作模式( WORK_MODE or MEASURE_ANGLE_TABLE_MODE or MEASURE_PARAM_MODE )
 	
   /* USER CODE END 1 */
   
@@ -163,11 +163,11 @@ int main(void)
 		
 	switch(Driver.UnitMode)
 	{
-		case WORK_MODE : ADC_CMD(ENABLE);	//����ʹ��ADC�ж�, ������Ƴ�����ADC�ж���ִ��
+		case WORK_MODE : ADC_CMD(ENABLE);	//使能ADC, 包括中断
 		
 						break;
 		
-		case MEASURE_ANGLE_TABLE_MODE : CorrectPosOffset_Encoder(0.6f);	//�ⶨ��Ƕ�, �趨d���ѹ
+		case MEASURE_ANGLE_TABLE_MODE : CorrectPosOffset_Encoder(0.6f);	//测量电角度偏移量
 		
 						break;
 		

@@ -163,7 +163,49 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 				}
 				
 				break;
+	
+			case IDENTIFIER_CURR_KP_Q:
 				
+				/*设置q轴Kp, 主控乘以1000后发送*/
+				CurrLoop.Kp_Q = CAN.ReceiveData * 1e-3;
+			
+				break;
+			
+			case IDENTIFIER_CURR_KI_Q:
+				
+				/*设置q轴Ki, 主控乘以1000后发送*/
+				CurrLoop.Ki_Q = CAN.ReceiveData * 1e-3;
+			
+				break;
+			
+			case IDENTIFIER_SPD_KP:
+				
+				/*设置速度环Kp, 主控乘以1000后发送*/
+				SpdLoop.Kp = CAN.ReceiveData * 1e-3;
+			
+				break;
+			
+			case IDENTIFIER_SPD_KI:
+			
+				/*设置速度环Ki, 主控乘以1000后发送*/			
+				SpdLoop.Ki = CAN.ReceiveData * 1e-3;
+			
+				break;
+			
+			case IDENTIFIER_POS_KP:
+				
+				/*设置位置环Kp, 主控乘以1000后发送*/
+				PosLoop.Kp = CAN.ReceiveData * 1e-3;
+			
+				break;
+			
+			case IDENTIFIER_POS_KD:
+
+				/*设置位置环Kd, 主控乘以1000后发送*/
+				PosLoop.Kd = CAN.ReceiveData * 1e-3;
+			
+				break;
+			
 			case IDENTIFIER_TORQUE_CTRL:
 				
 				/*转矩控制模式, 期望转矩, 主控以毫牛米为单位发送*/
@@ -345,7 +387,49 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 				}
 				
 				break;
+	
+			case IDENTIFIER_CURR_KP_Q:
 				
+				/*设置q轴Kp, 主控乘以1000后发送*/
+				CurrLoop.Kp_Q = CAN.ReceiveData * 1e-3;
+			
+				break;
+			
+			case IDENTIFIER_CURR_KI_Q:
+				
+				/*设置q轴Ki, 主控乘以1000后发送*/
+				CurrLoop.Ki_Q = CAN.ReceiveData * 1e-3;
+			
+				break;
+			
+			case IDENTIFIER_SPD_KP:
+				
+				/*设置速度环Kp, 主控乘以1000后发送*/
+				SpdLoop.Kp = CAN.ReceiveData * 1e-3;
+			
+				break;
+
+			case IDENTIFIER_SPD_KI:
+			
+				/*设置速度环Ki, 主控乘以1000后发送*/			
+				SpdLoop.Ki = CAN.ReceiveData * 1e-3;
+			
+				break;
+			
+			case IDENTIFIER_POS_KP:
+				
+				/*设置位置环Kp, 主控乘以1000后发送*/
+				PosLoop.Kp = CAN.ReceiveData * 1e-3;
+			
+				break;
+		
+			case IDENTIFIER_POS_KD:
+
+				/*设置位置环Kd, 主控乘以1000后发送*/
+				PosLoop.Kd = CAN.ReceiveData * 1e-3;
+			
+				break;
+			
 			case IDENTIFIER_TORQUE_CTRL:
 				
 				/*转矩控制模式, 期望转矩, 主控以毫牛米为单位发送*/
@@ -475,7 +559,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 
 			case (0x40 + IDENTIFIER_READ_POS):
 				
-				/*读取机械角度*/
+				/*读取绝对机械角度*/
 				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_POS);
 		
 				break; 

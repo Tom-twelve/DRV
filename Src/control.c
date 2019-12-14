@@ -42,9 +42,6 @@ extern struct Driver_t Driver;
 
 void DriverInit(void)
 {
-	/*Ê¹ï¿½ï¿½PWMï¿½ï¿½ï¿*/
-	PWM_IT_CMD(ENABLE,ENABLE);
-	
 	#if ROBOT_ID == PASS_ROBOT
 		#if CAN_ID_NUM == 1		//ï¿½ï¿½ï¿½ï¿½ 
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
@@ -188,6 +185,8 @@ void DriverInit(void)
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#endif
 	#endif
+	
+	PWM_IT_CMD(ENABLE,ENABLE);
 }
 
  /**

@@ -418,7 +418,7 @@ void SpdCurrController(void)
 	/*������PI������*/
 	CurrentLoop(CurrLoop.ExptCurrD, CurrLoop.ExptCurrQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
 	
-	/*������Park�任, ��ת������ϵ�µ�dq���ѹת��Ϊ��������ϵ�µ�AlphaBeta���ѹ*/
+	/*������Park�任, ��ת������ϵ�µ�dq���ѹת��Ϊ��������ϵ�µ�AlphaBeta����*/
 	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + PosSensor.CompAngle);
 	
 	/*����SVPWM�㷨���Ƶ�ѹʸ��*/
@@ -434,7 +434,7 @@ void PosSpdCurrController(void)
 	
 	Count++;
 	
-	/*����Id = 0����, ���趨d�����Ϊ��*/
+	/*����Id = 0����, ���趨d�����Ϊ��*/
 	CurrLoop.ExptCurrD = 0.f;
 	
 	/*λ�û����ٶȻ��������ǵ��������ڵ�ʮ��*/
@@ -475,7 +475,7 @@ void PosSpdCurrController(void)
 	/*������PI������*/
 	CurrentLoop(CurrLoop.ExptCurrD, CurrLoop.ExptCurrQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
 	
-	/*������Park�任, ��ת������ϵ�µ�dq���ѹת��Ϊ��������ϵ�µ�AlphaBeta���ѹ*/
+	/*������Park�任, ��ת������ϵ�µ�dq���ѹת��Ϊ��������ϵ�µ�AlphaBeta����*/
 	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + PosSensor.CompAngle);
 	
 	/*����SVPWM�㷨���Ƶ�ѹʸ��*/
@@ -491,7 +491,7 @@ void PosCurrController(void)
 	
 	Count++;
 	
-	/*����Id = 0����, ���趨d�����Ϊ��*/
+	/*����Id = 0����, ���趨d�����Ϊ��*/
 	CurrLoop.ExptCurrD = 0.f;
 	
 	/*λ�û����ٶȻ��������ǵ��������ڵ�ʮ��*/
@@ -531,7 +531,7 @@ void PosCurrController(void)
 	/*������PI������*/
 	CurrentLoop(CurrLoop.ExptCurrD, CurrLoop.ExptCurrQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
 	
-	/*������Park�任, ��ת������ϵ�µ�dq���ѹת��Ϊ��������ϵ�µ�AlphaBeta���ѹ*/
+	/*������Park�任, ��ת������ϵ�µ�dq���ѹת��Ϊ��������ϵ�µ�AlphaBeta����*/
 	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + PosSensor.CompAngle);
 	
 	/*����SVPWM�㷨���Ƶ�ѹʸ��*/
@@ -547,7 +547,7 @@ void TorqueController(void)
 	
 	Count++;
 	
-	/*����Id = 0����, ���趨d�����Ϊ��*/
+	/*����Id = 0����, ���趨d�����Ϊ��*/
 	CurrLoop.ExptCurrD = 0.f;
 		
 	/*�ٶȻ��������ǵ��������ڵ�ʮ��*/
@@ -594,7 +594,7 @@ void TorqueController(void)
 	/*������PI������*/
 	CurrentLoop(CurrLoop.ExptCurrD, CurrLoop.ExptCurrQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
 	
-	/*������Park�任, ��ת������ϵ�µ�dq���ѹת��Ϊ��������ϵ�µ�AlphaBeta���ѹ*/
+	/*������Park�任, ��ת������ϵ�µ�dq���ѹת��Ϊ��������ϵ�µ�AlphaBeta����*/
 	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + PosSensor.CompAngle);
 	
 	/*����SVPWM�㷨���Ƶ�ѹʸ��*/

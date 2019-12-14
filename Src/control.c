@@ -308,7 +308,7 @@ void ZeroPosSet(uint16_t posOffset)
    */
 void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCurrQ, float *ctrlVolD, float *ctrlVolQ)
 {
-	/*Iq�����޷�*/
+	/*Iq限幅*/
 	Saturation_float(&exptCurrQ, CurrLoop.LimitCurrQ, -CurrLoop.LimitCurrQ);
 	
 	CurrLoop.ErrD = exptCurrD - realCurrD;
@@ -317,15 +317,15 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 	CurrLoop.IntegralErrD += CurrLoop.ErrD * DEFAULT_CARRIER_PERIOD_s;
 	CurrLoop.IntegralErrQ += CurrLoop.ErrQ * DEFAULT_CARRIER_PERIOD_s;
 	
-	/*�����޷�*/
+	/*积分限幅*/
 	Saturation_float(&CurrLoop.IntegralErrD, CURR_INTEGRAL_ERR_LIM_D, -CURR_INTEGRAL_ERR_LIM_D);
 	Saturation_float(&CurrLoop.IntegralErrQ, CURR_INTEGRAL_ERR_LIM_Q, -CURR_INTEGRAL_ERR_LIM_Q);
 	
-	/*���ڵ��ģ�͵ĸĽ��͵���������, ���ü򻯵��ģ��+I����*/
+	/*d轴电流环采用的传统PI控制器, q轴电流环采用基于模型改进的PI控制器*/
 	*ctrlVolD = CurrLoop.Kp_D * CurrLoop.ErrD + CurrLoop.Ki_D * CurrLoop.IntegralErrD;
-	*ctrlVolQ = CurrLoop.Ki_Q * CurrLoop.IntegralErrQ + exptCurrQ * PHASE_RES + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
+	*ctrlVolQ = CurrLoop.Kp_Q * CurrLoop.ErrQ + CurrLoop.Ki_Q * CurrLoop.IntegralErrQ + realCurrQ * PHASE_RES + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
 	
-	/*��ѹʸ���޷�*/
+	/*为保证d轴有足够的电压矢量抵消Id, 对Q轴电压进行限幅, 同时保证总电压矢量不超过最大电压矢量*/
 	CurrLoop.LimitVolD = GENERATRIX_VOL / SQRT3;
 	arm_sqrt_f32(SQUARE(GENERATRIX_VOL) / 3.f - SQUARE(*ctrlVolD), &CurrLoop.LimitVolQ);
 	

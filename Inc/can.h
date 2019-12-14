@@ -44,8 +44,9 @@ extern CAN_HandleTypeDef hcan1;
 #define DRIVER_SERVER_CAN_ID		(DRIVER_SERVER_BASE_ID + CAN_ID_NUM)
 #define DRIVER_BROADCAST_ID			(DRIVER_SERVER_BASE_ID + 0x40 + GROUP_NUM)
 
-/*���Ʊ�ʶ��*/
+/*控制标识符*/
 #define IDENTIFIER_DRIVER_STATE			0x01
+#define IDENTIFIER_
 #define IDENTIFIER_TORQUE_CTRL			0x02
 #define IDENTIFIER_VEL_CTRL				0x03
 #define IDENTIFIER_POS_CTRL_ABS			0x04
@@ -58,15 +59,15 @@ extern CAN_HandleTypeDef hcan1;
 #define IDENTIFIER_SET_POS_LIMIT_UP		0x0B
 #define IDENTIFIER_SET_POS_LIMIT_LOW	0x0C
 
-/*���ձ�ʶ��*/
-#define IDENTIFIER_READ_TORQUE			0x0D
-#define IDENTIFIER_READ_VEL				0x0E
-#define IDENTIFIER_READ_POS				0x0F
-#define IDENTIFIER_READ_ENCODER_POS		0x12
-#define IDENTIFIER_READ_VOL_Q			0x10
-#define IDENTIFIER_READ_CURR_Q			0x11
+/*读取标识符*/
+#define IDENTIFIER_READ_TORQUE			0x20
+#define IDENTIFIER_READ_VEL				0x21
+#define IDENTIFIER_READ_POS				0x22
+#define IDENTIFIER_READ_ENCODER_POS		0x23
+#define IDENTIFIER_READ_VOL_Q			0x24
+#define IDENTIFIER_READ_CURR_Q			0x25
 
-/*�����ʶ��*/
+/*错误标识符*/
 #define IDENTIFIER_ENCODER_ERROR		0xEE
 #define IDENTIFIER_HARD_FAULT			0xFF
 

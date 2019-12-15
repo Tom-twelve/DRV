@@ -199,7 +199,8 @@ void CurrentLoopInit(void)
 {
 	/*�趨������PI����, q��������������ü򻯵��ģ��+I����, ��ͬ�ڴ�ͳPI������, ��I�������˹�����*/		
 	CurrLoop.Kp_D = CURRENT_CONTROL_KP_D;
-	CurrLoop.Ki_D = CURRENT_CONTROL_KI_D;						
+	CurrLoop.Ki_D = CURRENT_CONTROL_KI_D;	
+	CurrLoop.Kp_Q = CURRENT_CONTROL_KP_Q;	
 	CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q;
 	
 	/*�趨�������ӳٲ���ϵ��*/

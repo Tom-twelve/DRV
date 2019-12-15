@@ -347,6 +347,20 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 		
 				break; 
 						
+			case (0x40 + IDENTIFIER_READ_VOL_D):
+				
+				/*读取Vd*/
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_VOL_D);
+			
+				break;
+			
+			case (0x40 + IDENTIFIER_READ_CURR_D):
+				
+				/*读取Id*/
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_CURR_D);
+				
+				break;
+			
 			case (0x40 + IDENTIFIER_READ_VOL_Q):
 				
 				/*读取Vq*/
@@ -358,6 +372,20 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 				
 				/*读取Iq*/
 				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_CURR_Q);
+				
+				break;
+			
+			case (0x40 + IDENTIFIER_READ_SPD_LOOP_OUTPUT):
+				
+				/*读取速度环输出*/
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_SPD_LOOP_OUTPUT);
+			
+				break;
+			
+			case (0x40 + IDENTIFIER_READ_POS_LOOP_OUTPUT):
+				
+				/*读取位置环输出*/
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_POS_LOOP_OUTPUT);
 				
 				break;
 			
@@ -408,7 +436,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 				SpdLoop.Kp = CAN.ReceiveData * 1e-3;
 			
 				break;
-
+			
 			case IDENTIFIER_SPD_KI:
 			
 				/*设置速度环Ki, 主控乘以1000后发送*/			
@@ -422,7 +450,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 				PosLoop.Kp = CAN.ReceiveData * 1e-3;
 			
 				break;
-		
+			
 			case IDENTIFIER_POS_KD:
 
 				/*设置位置环Kd, 主控乘以1000后发送*/
@@ -571,6 +599,20 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 		
 				break; 
 						
+			case (0x40 + IDENTIFIER_READ_VOL_D):
+				
+				/*读取Vd*/
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_VOL_D);
+			
+				break;
+			
+			case (0x40 + IDENTIFIER_READ_CURR_D):
+				
+				/*读取Id*/
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_CURR_D);
+				
+				break;
+			
 			case (0x40 + IDENTIFIER_READ_VOL_Q):
 				
 				/*读取Vq*/
@@ -582,6 +624,20 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 				
 				/*读取Iq*/
 				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_CURR_Q);
+				
+				break;
+			
+			case (0x40 + IDENTIFIER_READ_SPD_LOOP_OUTPUT):
+				
+				/*读取速度环输出*/
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_SPD_LOOP_OUTPUT);
+			
+				break;
+			
+			case (0x40 + IDENTIFIER_READ_POS_LOOP_OUTPUT):
+				
+				/*读取位置环输出*/
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_POS_LOOP_OUTPUT);
 				
 				break;
 			
@@ -651,7 +707,31 @@ void CAN_Respond(void)
 			CAN.RecieveStatus = 0;
 		
 			break;
-				
+
+		/*发送Vd*/		
+		case (0x40 + IDENTIFIER_READ_VOL_D):
+			
+			CAN.Identifier = IDENTIFIER_READ_VOL_D;
+			CAN.TransmitData = (int32_t)(CurrLoop.CtrlVolD * 1e3);
+		
+			CAN_Transmit(CAN.Identifier, CAN.TransmitData, 4);
+		
+			CAN.RecieveStatus = 0;
+		
+			break;
+
+		/*发送Id*/
+		case (0x40 + IDENTIFIER_READ_CURR_D):
+			
+			CAN.Identifier = IDENTIFIER_READ_CURR_D;
+			CAN.TransmitData = (int32_t)(CoordTrans.CurrD * 1e3);
+		
+			CAN_Transmit(CAN.Identifier, CAN.TransmitData, 4);
+		
+			CAN.RecieveStatus = 0;
+		
+			break;
+		
 		/*发送Vq*/		
 		case (0x40 + IDENTIFIER_READ_VOL_Q):
 			
@@ -675,7 +755,31 @@ void CAN_Respond(void)
 			CAN.RecieveStatus = 0;
 		
 			break;
-				
+		
+		/*发送速度环输出*/		
+		case (0x40 + IDENTIFIER_READ_SPD_LOOP_OUTPUT):
+			
+			CAN.Identifier = IDENTIFIER_READ_SPD_LOOP_OUTPUT;
+			CAN.TransmitData = (int32_t)(CurrLoop.ExptCurrQ * 1e3);
+		
+			CAN_Transmit(CAN.Identifier, CAN.TransmitData, 4);
+		
+			CAN.RecieveStatus = 0;
+		
+			break;
+
+		/*发送位置环输出*/
+		case (0x40 + IDENTIFIER_READ_POS_LOOP_OUTPUT):
+			
+			CAN.Identifier = IDENTIFIER_READ_POS_LOOP_OUTPUT;
+			CAN.TransmitData = (int32_t)(SpdLoop.ExptMecAngularSpeed_rad * 1e3);
+		
+			CAN_Transmit(CAN.Identifier, CAN.TransmitData, 4);
+		
+			CAN.RecieveStatus = 0;
+		
+			break;
+		
 		default:
 			
 			break;

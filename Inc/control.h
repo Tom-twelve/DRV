@@ -105,8 +105,8 @@ struct MainCtrl_t
 #define CURRENT_CONTROL_KP_D			(INDUCTANCE_D * 1500.f)	//d轴电流环采用的传统PI控制器, Kp = d轴电感 * 电流环带宽
 #define CURRENT_CONTROL_KI_D			(PHASE_RES * 1500.f)	//d轴电流环采用的传统PI控制器, Ki = 相电阻 * 电流环带宽
 
-#define CURRENT_CONTROL_KP_Q			(INDUCTANCE_Q * 1500.f)	//q轴电流环采用基于模型改进的PI控制器, Kp = q轴电感 * 电流环带宽
-#define CURRENT_CONTROL_KI_Q			(PHASE_RES * 100.f)		//q轴电流环采用基于模型改进的PI控制器, Ki待调节
+#define CURRENT_CONTROL_KP_Q			(INDUCTANCE_Q * 2500.f)	//q轴电流环采用基于模型改进的PI控制器, Kp = q轴电感 * 电流环带宽
+#define CURRENT_CONTROL_KI_Q			(PHASE_RES * 0.f)		//q轴电流环采用基于模型改进的PI控制器, Ki待调节
 
 #define SPEED_CONTROL_KP				1.0f
 #define SPEED_CONTROL_KI				1.0f

@@ -101,7 +101,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
-	Driver.UnitMode = WORK_MODE;	//工作模式( WORK_MODE or MEASURE_ANGLE_TABLE_MODE or MEASURE_PARAM_MODE )
+	Driver.UnitMode = WORK_MODE;	 //工作模式( WORK_MODE or MEASURE_ANGLE_TABLE_MODE or MEASURE_PARAM_MODE or MEASURE_INERTIA_MODE)
 	
   /* USER CODE END 1 */
   
@@ -164,6 +164,9 @@ int main(void)
 						break;
 		
 		case MEASURE_PARAM_MODE : ADC_CMD(ENABLE);
+		
+						break;
+		case MEASURE_INERTIA_MODE : ADC_CMD(ENABLE);
 		
 						break;
 	}

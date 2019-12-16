@@ -40,17 +40,18 @@ extern struct Driver_t Driver;
 
 /* USER CODE BEGIN */
 
-void DriverInit(void)
+void DriverInit(void)                 
 {
 	#if ROBOT_ID == PASS_ROBOT
+	
 		#if CAN_ID_NUM == 1		//���� 
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 3789;
+			PosSensor.PosOffset = 17905;
 			CurrLoop.LimitCurrQ = 200.f;
 			SpdLoop.ExptMecAngularSpeed_rad =  0.f * 2 * PI;
-			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;
-			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
+			SpdLoop.Kp = SPEED_CONTROL_KP * 0.5f;
+			SpdLoop.Ki = SPEED_CONTROL_KI * 0.5f;
 		#elif CAN_ID_NUM == 2	//����
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
@@ -132,6 +133,14 @@ void DriverInit(void)
 			SpdLoop.ExptMecAngularSpeed_rad = 20.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
+		#elif CAN_ID_NUM == 12	//����
+			Driver.ControlMode = SPD_CURR_CTRL_MODE;
+			DriverCtrlModeInit();
+			PosSensor.PosOffset = 22628;
+			CurrLoop.LimitCurrQ = 2.f;
+			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
+			SpdLoop.Kp = SPEED_CONTROL_KP * 12.0f;	
+			SpdLoop.Ki = SPEED_CONTROL_KI * 8.0f;
 		#endif
 	#endif
 	#if ROBOT_ID == TRY_ROBOT

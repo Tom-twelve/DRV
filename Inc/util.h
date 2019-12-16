@@ -29,5 +29,5 @@ float util_norm_float(float val, float minBound, float maxBound, float period);
 int util_norm_int(float val, float minBound, float maxBound, float period);
 void Saturation_float(float *value, float upLimit, float downLimit);
 void Saturation_int(int *value, int upLimit, int downLimit);
-
+void LeastSquare(float *x, float *y,int size, float *a);
 #endif

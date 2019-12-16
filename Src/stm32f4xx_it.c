@@ -337,7 +337,7 @@ void ADC_IRQHandler(void)
 			
 										UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrQ * 1e3));
 										UART_Transmit_DMA("%d\r\n",(int)(MainCtrl.RefMecAngle_pulse));
-			
+			                                          
 										break;
 			case TORQUE_CTRL_MODE :		/*◊™æÿøÿ÷∆∆˜*/
 										TorqueController();
@@ -355,7 +355,18 @@ void ADC_IRQHandler(void)
 	{
 		MeasureParameters();
 	}
-	
+	else if(Driver.UnitMode == MEASURE_INERTIA_MODE)
+	{
+		RotateInertiaTest(1.f);
+		
+		GetEleImformation();
+		
+		SpdCurrController();
+			
+		/*ËÆ°ÁÆóÁîµÁ£ÅËΩ¨Áü©*/
+		CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque_Nm);		
+
+	}
 	__HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_JEOC);
 	__HAL_ADC_CLEAR_FLAG(&hadc2, ADC_FLAG_JEOC);
 	__HAL_ADC_CLEAR_FLAG(&hadc3, ADC_FLAG_JEOC);

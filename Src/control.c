@@ -50,8 +50,8 @@ void DriverInit(void)
 			PosSensor.PosOffset = 17905;
 			CurrLoop.LimitCurrQ = 200.f;
 			SpdLoop.ExptMecAngularSpeed_rad =  0.f * 2 * PI;
-			SpdLoop.Kp = SPEED_CONTROL_KP * 0.5f;
-			SpdLoop.Ki = SPEED_CONTROL_KI * 0.5f;
+			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;
+			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 2	//����
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
@@ -105,7 +105,7 @@ void DriverInit(void)
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 31848;
 			CurrLoop.LimitCurrQ = 50.f;
-			SpdLoop.ExptMecAngularSpeed_rad = 80.f * 2 * PI;
+			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 9	//����

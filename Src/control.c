@@ -136,11 +136,11 @@ void DriverInit(void)
 		#elif CAN_ID_NUM == 12	//����
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 22628;
-			CurrLoop.LimitCurrQ = 2.f;
-			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
-			SpdLoop.Kp = SPEED_CONTROL_KP * 12.0f;	
-			SpdLoop.Ki = SPEED_CONTROL_KI * 8.0f;
+			PosSensor.PosOffset = 27304;
+			CurrLoop.LimitCurrQ = 100.f;
+			SpdLoop.ExptMecAngularSpeed_rad = 50.f * 2 * PI;
+			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
+			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#endif
 	#endif
 	#if ROBOT_ID == TRY_ROBOT
@@ -157,7 +157,7 @@ void DriverInit(void)
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 14119;
 			CurrLoop.LimitCurrQ = 200.f;
-			SpdLoop.ExptMecAngularSpeed_rad = 80.f * 2 * PI;	
+			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;	
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 3

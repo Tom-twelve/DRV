@@ -48,11 +48,11 @@ void DriverInit(void)
 		#if CAN_ID_NUM == 1//����
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 32238;
+			PosSensor.PosOffset = 22628;
 			CurrLoop.LimitCurrQ = 5.f;
-			SpdLoop.ExptMecAngularSpeed_rad = 20.f * 2 * PI;
-			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;
-			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
+			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
+			SpdLoop.Kp = SPEED_CONTROL_KP * 12.0f;
+			SpdLoop.Ki = SPEED_CONTROL_KI * 8.0f;
 			PosLoop.Kp = 80.0f;
 			PosLoop.Kd = 0.3f;
 //			MainCtrl.ExptMecAngle_pulse = 1.2 * 32768;
@@ -339,13 +339,14 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 	Saturation_float(ctrlVolD, CurrLoop.LimitVolD, -CurrLoop.LimitVolD);
 	Saturation_float(ctrlVolQ, CurrLoop.LimitVolQ, -CurrLoop.LimitVolQ);
 	iii++;
-	if(iii>10)
-	{
-	//											UART_Transmit_DMA("%d\t", (int)(CurrC));
-		UART_Transmit_DMA("%d\t",(int)(exptCurrQ*1e3));
-		UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrQ * 1e3));
-		iii = 0;
-	}
+//	if(iii>=10)
+//	{
+//	//											UART_Transmit_DMA("%d\t", (int)(CurrC));
+//		UART_Transmit_DMA("%d\t",(int)(TorqueCtrl.EleTorque_Nm* 1e3));
+////		UART_Transmit_DMA("%d\t",(int)(CoordTrans.CurrQ * 1e3));
+//		UART_Transmit_DMA("%d\r\n",(int)(PosSensor.MecAngularSpeed_rad));
+//		iii = 0;
+//	}
 	
 //	UART_Transmit_DMA("%d\t%d\r\n", (int)(lastESpeed*1e2),(int)(PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE*1e2));
 	
@@ -401,7 +402,7 @@ void SpdCurrController(void)
 	
 	Count++;
 	
-	/*����Id = 0����, ���趨d�����Ϊ��*/
+	/*����Id = 0����, ���趨d�����Ϊ��**/
 	CurrLoop.ExptCurrD = 0.f;
 	
 	/*λ�û����ٶȻ��������ǵ��������ڵ�ʮ��*/
@@ -436,7 +437,7 @@ void SpdCurrController(void)
 	/*������PI������*/
 	CurrentLoop(CurrLoop.ExptCurrD, CurrLoop.ExptCurrQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
 	
-	/*������Park�任, ��ת������ϵ�µ�dq���ѹת��Ϊ��������ϵ�µ�AlphaBeta���ѹ*/
+	/*������Park�任, ��ת������ϵ�µ�dq���ѹת��Ϊ��������ϵ�µ�AlphaBeta���*/
 	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + PosSensor.CompAngle);
 	
 	/*����SVPWM�㷨���Ƶ�ѹʸ��*/
@@ -716,6 +717,7 @@ void DriverCtrlModeInit(void)
 										break;
 	}
 }
+
 
 /* USER CODE END */
 

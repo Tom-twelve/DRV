@@ -39,6 +39,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "MotorConfig.h"
+#include "control.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -239,6 +240,66 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
+  * @brief This function handles EXTI line 2 interrupt.
+  */
+void EXTI2_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI2_IRQn 0 */
+
+  /* USER CODE END EXTI2_IRQn 0 */
+  if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_2) != RESET)
+  {
+    LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_2);
+    /* USER CODE BEGIN LL_EXTI_LINE_2 */
+    
+    /* USER CODE END LL_EXTI_LINE_2 */
+  }
+  /* USER CODE BEGIN EXTI2_IRQn 1 */
+
+  /* USER CODE END EXTI2_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line 3 interrupt.
+  */
+void EXTI3_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI3_IRQn 0 */
+
+  /* USER CODE END EXTI3_IRQn 0 */
+  if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_3) != RESET)
+  {
+    LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_3);
+    /* USER CODE BEGIN LL_EXTI_LINE_3 */
+    
+    /* USER CODE END LL_EXTI_LINE_3 */
+  }
+  /* USER CODE BEGIN EXTI3_IRQn 1 */
+
+  /* USER CODE END EXTI3_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line 4 interrupt.
+  */
+void EXTI4_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI4_IRQn 0 */
+
+  /* USER CODE END EXTI4_IRQn 0 */
+  if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_4) != RESET)
+  {
+    LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_4);
+    /* USER CODE BEGIN LL_EXTI_LINE_4 */
+    
+    /* USER CODE END LL_EXTI_LINE_4 */
+  }
+  /* USER CODE BEGIN EXTI4_IRQn 1 */
+
+  /* USER CODE END EXTI4_IRQn 1 */
+}
+
+/**
   * @brief This function handles CAN1 RX0 interrupt.
   */
 void CAN1_RX0_IRQHandler(void)
@@ -298,9 +359,12 @@ void DMA2_Stream7_IRQHandler(void)
 
 void ADC_IRQHandler(void)
 {
+
 	GetPhaseCurrent();
-	static int iii = 0;
-	iii++;
+	static int iii = 0,step = 0,jjj = 0, count = 0 ; 
+
+	
+	
 	if(Driver.UnitMode == WORK_MODE)
 	{		
 		GetEleImformation();
@@ -311,9 +375,7 @@ void ADC_IRQHandler(void)
 										SpdCurrController();
 			
 										/*计算电磁转矩*/
-										CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque_Nm);
-										iii++;
-
+										CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque_Nm);					
 										break;
 			
 			case POS_SPD_CURR_CTRL_MODE :/*位置-速度-电流控制器*/
@@ -356,6 +418,18 @@ void ADC_IRQHandler(void)
 	else if(Driver.UnitMode == MEASURE_PARAM_MODE)
 	{
 		MeasureParameters();
+	}
+	else if(Driver.UnitMode == MEASURE_INERTIA_MODE)
+	{
+		RotateInertiaTest(1.f);
+		
+		GetEleImformation();
+		
+		SpdCurrController();
+			
+		/*计算电磁转矩*/
+		CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque_Nm);		
+
 	}
 	
 	__HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_JEOC);

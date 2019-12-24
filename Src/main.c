@@ -101,7 +101,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
-	Driver.UnitMode = WORK_MODE; 	//( WORK_MODE or MEASURE_ANGLE_TABLE_MODE or MEASURE_PARAM_MODE )
+	Driver.UnitMode = MEASURE_INERTIA_MODE; 	//( WORK_MODE or MEASURE_ANGLE_TABLE_MODE or MEASURE_PARAM_MODE	or MEASURE_INERTIA_MODE )
 	
   /* USER CODE END 1 */
   
@@ -126,7 +126,6 @@ int main(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_TIM8_Init();
-  MX_SPI1_Init();
   MX_SPI3_Init();
   MX_CAN1_Init();
   MX_USART1_UART_Init();
@@ -164,12 +163,15 @@ int main(void)
 		
 						break;
 		
-		case MEASURE_ANGLE_TABLE_MODE : CorrectPosOffset_Encoder(0.6f);	//�ⶨ��Ƕ�, �趨d���ѹ
+		case MEASURE_ANGLE_TABLE_MODE : CorrectPosOffset_Encoder(0.6f);	//�ⶨ��Ƕ�?, �趨d����?
 		
 						break;
 		
 		case MEASURE_PARAM_MODE : ADC_CMD(ENABLE);
 		
+						break;
+		case MEASURE_INERTIA_MODE : ADC_CMD(ENABLE);
+
 						break;
 	}
 

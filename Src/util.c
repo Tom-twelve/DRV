@@ -88,3 +88,22 @@ void Saturation_int(int *value, int upLimit, int downLimit)
 		*value = downLimit;
 	}
 }
+void LeastSquare(float *x, float *y,int size,float *a)
+{
+	float sum_x2 = 0.0;
+	float sum_y  = 0.0;
+	float sum_x  = 0.0;
+	float sum_xy = 0.0;
+
+	for (int i = 0; i < size;i++) 
+	{
+		sum_x2 += x[i]*x[i];
+		sum_y  += y[i];
+		sum_x  += x[i];
+		sum_xy += x[i]*y[i];
+	}    
+
+	*a = (size*sum_xy - sum_x*sum_y)*2000.0f/(size*sum_x2 - sum_x*sum_x);
+//	*b = (sum_x2*sum_y - sum_x*sum_xy)/(size*sum_x2-sum_x*sum_x);
+}
+

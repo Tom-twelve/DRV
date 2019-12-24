@@ -322,6 +322,96 @@ void MeasureParameters(void)
 	}
 }
 
+extern struct TorqueCtrl_t TorqueCtrl;
+extern struct SpdLoop_t SpdLoop;
+void RotateInertiaTest(float sampleTime)
+{
+	#define J_SIZE  200
+	static uint8_t step =0;
+	static int index1 = 0, index2 = 0 ;
+	static float time[J_SIZE] = {0};
+	static int cnt = 0;
+	static float sumTorque = 0 , a1 = 0 , a2 = 0 ,JSum = 0,J = 0;
+	static float speedUp[J_SIZE] = {0}, speedDown[J_SIZE] = {0}, torque[J_SIZE] = {0}; 	
+	static float sample = 0;
+	
+	
+	enum {DATA_INIT,SPEED_UP,SPEED_DOWN,DATA_HANDLE,OVER};
+	cnt++;
+	if(sample < sampleTime)
+	{
+		if(cnt>=10)
+		{
+			switch(step)
+			{
+				case DATA_INIT:
+					for(int i = 0; i < J_SIZE;i++)
+					{
+						time[i] = i;					
+					}
+					SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
+					step = SPEED_UP;
+					break;
+				case SPEED_UP:
+					CurrLoop.LimitCurrQ = 5.f;
+					SpdLoop.ExptMecAngularSpeed_rad = 50.f * 2 * PI;
+					if(30.f * 2 * PI < PosSensor.MecAngularSpeed_rad) 
+					{
+						torque[index1] = TorqueCtrl.EleTorque_Nm;
+						speedUp[index1] = PosSensor.MecAngularSpeed_rad;
+//						UART_Transmit_DMA("%d\t",(int)(PosSensor.MecAngularSpeed_rad));
+//						UART_Transmit_DMA("%d\t",(int)(CoordTrans.CurrQ*1e3));
+						sumTorque += torque[index1];
+						index1++;
+						if(index1 >= J_SIZE)
+						{
+							step = SPEED_DOWN;
+							UART_Transmit_DMA("%dN.M\t",(int)(sumTorque/(float)J_SIZE*1e3));
+						}
+					}			
+					break;	
+				case SPEED_DOWN:
+					PWM_IT_CMD(DISABLE,DISABLE);
+					CurrLoop.LimitCurrQ = 0.f;
+					SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
+					if(PosSensor.MecAngularSpeed_rad<=12.f * 2 * PI)
+					{
+						speedDown[index2] = PosSensor.MecAngularSpeed_rad;
+						index2++;
+						if(index2 >= J_SIZE)
+						{
+							step = DATA_HANDLE;
+						}
+					}
+					break;	
+				case DATA_HANDLE:
+					LeastSquare(time,speedUp , J_SIZE,&a1);
+					LeastSquare(time,speedDown,J_SIZE,&a2);
+					JSum += (sumTorque/(float)J_SIZE)/(a1-a2);
+					UART_Transmit_DMA("%d\t%d\t%d\r\n",(int)(JSum / (sample+1) *1e7),(int)(a1),(int)(a2));SendBuf();		
+					step=OVER;
+					break;
+				case OVER:
+					PWM_IT_CMD(ENABLE,DISABLE);
+					index1 = 0;
+					index2 = 0;				
+					sample++;
+					step = SPEED_UP;
+					break;
+			}
+			cnt=0;
+		}
+	}
+	else
+	{
+		J = JSum / sampleTime;
+	}
+}
+			
+//										UART_Transmit_DMA("%d\r\n",(int)(PosSensor.MecAngularSpeed_rad));
+										
+	
+
 
 /* USER CODE END */
 

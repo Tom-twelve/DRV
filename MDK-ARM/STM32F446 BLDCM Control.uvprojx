@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>USE_FULL_LL_DRIVER,STM32F446xx,ARM_MATH_CM4,__FPU_PRESENT=1U,USE_HAL_DRIVER,__ARM_PCS_VFP</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;                                                                                                                                                                           ../Drivers/STM32F4xx_HAL_Driver/Inc;                                                                                                                                                                           ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;                                                                                                                                                                           ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;                                                                                                                                                                           ../Drivers/CMSIS/Include</IncludePath>
+              <IncludePath>../Inc;                                                                                                                                                                             ../Drivers/STM32F4xx_HAL_Driver/Inc;                                                                                                                                                                             ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;                                                                                                                                                                             ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;                                                                                                                                                                             ../Drivers/CMSIS/Include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -769,16 +769,6 @@
               <FilePath>../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c</FilePath>
             </File>
             <File>
-              <FileName>stm32f4xx_ll_spi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_spi.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f4xx_ll_dma.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_dma.c</FilePath>
-            </File>
-            <File>
               <FileName>stm32f4xx_hal_spi.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c</FilePath>
@@ -797,6 +787,11 @@
               <FileName>stm32f4xx_ll_tim.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_tim.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_ll_dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_dma.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_hal_uart.c</FileName>

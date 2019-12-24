@@ -36,7 +36,6 @@ extern SPI_HandleTypeDef hspi3;
 #define TimeOut 150
 /* USER CODE END Private defines */
 
-void MX_SPI1_Init(void);
 void MX_SPI3_Init(void);
 
 /* USER CODE BEGIN Prototypes */

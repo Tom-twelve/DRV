@@ -105,7 +105,7 @@ struct MainCtrl_t
 #define CURRENT_CONTROL_KP_D			(INDUCTANCE_D * 1500.f)
 #define CURRENT_CONTROL_KI_D			(PHASE_RES * 1500.f)
 
-#define CURRENT_CONTROL_KI_Q			(PHASE_RES * 1000.f)	//q轴电流控制器采用简化电机模型+I调节, 不同于传统PI控制器, 故I参数需人工调整
+#define CURRENT_CONTROL_KI_Q			(PHASE_RES * 500.f)	//q轴电流控制器采用简化电机模型+I调节, 不同于传统PI控制器, 故I参数需人工调整
 
 #define SPEED_CONTROL_KP				1.0f
 #define SPEED_CONTROL_KI				1.0f
@@ -126,6 +126,7 @@ struct MainCtrl_t
 #define WORK_MODE						1
 #define MEASURE_ANGLE_TABLE_MODE		2
 #define MEASURE_PARAM_MODE				3
+#define MEASURE_INERTIA_MODE		    4
 
 /* USER CODE END PD */
 
@@ -148,6 +149,7 @@ void PosCurrController(void);
 void TorqueController(void);
 float VelSlopeGenerator(float exptVelocity);
 void DriverCtrlModeInit(void);
+void LeastSquare(float *x, float *y,int size, float *a);
 /* USER CODE END PFP */
 
 

@@ -49,7 +49,6 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
-#include "stm32f4xx_ll_spi.h"
 #include "stm32f4xx_ll_tim.h"
 #include "stm32f4xx.h"
 #include "stm32f4xx_ll_system.h"
@@ -106,14 +105,15 @@ void Error_Handler(void);
 #define GateDriver_SPI3_MISO_GPIO_Port GPIOC
 #define GateDriver_SPI3_MOSI_Pin LL_GPIO_PIN_12
 #define GateDriver_SPI3_MOSI_GPIO_Port GPIOC
-#define Encoder_SPI1_NSS_Pin LL_GPIO_PIN_2
-#define Encoder_SPI1_NSS_GPIO_Port GPIOD
-#define Encoder_SPI1_SCK_Pin LL_GPIO_PIN_3
-#define Encoder_SPI1_SCK_GPIO_Port GPIOB
-#define Encoder_SPI1_MISO_Pin LL_GPIO_PIN_4
-#define Encoder_SPI1_MISO_GPIO_Port GPIOB
-#define Encoder_SPI1_MOSI_Pin LL_GPIO_PIN_5
-#define Encoder_SPI1_MOSI_GPIO_Port GPIOB
+#define SWITCH_HALL_A_Pin LL_GPIO_PIN_2
+#define SWITCH_HALL_A_GPIO_Port GPIOD
+#define SWITCH_HALL_A_EXTI_IRQn EXTI2_IRQn
+#define SWITCH_HALL_B_Pin LL_GPIO_PIN_3
+#define SWITCH_HALL_B_GPIO_Port GPIOB
+#define SWITCH_HALL_B_EXTI_IRQn EXTI3_IRQn
+#define SWITCH_HALL_C_Pin LL_GPIO_PIN_4
+#define SWITCH_HALL_C_GPIO_Port GPIOB
+#define SWITCH_HALL_C_EXTI_IRQn EXTI4_IRQn
 #define GateDriver_Enable_Pin LL_GPIO_PIN_6
 #define GateDriver_Enable_GPIO_Port GPIOB
 #define GateDriver_nFault_Pin LL_GPIO_PIN_8

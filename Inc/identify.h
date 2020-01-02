@@ -38,6 +38,7 @@ uint8_t MeasureResidence(float sampleTimes, float currQ, float *residence);
 uint8_t MeasureInductance(float sampleTimes, float *inductance);
 void MeasureParameters(void);
 void RotateInertiaTest(float sampleTime);
+
 /* USER CODE END PFP */
 
 

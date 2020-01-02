@@ -299,7 +299,6 @@ float lastESpeed;
 		uint16_t times = 0;
 		
 		PutStr("Correct Begin...\r\n\r\n");SendBuf();
-		
 		/*通过旋转方向判断相序是否正确, 从编码器方向看, 应为顺时针旋转*/
 		for(float eleAngle = 0; eleAngle <= 360; eleAngle += 15)
 		{

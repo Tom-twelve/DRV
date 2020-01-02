@@ -141,8 +141,8 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 	
 	CAN_Receive(&CAN.StdID, &CAN.Identifier, &CAN.ReceiveData);
 	
-	/*ACTIONÇı¶¯Æ÷Ö¸Áî*/
-	/*µã¶ÔµãÄ£Ê½*/
+	/*ACTIONæŒ‡ä»¤*/
+	/*ç‚¹å¯¹ç‚¹æ¨¡å¼*/
 	if (CAN.StdID == DRIVER_SERVER_CAN_ID)
 	{
 		switch(CAN.Identifier)
@@ -151,29 +151,71 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 				
 				if (CAN.ReceiveData == 0x00000001)
 				{
-					/*Ê¹ÄÜ*/
+					/*PWMè¾“å‡ºä½¿èƒ½*/
 					SpdLoop.ExptMecAngularSpeed_rad = 0.f;
 					PWM_IT_CMD(ENABLE,ENABLE);
 				}
 				else if(CAN.ReceiveData == 0x00000000)
 				{
-					/*Ê§ÄÜ*/
+					/*PWMè¾“å‡ºå¤±èƒ½*/
 					SpdLoop.ExptMecAngularSpeed_rad = 0.f;
 					PWM_IT_CMD(DISABLE,ENABLE);
 				}
 				
 				break;
+	
+			case IDENTIFIER_CURR_KP_Q:
 				
+				/*è®¾ç½®qè½´Kp, ä¸»æ§ä¹˜ä»¥1000åå‘é€*/
+				CurrLoop.Kp_Q = CAN.ReceiveData * 1e-3;
+			
+				break;
+			
+			case IDENTIFIER_CURR_KI_Q:
+				
+				/*è®¾ç½®qè½´Ki, ä¸»æ§ä¹˜ä»¥1000åå‘é€*/
+				CurrLoop.Ki_Q = CAN.ReceiveData * 1e-3;
+			
+				break;
+			
+			case IDENTIFIER_SPD_KP:
+				
+				/*è®¾ç½®é€Ÿåº¦ç¯Kp, ä¸»æ§ä¹˜ä»¥1000åå‘é€*/
+				SpdLoop.Kp = CAN.ReceiveData * 1e-3;
+			
+				break;
+			
+			case IDENTIFIER_SPD_KI:
+			
+				/*è®¾ç½®é€Ÿåº¦ç¯Ki, ä¸»æ§ä¹˜ä»¥1000åå‘é€*/			
+				SpdLoop.Ki = CAN.ReceiveData * 1e-3;
+			
+				break;
+			
+			case IDENTIFIER_POS_KP:
+				
+				/*è®¾ç½®ä½ç½®ç¯Kp, ä¸»æ§ä¹˜ä»¥1000åå‘é€*/
+				PosLoop.Kp = CAN.ReceiveData * 1e-3;
+			
+				break;
+			
+			case IDENTIFIER_POS_KD:
+
+				/*è®¾ç½®ä½ç½®ç¯Kd, ä¸»æ§ä¹˜ä»¥1000åå‘é€*/
+				PosLoop.Kd = CAN.ReceiveData * 1e-3;
+			
+				break;
+			
 			case IDENTIFIER_TORQUE_CTRL:
 				
-				/*ÆÚÍûÅ¤¾Ø*/
+				/*è½¬çŸ©æ§åˆ¶æ¨¡å¼, æœŸæœ›è½¬çŸ©, ä¸»æ§ä»¥æ¯«ç‰›ç±³ä¸ºå•ä½å‘é€*/
 				TorqueCtrl.ExptTorque_Nm =  (float)CAN.ReceiveData * 1e-3;
 			
 				break;
 				
 			case IDENTIFIER_VEL_CTRL:
 				
-				/*ÆÚÍûËÙ¶È*/
+				/*é€Ÿåº¦æ§åˆ¶æ¨¡å¼, æœŸæœ›æœºæ¢°è§’é€Ÿåº¦*/
 				MainCtrl.ExptMecAngularSpeed_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 				SpdLoop.ExptMecAngularSpeed_rad = DRV_PULSE_TO_RAD(MainCtrl.ExptMecAngularSpeed_pulse);
 			
@@ -181,21 +223,21 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 			
 			case IDENTIFIER_POS_CTRL_ABS:
 			
-				/*ÆÚÍûÎ»ÖÃ, ¾ø¶ÔÎ»ÖÃÄ£Ê½*/
+				/*ä½ç½®æ§åˆ¶æ¨¡å¼, ç»å¯¹ä½ç½®æ¨¡å¼, æœŸæœ›æœºæ¢°è§’åº¦*/
 				MainCtrl.ExptMecAngle_pulse = MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 			
 				break;
 
 			case IDENTIFIER_POS_CTRL_REL:
 				
-				/*ÆÚÍûÎ»ÖÃ, Ïà¶ÔÎ»ÖÃÄ£Ê½*/
+				/*ä½ç½®æ§åˆ¶æ¨¡å¼, å‚è€ƒä½ç½®æ¨¡å¼, æœŸæœ›æœºæ¢°è§’åº¦*/
 				MainCtrl.ExptMecAngle_pulse = MainCtrl.RefMecAngle_pulse +  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 			
 				break;
 						
 			case IDENTIFIER_SET_CTRL_MODE:
 				
-				/*ÅäÖÃÇı¶¯Æ÷¿ØÖÆÄ£Ê½*/
+				/*è®¾ç½®æ§åˆ¶æ¨¡å¼*/
 				if(CAN.ReceiveData == SPD_CURR_CTRL_MODE)
 				{
 					Driver.ControlMode = SPD_CURR_CTRL_MODE;
@@ -219,7 +261,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 
 			case IDENTIFIER_SET_ACC:
 				
-				/*ÉèÖÃ¼ÓËÙ¶È*/
+				/*è®¾ç½®åŠ é€Ÿåº¦*/
 				MainCtrl.Acceleration_pulse = MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 				SpdLoop.Acceleration = DRV_PULSE_TO_RAD(MainCtrl.Acceleration_pulse);
 				
@@ -227,7 +269,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 
 			case IDENTIFIER_SET_DEC:
 
-				/*ÉèÖÃ¼õËÙ¶È*/
+				/*è®¾ç½®å‡é€Ÿåº¦*/
 				MainCtrl.Deceleration_pulse = MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 				SpdLoop.Deceleration = DRV_PULSE_TO_RAD(MainCtrl.Deceleration_pulse);
 
@@ -235,29 +277,27 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 					
 			case IDENTIFIER_SET_TORQUE_LIMIT:
 				
-				/*ÅäÖÃ×î´ó×ª¾Ø*/
-				MainCtrl.MaxTorque_Nm = (float)CAN.ReceiveData * 1e-3;
-				CurrLoop.LimitCurrQ = MainCtrl.MaxTorque_Nm / (1.5f * MOTOR_POLE_PAIRS_NUM * ROTATOR_FLUX_LINKAGE);
+				/*è®¾ç½®è½¬çŸ©é™å¹…, åœ¨è½¬çŸ©æ§åˆ¶æ¨¡å¼æ— æ•ˆ*/
+				TorqueCtrl.MaxTorque_Nm = (float)CAN.ReceiveData * 1e-3;
+				CurrLoop.LimitCurrQ = TorqueCtrl.MaxTorque_Nm / (1.5f * MOTOR_POLE_PAIRS_NUM * ROTATOR_FLUX_LINKAGE);
 			
 				break;
 						
 			case IDENTIFIER_SET_VEL_LIMIT:
 				
-				/*ÅäÖÃËÙ¶È»·×î´óÆÚÍûËÙ¶È(×ª¾Ø¿ØÖÆÄ£Ê½ÏÂÎªµç»úµÄ×î´óËÙ¶È, ÔÚÎ»ÖÃ-µçÁ÷¿ØÖÆÄ£Ê½ÏÂÎŞĞ§)*/
+				/*è®¾ç½®é€Ÿåº¦é™å¹…*/
 				MainCtrl.MaxMecAngularSpeed_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 			
+				/*é€Ÿåº¦æ§åˆ¶æ¨¡å¼å’Œä½ç½®æ§åˆ¶æ¨¡å¼ä¸‹é€Ÿåº¦é™å¹…*/
 				if(Driver.ControlMode == SPD_CURR_CTRL_MODE || Driver.ControlMode == POS_SPD_CURR_CTRL_MODE)
 				{
 					SpdLoop.MaxExptMecAngularSpeed_rad = DRV_PULSE_TO_RAD(MainCtrl.MaxMecAngularSpeed_pulse);
-					
-					/*²»³¬¹ıµç»úµÄ×î´ó×ªËÙ*/
 					Saturation_float(&SpdLoop.MaxExptMecAngularSpeed_rad, MAX_SPD, -MAX_SPD);
 				}
+				/*è½¬çŸ©æ§åˆ¶æ¨¡å¼ä¸‹é€Ÿåº¦é™å¹…*/
 				else if(Driver.ControlMode == TORQUE_CTRL_MODE)
 				{
 					TorqueCtrl.MaxMecSpd_rad = DRV_PULSE_TO_RAD(MainCtrl.MaxMecAngularSpeed_pulse);
-					
-					/*²»³¬¹ıµç»úµÄ×î´ó×ªËÙ*/
 					Saturation_float(&TorqueCtrl.MaxMecSpd_rad, MAX_SPD, -MAX_SPD);
 				}
 				
@@ -265,7 +305,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 			
 			case IDENTIFIER_SET_POS_LIMIT_UP:
 				
-				/*ÅäÖÃÎ»ÖÃ»·Î»ÖÃÉÏÏŞ*/
+				/*è®¾ç½®æœºæ¢°è§’åº¦ä¸Šé™*/
 				MainCtrl.MecAngleUpperLimit_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 				PosLoop.MecAngleUpperLimit_rad = (float)DRV_PULSE_TO_RAD(MainCtrl.MecAngleUpperLimit_pulse);
 			
@@ -273,7 +313,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 			
 			case IDENTIFIER_SET_POS_LIMIT_LOW:
 				
-				/*ÅäÖÃÎ»ÖÃ»·Î»ÖÃÏÂÏŞ*/
+				/*è®¾ç½®æœºæ¢°è§’åº¦ä¸‹é™*/
 				MainCtrl.MecAngleLowerLimit_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 				PosLoop.MecAngleLowerLimit_rad = (float)DRV_PULSE_TO_RAD(MainCtrl.MecAngleLowerLimit_pulse);
 			
@@ -281,43 +321,71 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 			
 			case (0x40 + IDENTIFIER_READ_TORQUE):
 				
-				/*¶ÁÈ¡µç´Å×ª¾Ø*/
+				/*è¯»å–ç”µç£è½¬çŸ©*/
 				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_TORQUE);
 				
 				break;
 						
 			case (0x40 + IDENTIFIER_READ_VEL):
 				
-				/*¶ÁÈ¡ËÙ¶È*/
+				/*è¯»å–æœºæ¢°è§’é€Ÿåº¦*/
 				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_VEL);
 			
 				break;
 
 			case (0x40 + IDENTIFIER_READ_POS):
 				
-				/*¶ÁÈ¡Î»ÖÃ*/
+				/*è¯»å–ç»å¯¹æœºæ¢°è§’åº¦*/
 				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_POS);
 		
 				break; 
 			
 			case (0x40 + IDENTIFIER_READ_ENCODER_POS):
 				
-				/*¶ÁÈ¡±àÂëÆ÷Î»ÖÃ*/
+				/*è¯»å–ç¼–ç å™¨*/
 				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_ENCODER_POS);
 		
 				break; 
 						
+			case (0x40 + IDENTIFIER_READ_VOL_D):
+				
+				/*è¯»å–Vd*/
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_VOL_D);
+			
+				break;
+			
+			case (0x40 + IDENTIFIER_READ_CURR_D):
+				
+				/*è¯»å–Id*/
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_CURR_D);
+				
+				break;
+			
 			case (0x40 + IDENTIFIER_READ_VOL_Q):
 				
-				/*¶ÁÈ¡Vq*/
+				/*è¯»å–Vq*/
 				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_VOL_Q);
 			
 				break;
 			
 			case (0x40 + IDENTIFIER_READ_CURR_Q):
 				
-				/*¶ÁÈ¡Iq*/
+				/*è¯»å–Iq*/
 				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_CURR_Q);
+				
+				break;
+			
+			case (0x40 + IDENTIFIER_READ_SPD_LOOP_OUTPUT):
+				
+				/*è¯»å–é€Ÿåº¦ç¯è¾“å‡º*/
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_SPD_LOOP_OUTPUT);
+			
+				break;
+			
+			case (0x40 + IDENTIFIER_READ_POS_LOOP_OUTPUT):
+				
+				/*è¯»å–ä½ç½®ç¯è¾“å‡º*/
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_POS_LOOP_OUTPUT);
 				
 				break;
 			
@@ -326,7 +394,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 				break;
 		}	
 	}
-	/*¹ã²¥Ä£Ê½*/
+	/*å¹¿æ’­æ¨¡å¼*/
 	else if(CAN.StdID == DRIVER_BROADCAST_ID)
 	{
 		switch(CAN.Identifier)
@@ -335,29 +403,71 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 				
 				if (CAN.ReceiveData == 0x00000001)
 				{
-					/*Ê¹ÄÜ*/
+					/*PWMè¾“å‡ºä½¿èƒ½*/
 					SpdLoop.ExptMecAngularSpeed_rad = 0.f;
 					PWM_IT_CMD(ENABLE,ENABLE);
 				}
 				else if(CAN.ReceiveData == 0x00000000)
 				{
-					/*Ê§ÄÜ*/
+					/*PWMè¾“å‡ºå¤±èƒ½*/
 					SpdLoop.ExptMecAngularSpeed_rad = 0.f;
 					PWM_IT_CMD(DISABLE,ENABLE);
 				}
 				
 				break;
+	
+			case IDENTIFIER_CURR_KP_Q:
 				
+				/*è®¾ç½®qè½´Kp, ä¸»æ§ä¹˜ä»¥1000åå‘é€*/
+				CurrLoop.Kp_Q = CAN.ReceiveData * 1e-3;
+			
+				break;
+			
+			case IDENTIFIER_CURR_KI_Q:
+				
+				/*è®¾ç½®qè½´Ki, ä¸»æ§ä¹˜ä»¥1000åå‘é€*/
+				CurrLoop.Ki_Q = CAN.ReceiveData * 1e-3;
+			
+				break;
+			
+			case IDENTIFIER_SPD_KP:
+				
+				/*è®¾ç½®é€Ÿåº¦ç¯Kp, ä¸»æ§ä¹˜ä»¥1000åå‘é€*/
+				SpdLoop.Kp = CAN.ReceiveData * 1e-3;
+			
+				break;
+			
+			case IDENTIFIER_SPD_KI:
+			
+				/*è®¾ç½®é€Ÿåº¦ç¯Ki, ä¸»æ§ä¹˜ä»¥1000åå‘é€*/			
+				SpdLoop.Ki = CAN.ReceiveData * 1e-3;
+			
+				break;
+			
+			case IDENTIFIER_POS_KP:
+				
+				/*è®¾ç½®ä½ç½®ç¯Kp, ä¸»æ§ä¹˜ä»¥1000åå‘é€*/
+				PosLoop.Kp = CAN.ReceiveData * 1e-3;
+			
+				break;
+			
+			case IDENTIFIER_POS_KD:
+
+				/*è®¾ç½®ä½ç½®ç¯Kd, ä¸»æ§ä¹˜ä»¥1000åå‘é€*/
+				PosLoop.Kd = CAN.ReceiveData * 1e-3;
+			
+				break;
+			
 			case IDENTIFIER_TORQUE_CTRL:
 				
-				/*ÆÚÍûÅ¤¾Ø*/
+				/*è½¬çŸ©æ§åˆ¶æ¨¡å¼, æœŸæœ›è½¬çŸ©, ä¸»æ§ä»¥æ¯«ç‰›ç±³ä¸ºå•ä½å‘é€*/
 				TorqueCtrl.ExptTorque_Nm =  (float)CAN.ReceiveData * 1e-3;
 			
 				break;
 				
 			case IDENTIFIER_VEL_CTRL:
 				
-				/*ÆÚÍûËÙ¶È*/
+				/*é€Ÿåº¦æ§åˆ¶æ¨¡å¼, æœŸæœ›æœºæ¢°è§’é€Ÿåº¦*/
 				MainCtrl.ExptMecAngularSpeed_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 				SpdLoop.ExptMecAngularSpeed_rad = DRV_PULSE_TO_RAD(MainCtrl.ExptMecAngularSpeed_pulse);
 			
@@ -365,21 +475,21 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 			
 			case IDENTIFIER_POS_CTRL_ABS:
 			
-				/*ÆÚÍûÎ»ÖÃ, ¾ø¶ÔÎ»ÖÃÄ£Ê½*/
+				/*ä½ç½®æ§åˆ¶æ¨¡å¼, ç»å¯¹ä½ç½®æ¨¡å¼, æœŸæœ›æœºæ¢°è§’åº¦*/
 				MainCtrl.ExptMecAngle_pulse = MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 			
 				break;
 
 			case IDENTIFIER_POS_CTRL_REL:
 				
-				/*ÆÚÍûÎ»ÖÃ, Ïà¶ÔÎ»ÖÃÄ£Ê½*/
+				/*ä½ç½®æ§åˆ¶æ¨¡å¼, å‚è€ƒä½ç½®æ¨¡å¼, æœŸæœ›æœºæ¢°è§’åº¦*/
 				MainCtrl.ExptMecAngle_pulse = MainCtrl.RefMecAngle_pulse +  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 			
 				break;
 						
 			case IDENTIFIER_SET_CTRL_MODE:
 				
-				/*ÅäÖÃÇı¶¯Æ÷¿ØÖÆÄ£Ê½*/
+				/*è®¾ç½®æ§åˆ¶æ¨¡å¼*/
 				if(CAN.ReceiveData == SPD_CURR_CTRL_MODE)
 				{
 					Driver.ControlMode = SPD_CURR_CTRL_MODE;
@@ -403,45 +513,43 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 
 			case IDENTIFIER_SET_ACC:
 				
-				/*ÉèÖÃ¼ÓËÙ¶È*/
-				MainCtrl.Acceleration_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
+				/*è®¾ç½®åŠ é€Ÿåº¦*/
+				MainCtrl.Acceleration_pulse = MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 				SpdLoop.Acceleration = DRV_PULSE_TO_RAD(MainCtrl.Acceleration_pulse);
 				
 				break;
 
 			case IDENTIFIER_SET_DEC:
 
-				/*ÉèÖÃ¼õËÙ¶È*/
-				MainCtrl.Deceleration_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
+				/*è®¾ç½®å‡é€Ÿåº¦*/
+				MainCtrl.Deceleration_pulse = MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 				SpdLoop.Deceleration = DRV_PULSE_TO_RAD(MainCtrl.Deceleration_pulse);
 
 				break;
 					
 			case IDENTIFIER_SET_TORQUE_LIMIT:
 				
-				/*ÅäÖÃ×î´ó×ª¾Ø*/
-				MainCtrl.MaxTorque_Nm = (float)CAN.ReceiveData * 1e-3;
-				CurrLoop.LimitCurrQ = MainCtrl.MaxTorque_Nm / (1.5f * MOTOR_POLE_PAIRS_NUM * ROTATOR_FLUX_LINKAGE);
+				/*è®¾ç½®è½¬çŸ©é™å¹…, åœ¨è½¬çŸ©æ§åˆ¶æ¨¡å¼æ— æ•ˆ*/
+				TorqueCtrl.MaxTorque_Nm = (float)CAN.ReceiveData * 1e-3;
+				CurrLoop.LimitCurrQ = TorqueCtrl.MaxTorque_Nm / (1.5f * MOTOR_POLE_PAIRS_NUM * ROTATOR_FLUX_LINKAGE);
 			
 				break;
 						
 			case IDENTIFIER_SET_VEL_LIMIT:
 				
-				/*ÅäÖÃËÙ¶È»·×î´óÆÚÍûËÙ¶È(×ª¾Ø¿ØÖÆÄ£Ê½ÏÂÎªµç»úµÄ×î´óËÙ¶È, ÔÚÎ»ÖÃ-µçÁ÷¿ØÖÆÄ£Ê½ÏÂÎŞĞ§)*/
+				/*è®¾ç½®é€Ÿåº¦é™å¹…*/
 				MainCtrl.MaxMecAngularSpeed_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 			
+				/*é€Ÿåº¦æ§åˆ¶æ¨¡å¼å’Œä½ç½®æ§åˆ¶æ¨¡å¼ä¸‹é€Ÿåº¦é™å¹…*/
 				if(Driver.ControlMode == SPD_CURR_CTRL_MODE || Driver.ControlMode == POS_SPD_CURR_CTRL_MODE)
 				{
 					SpdLoop.MaxExptMecAngularSpeed_rad = DRV_PULSE_TO_RAD(MainCtrl.MaxMecAngularSpeed_pulse);
-					
-					/*²»³¬¹ıµç»úµÄ×î´ó×ªËÙ*/
 					Saturation_float(&SpdLoop.MaxExptMecAngularSpeed_rad, MAX_SPD, -MAX_SPD);
 				}
+				/*è½¬çŸ©æ§åˆ¶æ¨¡å¼ä¸‹é€Ÿåº¦é™å¹…*/
 				else if(Driver.ControlMode == TORQUE_CTRL_MODE)
 				{
 					TorqueCtrl.MaxMecSpd_rad = DRV_PULSE_TO_RAD(MainCtrl.MaxMecAngularSpeed_pulse);
-					
-					/*²»³¬¹ıµç»úµÄ×î´ó×ªËÙ*/
 					Saturation_float(&TorqueCtrl.MaxMecSpd_rad, MAX_SPD, -MAX_SPD);
 				}
 				
@@ -449,7 +557,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 			
 			case IDENTIFIER_SET_POS_LIMIT_UP:
 				
-				/*ÅäÖÃÎ»ÖÃ»·Î»ÖÃÉÏÏŞ*/
+				/*è®¾ç½®æœºæ¢°è§’åº¦ä¸Šé™*/
 				MainCtrl.MecAngleUpperLimit_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 				PosLoop.MecAngleUpperLimit_rad = (float)DRV_PULSE_TO_RAD(MainCtrl.MecAngleUpperLimit_pulse);
 			
@@ -457,7 +565,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 			
 			case IDENTIFIER_SET_POS_LIMIT_LOW:
 				
-				/*ÅäÖÃÎ»ÖÃ»·Î»ÖÃÏÂÏŞ*/
+				/*è®¾ç½®æœºæ¢°è§’åº¦ä¸‹é™*/
 				MainCtrl.MecAngleLowerLimit_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 				PosLoop.MecAngleLowerLimit_rad = (float)DRV_PULSE_TO_RAD(MainCtrl.MecAngleLowerLimit_pulse);
 			
@@ -465,43 +573,71 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 			
 			case (0x40 + IDENTIFIER_READ_TORQUE):
 				
-				/*¶ÁÈ¡µç´Å×ª¾Ø*/
+				/*è¯»å–ç”µç£è½¬çŸ©*/
 				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_TORQUE);
 				
 				break;
 						
 			case (0x40 + IDENTIFIER_READ_VEL):
 				
-				/*¶ÁÈ¡ËÙ¶È*/
+				/*è¯»å–æœºæ¢°è§’é€Ÿåº¦*/
 				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_VEL);
 			
 				break;
 
 			case (0x40 + IDENTIFIER_READ_POS):
 				
-				/*¶ÁÈ¡Î»ÖÃ*/
+				/*è¯»å–ç»å¯¹æœºæ¢°è§’åº¦*/
 				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_POS);
 		
 				break; 
 			
 			case (0x40 + IDENTIFIER_READ_ENCODER_POS):
 				
-				/*¶ÁÈ¡±àÂëÆ÷Î»ÖÃ*/
+				/*è¯»å–ç¼–ç å™¨*/
 				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_ENCODER_POS);
 		
 				break; 
 						
+			case (0x40 + IDENTIFIER_READ_VOL_D):
+				
+				/*è¯»å–Vd*/
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_VOL_D);
+			
+				break;
+			
+			case (0x40 + IDENTIFIER_READ_CURR_D):
+				
+				/*è¯»å–Id*/
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_CURR_D);
+				
+				break;
+			
 			case (0x40 + IDENTIFIER_READ_VOL_Q):
 				
-				/*¶ÁÈ¡Vq*/
+				/*è¯»å–Vq*/
 				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_VOL_Q);
 			
 				break;
 			
 			case (0x40 + IDENTIFIER_READ_CURR_Q):
 				
-				/*¶ÁÈ¡Iq*/
+				/*è¯»å–Iq*/
 				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_CURR_Q);
+				
+				break;
+			
+			case (0x40 + IDENTIFIER_READ_SPD_LOOP_OUTPUT):
+				
+				/*è¯»å–é€Ÿåº¦ç¯è¾“å‡º*/
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_SPD_LOOP_OUTPUT);
+			
+				break;
+			
+			case (0x40 + IDENTIFIER_READ_POS_LOOP_OUTPUT):
+				
+				/*è¯»å–ä½ç½®ç¯è¾“å‡º*/
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_POS_LOOP_OUTPUT);
 				
 				break;
 			
@@ -513,7 +649,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 	
 	CAN_Respond();
 	
-	/*¼ì²âRX FIFOÊ£ÓàµÄĞÅÏ¢ÊıÁ¿*/
+	/*åˆ¤æ–­RX FIFO0ä¸­æ˜¯å¦è¿˜æœ‰æ¶ˆæ¯*/
 	if(HAL_CAN_GetRxFifoFillLevel(&hcan1, CAN_RX_FIFO0))
 	{
 		goto first_line;
@@ -524,78 +660,126 @@ void CAN_Respond(void)
 {
 	switch (CAN.RecieveStatus)
 	{
+		/*å‘é€ç”µç£è½¬çŸ©*/	
 		case (0x40 + IDENTIFIER_READ_TORQUE):
 			
 			CAN.Identifier = IDENTIFIER_READ_TORQUE;
 			CAN.TransmitData = (int32_t)(TorqueCtrl.EleTorque_Nm * 1e3);
 		
-			/*·¢ËÍµ±Ç°µç´Å×ª¾Ø*/	
 			CAN_Transmit(CAN.Identifier, CAN.TransmitData, 4);
 		
 			CAN.RecieveStatus = 0;
 		
 			break;
-				
+			
+		/*å‘é€æœºæ¢°è§’é€Ÿåº¦*/			
 		case (0x40 + IDENTIFIER_READ_VEL):
 			
 			CAN.Identifier = IDENTIFIER_READ_VEL;
 			CAN.TransmitData = (int32_t)RAD_TO_MC_PULSE(PosSensor.MecAngularSpeed_rad);
 		
-			/*·¢ËÍµ±Ç°ËÙ¶È*/
 			CAN_Transmit(CAN.Identifier, CAN.TransmitData, 4);
 		
 			CAN.RecieveStatus = 0;
 		
-			break;
-
+			break;		
+		
+		/*å‘é€æœºæ¢°è§’åº¦*/
 		case (0x40 + IDENTIFIER_READ_POS):
 			
 			CAN.Identifier = IDENTIFIER_READ_POS;
 			CAN.TransmitData = (int32_t)DRV_PULSE_TO_MC_PULSE(MainCtrl.RefMecAngle_pulse);
 		
-			/*·¢ËÍµ±Ç°Î»ÖÃ*/
 			CAN_Transmit(CAN.Identifier, CAN.TransmitData, 4);
 		
 			CAN.RecieveStatus = 0;
 		
 			break;
 		
+		/*å‘é€ç¼–ç å™¨ä½ç½®*/
 		case (0x40 + IDENTIFIER_READ_ENCODER_POS):
 			
 			CAN.Identifier = IDENTIFIER_READ_ENCODER_POS;
 			CAN.TransmitData = (int32_t)DRV_PULSE_TO_MC_PULSE(PosSensor.MecAngle_15bit);
 		
-			/*·¢ËÍ±àÂëÆ÷Î»ÖÃ*/
-			CAN_Transmit(CAN.Identifier, CAN.TransmitData, 4);
-		
-			CAN.RecieveStatus = 0;
-		
-			break;
-							
-		case (0x40 + IDENTIFIER_READ_VOL_Q):
-			
-			CAN.Identifier = IDENTIFIER_READ_VOL_Q;
-			CAN.TransmitData = (int32_t)(CurrLoop.CtrlVolQ * 1e3);
-		
-			/*·¢ËÍµ±Ç°Vq*/	
 			CAN_Transmit(CAN.Identifier, CAN.TransmitData, 4);
 		
 			CAN.RecieveStatus = 0;
 		
 			break;
 
-		case (0x40 + IDENTIFIER_READ_CURR_Q):
+		/*å‘é€Vd*/		
+		case (0x40 + IDENTIFIER_READ_VOL_D):
 			
-			CAN.Identifier = IDENTIFIER_READ_CURR_Q;
-			CAN.TransmitData = (int32_t)(CoordTrans.CurrQ * 1e3);
+			CAN.Identifier = IDENTIFIER_READ_VOL_D;
+			CAN.TransmitData = (int32_t)(CurrLoop.CtrlVolD * 1e3);
 		
-			/*·¢ËÍµ±Ç°Iq*/		
 			CAN_Transmit(CAN.Identifier, CAN.TransmitData, 4);
 		
 			CAN.RecieveStatus = 0;
 		
 			break;
-				
+
+		/*å‘é€Id*/
+		case (0x40 + IDENTIFIER_READ_CURR_D):
+			
+			CAN.Identifier = IDENTIFIER_READ_CURR_D;
+			CAN.TransmitData = (int32_t)(CoordTrans.CurrD * 1e3);
+		
+			CAN_Transmit(CAN.Identifier, CAN.TransmitData, 4);
+		
+			CAN.RecieveStatus = 0;
+		
+			break;
+		
+		/*å‘é€Vq*/		
+		case (0x40 + IDENTIFIER_READ_VOL_Q):
+			
+			CAN.Identifier = IDENTIFIER_READ_VOL_Q;
+			CAN.TransmitData = (int32_t)(CurrLoop.CtrlVolQ * 1e3);
+		
+			CAN_Transmit(CAN.Identifier, CAN.TransmitData, 4);
+		
+			CAN.RecieveStatus = 0;
+		
+			break;
+
+		/*å‘é€Iq*/
+		case (0x40 + IDENTIFIER_READ_CURR_Q):
+			
+			CAN.Identifier = IDENTIFIER_READ_CURR_Q;
+			CAN.TransmitData = (int32_t)(CoordTrans.CurrQ * 1e3);
+		
+			CAN_Transmit(CAN.Identifier, CAN.TransmitData, 4);
+		
+			CAN.RecieveStatus = 0;
+		
+			break;
+		
+		/*å‘é€é€Ÿåº¦ç¯è¾“å‡º*/		
+		case (0x40 + IDENTIFIER_READ_SPD_LOOP_OUTPUT):
+			
+			CAN.Identifier = IDENTIFIER_READ_SPD_LOOP_OUTPUT;
+			CAN.TransmitData = (int32_t)(CurrLoop.ExptCurrQ * 1e3);
+		
+			CAN_Transmit(CAN.Identifier, CAN.TransmitData, 4);
+		
+			CAN.RecieveStatus = 0;
+		
+			break;
+
+		/*å‘é€ä½ç½®ç¯è¾“å‡º*/
+		case (0x40 + IDENTIFIER_READ_POS_LOOP_OUTPUT):
+			
+			CAN.Identifier = IDENTIFIER_READ_POS_LOOP_OUTPUT;
+			CAN.TransmitData = (int32_t)(SpdLoop.ExptMecAngularSpeed_rad * 1e3);
+		
+			CAN_Transmit(CAN.Identifier, CAN.TransmitData, 4);
+		
+			CAN.RecieveStatus = 0;
+		
+			break;
+		
 		default:
 			
 			break;
@@ -688,19 +872,19 @@ void CAN_Receive(uint32_t *stdId, uint8_t *identifier, int32_t *receiveData)
 	
 	if(((CAN.Receive.data_uint8[3]&0x80)>>7) == 0)
 	{
-		/*½ÓÊÜÊı¾İÎªÕıÊıÊ±*/
+		/*å½“æ•°æ®ä¸ºæ­£æ•°æ—¶*/
 		*receiveData = (int32_t)((CAN.Receive.data_uint8[3]<<16) | (CAN.Receive.data_uint8[2]<<8) | (CAN.Receive.data_uint8[1]<<0));
 	}
 	else if(((CAN.Receive.data_uint8[3]&0x80)>>7) == 1)
 	{
-		/*½ÓÊÜÊı¾İÎª¸ºÊıÊ±*/
+		/*å½“æ•°æ®ä¸ºè´Ÿæ•°æ—¶*/
 		*receiveData = -(int32_t)(((CAN.Receive.data_uint8[3]&0x7F)<<16) | (CAN.Receive.data_uint8[2]<<8) | (CAN.Receive.data_uint8[1]<<0));
 	}
 }
 
 void CAN_Enable(void)
 {
-	/*ÅäÖÃ¹ıÂËÆ÷*/
+	/*é…ç½®æŠ¥æ–‡è¿‡æ»¤å™¨*/
 	CAN_FilterTypeDef CAN1_FilerConf    = {0};
 	CAN1_FilerConf.FilterIdHigh         = 0x0000;//(DRIVER_BROADCAST_ID << 5) | (CAN_ID_STD << 4) | (CAN_RTR_DATA << 3);
 	CAN1_FilerConf.FilterIdLow          = 0x0000;//(DRIVER_SERVER_CAN_ID << 5) | (CAN_ID_STD << 4) | (CAN_RTR_DATA << 3);

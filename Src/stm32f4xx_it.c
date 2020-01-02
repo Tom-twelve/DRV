@@ -39,7 +39,6 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "MotorConfig.h"
-#include "control.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -240,66 +239,6 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
-  * @brief This function handles EXTI line 2 interrupt.
-  */
-void EXTI2_IRQHandler(void)
-{
-  /* USER CODE BEGIN EXTI2_IRQn 0 */
-
-  /* USER CODE END EXTI2_IRQn 0 */
-  if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_2) != RESET)
-  {
-    LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_2);
-    /* USER CODE BEGIN LL_EXTI_LINE_2 */
-    
-    /* USER CODE END LL_EXTI_LINE_2 */
-  }
-  /* USER CODE BEGIN EXTI2_IRQn 1 */
-
-  /* USER CODE END EXTI2_IRQn 1 */
-}
-
-/**
-  * @brief This function handles EXTI line 3 interrupt.
-  */
-void EXTI3_IRQHandler(void)
-{
-  /* USER CODE BEGIN EXTI3_IRQn 0 */
-
-  /* USER CODE END EXTI3_IRQn 0 */
-  if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_3) != RESET)
-  {
-    LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_3);
-    /* USER CODE BEGIN LL_EXTI_LINE_3 */
-    
-    /* USER CODE END LL_EXTI_LINE_3 */
-  }
-  /* USER CODE BEGIN EXTI3_IRQn 1 */
-
-  /* USER CODE END EXTI3_IRQn 1 */
-}
-
-/**
-  * @brief This function handles EXTI line 4 interrupt.
-  */
-void EXTI4_IRQHandler(void)
-{
-  /* USER CODE BEGIN EXTI4_IRQn 0 */
-
-  /* USER CODE END EXTI4_IRQn 0 */
-  if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_4) != RESET)
-  {
-    LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_4);
-    /* USER CODE BEGIN LL_EXTI_LINE_4 */
-    
-    /* USER CODE END LL_EXTI_LINE_4 */
-  }
-  /* USER CODE BEGIN EXTI4_IRQn 1 */
-
-  /* USER CODE END EXTI4_IRQn 1 */
-}
-
-/**
   * @brief This function handles CAN1 RX0 interrupt.
   */
 void CAN1_RX0_IRQHandler(void)
@@ -356,14 +295,9 @@ void DMA2_Stream7_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
-
 void ADC_IRQHandler(void)
 {
-
 	GetPhaseCurrent();
-	static int iii = 0,step = 0,jjj = 0, count = 0 ; 
-
-	
 	
 	if(Driver.UnitMode == WORK_MODE)
 	{		
@@ -375,7 +309,12 @@ void ADC_IRQHandler(void)
 										SpdCurrController();
 			
 										/*计算电磁转矩*/
-										CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque_Nm);					
+										CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque_Nm);
+										
+										UART_Transmit_DMA("%d\t", (int)(PosSensor.MecAngularSpeed_rad));
+										UART_Transmit_DMA("%d\t",(int)(CurrLoop.ExptCurrQ * 1e3));
+										UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrQ * 1e3));
+			
 										break;
 			
 			case POS_SPD_CURR_CTRL_MODE :/*位置-速度-电流控制器*/
@@ -384,13 +323,10 @@ void ADC_IRQHandler(void)
 										/*计算电磁转矩*/
 										CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque_Nm);
 			
-			                            if(iii>10)
-			                              {
-//										UART_Transmit_DMA("%d\t", (int)(MainCtrl.ExptMecAngle_pulse));
-										UART_Transmit_DMA("%d\t",(int)(PosSensor.MecAngle_15bit));
+										UART_Transmit_DMA("%d\t", (int)(MainCtrl.ExptMecAngle_pulse));
+										UART_Transmit_DMA("%d\t",(int)(SpdLoop.ExptMecAngularSpeed_rad));
 										UART_Transmit_DMA("%d\r\n",(int)(CurrLoop.ExptCurrQ * 1e3));
-		                                 iii=0;
-										  }
+			
 										break;
 			
 			case POS_CURR_CTRL_MODE :	/*位置-电流控制器*/
@@ -401,7 +337,7 @@ void ADC_IRQHandler(void)
 			
 										UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrQ * 1e3));
 										UART_Transmit_DMA("%d\r\n",(int)(MainCtrl.RefMecAngle_pulse));
-			
+			                                          
 										break;
 			case TORQUE_CTRL_MODE :		/*转矩控制器*/
 										TorqueController();
@@ -427,11 +363,10 @@ void ADC_IRQHandler(void)
 		
 		SpdCurrController();
 			
-		/*计算电磁转矩*/
+		/*璁＄畻鐢电杞煩*/
 		CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque_Nm);		
 
 	}
-	
 	__HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_JEOC);
 	__HAL_ADC_CLEAR_FLAG(&hadc2, ADC_FLAG_JEOC);
 	__HAL_ADC_CLEAR_FLAG(&hadc3, ADC_FLAG_JEOC);

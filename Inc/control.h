@@ -47,10 +47,10 @@ struct CurrLoop_t
 
 struct SpdLoop_t
 {
-	float ExptMecAngularSpeed_rad;		//ÆÚÍû»úĞµ½ÇËÙ¶È(rad/s), »¡¶ÈÖÆ
-	float MaxExptMecAngularSpeed_rad;	//×î´óÆÚÍû»úĞµ½ÇËÙ¶È(rad/s), »¡¶ÈÖÆ
-	float Acceleration;		//¼ÓËÙ¶È(rad/s2), »¡¶ÈÖÆ
-	float Deceleration;		//¼õËÙ¶È(rad/s2), »¡¶ÈÖÆ
+	float ExptMecAngularSpeed_rad;		//æœŸæœ›æœºæ¢°è§’é€Ÿåº¦(rad/s)
+	float MaxExptMecAngularSpeed_rad;	//æœ€å¤§æœŸæœ›è§’é€Ÿåº¦(rad/s)ï¼Œç”¨äºé™å¹…
+	float Acceleration;					//åŠ é€Ÿåº¦(rad/s2)
+	float Deceleration;					//å‡é€Ÿåº¦(rad/s2)
 	float Err;
 	float IntegralErr;
 	float Kp;
@@ -59,10 +59,10 @@ struct SpdLoop_t
 
 struct PosLoop_t
 {
-	float ExptMecAngle_rad;	//Ä¿±ê½Ç¶È, »¡¶ÈÖÆ
-	float MecAngleUpperLimit_rad;		//Î»ÖÃ»·Î»ÖÃÉÏÏŞ(rad), »¡¶ÈÖÆ
-	float MecAngleLowerLimit_rad;		//Î»ÖÃ»·Î»ÖÃÏÂÏŞ(rad), »¡¶ÈÖÆ
-	float RefMecAngle_rad;		//²Î¿¼»úĞµ½Ç¶È(rad), ÉÏµçÊ±ÖÃÁã, »¡¶ÈÖÆ
+	float ExptMecAngle_rad;			//æœŸæœ›æœºæ¢°è§’åº¦(rad)
+	float MecAngleUpperLimit_rad;	//æœºæ¢°è§’åº¦ä¸Šé™(rad)
+	float MecAngleLowerLimit_rad;	//æœºæ¢°è§’åº¦ä¸‹é™(rad)
+	float RefMecAngle_rad;			//å‚è€ƒæœºæ¢°è§’åº¦(rad), ä¸»æ§çš„å‚è€ƒé›¶ä½ç½®
 	float Err;
 	float LastErr;
 	float DiffErr;
@@ -72,40 +72,41 @@ struct PosLoop_t
 
 struct TorqueCtrl_t
 {
-	float ExptTorque_Nm;
-	float EleTorque_Nm;
-	float MaxMecSpd_rad;
+	float ExptTorque_Nm;	//æœŸæœ›è½¬çŸ©(è„‰å†²)
+	float EleTorque_Nm;		//ç”µç£è½¬çŸ©(è„‰å†²)
+	float MaxTorque_Nm;		//æœ€å¤§è½¬çŸ©(è„‰å†²)
+	float MaxMecSpd_rad;	//æœ€å¤§æœºæ¢°è§’é€Ÿåº¦(è„‰å†²), è¯¥è½¬é€Ÿé™å¹…ä»…ç”¨äºè½¬çŸ©æ§åˆ¶æ¨¡å¼
 };
 
 struct MainCtrl_t
 {
-	int32_t ExptMecAngularSpeed_pulse;		//Ä¿±ê»úĞµ½ÇËÙ¶È, Âö³å
-	volatile uint32_t MaxMecAngularSpeed_pulse;		//ËÙ¶È»·×î´óËÙ¶È, Âö³å
-	uint32_t Acceleration_pulse;	//¼ÓËÙ¶È, Âö³å
-	uint32_t Deceleration_pulse;	//¼õËÙ¶È, Âö³å
-	int32_t ExptMecAngle_pulse;				//Ä¿±êÎ»ÖÃ, Âö³å
-	int32_t MecAngleUpperLimit_pulse;		//Î»ÖÃ»·Î»ÖÃÉÏÏŞ, Âö³å
-	int32_t MecAngleLowerLimit_pulse;		//Î»ÖÃ»·Î»ÖÃÏÂÏŞ, Âö³å
-	int32_t RefMecAngle_pulse;				//²Î¿¼»úĞµ½Ç¶È, ÉÏµçÊ±ÖÃÁã, Âö³å
-	float MaxTorque_Nm;						//×î´óÅ¤¾Ø(Nm)
+	int32_t ExptMecAngularSpeed_pulse;			//æœŸæœ›æœºæ¢°è§’é€Ÿåº¦(è„‰å†²)
+	uint32_t MaxMecAngularSpeed_pulse;			//æœ€å¤§æœºæ¢°è§’é€Ÿåº¦(è„‰å†²), ç”¨äºé™å¹…
+	uint32_t Acceleration_pulse;				//åŠ é€Ÿåº¦(è„‰å†²)
+	uint32_t Deceleration_pulse;				//åŠ é€Ÿåº¦(è„‰å†²)
+	int32_t ExptMecAngle_pulse;					//æœŸæœ›æœºæ¢°è§’åº¦(è„‰å†²)
+	int32_t MecAngleUpperLimit_pulse;			//æœºæ¢°è§’åº¦ä¸Šé™(è„‰å†²), ç”¨äºé™å¹…
+	int32_t MecAngleLowerLimit_pulse;			//æœºæ¢°è§’åº¦ä¸‹é™(è„‰å†²), ç”¨äºé™å¹…
+	int32_t RefMecAngle_pulse;					//å‚è€ƒæœºæ¢°è§’åº¦(è„‰å†²), ä¸»æ§çš„å‚è€ƒé›¶ä½ç½®
 	uint16_t PresentMecAngle_pulse;
 	uint16_t LastMecAngle_pulse;
 };
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define PERIOD_MULTIPLE					10	//(ËÙ¶È»·, Î»ÖÃ»·ÖÜÆÚ / µçÁ÷»·ÖÜÆÚ)
-#define OUTER_LOOP_PERIOD				(DEFAULT_CARRIER_PERIOD_s * PERIOD_MULTIPLE)	//Íâ»·¿ØÖÆÖÜÆÚ
+#define PERIOD_MULTIPLE					10	//(å¤–ç¯å‘¨æœŸ / ç”µæµç¯å‘¨æœŸ)
+#define OUTER_LOOP_PERIOD				(DEFAULT_CARRIER_PERIOD_s * PERIOD_MULTIPLE)	//å¤–ç¯å‘¨æœŸ
 
-#define CURR_INTEGRAL_ERR_LIM_D 		(12.0f / CurrLoop.Ki_D)	//Id»ı·ÖÏŞ·ù
-#define CURR_INTEGRAL_ERR_LIM_Q 		(6.0f / CurrLoop.Ki_Q)	//Iq»ı·ÖÏŞ·ù
+#define CURR_INTEGRAL_ERR_LIM_D 		(12.0f / CurrLoop.Ki_D)	//Idç§¯åˆ†é™å¹…
+#define CURR_INTEGRAL_ERR_LIM_Q 		(6.0f / CurrLoop.Ki_Q)	//Iqç§¯åˆ†é™å¹…
 
 #define SPD_INTEGRAL_ERR_LIM			(15.0 * 2.f * PI)
 
-#define CURRENT_CONTROL_KP_D			(INDUCTANCE_D * 1500.f)
-#define CURRENT_CONTROL_KI_D			(PHASE_RES * 1500.f)
+#define CURRENT_CONTROL_KP_D			(INDUCTANCE_D * 1500.f)	//dè½´ç”µæµç¯é‡‡ç”¨çš„ä¼ ç»ŸPIæ§åˆ¶å™¨, Kp = dè½´ç”µæ„Ÿ * ç”µæµç¯å¸¦å®½
+#define CURRENT_CONTROL_KI_D			(PHASE_RES * 1500.f)	//dè½´ç”µæµç¯é‡‡ç”¨çš„ä¼ ç»ŸPIæ§åˆ¶å™¨, Ki = ç›¸ç”µé˜» * ç”µæµç¯å¸¦å®½
 
-#define CURRENT_CONTROL_KI_Q			(PHASE_RES * 500.f)	//qÖáµçÁ÷¿ØÖÆÆ÷²ÉÓÃ¼ò»¯µç»úÄ£ĞÍ+Iµ÷½Ú, ²»Í¬ÓÚ´«Í³PI¿ØÖÆÆ÷, ¹ÊI²ÎÊıĞèÈË¹¤µ÷Õû
+#define CURRENT_CONTROL_KP_Q			(INDUCTANCE_Q * 2500.f)	//qè½´ç”µæµç¯é‡‡ç”¨åŸºäºæ¨¡å‹æ”¹è¿›çš„PIæ§åˆ¶å™¨, Kp = qè½´ç”µæ„Ÿ * ç”µæµç¯å¸¦å®½
+#define CURRENT_CONTROL_KI_Q			(PHASE_RES * 0.f)		//qè½´ç”µæµç¯é‡‡ç”¨åŸºäºæ¨¡å‹æ”¹è¿›çš„PIæ§åˆ¶å™¨, Kiå¾…è°ƒèŠ‚
 
 #define SPEED_CONTROL_KP				1.0f
 #define SPEED_CONTROL_KI				1.0f
@@ -113,9 +114,9 @@ struct MainCtrl_t
 #define POSITION_CONTROL_KP				60.0f
 #define POSITION_CONTROL_KD				0.1f
 
-#define MC_CTRL_RESOLUTION				4096
+#define MC_CTRL_RESOLUTION				4096	//å˜é‡åˆ†è¾¨ç‡
 
-/*¿ØÖÆÄ£Ê½, ĞèÓëdriver.cÍ¬²½*/
+/*æ§åˆ¶æ¨¡å¼å®å®šä¹‰, éœ€ä¸ä¸»æ§åŒæ­¥*/
 #define SPD_CURR_CTRL_MODE 				1
 #define POS_SPD_CURR_CTRL_MODE 			2
 #define POS_CURR_CTRL_MODE 				3
@@ -126,7 +127,7 @@ struct MainCtrl_t
 #define WORK_MODE						1
 #define MEASURE_ANGLE_TABLE_MODE		2
 #define MEASURE_PARAM_MODE				3
-#define MEASURE_INERTIA_MODE		    4
+#define MEASURE_INERTIA_MODE			4
 
 /* USER CODE END PD */
 
@@ -149,7 +150,6 @@ void PosCurrController(void);
 void TorqueController(void);
 float VelSlopeGenerator(float exptVelocity);
 void DriverCtrlModeInit(void);
-void LeastSquare(float *x, float *y,int size, float *a);
 /* USER CODE END PFP */
 
 

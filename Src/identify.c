@@ -321,12 +321,15 @@ void MeasureParameters(void)
 			break;
 	}
 }
+ /** 
+   * @brief		 Measure Moment of Inertia
+   */
 
 extern struct TorqueCtrl_t TorqueCtrl;
 extern struct SpdLoop_t SpdLoop;
 void RotateInertiaTest(float sampleTime)
 {
-	#define J_SIZE  200
+	#define J_SIZE  150
 	static uint8_t step =0;
 	static int index1 = 0, index2 = 0 ;
 	static float time[J_SIZE] = {0};
@@ -353,14 +356,13 @@ void RotateInertiaTest(float sampleTime)
 					step = SPEED_UP;
 					break;
 				case SPEED_UP:
-					CurrLoop.LimitCurrQ = 5.f;
+					CurrLoop.LimitCurrQ = 30.f;
 					SpdLoop.ExptMecAngularSpeed_rad = 50.f * 2 * PI;
-					if(30.f * 2 * PI < PosSensor.MecAngularSpeed_rad) 
+					if(25.f * 2 * PI < PosSensor.MecAngularSpeed_rad) 
 					{
 						torque[index1] = TorqueCtrl.EleTorque_Nm;
 						speedUp[index1] = PosSensor.MecAngularSpeed_rad;
-//						UART_Transmit_DMA("%d\t",(int)(PosSensor.MecAngularSpeed_rad));
-//						UART_Transmit_DMA("%d\t",(int)(CoordTrans.CurrQ*1e3));
+//						UART_Transmit_DMA("%d\t", (int)(PosSensor.MecAngularSpeed_rad));
 						sumTorque += torque[index1];
 						index1++;
 						if(index1 >= J_SIZE)
@@ -374,7 +376,7 @@ void RotateInertiaTest(float sampleTime)
 					PWM_IT_CMD(DISABLE,DISABLE);
 					CurrLoop.LimitCurrQ = 0.f;
 					SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
-					if(PosSensor.MecAngularSpeed_rad<=12.f * 2 * PI)
+					if(PosSensor.MecAngularSpeed_rad<=15.f * 2 * PI)
 					{
 						speedDown[index2] = PosSensor.MecAngularSpeed_rad;
 						index2++;
@@ -382,6 +384,7 @@ void RotateInertiaTest(float sampleTime)
 						{
 							step = DATA_HANDLE;
 						}
+//						UART_Transmit_DMA("%d\t", (int)(PosSensor.MecAngularSpeed_rad));
 					}
 					break;	
 				case DATA_HANDLE:
@@ -407,12 +410,6 @@ void RotateInertiaTest(float sampleTime)
 		J = JSum / sampleTime;
 	}
 }
-			
-//										UART_Transmit_DMA("%d\r\n",(int)(PosSensor.MecAngularSpeed_rad));
-										
-	
-
-
 /* USER CODE END */
 
 /************************ (C) COPYRIGHT ACTION *****END OF FILE****/

@@ -88,6 +88,11 @@ void Saturation_int(int *value, int upLimit, int downLimit)
 		*value = downLimit;
 	}
 }
+/**
+ * @brief 最小二乘法
+ * @note 
+ * @retval 
+ */
 void LeastSquare(float *x, float *y,int size,float *a)
 {
 	float sum_x2 = 0.0;
@@ -106,4 +111,3 @@ void LeastSquare(float *x, float *y,int size,float *a)
 	*a = (size*sum_xy - sum_x*sum_y)*2000.0f/(size*sum_x2 - sum_x*sum_x);
 //	*b = (sum_x2*sum_y - sum_x*sum_xy)/(size*sum_x2-sum_x*sum_x);
 }
-

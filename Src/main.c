@@ -101,7 +101,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
-	Driver.UnitMode = MEASURE_INERTIA_MODE; 	//( WORK_MODE or MEASURE_ANGLE_TABLE_MODE or MEASURE_PARAM_MODE	or MEASURE_INERTIA_MODE )
+	Driver.UnitMode = WORK_MODE;	 //工作模式( WORK_MODE or MEASURE_ANGLE_TABLE_MODE or MEASURE_PARAM_MODE or MEASURE_INERTIA_MODE)
 	
   /* USER CODE END 1 */
   
@@ -126,6 +126,7 @@ int main(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_TIM8_Init();
+  MX_SPI1_Init();
   MX_SPI3_Init();
   MX_CAN1_Init();
   MX_USART1_UART_Init();
@@ -134,36 +135,31 @@ int main(void)
   MX_ADC3_Init();
   /* USER CODE BEGIN 2 */
   
-	/*��ʱ�Եȴ�ĸ�ߵ�ѹƽ��*/
-	LL_mDelay(1000);
+	LL_mDelay(500);
 	
-	/*ʹ��SPI*/
 	SPI_Enable();
 	
-	/*ʹ��UART*/
 	UART_Enable();
 	
-	/*ʹ�ܶ�ʱ��*/
 	TIM_Enable();
 	
-	/*��ʼ��դ��������*/
 	GateDriverConfig();
 	
 	LL_mDelay(100);
 
-	/*ʹ��PWM, �趨����*/
 	DriverInit();
-	
-	/*ʹ��CAN����*/
+		
+	LL_mDelay(100);
+
 	CAN_Enable();
 		
 	switch(Driver.UnitMode)
 	{
-		case WORK_MODE : ADC_CMD(ENABLE);	//����ʹ��ADC�ж�, ������Ƴ�����ADC�ж���ִ��
+		case WORK_MODE : ADC_CMD(ENABLE);	//使能ADC, 包括中断
 		
 						break;
 		
-		case MEASURE_ANGLE_TABLE_MODE : CorrectPosOffset_Encoder(0.6f);	//�ⶨ��Ƕ�?, �趨d����?
+		case MEASURE_ANGLE_TABLE_MODE : CorrectPosOffset_Encoder(0.6f);	//测量电角度偏移量
 		
 						break;
 		
@@ -171,7 +167,7 @@ int main(void)
 		
 						break;
 		case MEASURE_INERTIA_MODE : ADC_CMD(ENABLE);
-
+		
 						break;
 	}
 

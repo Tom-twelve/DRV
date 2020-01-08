@@ -90,11 +90,11 @@ extern struct MainCtrl_t MainCtrl;
 		MainCtrl.RefMecAngle_pulse += delta;
 		
 		/*只传输三个字节的数据给主控, 限幅以防止数据溢出*/
-		if(MainCtrl.RefMecAngle_pulse > 1024 * 4096)
+		if(MainCtrl.RefMecAngle_pulse > 1024 * 32768)
 		{
 			MainCtrl.RefMecAngle_pulse = 0;
 		}
-		else if(MainCtrl.RefMecAngle_pulse < -1024 * 4096)
+		else if(MainCtrl.RefMecAngle_pulse < -1024 * 32768)
 		{
 			MainCtrl.RefMecAngle_pulse = 0;
 		}

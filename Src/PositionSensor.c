@@ -39,7 +39,7 @@ extern struct MainCtrl_t MainCtrl;
 /* CODE END PV */
 
 /* USER CODE BEGIN */
-
+float lastESpeed;
 #if	POSITION_SENSOR_TYPE == ENCODER_TLE5012
 	void GetEleImformation(void)
 	{		
@@ -90,11 +90,11 @@ extern struct MainCtrl_t MainCtrl;
 		MainCtrl.RefMecAngle_pulse += delta;
 		
 		/*只传输三个字节的数据给主控, 限幅以防止数据溢出*/
-		if(MainCtrl.RefMecAngle_pulse > 1024 * 4096)
+		if(MainCtrl.RefMecAngle_pulse > 1024 * 32768)
 		{
 			MainCtrl.RefMecAngle_pulse = 0;
 		}
-		else if(MainCtrl.RefMecAngle_pulse < -1024 * 4096)
+		else if(MainCtrl.RefMecAngle_pulse < -1024 * 32768)
 		{
 			MainCtrl.RefMecAngle_pulse = 0;
 		}
@@ -178,9 +178,10 @@ extern struct MainCtrl_t MainCtrl;
 		presentEleAngle = PosSensor.EleAngle_rad;
 		
 		angleDifference = presentEleAngle - lastEleAngle;
-		
+//		UART_Transmit_DMA("P:%d\t%d\r\n",(int)PosSensor.EleAngle_degree,(int)lastEleAngle);
 		lastEleAngle = presentEleAngle;
 		
+		lastESpeed =  angleDifference;
 		while(angleDifference > PI || angleDifference < -PI)
 		{
 			if(angleDifference > PI)
@@ -227,24 +228,24 @@ extern struct MainCtrl_t MainCtrl;
 		{
 			count++;
 			
-			if(count > 10)
-			{
-				PWM_IT_CMD(DISABLE,ENABLE);
-				
-				/*通过CAN总线告知主控编码器异常*/
-				CAN.Identifier = IDENTIFIER_ENCODER_ERROR;
-				CAN.TransmitData = PosSensor.SafetyWord;
+//			if(count > 10)
+//			{
+//				PWM_IT_CMD(DISABLE,ENABLE);
+//				
+//				/*通过CAN总线告知主控编码器异常*/
+//				CAN.Identifier = IDENTIFIER_ENCODER_ERROR;
+//				CAN.TransmitData = PosSensor.SafetyWord;
 
-				while(1)
-				{
-					CAN_Transmit(CAN.Identifier, CAN.TransmitData, 2);
-				
-					UART_Transmit_DMA("ENCODER ERROR: %d\r\n", (uint8_t)PosSensor.SafetyWord);
-					SendBuf();
-					
-					LL_mDelay(10);
-				}
-			}
+//				while(1)
+//				{
+//					CAN_Transmit(CAN.Identifier, CAN.TransmitData, 2);
+//				
+//					UART_Transmit_DMA("ENCODER ERROR: %d\r\n", (uint8_t)PosSensor.SafetyWord);
+//					SendBuf();
+//					
+//					LL_mDelay(10);
+////				}
+//			}
 		}
 		else
 		{

@@ -400,7 +400,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 				break;
 			case (0x40 + IDENTIFIER_READ_LOAD_OBSERVER):
 				
-				/*读取位置环输凿*/
+				/*读取位置环输�?*/
 				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_LOAD_OBSERVER);
 				
 				break;			
@@ -663,7 +663,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 				break;
 			case (0x40 + IDENTIFIER_READ_LOAD_OBSERVER):
 				
-				/*读取位置环输凿*/
+				/*读取位置环输�?*/
 				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_LOAD_OBSERVER);
 				
 				break;	

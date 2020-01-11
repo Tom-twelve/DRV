@@ -45,35 +45,37 @@ void DriverInit(void)
 {
 
 	#if ROBOT_ID == PASS_ROBOT
-	
-		#if CAN_ID_NUM == 1		//���� 
+		#if CAN_ID_NUM == 1//����
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 17905;
-			CurrLoop.LimitCurrQ = 200.f;
-			SpdLoop.ExptMecAngularSpeed_rad =  0.f * 2 * PI;
-			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;
-			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
+			PosSensor.PosOffset = 17082;
+			CurrLoop.LimitCurrQ = 100.f;
+			SpdLoop.ExptMecAngularSpeed_rad = -60.f * 2 * PI;
+			SpdLoop.Kp = SPEED_CONTROL_KP * 1.5f;
+			SpdLoop.Ki = SPEED_CONTROL_KI * 0.5f;
+			PosLoop.Kp = 80.0f;
+			PosLoop.Kd = 0.3f;
+//			MainCtrl.ExptMecAngle_pulse = 1.2 * 32768;
 		#elif CAN_ID_NUM == 2	//����
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 32040;
-			CurrLoop.LimitCurrQ = 200.f;
-			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
-			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
+			PosSensor.PosOffset = 232;
+			CurrLoop.LimitCurrQ = 100.f;
+			SpdLoop.ExptMecAngularSpeed_rad = -60.f * 2 * PI;
+			SpdLoop.Kp = SPEED_CONTROL_KP * 2.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 3	//����
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 28280;
-			CurrLoop.LimitCurrQ = 200.f;
-			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
+			PosSensor.PosOffset = 11477;
+			CurrLoop.LimitCurrQ = 100.f;
+			SpdLoop.ExptMecAngularSpeed_rad = -60.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 4	//����
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 9096;
+			PosSensor.PosOffset = 23208;
 			CurrLoop.LimitCurrQ = 200.f;
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
@@ -81,7 +83,7 @@ void DriverInit(void)
 		#elif CAN_ID_NUM == 5	//����
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 18492;
+			PosSensor.PosOffset = 4674;
 			CurrLoop.LimitCurrQ = 200.f;
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
@@ -89,7 +91,7 @@ void DriverInit(void)
 		#elif CAN_ID_NUM == 6	//����
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 17300;
+			PosSensor.PosOffset = 12190;
 			CurrLoop.LimitCurrQ = 200.f;
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
@@ -118,7 +120,6 @@ void DriverInit(void)
 			SpdLoop.ExptMecAngularSpeed_rad = -70.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
-			
 		#elif CAN_ID_NUM == 10	//����
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
@@ -130,26 +131,18 @@ void DriverInit(void)
 		#elif CAN_ID_NUM == 11	//����
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 27992;
-			CurrLoop.LimitCurrQ = 50.f;
-			SpdLoop.ExptMecAngularSpeed_rad = 20.f * 2 * PI;
-			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
-			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
-		#elif CAN_ID_NUM == 12	//����
-			Driver.ControlMode = SPD_CURR_CTRL_MODE;
-			DriverCtrlModeInit();
-			PosSensor.PosOffset = 27304;
-			CurrLoop.LimitCurrQ = 100.f;
-			SpdLoop.ExptMecAngularSpeed_rad = 50.f * 2 * PI;
-			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
-			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
-		#endif
+			PosSensor.PosOffset = 11362;
+			CurrLoop.LimitCurrQ = 90.f;
+			SpdLoop.ExptMecAngularSpeed_rad = 120.f * 2 * PI;
+			SpdLoop.Kp = SPEED_CONTROL_KP * 0.2f;	
+			SpdLoop.Ki = SPEED_CONTROL_KI * 0.2f;
+		#endif		    
 	#endif
 	#if ROBOT_ID == TRY_ROBOT
 		#if CAN_ID_NUM == 1
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 31939;
+			PosSensor.PosOffset = 12190;
 			CurrLoop.LimitCurrQ = 200.f;
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
@@ -157,7 +150,7 @@ void DriverInit(void)
 		#elif CAN_ID_NUM == 2
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 14119;
+			PosSensor.PosOffset = 26339;
 			CurrLoop.LimitCurrQ = 200.f;
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;	
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
@@ -165,7 +158,7 @@ void DriverInit(void)
 		#elif CAN_ID_NUM == 3
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 14339;
+			PosSensor.PosOffset = 21030;
 			CurrLoop.LimitCurrQ = 200.f;
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
@@ -173,7 +166,7 @@ void DriverInit(void)
 		#elif CAN_ID_NUM == 4
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 26389;
+			PosSensor.PosOffset = 12190;
 			CurrLoop.LimitCurrQ = 200.f;
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
@@ -181,7 +174,7 @@ void DriverInit(void)
 		#elif CAN_ID_NUM == 5
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 21075;
+			PosSensor.PosOffset = 12190;
 			CurrLoop.LimitCurrQ = 200.f;
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
@@ -189,7 +182,7 @@ void DriverInit(void)
 		#elif CAN_ID_NUM == 6
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 9014;
+			PosSensor.PosOffset = 12190;
 			CurrLoop.LimitCurrQ = 200.f;
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
@@ -224,8 +217,7 @@ void CurrentLoopInit(void)
 {
 	/*�趨������PI����, q��������������ü򻯵��ģ��+I����, ��ͬ�ڴ�ͳPI������, ��I�������˹�����*/		
 	CurrLoop.Kp_D = CURRENT_CONTROL_KP_D;
-	CurrLoop.Ki_D = CURRENT_CONTROL_KI_D;	
-	CurrLoop.Kp_Q = CURRENT_CONTROL_KP_Q;	
+	CurrLoop.Ki_D = CURRENT_CONTROL_KI_D;						
 	CurrLoop.Ki_Q = CURRENT_CONTROL_KI_Q;
 	
 	/*�趨�������ӳٲ���ϵ��*/
@@ -334,9 +326,11 @@ void ZeroPosSet(uint16_t posOffset)
    * @param[out] ctrlVolD 			Vd���
    * @param[out] ctrlVolQ 			Vq���
    */
+extern float lastESpeed;
 void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCurrQ, float *ctrlVolD, float *ctrlVolQ)
 {
-	/*Iq限幅*/
+	/*Iq�����޷�*/
+	static int iii = 0;
 	Saturation_float(&exptCurrQ, CurrLoop.LimitCurrQ, -CurrLoop.LimitCurrQ);
 	
 	CurrLoop.ErrD = exptCurrD - realCurrD;
@@ -345,20 +339,31 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 	CurrLoop.IntegralErrD += CurrLoop.ErrD * DEFAULT_CARRIER_PERIOD_s;
 	CurrLoop.IntegralErrQ += CurrLoop.ErrQ * DEFAULT_CARRIER_PERIOD_s;
 	
-	/*积分限幅*/
+	/*�����޷�*/
 	Saturation_float(&CurrLoop.IntegralErrD, CURR_INTEGRAL_ERR_LIM_D, -CURR_INTEGRAL_ERR_LIM_D);
 	Saturation_float(&CurrLoop.IntegralErrQ, CURR_INTEGRAL_ERR_LIM_Q, -CURR_INTEGRAL_ERR_LIM_Q);
 	
-	/*d轴电流环采用的传统PI控制器, q轴电流环采用基于模型改进的PI控制器*/
+	/*���ڵ��ģ�͵ĸĽ��͵���������, ���ü򻯵��ģ��+I����*/
 	*ctrlVolD = CurrLoop.Kp_D * CurrLoop.ErrD + CurrLoop.Ki_D * CurrLoop.IntegralErrD;
-	*ctrlVolQ = CurrLoop.Kp_Q * CurrLoop.ErrQ + CurrLoop.Ki_Q * CurrLoop.IntegralErrQ + realCurrQ * PHASE_RES + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
+	*ctrlVolQ = CurrLoop.Ki_Q * CurrLoop.IntegralErrQ + exptCurrQ * PHASE_RES + PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE;
 	
-	/*为保证d轴有足够的电压矢量抵消Id, 对Q轴电压进行限幅, 同时保证总电压矢量不超过最大电压矢量*/
+	/*��ѹʸ���޷�*/
 	CurrLoop.LimitVolD = GENERATRIX_VOL / SQRT3;
 	arm_sqrt_f32(SQUARE(GENERATRIX_VOL) / 3.f - SQUARE(*ctrlVolD), &CurrLoop.LimitVolQ);
 	
 	Saturation_float(ctrlVolD, CurrLoop.LimitVolD, -CurrLoop.LimitVolD);
 	Saturation_float(ctrlVolQ, CurrLoop.LimitVolQ, -CurrLoop.LimitVolQ);
+	iii++;
+	if(iii>10)
+	{
+	//											UART_Transmit_DMA("%d\t", (int)(CurrC));
+		UART_Transmit_DMA("%d\t",(int)(exptCurrQ*1e3));
+		UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrQ * 1e3));
+		iii = 0;
+	}
+	
+//	UART_Transmit_DMA("%d\t%d\r\n", (int)(lastESpeed*1e2),(int)(PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE*1e2));
+	
 }
 
  /**
@@ -369,7 +374,7 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
    */
 void SpeedLoop(float exptMecAngularSpeed, float realMecAngularSpeed, float *ctrlCurrQ)
 {
-	/*��������ٶ��޷�*/
+
 	Saturation_float(&exptMecAngularSpeed, SpdLoop.MaxExptMecAngularSpeed_rad, -SpdLoop.MaxExptMecAngularSpeed_rad);
 	
 	SpdLoop.Err = exptMecAngularSpeed - realMecAngularSpeed;
@@ -446,7 +451,7 @@ void SpdCurrController(void)
 	/*������PI������*/
 	CurrentLoop(CurrLoop.ExptCurrD, CurrLoop.ExptCurrQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
 	
-	/*������Park�任, ��ת������ϵ�µ�dq���ѹת��Ϊ��������ϵ�µ�AlphaBeta����*/
+	/*������Park�任, ��ת������ϵ�µ�dq���ѹת��Ϊ��������ϵ�µ�AlphaBeta���ѹ*/
 	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + PosSensor.CompAngle);
 	
 	/*����SVPWM�㷨���Ƶ�ѹʸ��*/
@@ -462,7 +467,7 @@ void PosSpdCurrController(void)
 	
 	Count++;
 	
-	/*����Id = 0����, ���趨d�����Ϊ��*/
+	/*����Id = 0����, ���趨d�����Ϊ��*/
 	CurrLoop.ExptCurrD = 0.f;
 	
 	/*λ�û����ٶȻ��������ǵ��������ڵ�ʮ��*/
@@ -503,7 +508,7 @@ void PosSpdCurrController(void)
 	/*������PI������*/
 	CurrentLoop(CurrLoop.ExptCurrD, CurrLoop.ExptCurrQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
 	
-	/*������Park�任, ��ת������ϵ�µ�dq���ѹת��Ϊ��������ϵ�µ�AlphaBeta����*/
+	/*������Park�任, ��ת������ϵ�µ�dq���ѹת��Ϊ��������ϵ�µ�AlphaBeta���ѹ*/
 	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + PosSensor.CompAngle);
 	
 	/*����SVPWM�㷨���Ƶ�ѹʸ��*/
@@ -519,7 +524,7 @@ void PosCurrController(void)
 	
 	Count++;
 	
-	/*����Id = 0����, ���趨d�����Ϊ��*/
+	/*����Id = 0����, ���趨d�����Ϊ��*/
 	CurrLoop.ExptCurrD = 0.f;
 	
 	/*λ�û����ٶȻ��������ǵ��������ڵ�ʮ��*/
@@ -559,7 +564,7 @@ void PosCurrController(void)
 	/*������PI������*/
 	CurrentLoop(CurrLoop.ExptCurrD, CurrLoop.ExptCurrQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
 	
-	/*������Park�任, ��ת������ϵ�µ�dq���ѹת��Ϊ��������ϵ�µ�AlphaBeta����*/
+	/*������Park�任, ��ת������ϵ�µ�dq���ѹת��Ϊ��������ϵ�µ�AlphaBeta���ѹ*/
 	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + PosSensor.CompAngle);
 	
 	/*����SVPWM�㷨���Ƶ�ѹʸ��*/
@@ -575,7 +580,7 @@ void TorqueController(void)
 	
 	Count++;
 	
-	/*����Id = 0����, ���趨d�����Ϊ��*/
+	/*����Id = 0����, ���趨d�����Ϊ��*/
 	CurrLoop.ExptCurrD = 0.f;
 		
 	/*�ٶȻ��������ǵ��������ڵ�ʮ��*/
@@ -622,7 +627,7 @@ void TorqueController(void)
 	/*������PI������*/
 	CurrentLoop(CurrLoop.ExptCurrD, CurrLoop.ExptCurrQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
 	
-	/*������Park�任, ��ת������ϵ�µ�dq���ѹת��Ϊ��������ϵ�µ�AlphaBeta����*/
+	/*������Park�任, ��ת������ϵ�µ�dq���ѹת��Ϊ��������ϵ�µ�AlphaBeta���ѹ*/
 	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + PosSensor.CompAngle);
 	
 	/*����SVPWM�㷨���Ƶ�ѹʸ��*/

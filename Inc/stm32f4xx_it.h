@@ -50,6 +50,7 @@
 #include "usart.h"
 #include "GateDriver.h"
 #include "identify.h"
+#include "observer.h"
 	 
 /* USER CODE END Includes */
 

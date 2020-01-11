@@ -89,6 +89,25 @@ void Saturation_int(int *value, int upLimit, int downLimit)
 	}
 }
 /**
+ * @brief 低通滤波器
+ * @note 
+ * @retval 
+ */
+average_filter_t UtilAverageFilter(average_filter_t valNew,average_filter_t arr[], uint32_t *index, average_filter_t *pSum,uint16_t averageNum)
+{
+//	if (*pSum > arr[*index])//无符号整形时的处理
+		*pSum -= arr[*index];
+//	else
+//		*pSum = 0u;
+	*pSum       += valNew;
+	arr[*index] = valNew;
+	(*index)++;
+	*index = ((*index)) < averageNum ? *index : 0u;
+
+	return (*pSum) / averageNum;
+}
+
+/**
  * @brief 最小二乘法
  * @note 
  * @retval 
@@ -108,6 +127,6 @@ void LeastSquare(float *x, float *y,int size,float *a)
 		sum_xy += x[i]*y[i];
 	}    
 
-	*a = (size*sum_xy - sum_x*sum_y)*2000.0f/(size*sum_x2 - sum_x*sum_x);
+	*a = (size*sum_xy - sum_x*sum_y)/(size*sum_x2 - sum_x*sum_x);
 //	*b = (sum_x2*sum_y - sum_x*sum_xy)/(size*sum_x2-sum_x*sum_x);
 }

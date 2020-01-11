@@ -302,18 +302,18 @@ void ADC_IRQHandler(void)
 	if(Driver.UnitMode == WORK_MODE)
 	{		
 		GetEleImformation();
-		
+		LoadObserver();
 		switch(Driver.ControlMode)
 		{
-			case SPD_CURR_CTRL_MODE :	/*速度-电流控制器*/
+			case SPD_CURR_CTRL_MODE :	
 										SpdCurrController();
 			
-										/*计算电磁转矩*/
+										
 										CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque_Nm);
 										
-										UART_Transmit_DMA("%d\t", (int)(PosSensor.MecAngularSpeed_rad));
-										UART_Transmit_DMA("%d\t",(int)(CurrLoop.ExptCurrQ * 1e3));
-										UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrQ * 1e3));
+//										UART_Transmit_DMA("%d\t", (int)(PosSensor.MecAngularSpeed_rad));
+//										UART_Transmit_DMA("%d\t",(int)(CurrLoop.ExptCurrQ * 1e3));
+//										UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrQ * 1e3));
 			
 										break;
 			

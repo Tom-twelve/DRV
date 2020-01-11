@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
+  * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
   * All rights reserved.</center></h2>
   *
   * This software component is licensed by ST under BSD 3-Clause license,
@@ -134,7 +134,7 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef* canHandle)
 } 
 
 /* USER CODE BEGIN 1 */
-
+extern LoadObserverType loadObserver; 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {	
 	first_line:
@@ -142,7 +142,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 	CAN_Receive(&CAN.StdID, &CAN.Identifier, &CAN.ReceiveData);
 	
 	/*ACTION指令*/
-	/*点对点模式*/
+	/*点对点模�?*/
 	if (CAN.StdID == DRIVER_SERVER_CAN_ID)
 	{
 		switch(CAN.Identifier)
@@ -166,56 +166,56 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 	
 			case IDENTIFIER_CURR_KP_Q:
 				
-				/*设置q轴Kp, 主控乘以1000后发送*/
+				/*设置q轴Kp, 主控乘以1000后发�?*/
 				CurrLoop.Kp_Q = CAN.ReceiveData * 1e-3;
 			
 				break;
 			
 			case IDENTIFIER_CURR_KI_Q:
 				
-				/*设置q轴Ki, 主控乘以1000后发送*/
+				/*设置q轴Ki, 主控乘以1000后发�?*/
 				CurrLoop.Ki_Q = CAN.ReceiveData * 1e-3;
 			
 				break;
 			
 			case IDENTIFIER_SPD_KP:
 				
-				/*设置速度环Kp, 主控乘以1000后发送*/
+				/*设置速度环Kp, 主控乘以1000后发�?*/
 				SpdLoop.Kp = CAN.ReceiveData * 1e-3;
 			
 				break;
 			
 			case IDENTIFIER_SPD_KI:
 			
-				/*设置速度环Ki, 主控乘以1000后发送*/			
+				/*设置速度环Ki, 主控乘以1000后发�?*/			
 				SpdLoop.Ki = CAN.ReceiveData * 1e-3;
 			
 				break;
 			
 			case IDENTIFIER_POS_KP:
 				
-				/*设置位置环Kp, 主控乘以1000后发送*/
+				/*设置位置环Kp, 主控乘以1000后发�?*/
 				PosLoop.Kp = CAN.ReceiveData * 1e-3;
 			
 				break;
 			
 			case IDENTIFIER_POS_KD:
 
-				/*设置位置环Kd, 主控乘以1000后发送*/
+				/*设置位置环Kd, 主控乘以1000后发�?*/
 				PosLoop.Kd = CAN.ReceiveData * 1e-3;
 			
 				break;
 			
 			case IDENTIFIER_TORQUE_CTRL:
 				
-				/*转矩控制模式, 期望转矩, 主控以毫牛米为单位发送*/
+				/*转矩控制模式, 期望转矩, 主控以毫牛米为单位发�?*/
 				TorqueCtrl.ExptTorque_Nm =  (float)CAN.ReceiveData * 1e-3;
 			
 				break;
 				
 			case IDENTIFIER_VEL_CTRL:
 				
-				/*速度控制模式, 期望机械角速度*/
+				/*速度控制模式, 期望机械角�?�度*/
 				MainCtrl.ExptMecAngularSpeed_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 				SpdLoop.ExptMecAngularSpeed_rad = DRV_PULSE_TO_RAD(MainCtrl.ExptMecAngularSpeed_pulse);
 			
@@ -230,7 +230,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 
 			case IDENTIFIER_POS_CTRL_REL:
 				
-				/*位置控制模式, 参考位置模式, 期望机械角度*/
+				/*位置控制模式, 参�?�位置模�?, 期望机械角度*/
 				MainCtrl.ExptMecAngle_pulse = MainCtrl.RefMecAngle_pulse +  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 			
 				break;
@@ -261,7 +261,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 
 			case IDENTIFIER_SET_ACC:
 				
-				/*设置加速度*/
+				/*设置加�?�度*/
 				MainCtrl.Acceleration_pulse = MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 				SpdLoop.Acceleration = DRV_PULSE_TO_RAD(MainCtrl.Acceleration_pulse);
 				
@@ -269,7 +269,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 
 			case IDENTIFIER_SET_DEC:
 
-				/*设置减速度*/
+				/*设置减�?�度*/
 				MainCtrl.Deceleration_pulse = MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 				SpdLoop.Deceleration = DRV_PULSE_TO_RAD(MainCtrl.Deceleration_pulse);
 
@@ -277,7 +277,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 					
 			case IDENTIFIER_SET_TORQUE_LIMIT:
 				
-				/*设置转矩限幅, 在转矩控制模式无效*/
+				/*设置转矩限幅, 在转矩控制模式无�?*/
 				TorqueCtrl.MaxTorque_Nm = (float)CAN.ReceiveData * 1e-3;
 				CurrLoop.LimitCurrQ = TorqueCtrl.MaxTorque_Nm / (1.5f * MOTOR_POLE_PAIRS_NUM * ROTATOR_FLUX_LINKAGE);
 			
@@ -294,7 +294,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 					SpdLoop.MaxExptMecAngularSpeed_rad = DRV_PULSE_TO_RAD(MainCtrl.MaxMecAngularSpeed_pulse);
 					Saturation_float(&SpdLoop.MaxExptMecAngularSpeed_rad, MAX_SPD, -MAX_SPD);
 				}
-				/*转矩控制模式下速度限幅*/
+				/*转矩控制模式下�?�度限幅*/
 				else if(Driver.ControlMode == TORQUE_CTRL_MODE)
 				{
 					TorqueCtrl.MaxMecSpd_rad = DRV_PULSE_TO_RAD(MainCtrl.MaxMecAngularSpeed_pulse);
@@ -318,6 +318,16 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 				PosLoop.MecAngleLowerLimit_rad = (float)DRV_PULSE_TO_RAD(MainCtrl.MecAngleLowerLimit_pulse);
 			
 				break;
+			case IDENTIFIER_SET_LOAD_GAIN_1:
+				
+				/*设置机械角度下限*/
+				loadObserver.loadGain1 = (float)(CAN.ReceiveData * 1e-3);
+				break;			
+			case IDENTIFIER_SET_LOAD_GAIN_2:
+				
+				/*设置机械角度下限*/
+				loadObserver.loadGain2 = (float)(CAN.ReceiveData * 1e-3);
+				break;			
 			
 			case (0x40 + IDENTIFIER_READ_TORQUE):
 				
@@ -328,7 +338,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 						
 			case (0x40 + IDENTIFIER_READ_VEL):
 				
-				/*读取机械角速度*/
+				/*读取机械角�?�度*/
 				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_VEL);
 			
 				break;
@@ -342,7 +352,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 			
 			case (0x40 + IDENTIFIER_READ_ENCODER_POS):
 				
-				/*读取编码器*/
+				/*读取编码�?*/
 				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_ENCODER_POS);
 		
 				break; 
@@ -377,18 +387,23 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 			
 			case (0x40 + IDENTIFIER_READ_SPD_LOOP_OUTPUT):
 				
-				/*读取速度环输出*/
+				/*读取速度环输�?*/
 				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_SPD_LOOP_OUTPUT);
 			
 				break;
 			
 			case (0x40 + IDENTIFIER_READ_POS_LOOP_OUTPUT):
 				
-				/*读取位置环输出*/
+				/*读取位置环输�?*/
 				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_POS_LOOP_OUTPUT);
 				
 				break;
-			
+			case (0x40 + IDENTIFIER_READ_LOAD_OBSERVER):
+				
+				/*读取位置环输凿*/
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_LOAD_OBSERVER);
+				
+				break;			
 			default:
 				
 				break;
@@ -418,56 +433,56 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 	
 			case IDENTIFIER_CURR_KP_Q:
 				
-				/*设置q轴Kp, 主控乘以1000后发送*/
+				/*设置q轴Kp, 主控乘以1000后发�?*/
 				CurrLoop.Kp_Q = CAN.ReceiveData * 1e-3;
 			
 				break;
 			
 			case IDENTIFIER_CURR_KI_Q:
 				
-				/*设置q轴Ki, 主控乘以1000后发送*/
+				/*设置q轴Ki, 主控乘以1000后发�?*/
 				CurrLoop.Ki_Q = CAN.ReceiveData * 1e-3;
 			
 				break;
 			
 			case IDENTIFIER_SPD_KP:
 				
-				/*设置速度环Kp, 主控乘以1000后发送*/
+				/*设置速度环Kp, 主控乘以1000后发�?*/
 				SpdLoop.Kp = CAN.ReceiveData * 1e-3;
 			
 				break;
 			
 			case IDENTIFIER_SPD_KI:
 			
-				/*设置速度环Ki, 主控乘以1000后发送*/			
+				/*设置速度环Ki, 主控乘以1000后发�?*/			
 				SpdLoop.Ki = CAN.ReceiveData * 1e-3;
 			
 				break;
 			
 			case IDENTIFIER_POS_KP:
 				
-				/*设置位置环Kp, 主控乘以1000后发送*/
+				/*设置位置环Kp, 主控乘以1000后发�?*/
 				PosLoop.Kp = CAN.ReceiveData * 1e-3;
 			
 				break;
 			
 			case IDENTIFIER_POS_KD:
 
-				/*设置位置环Kd, 主控乘以1000后发送*/
+				/*设置位置环Kd, 主控乘以1000后发�?*/
 				PosLoop.Kd = CAN.ReceiveData * 1e-3;
 			
 				break;
 			
 			case IDENTIFIER_TORQUE_CTRL:
 				
-				/*转矩控制模式, 期望转矩, 主控以毫牛米为单位发送*/
+				/*转矩控制模式, 期望转矩, 主控以毫牛米为单位发�?*/
 				TorqueCtrl.ExptTorque_Nm =  (float)CAN.ReceiveData * 1e-3;
 			
 				break;
 				
 			case IDENTIFIER_VEL_CTRL:
 				
-				/*速度控制模式, 期望机械角速度*/
+				/*速度控制模式, 期望机械角�?�度*/
 				MainCtrl.ExptMecAngularSpeed_pulse =  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 				SpdLoop.ExptMecAngularSpeed_rad = DRV_PULSE_TO_RAD(MainCtrl.ExptMecAngularSpeed_pulse);
 			
@@ -482,7 +497,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 
 			case IDENTIFIER_POS_CTRL_REL:
 				
-				/*位置控制模式, 参考位置模式, 期望机械角度*/
+				/*位置控制模式, 参�?�位置模�?, 期望机械角度*/
 				MainCtrl.ExptMecAngle_pulse = MainCtrl.RefMecAngle_pulse +  MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 			
 				break;
@@ -513,7 +528,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 
 			case IDENTIFIER_SET_ACC:
 				
-				/*设置加速度*/
+				/*设置加�?�度*/
 				MainCtrl.Acceleration_pulse = MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 				SpdLoop.Acceleration = DRV_PULSE_TO_RAD(MainCtrl.Acceleration_pulse);
 				
@@ -521,7 +536,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 
 			case IDENTIFIER_SET_DEC:
 
-				/*设置减速度*/
+				/*设置减�?�度*/
 				MainCtrl.Deceleration_pulse = MC_PULSE_TO_DRV_PULSE(CAN.ReceiveData);
 				SpdLoop.Deceleration = DRV_PULSE_TO_RAD(MainCtrl.Deceleration_pulse);
 
@@ -529,7 +544,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 					
 			case IDENTIFIER_SET_TORQUE_LIMIT:
 				
-				/*设置转矩限幅, 在转矩控制模式无效*/
+				/*设置转矩限幅, 在转矩控制模式无�?*/
 				TorqueCtrl.MaxTorque_Nm = (float)CAN.ReceiveData * 1e-3;
 				CurrLoop.LimitCurrQ = TorqueCtrl.MaxTorque_Nm / (1.5f * MOTOR_POLE_PAIRS_NUM * ROTATOR_FLUX_LINKAGE);
 			
@@ -546,7 +561,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 					SpdLoop.MaxExptMecAngularSpeed_rad = DRV_PULSE_TO_RAD(MainCtrl.MaxMecAngularSpeed_pulse);
 					Saturation_float(&SpdLoop.MaxExptMecAngularSpeed_rad, MAX_SPD, -MAX_SPD);
 				}
-				/*转矩控制模式下速度限幅*/
+				/*转矩控制模式下�?�度限幅*/
 				else if(Driver.ControlMode == TORQUE_CTRL_MODE)
 				{
 					TorqueCtrl.MaxMecSpd_rad = DRV_PULSE_TO_RAD(MainCtrl.MaxMecAngularSpeed_pulse);
@@ -570,6 +585,12 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 				PosLoop.MecAngleLowerLimit_rad = (float)DRV_PULSE_TO_RAD(MainCtrl.MecAngleLowerLimit_pulse);
 			
 				break;
+			case IDENTIFIER_SET_LOAD_GAIN_1:
+				
+				/*设置机械角度下限*/
+				
+			
+				break;
 			
 			case (0x40 + IDENTIFIER_READ_TORQUE):
 				
@@ -580,7 +601,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 						
 			case (0x40 + IDENTIFIER_READ_VEL):
 				
-				/*读取机械角速度*/
+				/*读取机械角�?�度*/
 				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_VEL);
 			
 				break;
@@ -594,7 +615,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 			
 			case (0x40 + IDENTIFIER_READ_ENCODER_POS):
 				
-				/*读取编码器*/
+				/*读取编码�?*/
 				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_ENCODER_POS);
 		
 				break; 
@@ -629,18 +650,23 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 			
 			case (0x40 + IDENTIFIER_READ_SPD_LOOP_OUTPUT):
 				
-				/*读取速度环输出*/
+				/*读取速度环输�?*/
 				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_SPD_LOOP_OUTPUT);
 			
 				break;
 			
 			case (0x40 + IDENTIFIER_READ_POS_LOOP_OUTPUT):
 				
-				/*读取位置环输出*/
+				/*读取位置环输�?*/
 				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_POS_LOOP_OUTPUT);
 				
 				break;
-			
+			case (0x40 + IDENTIFIER_READ_LOAD_OBSERVER):
+				
+				/*读取位置环输凿*/
+				CAN.RecieveStatus = (0x40 + IDENTIFIER_READ_LOAD_OBSERVER);
+				
+				break;	
 			default:
 				
 				break;
@@ -649,7 +675,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 	
 	CAN_Respond();
 	
-	/*判断RX FIFO0中是否还有消息*/
+	/*判断RX FIFO0中是否还有消�?*/
 	if(HAL_CAN_GetRxFifoFillLevel(&hcan1, CAN_RX_FIFO0))
 	{
 		goto first_line;
@@ -660,7 +686,7 @@ void CAN_Respond(void)
 {
 	switch (CAN.RecieveStatus)
 	{
-		/*发送电磁转矩*/	
+		/*发�?�电磁转�?*/	
 		case (0x40 + IDENTIFIER_READ_TORQUE):
 			
 			CAN.Identifier = IDENTIFIER_READ_TORQUE;
@@ -672,7 +698,7 @@ void CAN_Respond(void)
 		
 			break;
 			
-		/*发送机械角速度*/			
+		/*发�?�机械角速度*/			
 		case (0x40 + IDENTIFIER_READ_VEL):
 			
 			CAN.Identifier = IDENTIFIER_READ_VEL;
@@ -684,7 +710,7 @@ void CAN_Respond(void)
 		
 			break;		
 		
-		/*发送机械角度*/
+		/*发�?�机械角�?*/
 		case (0x40 + IDENTIFIER_READ_POS):
 			
 			CAN.Identifier = IDENTIFIER_READ_POS;
@@ -696,7 +722,7 @@ void CAN_Respond(void)
 		
 			break;
 		
-		/*发送编码器位置*/
+		/*发�?�编码器位置*/
 		case (0x40 + IDENTIFIER_READ_ENCODER_POS):
 			
 			CAN.Identifier = IDENTIFIER_READ_ENCODER_POS;
@@ -708,7 +734,7 @@ void CAN_Respond(void)
 		
 			break;
 
-		/*发送Vd*/		
+		/*发�?�Vd*/		
 		case (0x40 + IDENTIFIER_READ_VOL_D):
 			
 			CAN.Identifier = IDENTIFIER_READ_VOL_D;
@@ -720,7 +746,7 @@ void CAN_Respond(void)
 		
 			break;
 
-		/*发送Id*/
+		/*发�?�Id*/
 		case (0x40 + IDENTIFIER_READ_CURR_D):
 			
 			CAN.Identifier = IDENTIFIER_READ_CURR_D;
@@ -732,7 +758,7 @@ void CAN_Respond(void)
 		
 			break;
 		
-		/*发送Vq*/		
+		/*发�?�Vq*/		
 		case (0x40 + IDENTIFIER_READ_VOL_Q):
 			
 			CAN.Identifier = IDENTIFIER_READ_VOL_Q;
@@ -744,7 +770,7 @@ void CAN_Respond(void)
 		
 			break;
 
-		/*发送Iq*/
+		/*发�?�Iq*/
 		case (0x40 + IDENTIFIER_READ_CURR_Q):
 			
 			CAN.Identifier = IDENTIFIER_READ_CURR_Q;
@@ -756,7 +782,7 @@ void CAN_Respond(void)
 		
 			break;
 		
-		/*发送速度环输出*/		
+		/*发�?��?�度环输�?*/		
 		case (0x40 + IDENTIFIER_READ_SPD_LOOP_OUTPUT):
 			
 			CAN.Identifier = IDENTIFIER_READ_SPD_LOOP_OUTPUT;
@@ -768,7 +794,7 @@ void CAN_Respond(void)
 		
 			break;
 
-		/*发送位置环输出*/
+		/*发�?�位置环输出*/
 		case (0x40 + IDENTIFIER_READ_POS_LOOP_OUTPUT):
 			
 			CAN.Identifier = IDENTIFIER_READ_POS_LOOP_OUTPUT;
@@ -779,7 +805,16 @@ void CAN_Respond(void)
 			CAN.RecieveStatus = 0;
 		
 			break;
+		case (0x40 + IDENTIFIER_READ_LOAD_OBSERVER):
+			
+			CAN.Identifier = IDENTIFIER_READ_LOAD_OBSERVER;
+			CAN.TransmitData = (int32_t)(loadObserver.load*1e3);
 		
+			CAN_Transmit(CAN.Identifier, CAN.TransmitData, 4);
+		
+			CAN.RecieveStatus = 0;
+		
+			break;		
 		default:
 			
 			break;
@@ -872,19 +907,19 @@ void CAN_Receive(uint32_t *stdId, uint8_t *identifier, int32_t *receiveData)
 	
 	if(((CAN.Receive.data_uint8[3]&0x80)>>7) == 0)
 	{
-		/*当数据为正数时*/
+		/*当数据为正数�?*/
 		*receiveData = (int32_t)((CAN.Receive.data_uint8[3]<<16) | (CAN.Receive.data_uint8[2]<<8) | (CAN.Receive.data_uint8[1]<<0));
 	}
 	else if(((CAN.Receive.data_uint8[3]&0x80)>>7) == 1)
 	{
-		/*当数据为负数时*/
+		/*当数据为负数�?*/
 		*receiveData = -(int32_t)(((CAN.Receive.data_uint8[3]&0x7F)<<16) | (CAN.Receive.data_uint8[2]<<8) | (CAN.Receive.data_uint8[1]<<0));
 	}
 }
 
 void CAN_Enable(void)
 {
-	/*配置报文过滤器*/
+	/*配置报文过滤�?*/
 	CAN_FilterTypeDef CAN1_FilerConf    = {0};
 	CAN1_FilerConf.FilterIdHigh         = 0x0000;//(DRIVER_BROADCAST_ID << 5) | (CAN_ID_STD << 4) | (CAN_RTR_DATA << 3);
 	CAN1_FilerConf.FilterIdLow          = 0x0000;//(DRIVER_SERVER_CAN_ID << 5) | (CAN_ID_STD << 4) | (CAN_RTR_DATA << 3);

@@ -27,6 +27,8 @@ float utils_map(float x, float in_min, float in_max, float out_min, float out_ma
 uint32_t UtilBiSearchInt(const int sortedIntArr[], int find, uint32_t maxN);
 float util_norm_float(float val, float minBound, float maxBound, float period);
 int util_norm_int(float val, float minBound, float maxBound, float period);
+typedef float average_filter_t;
+average_filter_t UtilAverageFilter(average_filter_t valNew,average_filter_t arr[], uint32_t *index, average_filter_t *pSum,uint16_t averageNum);
 void Saturation_float(float *value, float upLimit, float downLimit);
 void Saturation_int(int *value, int upLimit, int downLimit);
 void LeastSquare(float *x, float *y,int size, float *a);

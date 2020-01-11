@@ -19,11 +19,18 @@
 #include "main.h"
 #include "foc.h"
 #include "control.h"
+#include "observer.h"
 /* CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+typedef struct
+{
+ float loadGain1;
+ float loadGain2;
+ float load;
+ float w;
+}LoadObserverType;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -33,7 +40,8 @@
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
-
+extern LoadObserverType observer;
+void LoadObserver(void);
 /* USER CODE END PFP */
 
 

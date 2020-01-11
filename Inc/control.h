@@ -20,6 +20,7 @@
 #include "MotorConfig.h"
 #include "math.h"
 #include "foc.h"
+#include "observer.h"
 /* CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

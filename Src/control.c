@@ -36,12 +36,14 @@ struct MainCtrl_t MainCtrl;
 extern struct CoordTrans_t CoordTrans;
 extern struct PosSensor_t PosSensor;
 extern struct Driver_t Driver;
+extern LoadObserverType loadObserver;
 /* USER CODE END EV */
 
 /* USER CODE BEGIN */
 
 void DriverInit(void)                 
 {
+
 	#if ROBOT_ID == PASS_ROBOT
 	
 		#if CAN_ID_NUM == 1		//���� 
@@ -103,26 +105,26 @@ void DriverInit(void)
 		#elif CAN_ID_NUM == 8	//����
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 31848;
-			CurrLoop.LimitCurrQ = 50.f;
-			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
+			PosSensor.PosOffset = 21679;
+			CurrLoop.LimitCurrQ = 100.f;
+			SpdLoop.ExptMecAngularSpeed_rad = -70.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 9	//����
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 5861;
-			CurrLoop.LimitCurrQ = 50.f;
-			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
+			PosSensor.PosOffset = 9598;
+			CurrLoop.LimitCurrQ = 100.f;
+			SpdLoop.ExptMecAngularSpeed_rad = -70.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 			
 		#elif CAN_ID_NUM == 10	//����
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
-			PosSensor.PosOffset = 32089;
-			CurrLoop.LimitCurrQ = 50.f;
-			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
+			PosSensor.PosOffset = 29908;
+			CurrLoop.LimitCurrQ = 100.f;
+			SpdLoop.ExptMecAngularSpeed_rad = -70.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#elif CAN_ID_NUM == 11	//����
@@ -194,10 +196,24 @@ void DriverInit(void)
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#endif
 	#endif
-	
+	loadObserver.loadGain1 = 3000.f;
+	loadObserver.loadGain2 = -90.f;	
 	/*读取编码器, 计算速度, 防止上电电机跳动*/
 	PosSensor_Init();
+	//发送初始配置
+	PutStr("FIRST:\r\n");
+	UART_Transmit_DMA("can id number:%d\r\ngroup number:%d\r\n",(int)CAN_ID_NUM,(int)GROUP_NUM);
+	#if PHASE_SEQUENCE == POSITIVE_SEQUENCE
+				PutStr("positive sequence\r\n");
+	#elif PHASE_SEQUENCE == NEGATIVE_SEQUENCE
+				PutStr("negative sequence\r\n");
+	#endif
 	
+	UART_Transmit_DMA("phase resistor: %d\r\nphase inductance: %d\r\nmotor kv: %d\r\nmotor polePairs: %d\r\nmotor ampMax: %d\r\n",\
+	(int)(PHASE_RES*1e6),(int)(INDUCTANCE_Q*1e6),\
+		(int)MOTOR_KV,(int)MOTOR_POLE_PAIRS_NUM,\
+			(int)CurrLoop.LimitCurrQ);	
+	PutStr("list done\r\n");	
 	PWM_IT_CMD(ENABLE,ENABLE);
 }
 

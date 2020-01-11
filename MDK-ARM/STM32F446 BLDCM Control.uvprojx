@@ -10,14 +10,14 @@
       <TargetName>STM32F446 BLDCM Control</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pArmCC>6110000::V6.11::.\ARMCLANG</pArmCC>
-      <pCCUsed>6110000::V6.11::.\ARMCLANG</pCCUsed>
+      <pArmCC>6120000::V6.12::.\ARMCLANG</pArmCC>
+      <pCCUsed>6120000::V6.12::.\ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>STM32F446RETx</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F4xx_DFP.2.13.0</PackID>
+          <PackID>Keil.STM32F4xx_DFP.2.11.0</PackID>
           <PackURL>http://www.keil.com/pack</PackURL>
           <Cpu>IRAM(0x20000000-0x2001FFFF) IROM(0x8000000-0x807FFFF)  CLOCK(25000000) FPU2 CPUTYPE("Cortex-M4")</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>USE_FULL_LL_DRIVER,STM32F446xx,ARM_MATH_CM4,__FPU_PRESENT=1U,USE_HAL_DRIVER,__ARM_PCS_VFP</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;                                                                                                                                                                           ../Drivers/STM32F4xx_HAL_Driver/Inc;                                                                                                                                                                           ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;                                                                                                                                                                           ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;                                                                                                                                                                           ../Drivers/CMSIS/Include</IncludePath>
+              <IncludePath>../Inc;                                                                                                                                                                                ../Drivers/STM32F4xx_HAL_Driver/Inc;                                                                                                                                                                                ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;                                                                                                                                                                                ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;                                                                                                                                                                                ../Drivers/CMSIS/Include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -429,11 +429,6 @@
               <FilePath>../Src/spi.c</FilePath>
             </File>
             <File>
-              <FileName>sys.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Src/sys.c</FilePath>
-            </File>
-            <File>
               <FileName>tim.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Src/tim.c</FilePath>
@@ -502,6 +497,11 @@
               <FileName>identify.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\identify.c</FilePath>
+            </File>
+            <File>
+              <FileName>observer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\observer.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
+  * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
   * All rights reserved.</center></h2>
   *
   * This software component is licensed by ST under BSD 3-Clause license,
@@ -31,6 +31,7 @@
 #include "PositionSensor.h"
 #include "MotorConfig.h"
 #include "usart.h"
+#include "observer.h"
 /* USER CODE END Includes */
 
 extern CAN_HandleTypeDef hcan1;
@@ -44,7 +45,7 @@ extern CAN_HandleTypeDef hcan1;
 #define DRIVER_SERVER_CAN_ID		(DRIVER_SERVER_BASE_ID + CAN_ID_NUM)
 #define DRIVER_BROADCAST_ID			(DRIVER_SERVER_BASE_ID + 0x40 + GROUP_NUM)
 
-/*控制标识符*/
+/*控制标识�?*/
 #define IDENTIFIER_DRIVER_STATE				0x01
 #define IDENTIFIER_CURR_KP_Q				0x02
 #define IDENTIFIER_CURR_KI_Q				0x03
@@ -63,8 +64,10 @@ extern CAN_HandleTypeDef hcan1;
 #define IDENTIFIER_SET_VEL_LIMIT			0x10
 #define IDENTIFIER_SET_POS_LIMIT_UP			0x11
 #define IDENTIFIER_SET_POS_LIMIT_LOW		0x12
+#define IDENTIFIER_SET_LOAD_GAIN_1        0x17
+#define IDENTIFIER_SET_LOAD_GAIN_2        0x18
 
-/*读取标识符*/	
+/*读取标识�?*/	
 #define IDENTIFIER_READ_TORQUE				0x20
 #define IDENTIFIER_READ_VEL					0x21
 #define IDENTIFIER_READ_POS					0x22
@@ -75,8 +78,9 @@ extern CAN_HandleTypeDef hcan1;
 #define IDENTIFIER_READ_CURR_Q				0x27
 #define IDENTIFIER_READ_SPD_LOOP_OUTPUT		0x28
 #define IDENTIFIER_READ_POS_LOOP_OUTPUT		0x29
+#define IDENTIFIER_READ_LOAD_OBSERVER   0x60
 
-/*错误标识符*/
+/*错误标识�?*/
 #define IDENTIFIER_ENCODER_ERROR		0xEE
 #define IDENTIFIER_HARD_FAULT			0xFF
 

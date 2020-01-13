@@ -356,7 +356,7 @@ void RotateInertiaTest(float sampleTime)
 					step = SPEED_UP;
 					break;
 				case SPEED_UP:
-					CurrLoop.LimitCurrQ = 30.f;
+					CurrLoop.LimitCurrQ = 50.f;
 					SpdLoop.ExptMecAngularSpeed_rad = 50.f * 2 * PI;
 					if(25.f * 2 * PI < PosSensor.MecAngularSpeed_rad) 
 					{
@@ -390,7 +390,7 @@ void RotateInertiaTest(float sampleTime)
 				case DATA_HANDLE:
 					LeastSquare(time,speedUp , J_SIZE,&a1);
 					LeastSquare(time,speedDown,J_SIZE,&a2);
-					JSum += (sumTorque/(float)J_SIZE)/(a1-a2);
+					JSum += (sumTorque/(float)J_SIZE)/(2000*(a1-a2));
 					UART_Transmit_DMA("%d\t%d\t%d\r\n",(int)(JSum / (sample+1) *1e7),(int)(a1),(int)(a2));SendBuf();		
 					step=OVER;
 					break;

@@ -356,8 +356,8 @@ void RotateInertiaTest(float sampleTime)
 					step = SPEED_UP;
 					break;
 				case SPEED_UP:
-					CurrLoop.LimitCurrQ = 50.f;
-					SpdLoop.ExptMecAngularSpeed_rad = 50.f * 2 * PI;
+					CurrLoop.LimitCurrQ = 30.f;
+					SpdLoop.ExptMecAngularSpeed_rad = 30.f * 2 * PI;
 					if(25.f * 2 * PI < PosSensor.MecAngularSpeed_rad) 
 					{
 						torque[index1] = TorqueCtrl.EleTorque_Nm;

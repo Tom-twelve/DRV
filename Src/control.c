@@ -360,7 +360,7 @@ void CurrentLoop(float exptCurrD, float exptCurrQ, float realCurrD, float realCu
 //												UART_Transmit_DMA("%d\t", (int)(exptCurrQ*1e-1));
 //		UART_Transmit_DMA("%d\t",(int)(exptCurrQ*1e3));
 //		UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrQ * 1e3));
-//		iii = 0;
+		iii = 0;
 	}
 	
 //	UART_Transmit_DMA("%d\t%d\r\n", (int)(lastESpeed*1e2),(int)(PosSensor.EleAngularSpeed_rad * ROTATOR_FLUX_LINKAGE*1e2));

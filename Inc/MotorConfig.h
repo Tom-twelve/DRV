@@ -68,7 +68,7 @@
 #define ROBOT_ID		PASS_ROBOT
 
 #if ROBOT_ID == PASS_ROBOT
-	#define CAN_ID_NUM			7
+	#define CAN_ID_NUM			9
 		#if CAN_ID_NUM == 1		//����
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
@@ -146,29 +146,30 @@
 		#define GROUP_NUM           	1
 		#elif CAN_ID_NUM == 10	//����
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
-		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
+		#define	PHASE_SEQUENCE			NEGATIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
 		#define CURRENT_SENSOR			RES_1mOhm
 		#define INERTIA								(354.f*1e-7)
 		#define GROUP_NUM           	1
+//		#elif CAN_ID_NUM == 11	//����
+//		#define MOTOR_TYPE 				LEOPARD_HOBBY_PH2820_KV780	
+//		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
+//		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
+//		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
+//		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
+//		#define CURRENT_SENSOR			RES_1mOhm
+//		#define INERTIA								1
+//		#define GROUP_NUM           	1
 		#elif CAN_ID_NUM == 11	//����
-		#define MOTOR_TYPE 				LEOPARD_HOBBY_PH2820_KV780	
+		#define MOTOR_TYPE 				MAD_XC5000_KV380
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
 		#define CURRENT_SENSOR			RES_1mOhm
-		#define INERTIA								1
-		#define GROUP_NUM           	1
-		#elif CAN_ID_NUM == 11	//����
-		#define MOTOR_TYPE 				MAD_XC5000_KV380
-		#define	PHASE_SEQUENCE			NEGATIVE_SEQUENCE
-		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
-		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
-		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
-		#define CURRENT_SENSOR			RES_1mOhm
+		#define INERTIA								(354.f*1e-7)
 		#define GROUP_NUM           	1
 		#endif
 #elif ROBOT_ID == TRY_ROBOT

@@ -188,6 +188,14 @@ void DriverInit(void)
 			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
 			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
 			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
+		#elif CAN_ID_NUM == 7
+			Driver.ControlMode = SPD_CURR_CTRL_MODE;
+			DriverCtrlModeInit();
+			PosSensor.PosOffset = 3728;
+			CurrLoop.LimitCurrQ = 100.f;
+			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
+			SpdLoop.Kp = SPEED_CONTROL_KP * 1.0f;	
+			SpdLoop.Ki = SPEED_CONTROL_KI * 1.0f;
 		#endif
 	#endif
 	loadObserver.loadGain1 = 3000.f;

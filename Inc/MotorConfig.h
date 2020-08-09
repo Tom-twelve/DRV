@@ -65,10 +65,10 @@
 
 /****************************************Type Define End****************************************/
 
-#define ROBOT_ID		TRY_ROBOT
+#define ROBOT_ID		PASS_ROBOT
 
 #if ROBOT_ID == PASS_ROBOT
-	#define CAN_ID_NUM			9
+	#define CAN_ID_NUM			11
 		#if CAN_ID_NUM == 1		//����
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE

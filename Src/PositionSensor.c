@@ -287,6 +287,7 @@ float lastESpeed;
 		}
 
 		RefAngleInit();
+
 	}
 	
 	void CorrectPosOffset_Encoder(float volD)

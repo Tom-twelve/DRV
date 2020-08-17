@@ -65,7 +65,7 @@
 
 /****************************************Type Define End****************************************/
 
-#define ROBOT_ID		PASS_ROBOT
+#define ROBOT_ID		TRY_ROBOT
 
 #if ROBOT_ID == PASS_ROBOT
 	#define CAN_ID_NUM			7

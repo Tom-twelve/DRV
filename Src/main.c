@@ -193,7 +193,7 @@ int main(void)
 //	  
 //	  LL_mDelay(1000);
 //	  
-	  MainCtrl.ExptMecAngle_pulse = 0;
+//	  MainCtrl.ExptMecAngle_pulse = 0;
 
 //	  LL_mDelay(1000);
 	  

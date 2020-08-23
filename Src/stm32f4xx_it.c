@@ -316,7 +316,7 @@ void ADC_IRQHandler(void)
 										co++;
 										if(co>5)
 										{
-									UART_Transmit_DMA("%d\t%d\r\n",(int)(SpdLoop.ExptMecAngularSpeed_rad/2/2*60.0), (int)(PosSensor.MecAngularSpeed_rad/2/2*60.0));
+									UART_Transmit_DMA("%d\t%d\r\n",(int)(SpdLoop.ExptMecAngularSpeed_rad), (int)(PosSensor.MecAngularSpeed_rad));
 											co=0;
 										}
 //										UART_Transmit_DMA("%d\t",(int)(CurrLoop.ExptCurrQ * 1e3));

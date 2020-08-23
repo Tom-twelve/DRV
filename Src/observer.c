@@ -81,7 +81,7 @@ void LoadObserver(void)
 //		DMAPRINTF("%d\t%d\r\n",(int)(Driver.Status.StateCurrent.torque * 1e3 * 19.2f),(int)(1e3 * (*x2 * 19.2f)));
 //		DMAPRINTF("%d\t%d\r\n",(int)(Driver.Status.StateCurrent.id),(int)(Driver.Status.StateCurrent.iq));
 //		DMAPRINTF("%d\t%d\t%d\r\n",(int)(1e3 * (*x2 * 19.2f)),(int)(*x1 / 19.2f /6.28f * 60.f),(int)(Driver.Status.StateVel.Speed.AngSpdMec));
-		UART_Transmit_DMA("%d\t%d\t%d\r\n",(int)(1e3*(loadObserver.load)),(int)((1e3*TorqueCtrl.EleTorque_Nm)),(int)(PosSensor.MecAngularSpeed_rad));
+//		UART_Transmit_DMA("%d\t%d\t%d\r\n",(int)(1e3*(loadObserver.load)),(int)((1e3*TorqueCtrl.EleTorque_Nm)),(int)(PosSensor.MecAngularSpeed_rad));
 //		DMAPRINTF("%d\t%d\r\n",(int)((Driver.Status.StateVel.Speed.AngSpdMec)),(int)(1e3 * (*x2 * 19.2f)));
 //		DMAPRINTF("%d\t%d\r\n",(int)(*x1 / 19.2f /6.28f * 60.f),(int)((Driver.Status.StateVel.Speed.AngSpdMec / 19.2f / 6.28f * 60.f)));
 		cnt = 0;

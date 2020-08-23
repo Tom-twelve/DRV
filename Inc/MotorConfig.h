@@ -65,16 +65,17 @@
 
 /****************************************Type Define End****************************************/
 
-#define ROBOT_ID		TRY_ROBOT
+#define ROBOT_ID		PASS_ROBOT
 
 #if ROBOT_ID == PASS_ROBOT
-	#define CAN_ID_NUM			7
+	#define CAN_ID_NUM			1
 		#if CAN_ID_NUM == 1		//����
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
-		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
+		#define	PHASE_SEQUENCE			NEGATIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
+		#define INERTIA								(354.f*1e-7)
 		#define CURRENT_SENSOR			RES_1mOhm
 		#define GROUP_NUM           	1
 		#elif CAN_ID_NUM == 2	//����
@@ -83,15 +84,17 @@
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
+		#define INERTIA								(354.f*1e-7)
 		#define CURRENT_SENSOR			RES_1mOhm
 		#define GROUP_NUM           	1
 		#elif CAN_ID_NUM == 3	//����
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
-		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
+		#define	PHASE_SEQUENCE			NEGATIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
 		#define CURRENT_SENSOR			RES_1mOhm
+		#define INERTIA								(354.f*1e-7)
 		#define GROUP_NUM           	1
 		#elif CAN_ID_NUM == 4	//����
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	

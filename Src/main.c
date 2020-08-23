@@ -172,7 +172,8 @@ int main(void)
 	}
 
   /* USER CODE END 2 */
-
+	float omg=0;
+	uint8_t fl=0;
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
@@ -180,12 +181,21 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  
-//	  SpdLoop.ExptMecAngularSpeed_rad = 10.f * 2.f * PI;
+//	  if(fl==0)
+//	  {omg+=1;
+//		  if(omg>10)
+//			  fl=1;
+//	  }
+//	  if(fl==1)
+//	  {omg-=1;
+//		  if(omg<-10)
+//			  fl=0;
+//	  }
+//	  SpdLoop.ExptMecAngularSpeed_rad = (float)omg * 2.f * PI;
 //	  
-//	  LL_mDelay(1000);
+//	  LL_mDelay(10);
 //	  
-//	  SpdLoop.ExptMecAngularSpeed_rad = -100.f * 2.f * PI;
+//	  SpdLoop.ExptMecAngularSpeed_rad = 40.f * 2.f * PI;
 //	  
 //	  LL_mDelay(1000);
 	  

@@ -191,14 +191,20 @@ int main(void)
 //		  if(omg<-10)
 //			  fl=0;
 //	  }
-//	  SpdLoop.ExptMecAngularSpeed_rad = (float)omg * 2.f * PI;
-//	  
-//	  LL_mDelay(10);
-//	  
-//	  SpdLoop.ExptMecAngularSpeed_rad = 40.f * 2.f * PI;
+//	  SpdLoop.ExptMecAngularSpeed_rad = (float)omg * 50.f * PI;
+	  
+	  
+//	 SpdLoop.ExptMecAngularSpeed_rad = 50.f * 2.f * PI;
 //	  
 //	  LL_mDelay(1000);
-	  
+//	  
+//	  SpdLoop.ExptMecAngularSpeed_rad = 30.f * 2.f * PI;
+//	  
+//	  LL_mDelay(200);
+//	  
+//	  SpdLoop.ExptMecAngularSpeed_rad = 50.f * 2.f * PI;
+//	  
+//	  LL_mDelay(5000);
 //	  MainCtrl.ExptMecAngle_pulse = 20000;
 //	  
 //	  LL_mDelay(1000);

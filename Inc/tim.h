@@ -35,6 +35,7 @@
 /* USER CODE END Private defines */
 
 void MX_TIM8_Init(void);
+void MX_TIM4_Init(void);
 
 /* USER CODE BEGIN Prototypes */
 void TIM_Enable(void);

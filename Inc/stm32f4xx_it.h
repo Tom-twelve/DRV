@@ -84,7 +84,7 @@ void CAN1_RX1_IRQHandler(void);
 void USART1_IRQHandler(void);
 void DMA2_Stream7_IRQHandler(void);
 /* USER CODE BEGIN EFP */
-
+void TIM4_IRQHandler(void);
 /* USER CODE END EFP */
 
 #ifdef __cplusplus

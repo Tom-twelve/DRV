@@ -65,7 +65,7 @@
 
 /****************************************Type Define End****************************************/
 
-#define ROBOT_ID		PASS_ROBOT
+#define ROBOT_ID		TRY_ROBOT
 
 #if ROBOT_ID == PASS_ROBOT
 	#define CAN_ID_NUM			10
@@ -167,7 +167,7 @@
 		#define GROUP_NUM           	1
 		#endif
 #elif ROBOT_ID == TRY_ROBOT
-	#define CAN_ID_NUM			7
+	#define CAN_ID_NUM			8
 		#if CAN_ID_NUM == 1		//����
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			NEGATIVE_SEQUENCE
@@ -230,7 +230,16 @@
 		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
 		#define CURRENT_SENSOR			RES_1mOhm
 		#define INERTIA								(181.f*1e-7)
-		#define GROUP_NUM           	2
+		#define GROUP_NUM           	1
+		#elif CAN_ID_NUM == 8	//滑轨
+		#define MOTOR_TYPE 				MAD_XC5500_KV505	
+		#define	PHASE_SEQUENCE			POSITIVE_SEQUENCE
+		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
+		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323
+		#define MOSFET_TYPE				CDS18535_63nC_1mOhm6
+		#define CURRENT_SENSOR			RES_1mOhm
+		#define INERTIA								(181.f*1e-7)
+		#define GROUP_NUM           	1
 		#endif
 #endif
 

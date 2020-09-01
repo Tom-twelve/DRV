@@ -90,6 +90,8 @@ extern struct CoordTrans_t	CoordTrans;
 extern struct PosSensor_t PosSensor;
 extern struct Driver_t Driver;
 
+uint16_t canBusErrFlag = 100;
+
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -246,6 +248,7 @@ void CAN1_RX0_IRQHandler(void)
   /* USER CODE BEGIN CAN1_RX0_IRQn 0 */
 	
   /* USER CODE END CAN1_RX0_IRQn 0 */
+  canBusErrFlag = 100;
   HAL_CAN_IRQHandler(&hcan1);
   /* USER CODE BEGIN CAN1_RX0_IRQn 1 */
 
@@ -260,6 +263,7 @@ void CAN1_RX1_IRQHandler(void)
   /* USER CODE BEGIN CAN1_RX1_IRQn 0 */
 
   /* USER CODE END CAN1_RX1_IRQn 0 */
+  canBusErrFlag = 100;
   HAL_CAN_IRQHandler(&hcan1);
   /* USER CODE BEGIN CAN1_RX1_IRQn 1 */
 
@@ -316,7 +320,7 @@ void ADC_IRQHandler(void)
 										co++;
 										if(co>5)
 										{
-									UART_Transmit_DMA("%d\t%d\r\n",(int)(SpdLoop.ExptMecAngularSpeed_rad), (int)(PosSensor.MecAngularSpeed_rad));
+//									UART_Transmit_DMA("%d\t%d\r\n",(int)(SpdLoop.ExptMecAngularSpeed_rad), (int)(PosSensor.MecAngularSpeed_rad));
 											co=0;
 										}
 //										UART_Transmit_DMA("%d\t",(int)(CurrLoop.ExptCurrQ * 1e3));
@@ -377,6 +381,29 @@ void ADC_IRQHandler(void)
 	__HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_JEOC);
 	__HAL_ADC_CLEAR_FLAG(&hadc2, ADC_FLAG_JEOC);
 	__HAL_ADC_CLEAR_FLAG(&hadc3, ADC_FLAG_JEOC);
+}
+
+
+
+void TIM4_IRQHandler(void) 
+{
+  /* USER CODE BEGIN TIM4_IRQn 0 */
+
+  /* USER CODE END TIM4_IRQn 0 */
+
+  /* USER CODE BEGIN TIM4_IRQn 1 */
+
+  if (LL_TIM_IsActiveFlag_UPDATE(TIM4))
+  {
+	canBusErrFlag--;
+	  if(canBusErrFlag==0)
+	  {
+		SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
+		 canBusErrFlag = 0;
+	  }
+  }
+  LL_TIM_ClearFlag_UPDATE(TIM4);
+  /* USER CODE END TIM2_IRQn 1 */
 }
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

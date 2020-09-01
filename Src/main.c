@@ -134,6 +134,7 @@ int main(void)
   MX_ADC2_Init();
   MX_ADC3_Init();
   /* USER CODE BEGIN 2 */
+//  MX_TIM4_Init();   
   
 	LL_mDelay(500);
 	

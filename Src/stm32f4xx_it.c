@@ -243,11 +243,13 @@ void SysTick_Handler(void)
 /**
   * @brief This function handles CAN1 RX0 interrupt.
   */
+uint32_t canErrTest = 0;
 void CAN1_RX0_IRQHandler(void)
 {
   /* USER CODE BEGIN CAN1_RX0_IRQn 0 */
 	
   /* USER CODE END CAN1_RX0_IRQn 0 */
+	canErrTest++;
   canBusErrFlag = 100;
   HAL_CAN_IRQHandler(&hcan1);
   /* USER CODE BEGIN CAN1_RX0_IRQn 1 */
@@ -323,7 +325,7 @@ void ADC_IRQHandler(void)
 //									UART_Transmit_DMA("%d\t%d\r\n",(int)(SpdLoop.ExptMecAngularSpeed_rad), (int)(PosSensor.MecAngularSpeed_rad));
 											co=0;
 										}
-//										UART_Transmit_DMA("%d\t",(int)(CurrLoop.ExptCurrQ * 1e3));
+										UART_Transmit_DMA("%d\r\n",(int)(canErrTest));
 //										UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrQ * 1e3));
 			
 										break;
@@ -399,7 +401,7 @@ void TIM4_IRQHandler(void)
 	  if(canBusErrFlag==0)
 	  {
 		SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
-		 canBusErrFlag = 0;
+		 canBusErrFlag = 1;
 	  }
   }
   LL_TIM_ClearFlag_UPDATE(TIM4);

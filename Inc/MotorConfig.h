@@ -65,7 +65,7 @@
 
 /****************************************Type Define End****************************************/
 
-#define ROBOT_ID		PASS_ROBOT
+#define ROBOT_ID		TRY_ROBOT
 
 #if ROBOT_ID == PASS_ROBOT
 	#define CAN_ID_NUM			7
@@ -170,7 +170,7 @@
 		#define GROUP_NUM           	1
 		#endif
 #elif ROBOT_ID == TRY_ROBOT
-	#define CAN_ID_NUM			8
+	#define CAN_ID_NUM			7
 		#if CAN_ID_NUM == 1		//����
 		#define MOTOR_TYPE 				MAD_XC5500_KV505	
 		#define	PHASE_SEQUENCE			NEGATIVE_SEQUENCE

@@ -9,3 +9,5 @@ MDK-ARM/STM32F446 BLDCM Control/
 *.TMP
 MDK-ARM/STM32F446 BLDCM Control.uvguix.*
 MDK-ARM/RTE/_STM32F446_BLDCM_Control/RTE_Components.h
+*.uvoptx
+*.uvprojx

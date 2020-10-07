@@ -56,6 +56,7 @@
 #define CDS18535_63nC_1mOhm6			1
 #define IPD053N08N3G_52nC_5mOhm3		2
 #define CSD88584Q5DC_52nC_5mOhm3		3
+#define NCEP0178AK_65nC_8mOhm5		4
 
 /* Current Sensor */
 #define HALL_CURR_SENSOR_ACS781_50A		1
@@ -68,9 +69,9 @@
 #define ROBOT_ID		PASS_ROBOT
 
 #if ROBOT_ID == PASS_ROBOT
-	#define CAN_ID_NUM			5
+	#define CAN_ID_NUM			1
 		#if CAN_ID_NUM == 1		//����
-		#define MOTOR_TYPE 				MAD_XC5500_KV505	
+		#define MOTOR_TYPE 				MAD_XC5000_KV380	
 		#define	PHASE_SEQUENCE			NEGATIVE_SEQUENCE
 		#define POSITION_SENSOR_TYPE	ENCODER_TLE5012
 		#define GATE_DRIVER_TYPE		GATE_DRIVER_DRV8323

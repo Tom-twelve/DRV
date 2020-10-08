@@ -49,10 +49,11 @@ void DriverInit(void)
 			Driver.ControlMode = SPD_CURR_CTRL_MODE;
 			DriverCtrlModeInit();
 			PosSensor.PosOffset = 27297;
-			CurrLoop.LimitCurrQ = 200.f;
-			SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
-			SpdLoop.Kp = SPEED_CONTROL_KP * 1.2f;
-			SpdLoop.Ki = SPEED_CONTROL_KI * 40.f;
+			CurrLoop.LimitCurrQ = 20.f;
+			SpdLoop.ExptMecAngularSpeed_rad = 10.f * 2 * PI;
+			SpdLoop.MaxExptMecAngularSpeed_rad = 50.f * 2 * PI;
+			SpdLoop.Kp = SPEED_CONTROL_KP * 1.f;
+			SpdLoop.Ki = SPEED_CONTROL_KI * 1.f;
 //			PosLoop.Kp = 80.0f;
 //			PosLoop.Kd = 0.3f;
 ////			MainCtrl.ExptMecAngle_pulse = 1.2 * 32768;
@@ -279,7 +280,7 @@ void SpeedLoopInit(void)
 
 		SpdLoop.Kp = SPEED_CONTROL_KP;	
 		SpdLoop.Ki = SPEED_CONTROL_KI;
-		SpdLoop.MaxExptMecAngularSpeed_rad = TorqueCtrl.MaxMecSpd_rad;	//ת���޷�
+		SpdLoop.MaxExptMecAngularSpeed_rad = TorqueCtrl.MaxMecSpd_rad;	
 	}
 }
 
@@ -438,10 +439,10 @@ void SpdCurrController(void)
 	
 	Count++;
 	
-
 	CurrLoop.ExptCurrD = 0.f;
 	
-
+	/* run each period of time    */
+	/* speedloop -> Expt currentQ */
 	if(Count == PERIOD_MULTIPLE)
 	{
 
@@ -452,10 +453,10 @@ void SpdCurrController(void)
 		Count = 0;
 	}
 	
-
+	/* ClarkeTransform: CURRENT A & B -> CURRENT Alpha & Beta */
 	ClarkeTransform(CoordTrans.CurrA, CoordTrans.CurrB, &CoordTrans.CurrAlpha, &CoordTrans.CurrBeta);
 
-	
+	/* get ele angel */
 	if(PosSensor.EleAngularSpeed_degree >= 0)
 	{
 		PosSensor.CompRatio = PosSensor.CompRatio_forward;
@@ -467,17 +468,18 @@ void SpdCurrController(void)
 	
 	PosSensor.CompAngle = PosSensor.CompRatio * PosSensor.EleAngularSpeed_degree * DEFAULT_CARRIER_PERIOD_s;
 	
-
+	/* ParkTransform : CURRENT Alpha & Beta & ele Angle -> CURRENT D & Q  */
 	ParkTransform(CoordTrans.CurrAlpha, CoordTrans.CurrBeta, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + PosSensor.CompAngle);
 	
-
+	/* currentloop : Expt currentQ(from speedloop) & Expt currentD (0) AND CURRENT D & Q ---> OUTPUT CTRL VOLD & VOLQ */
 	CurrentLoop(CurrLoop.ExptCurrD, CurrLoop.ExptCurrQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
 	
-
+	/* Inverse park -> vol alpha & beta */
 	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + PosSensor.CompAngle);
 	
-
+	/* SVPWM Modulate */
 	SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
+	
 }
 
  /**
@@ -488,10 +490,11 @@ void PosSpdCurrController(void)
 	static uint16_t Count = PERIOD_MULTIPLE - 1;	
 	
 	Count++;
-	
-	
+		
 	CurrLoop.ExptCurrD = 0.f;
 	
+	/* run each period of time  */	
+	/* Positionloop -> Expt mechanical angle speed -> speedloop -> Expt CurrentQ */
 	if(Count == PERIOD_MULTIPLE)
 	{
 	
@@ -508,10 +511,10 @@ void PosSpdCurrController(void)
 		Count = 0;
 	}
 	
-	
+	/* ClarkeTransform: CURRENT A & B -> CURRENT Alpha & Beta */	
 	ClarkeTransform(CoordTrans.CurrA, CoordTrans.CurrB, &CoordTrans.CurrAlpha, &CoordTrans.CurrBeta);
 
-
+	/* get ele angel */
 	if(PosSensor.EleAngularSpeed_degree >= 0)
 	{
 		PosSensor.CompRatio = PosSensor.CompRatio_forward;
@@ -523,16 +526,16 @@ void PosSpdCurrController(void)
 	
 	PosSensor.CompAngle = PosSensor.CompRatio * PosSensor.EleAngularSpeed_degree * DEFAULT_CARRIER_PERIOD_s;
 	
-
+	/* ParkTransform : CURRENT Alpha & Beta & ele Angle -> CURRENT D & Q  */
 	ParkTransform(CoordTrans.CurrAlpha, CoordTrans.CurrBeta, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + PosSensor.CompAngle);
 	
-
+	/* currentloop : Expt currentQ(from speedloop) & Expt currentD (0) AND CURRENT D & Q ---> OUTPUT CTRL VOLD & VOLQ */
 	CurrentLoop(CurrLoop.ExptCurrD, CurrLoop.ExptCurrQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
 	
-
+	/* Inverse park -> vol alpha & beta */
 	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + PosSensor.CompAngle);
 
-	
+	/* SVPWM Modulate */	
 	SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
 }
 
@@ -545,10 +548,10 @@ void PosCurrController(void)
 	
 	Count++;
 	
-
 	CurrLoop.ExptCurrD = 0.f;
 	
-
+	/* run each period of time       */	
+	/* Positionloop -> Expt CurrentQ */
 	if(Count == PERIOD_MULTIPLE)
 	{
 
@@ -563,9 +566,10 @@ void PosCurrController(void)
 		Count = 0;
 	}
 	
-
+	/* ClarkeTransform: CURRENT A & B -> CURRENT Alpha & Beta */		
 	ClarkeTransform(CoordTrans.CurrA, CoordTrans.CurrB, &CoordTrans.CurrAlpha, &CoordTrans.CurrBeta);
-
+	
+	/* get ele angel */
 	if(PosSensor.EleAngularSpeed_degree >= 0)
 	{
 		PosSensor.CompRatio = PosSensor.CompRatio_forward;
@@ -575,23 +579,22 @@ void PosCurrController(void)
 		PosSensor.CompRatio = PosSensor.CompRatio_reverse;
 	}
 	
-
 	PosSensor.CompAngle = PosSensor.CompRatio * PosSensor.EleAngularSpeed_degree * DEFAULT_CARRIER_PERIOD_s;
 	
-
+	/* ParkTransform : CURRENT Alpha & Beta & ele Angle -> CURRENT D & Q  */
 	ParkTransform(CoordTrans.CurrAlpha, CoordTrans.CurrBeta, &CoordTrans.CurrD, &CoordTrans.CurrQ, PosSensor.EleAngle_degree + PosSensor.CompAngle);
 	
-
+	/* currentloop : Expt currentQ(from speedloop) & Expt currentD (0) AND CURRENT D & Q ---> OUTPUT CTRL VOLD & VOLQ */
 	CurrentLoop(CurrLoop.ExptCurrD, CurrLoop.ExptCurrQ, CoordTrans.CurrD, CoordTrans.CurrQ, &CurrLoop.CtrlVolD, &CurrLoop.CtrlVolQ);
 	
-
+	/* Inverse park -> vol alpha & beta */
 	InverseParkTransform(CurrLoop.CtrlVolD, CurrLoop.CtrlVolQ, &CoordTrans.VolAlpha, &CoordTrans.VolBeta, PosSensor.EleAngle_degree + PosSensor.CompAngle);
 	
-
+	/* SVPWM Modulate */	
 	SpaceVectorModulation(CoordTrans.VolAlpha, CoordTrans.VolBeta);
 }
 
- /**
+ /** 
    * @brief  
    */
 void TorqueController(void)
@@ -600,10 +603,10 @@ void TorqueController(void)
 	
 	Count++;
 	
-
 	CurrLoop.ExptCurrD = 0.f;
 		
-
+	/* run each period of time    */	
+	
 	if(Count == PERIOD_MULTIPLE)
 	{
 
@@ -612,16 +615,16 @@ void TorqueController(void)
 
 		if(PosSensor.MecAngularSpeed_rad < (TorqueCtrl.MaxMecSpd_rad - 3.f * 2.f * PI))
 		{		
-
 			CurrLoop.ExptCurrQ = TorqueCtrl.ExptTorque_Nm / (1.5f * MOTOR_POLE_PAIRS_NUM * ROTATOR_FLUX_LINKAGE);
 		}
+
 		else if(PosSensor.MecAngularSpeed_rad >= (TorqueCtrl.MaxMecSpd_rad - 3.f * 2.f * PI))
 		{
 			SpeedLoop(TorqueCtrl.MaxMecSpd_rad, PosSensor.MecAngularSpeed_rad, &CurrLoop.ExptCurrQ);
 			
 			Saturation_float(&CurrLoop.ExptCurrQ, TorqueCtrl.ExptTorque_Nm / (1.5f * MOTOR_POLE_PAIRS_NUM * ROTATOR_FLUX_LINKAGE), -TorqueCtrl.ExptTorque_Nm / (1.5f * MOTOR_POLE_PAIRS_NUM * ROTATOR_FLUX_LINKAGE));
 		}
-			
+
 		Count = 0;
 	}
 

@@ -56,7 +56,7 @@ void LoadObserver(void)
 	static uint32_t index1 = 0,index2 = 0; 
 	static average_filter_t pSum1 = 0,pSum2 = 0;
 	static float value = 0;
-	
+
 	err =  (PosSensor.MecAngularSpeed_rad - (loadObserver.w))* DEFAULT_CARRIER_PERIOD_s;
 	cnt++;
 //	if(cnt >=10)

@@ -303,21 +303,28 @@ void DMA2_Stream7_IRQHandler(void)
 /* USER CODE BEGIN 1 */
 void ADC_IRQHandler(void)
 {
+	/* ADC GET 3-PHASE VOLTAGE VALUE -> CURRENT */	
 	GetPhaseCurrent();
 	
+	/* TELL MODES */
 	if(Driver.UnitMode == WORK_MODE)
 	{		
+		/* GET ELE ANGEL, CALCULATE ELE ANGEL SPEED, Detect Encode Err */
 		GetEleImformation();
+		
+		/* wtf is this doing */
 		LoadObserver();
+		
+		/* TELL CTRL MODES */
 		switch(Driver.ControlMode)
 		{
 			case SPD_CURR_CTRL_MODE :	
-										SpdCurrController();
-			
+										/* SPEED - CURRENT CONTROLLER */
+										SpdCurrController();  
 										
+										/* CALCULATE AND TRANSMIT INFORMATION */
 										CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque_Nm);
-										
-			
+																				
 										static int co;
 										co++;
 										if(co>5)
@@ -325,15 +332,16 @@ void ADC_IRQHandler(void)
 									UART_Transmit_DMA("%d\t%d\r\n",(int)(SpdLoop.ExptMecAngularSpeed_rad), (int)(PosSensor.MecAngularSpeed_rad));
 											co=0;
 										}
-//										UART_Transmit_DMA("%d\r\n",(int)(canErrTest));
-//										UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrQ * 1e3));
+										/*UART_Transmit_DMA("%d\r\n",(int)(canErrTest));
+   									UART_Transmit_DMA("%d\r\n",(int)(CoordTrans.CurrQ * 1e3));*/
 			
 										break;
 			
-			case POS_SPD_CURR_CTRL_MODE :/*位置-速度-电流控制器*/
+			case POS_SPD_CURR_CTRL_MODE :
+										/* POSITION - SPEED - CURRENT CONTROLLER */
 										PosSpdCurrController();
 		
-										/*计算电磁转矩*/
+										/* CALCULATE AND TRANSMIT INFORMATION */
 										CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque_Nm);
 			
 										UART_Transmit_DMA("%d\t", (int)(MainCtrl.ExptMecAngle_pulse));
@@ -342,20 +350,23 @@ void ADC_IRQHandler(void)
 			
 										break;
 			
-			case POS_CURR_CTRL_MODE :	/*位置-电流控制器*/
+			case POS_CURR_CTRL_MODE :	
+										/* POSITION - CURRENT CONTROLLER */
 										PosCurrController();
 		
-										/*计算电磁转矩*/
+										/* CALCULATE AND TRANSMIT INFORMATION */
 										CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque_Nm);
 			
 										UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrQ * 1e3));
 										UART_Transmit_DMA("%d\r\n",(int)(MainCtrl.RefMecAngle_pulse));
 			                                          
 										break;
-			case TORQUE_CTRL_MODE :		/*转矩控制器*/
+			
+			case TORQUE_CTRL_MODE :	
+										/* TORQUE CONTROLLER */
 										TorqueController();
 		
-										/*计算电磁转矩*/
+										/* CALCULATE AND TRANSMIT INFORMATION */
 										CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque_Nm);
 			
 										UART_Transmit_DMA("%d\t", (int)(CoordTrans.CurrQ * 1e3));
@@ -376,7 +387,7 @@ void ADC_IRQHandler(void)
 		
 		SpdCurrController();
 			
-		/*璁＄畻鐢电杞煩*/
+
 		CalculateEleTorque(CoordTrans.CurrQ, &TorqueCtrl.EleTorque_Nm);		
 
 	}
@@ -400,7 +411,7 @@ void TIM4_IRQHandler(void)
 	canBusErrFlag--;
 	  if(canBusErrFlag==0)
 	  {
-		SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;
+		SpdLoop.ExptMecAngularSpeed_rad = 0.f * 2 * PI;    //wtf is this doing ? why here ?
 		 canBusErrFlag = 1;
 	  }
   }

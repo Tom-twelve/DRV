@@ -48,7 +48,7 @@ float lastESpeed;
 		GetEleAngularSpeed();  //计算电角速度
 		EncodeErrorDetection();		//编码器异常检测
 	}
-
+ 
 	void GetMecImformation(void)
 	{
 		GetMecAngle(); //计算机械角度
